@@ -4,7 +4,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version. 
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,7 +18,7 @@
  * The Original Code is Copyright (C) 2009 Blender Foundation.
  * All rights reserved.
  *
- * 
+ *
  * Contributor(s): Blender Foundation
  *
  * ***** END GPL LICENSE BLOCK *****
@@ -44,6 +44,9 @@ struct bPoseChannel;
 struct bArmature;
 struct EditBone;
 struct Bone;
+
+struct EditMuscle;
+struct Muscle;
 
 struct ListBase;
 struct LinkData;
@@ -87,6 +90,9 @@ void ARMATURE_OT_flip_names(struct wmOperatorType *ot);
 void ARMATURE_OT_layers_show_all(struct wmOperatorType *ot);
 void ARMATURE_OT_armature_layers(struct wmOperatorType *ot);
 void ARMATURE_OT_bone_layers(struct wmOperatorType *ot);
+
+void MUSCLE_OT_select_more(struct wmOperatorType *ot);
+void MUSCLE_OT_select_less(struct wmOperatorType *ot);
 
 /* ******************************************************* */
 /* Pose-Mode Operators */
@@ -154,19 +160,19 @@ void SKETCH_OT_select(struct wmOperatorType *ot);
 /* Temporary data linking PoseChannels with the F-Curves they affect */
 typedef struct tPChanFCurveLink {
 	struct tPChanFCurveLink *next, *prev;
-	
+
 	ListBase fcurves;               /* F-Curves for this PoseChannel (wrapped with LinkData) */
 	struct bPoseChannel *pchan;     /* Pose Channel which data is attached to */
-	
+
 	char *pchan_path;               /* RNA Path to this Pose Channel (needs to be freed when we're done) */
-	
+
 	float oldloc[3];                /* transform values at start of operator (to be restored before each modal step) */
 	float oldrot[3];
 	float oldscale[3];
 	float oldquat[4];
 	float oldangle;
 	float oldaxis[3];
-	
+
 	struct IDProperty *oldprops;    /* copy of custom properties at start of operator (to be restored before each modal step) */
 } tPChanFCurveLink;
 
@@ -208,6 +214,11 @@ void POSE_OT_breakdown(struct wmOperatorType *ot);
 void POSE_OT_propagate(struct wmOperatorType *ot);
 
 /* ******************************************************* */
+/* Muscle Tools */
+
+void MUSCLE_OT_muscle_primitive_add(struct wmOperatorType *ot);
+
+/* ******************************************************* */
 /* Various Armature Edit/Pose Editing API's */
 
 /* Ideally, many of these defines would not be needed as everything would be strictly self-contained
@@ -215,6 +226,7 @@ void POSE_OT_propagate(struct wmOperatorType *ot);
  */
 
 EditBone *make_boneList(struct ListBase *edbo, struct ListBase *bones, struct EditBone *parent, struct Bone *actBone);
+EditMuscle *make_muscleList(struct ListBase *edmu, struct ListBase *muscles, struct EditMuscle *parent, struct Muscle *actMuscle);
 void BIF_sk_selectStroke(struct bContext *C, const int mval[2], short extend);
 
 /* duplicate method */
@@ -231,6 +243,7 @@ void updateDuplicateSubtargetObjects(struct EditBone *dupBone, struct ListBase *
 
 EditBone *add_points_bone(struct Object *obedit, float head[3], float tail[3]);
 void bone_free(struct bArmature *arm, struct EditBone *bone);
+void muscle_free(struct bArmature *arm, struct EditMuscle *muscle);
 
 void armature_tag_select_mirrored(struct bArmature *arm);
 void armature_select_mirrored(struct bArmature *arm);
@@ -238,6 +251,9 @@ void armature_tag_unselect(struct bArmature *arm);
 
 void *get_nearest_bone(struct bContext *C, short findunsel, int x, int y);
 void *get_bone_from_selectbuffer(struct Scene *scene, struct Base *base, unsigned int *buffer, short hits, short findunsel, bool do_nearest);
+
+void *get_nearest_muscle(struct bContext *C, short findunsel, int x, int y);
+void *get_muscle_from_selectbuffer(struct Scene *scene, struct Base *base, unsigned int *buffer, short hits, short findunsel);
 
 int bone_looper(struct Object *ob, struct Bone *bone, void *data,
                 int (*bone_func)(struct Object *, struct Bone *, void *));

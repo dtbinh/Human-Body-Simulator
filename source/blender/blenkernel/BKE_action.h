@@ -44,6 +44,7 @@ struct FCurve;
 struct bPose;
 struct bItasc;
 struct bPoseChannel;
+struct bMuscleChannel;
 struct Main;
 struct Object;
 struct Scene;
@@ -59,7 +60,7 @@ extern "C" {
 /* Allocate a new bAction with the given name */
 struct bAction *add_empty_action(struct Main *bmain, const char name[]);
 
-/* Allocate a copy of the given Action and all its data */	
+/* Allocate a copy of the given Action and all its data */
 struct bAction *BKE_action_copy(struct bAction *src);
 
 /* Deallocate all of the Action's data, but not the Action itself */
@@ -71,7 +72,7 @@ void BKE_action_make_local(struct bAction *act);
 
 /* Action API ----------------- */
 
-/* types of transforms applied to the given item 
+/* types of transforms applied to the given item
  *  - these are the return falgs for action_get_item_transforms()
  */
 typedef enum eAction_TransformFlags {
@@ -92,7 +93,7 @@ typedef enum eAction_TransformFlags {
 	ACT_TRANS_ALL   = (ACT_TRANS_ONLY | ACT_TRANS_PROP)
 } eAction_TransformFlags;
 
-/* Return flags indicating which transforms the given object/posechannel has 
+/* Return flags indicating which transforms the given object/posechannel has
  *	- if 'curves' is provided, a list of links to these curves are also returned
  *	  whose nodes WILL NEED FREEING
  */
@@ -131,16 +132,25 @@ struct bActionGroup *BKE_action_group_find_name(struct bAction *act, const char 
 /* Clear all 'temp' flags on all groups */
 void action_groups_clear_tempflags(struct bAction *act);
 
-/* Pose API ----------------- */	
+/* Pose API ----------------- */
 
 void                 BKE_pose_channel_free(struct bPoseChannel *pchan);
 void                 BKE_pose_channel_free_ex(struct bPoseChannel *pchan, bool do_id_user);
 
+void                 BKE_pose_muscle_free(struct bMuscleChannel *pmuscle);
+void                 BKE_pose_muscle_free_ex(struct bMuscleChannel *pmuscle, bool do_id_user);
+
 void                 BKE_pose_channels_free(struct bPose *pose);
 void                 BKE_pose_channels_free_ex(struct bPose *pose, bool do_id_user);
 
+void                 BKE_pose_muscles_free(struct bPose *pose);
+void                 BKE_pose_muscles_free_ex(struct bPose *pose, bool do_id_user);
+
 void                 BKE_pose_channels_hash_make(struct bPose *pose);
 void                 BKE_pose_channels_hash_free(struct bPose *pose);
+
+void                 BKE_pose_muscles_hash_make(struct bPose *pose);
+void                 BKE_pose_muscles_hash_free(struct bPose *pose);
 
 void                 BKE_pose_free(struct bPose *pose);
 void                 BKE_pose_free_ex(struct bPose *pose, bool do_id_user);
@@ -150,6 +160,10 @@ struct bPoseChannel *BKE_pose_channel_find_name(const struct bPose *pose, const 
 struct bPoseChannel *BKE_pose_channel_active(struct Object *ob);
 struct bPoseChannel *BKE_pose_channel_verify(struct bPose *pose, const char *name);
 struct bPoseChannel *BKE_pose_channel_get_mirrored(const struct bPose *pose, const char *name);
+
+void                   BKE_pose_muscle_copy_data(struct bMuscleChannel *pmuscle, const struct bMuscleChannel *pmuscle_from);
+struct bMuscleChannel *BKE_pose_muscle_find_name(const struct bPose *pose, const char *name);
+struct bMuscleChannel *BKE_pose_muscle_verify(struct bPose *pose, const char *name);
 
 #ifndef NDEBUG
 bool BKE_pose_channels_is_valid(const struct bPose *pose);
@@ -177,7 +191,7 @@ bool BKE_pose_channel_in_IK_chain(struct Object *ob, struct bPoseChannel *pchan)
 // XXX to be deprecated for a more general solution in animsys...
 void framechange_poses_clear_unkeyed(void);
 
-/* Bone Groups API --------------------- */	
+/* Bone Groups API --------------------- */
 
 /* Adds a new bone-group */
 struct bActionGroup *BKE_pose_add_group(struct bPose *pose, const char *name);
@@ -187,7 +201,7 @@ void BKE_pose_remove_group(struct bPose *pose, struct bActionGroup *grp, const i
 /* Remove the matching bone-group from its index */
 void BKE_pose_remove_group_index(struct bPose *pose, const int index);
 
-/* Assorted Evaluation ----------------- */	
+/* Assorted Evaluation ----------------- */
 
 /* Used for the Action Constraint */
 void what_does_obaction(struct Object *ob, struct Object *workob, struct bPose *pose, struct bAction *act, char groupname[], float cframe);
