@@ -72,7 +72,7 @@ static Py_ssize_t KX_PythonSeq_len( PyObject *self )
 		PyErr_SetString(PyExc_SystemError, "len(seq): " BGE_PROXY_ERROR_MSG);
 		return -1;
 	}
-	
+
 	switch (((KX_PythonSeq *)self)->type) {
 		case KX_PYGENSEQ_CONT_TYPE_SENSORS:
 			return ((SCA_IController *)self_plus)->GetLinkedSensors().size();
@@ -88,6 +88,8 @@ static Py_ssize_t KX_PythonSeq_len( PyObject *self )
 			return ((BL_ArmatureObject *)self_plus)->GetConstraintNumber();
 		case KX_PYGENSEQ_OB_TYPE_CHANNELS:
 			return ((BL_ArmatureObject *)self_plus)->GetChannelNumber();
+        case KX_PYGENSEQ_OB_TYPE_MUSCLES:
+            return ((BL_ArmatureObject *)self_plus)->GetMuscleNumber();
 		default:
 			/* Should never happen */
 			PyErr_SetString(PyExc_SystemError, "invalid type, internal error");
@@ -98,12 +100,12 @@ static Py_ssize_t KX_PythonSeq_len( PyObject *self )
 static PyObject *KX_PythonSeq_getIndex(PyObject *self, Py_ssize_t index)
 {
 	PyObjectPlus *self_plus= BGE_PROXY_REF(((KX_PythonSeq *)self)->base);
-	 
+
 	if (self_plus==NULL) {
 		PyErr_SetString(PyExc_SystemError, "val = seq[i]: " BGE_PROXY_ERROR_MSG);
 		return NULL;
 	}
-	
+
 	switch (((KX_PythonSeq *)self)->type) {
 		case KX_PYGENSEQ_CONT_TYPE_SENSORS:
 		{
@@ -158,7 +160,7 @@ static PyObject *KX_PythonSeq_getIndex(PyObject *self, Py_ssize_t index)
 		case KX_PYGENSEQ_OB_TYPE_CONSTRAINTS:
 		{
 			int nb_constraint = ((BL_ArmatureObject *)self_plus)->GetConstraintNumber();
-			if (index<0) 
+			if (index<0)
 				index += nb_constraint;
 			if (index<0 || index>= nb_constraint) {
 				PyErr_SetString(PyExc_IndexError, "seq[i]: index out of range");
@@ -169,17 +171,28 @@ static PyObject *KX_PythonSeq_getIndex(PyObject *self, Py_ssize_t index)
 		case KX_PYGENSEQ_OB_TYPE_CHANNELS:
 		{
 			int nb_channel = ((BL_ArmatureObject *)self_plus)->GetChannelNumber();
-			if (index<0) 
+			if (index<0)
 				index += nb_channel;
 			if (index<0 || index>= nb_channel) {
 				PyErr_SetString(PyExc_IndexError, "seq[i]: index out of range");
 				return NULL;
 			}
 			return ((BL_ArmatureObject *)self_plus)->GetChannel(index)->GetProxy();
-		}
+
+		case KX_PYGENSEQ_OB_TYPE_MUSCLES:
+        {
+            int nb_muscle = ((BL_ArmatureObject *)self_plus)->GetMuscleNumber();
+            if (index < 0)
+                index += nb_muscle;
+            if (index < 0 || index >= nb_muscle) {
+                PyErr_SetString(PyExc_IndexError, "seq[i]: index out of range");
+                return NULL;
+            }
+            return ((BL_ArmatureObject *)self_plus)->GetMuscle(index)->GetProxy();
+        }
 
 	}
-	
+
 	PyErr_SetString(PyExc_SystemError, "invalid sequence type, this is a bug");
 	return NULL;
 }
@@ -187,7 +200,7 @@ static PyObject *KX_PythonSeq_getIndex(PyObject *self, Py_ssize_t index)
 static PyObjectPlus *KX_PythonSeq_subscript__internal(PyObject *self, const char *key)
 {
 	PyObjectPlus *self_plus= BGE_PROXY_REF(((KX_PythonSeq *)self)->base);
-	
+
 	switch (((KX_PythonSeq *)self)->type) {
 		case KX_PYGENSEQ_CONT_TYPE_SENSORS:
 		{
@@ -197,7 +210,7 @@ static PyObjectPlus *KX_PythonSeq_subscript__internal(PyObject *self, const char
 				sensor = linkedsensors[index];
 				if (sensor->GetName() == key)
 					return static_cast<PyObjectPlus *>(sensor);
-				
+
 			}
 			break;
 		}
@@ -253,8 +266,12 @@ static PyObjectPlus *KX_PythonSeq_subscript__internal(PyObject *self, const char
 		{
 			return ((BL_ArmatureObject*)self_plus)->GetChannel(key);
 		}
+		case KX_PYGENSEQ_OB_TYPE_MUSCLES:
+        {
+            return ((BL_ArmatureObject*)self_plus)->GetMuscle(key);
+        }
 	}
-	
+
 	return NULL;
 }
 
@@ -262,19 +279,19 @@ static PyObjectPlus *KX_PythonSeq_subscript__internal(PyObject *self, const char
 static PyObject *KX_PythonSeq_subscript(PyObject *self, PyObject *key)
 {
 	PyObjectPlus *self_plus= BGE_PROXY_REF(((KX_PythonSeq *)self)->base);
-	
+
 	if (self_plus==NULL) {
 		PyErr_SetString(PyExc_SystemError, "val = seq[key], KX_PythonSeq: " BGE_PROXY_ERROR_MSG);
 		return NULL;
 	}
-	
+
 	if (PyIndex_Check(key)) {
 		return KX_PythonSeq_getIndex(self, PyLong_AsSsize_t(key));
 	}
 	else if ( PyUnicode_Check(key) ) {
 		const char *name = _PyUnicode_AsString(key);
 		PyObjectPlus *ret = KX_PythonSeq_subscript__internal(self, name);
-		
+
 		if (ret) {
 			return ret->GetProxy();
 		} else {
@@ -292,7 +309,7 @@ static PyObject *KX_PythonSeq_subscript(PyObject *self, PyObject *key)
 static int KX_PythonSeq_contains(PyObject *self, PyObject *key)
 {
 	PyObjectPlus *self_plus= BGE_PROXY_REF(((KX_PythonSeq *)self)->base);
-	
+
 	if (self_plus==NULL) {
 		PyErr_SetString(PyExc_SystemError, "key in seq, KX_PythonSeq: " BGE_PROXY_ERROR_MSG);
 		return -1;
@@ -301,10 +318,10 @@ static int KX_PythonSeq_contains(PyObject *self, PyObject *key)
 		PyErr_SetString(PyExc_SystemError, "key in seq, KX_PythonSeq: key must be a string");
 		return -1;
 	}
-	
+
 	if (KX_PythonSeq_subscript__internal(self, _PyUnicode_AsString(key)))
 		return 1;
-	
+
 	return 0;
 }
 
@@ -317,10 +334,10 @@ static PyObject *KX_PythonSeq_get(PyObject *self, PyObject *args)
 
 	if (!PyArg_ParseTuple(args, "s|O:get", &key, &def))
 		return NULL;
-	
+
 	if ((ret_plus = KX_PythonSeq_subscript__internal(self, key)))
 		return ret_plus->GetProxy();
-	
+
 	Py_INCREF(def);
 	return def;
 }
@@ -360,7 +377,7 @@ static PyObject *KX_PythonSeq_getIter(KX_PythonSeq *self)
 		PyErr_SetString(PyExc_SystemError, "for i in seq: " BGE_PROXY_ERROR_MSG);
 		return NULL;
 	}
-	
+
 	/* create a new iterator if were already using this one */
 	if (self->iter == -1) {
 		self->iter = 0;
@@ -375,11 +392,11 @@ static PyObject *KX_PythonSeq_getIter(KX_PythonSeq *self)
 /*
  * Return next KX_PythonSeq iter.
  */
- 
+
 static PyObject *KX_PythonSeq_nextIter(KX_PythonSeq *self)
 {
 	PyObject *object = KX_PythonSeq_getIndex((PyObject *)self, self->iter);
-	
+
 	self->iter++;
 	if ( object==NULL ) {
 		self->iter= -1; /* for reuse */
@@ -401,7 +418,7 @@ static PyObject *KX_PythonSeq_richcmp(PyObject *a, PyObject *b, int op)
 
 	if (BPy_KX_PythonSeq_Check(a) && BPy_KX_PythonSeq_Check(b))
 		ok= KX_PythonSeq_compare((KX_PythonSeq *)a, (KX_PythonSeq *)b);
-	
+
 	switch (op) {
 	case Py_NE:
 		ok = !ok;
@@ -420,7 +437,7 @@ static PyObject *KX_PythonSeq_richcmp(PyObject *a, PyObject *b, int op)
 		PyErr_BadArgument();
 		return NULL;
 	}
-	
+
 	Py_INCREF(res);
 	return res;
 }

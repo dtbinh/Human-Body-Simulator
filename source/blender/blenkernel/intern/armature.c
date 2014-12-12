@@ -106,10 +106,27 @@ void BKE_armature_bonelist_free(ListBase *lb)
 	BLI_freelistN(lb);
 }
 
+void BKE_armature_musclelist_free(ListBase *lb)
+{
+    Muscle *musc;
+
+    for (musc = lb->first; musc; musc = musc->next) {
+        if (musc->prop) {
+            IDP_FreeProperty(musc->prop);
+            MEM_freeN(musc->prop);
+        }
+    }
+
+    BLI_freelistN(lb);
+}
+
 void BKE_armature_free(bArmature *arm)
 {
 	if (arm) {
 		BKE_armature_bonelist_free(&arm->bonebase);
+
+        /* free muscle */
+        BKE_armature_musclelist_free(&arm->musclebase);
 
 		/* free editmode data */
 		if (arm->edbo) {
@@ -117,6 +134,13 @@ void BKE_armature_free(bArmature *arm)
 
 			MEM_freeN(arm->edbo);
 			arm->edbo = NULL;
+		}
+
+		if (arm->edmu) {
+            BLI_freelistN(arm->edmu);
+
+            MEM_freeN(arm->edmu);
+            arm->edmu = NULL;
 		}
 
 		/* free sketch */
@@ -199,14 +223,38 @@ static void copy_bonechildren(Bone *newBone, Bone *oldBone, Bone *actBone, Bone 
 	}
 }
 
+static void copy_musclechildren(Muscle *newMuscle, Muscle *oldMuscle, Muscle *actMuscle, Muscle **newActMuscle)
+{
+    Muscle *curMuscle, *newChildMuscle;
+
+    if (oldMuscle == actMuscle)
+        *newActMuscle = newMuscle;
+
+    if (oldMuscle->prop)
+        newMuscle->prop = IDP_CopyProperty(oldMuscle->prop);
+
+    BLI_duplicatelist(&newMuscle->childbase, &oldMuscle->childbase);
+
+    newChildMuscle = newMuscle->childbase.first;
+    for (curMuscle = oldMuscle->childbase.first; curMuscle; curMuscle = curMuscle->next) {
+        newChildMuscle->parent = newMuscle;
+        copy_musclechildren(newChildMuscle, curMuscle, actMuscle, newActMuscle);
+        newChildMuscle = newChildMuscle->next;
+    }
+}
+
 bArmature *BKE_armature_copy(bArmature *arm)
 {
 	bArmature *newArm;
 	Bone *oldBone, *newBone;
 	Bone *newActBone = NULL;
 
+	Muscle *oldMuscle, *newMuscle;
+	Muscle *newActMuscle = NULL;
+
 	newArm = BKE_libblock_copy(&arm->id);
 	BLI_duplicatelist(&newArm->bonebase, &arm->bonebase);
+	BLI_duplicatelist(&newArm->musclebase, &arm->musclebase);
 
 	/* Duplicate the childrens' lists */
 	newBone = newArm->bonebase.first;
@@ -216,10 +264,20 @@ bArmature *BKE_armature_copy(bArmature *arm)
 		newBone = newBone->next;
 	}
 
+    newMuscle = newArm->musclebase.first;
+	for (oldMuscle = arm->musclebase.first; oldMuscle; oldMuscle = oldMuscle->next) {
+        newMuscle->parent = NULL;
+        copy_musclechildren(newMuscle, oldMuscle, arm->act_muscle, &newActMuscle);
+        newMuscle = newMuscle->next;
+	}
+
 	newArm->act_bone = newActBone;
+	newArm->act_muscle = newActMuscle;
 
 	newArm->edbo = NULL;
+	newArm->edmu = NULL;
 	newArm->act_edbone = NULL;
+	newArm->act_edmuscle = NULL;
 	newArm->sketch = NULL;
 
 	return newArm;
@@ -241,6 +299,22 @@ static Bone *get_named_bone_bonechildren(Bone *bone, const char *name)
 	return NULL;
 }
 
+static Muscle *get_named_muscle_musclechildren(Muscle *muscle, const char *name)
+{
+    Muscle *curMuscle, *rmuscle;
+
+    if (!strcmp(muscle->name, name))
+        return muscle;
+
+    for (curMuscle = muscle->childbase.first; curMuscle; curMuscle = curMuscle->next) {
+        rmuscle = get_named_muscle_musclechildren(curMuscle, name);
+        if (rmuscle)
+            return rmuscle;
+    }
+
+    return NULL;
+}
+
 
 /* Walk the list until the bone is found */
 Bone *BKE_armature_find_bone_name(bArmature *arm, const char *name)
@@ -257,6 +331,22 @@ Bone *BKE_armature_find_bone_name(bArmature *arm, const char *name)
 	}
 
 	return bone;
+}
+
+Muscle *BKE_armature_find_muscle_name (bArmature *arm, const char *name)
+{
+    Muscle *muscle = NULL, *curMuscle;
+
+    if (!arm)
+        return NULL;
+
+    for (curMuscle = arm->musclebase.first; curMuscle; curMuscle = curMuscle->next) {
+        muscle = get_named_muscle_musclechildren(curMuscle, name);
+        if (muscle)
+            return muscle;
+    }
+
+    return muscle;
 }
 
 /* Finds the best possible extension to the name on a particular axis. (For renaming, check for
@@ -578,6 +668,11 @@ void b_bone_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BB
 		}
 	}
 }
+
+//void b_muscle_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BBONE_SUBDIV])
+//{
+//
+//}
 
 /* ************ Armature Deform ******************* */
 
@@ -1137,6 +1232,18 @@ static void get_offset_bone_mat(Bone *bone, float offs_bone[4][4])
 	offs_bone[3][1] += bone->parent->length;
 }
 
+static void get_offset_muscle_mat(Muscle *muscle, float offs_muscle[4][4])
+{
+    if (!muscle->parent)
+        return;
+
+    copy_m4_m3(offs_muscle, muscle->muscle_mat);
+
+    copy_v3_v3(offs_muscle[3], muscle->head);
+
+    offs_muscle[3][1] += muscle->parent->length;
+}
+
 /* Construct the matrices (rot/scale and loc) to apply the PoseChannels into the armature (object) space.
  * I.e. (roughly) the "pose_mat(b-1) * yoffs(b-1) * d_root(b) * bone_mat(b)" in the
  *     pose_mat(b)= pose_mat(b-1) * yoffs(b-1) * d_root(b) * bone_mat(b) * chan_mat(b)
@@ -1240,6 +1347,36 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 	}
 }
 
+void BKE_pmuscle_to_pose_mat(bMuscleChannel *pchan, float rotscale_mat[4][4], float loc_mat[4][4])
+{
+    Muscle *muscle, *parmuscle;
+    bMuscleChannel *parchan;
+
+    muscle = pchan->muscle;
+    parmuscle = muscle->parent;
+    parchan = pchan->parent;
+
+    if (parchan) {
+        float offs_muscle[4][4];
+
+        get_offset_muscle_mat(muscle, offs_muscle);
+
+        mul_m4_m4m4(rotscale_mat, parchan->pose_mat, offs_muscle);
+
+        copy_m4_m4(loc_mat, rotscale_mat);
+    }
+    else {
+        copy_m4_m4(rotscale_mat, pchan->muscle->arm_mat);
+
+        if (pchan->muscle->flag & MUSCLE_NO_LOCAL_LOCATION) {
+            unit_m4(loc_mat);
+            copy_v3_v3(loc_mat[3], pchan->muscle->arm_mat[3]);
+        }
+        else
+            copy_m4_m4(loc_mat, rotscale_mat);
+    }
+}
+
 /* Convert Pose-Space Matrix to Bone-Space Matrix.
  * NOTE: this cannot be used to convert to pose-space transforms of the supplied
  *       pose-channel into its local space (i.e. 'visual'-keyframing) */
@@ -1258,6 +1395,20 @@ void BKE_armature_mat_pose_to_bone(bPoseChannel *pchan, float inmat[4][4], float
 	mul_v3_m4v3(outmat[3], loc_mat, inmat_[3]);
 }
 
+void BKE_armature_mat_pose_to_muscle(bMuscleChannel *pmuscle, float inmat[4][4], float outmat[4][4])
+{
+    float rotscale_mat[4][4], loc_mat[4][4], inmat_[4][4];
+
+    copy_m4_m4(inmat_, inmat);
+
+    BKE_pmuscle_to_pose_mat(pmuscle, rotscale_mat, loc_mat);
+    invert_m4(rotscale_mat);
+    invert_m4(loc_mat);
+
+    mul_m4_m4m4(outmat, rotscale_mat, inmat_);
+    mul_v3_m4v3(outmat[3], loc_mat, inmat_[3]);
+}
+
 /* Convert Bone-Space Matrix to Pose-Space Matrix. */
 void BKE_armature_mat_bone_to_pose(bPoseChannel *pchan, float inmat[4][4], float outmat[4][4])
 {
@@ -1270,6 +1421,18 @@ void BKE_armature_mat_bone_to_pose(bPoseChannel *pchan, float inmat[4][4], float
 
 	mul_m4_m4m4(outmat, rotscale_mat, inmat_);
 	mul_v3_m4v3(outmat[3], loc_mat, inmat_[3]);
+}
+
+void BKE_armature_mat_muscle_to_pose(bMuscleChannel *pmuscle, float inmat[4][4], float outmat[4][4])
+{
+    float rotscale_mat[4][4], loc_mat[4][4], inmat_[4][4];
+
+    copy_m4_m4(inmat_, inmat);
+
+    BKE_pmuscle_to_pose_mat(pmuscle, rotscale_mat, loc_mat);
+
+    mul_m4_m4m4(outmat, rotscale_mat, inmat_);
+    mul_v3_m4v3(outmat[3], loc_mat, inmat_[3]);
 }
 
 /* Convert Pose-Space Location to Bone-Space Location
@@ -1289,6 +1452,18 @@ void BKE_armature_loc_pose_to_bone(bPoseChannel *pchan, const float inloc[3], fl
 	copy_v3_v3(outloc, nLocMat[3]);
 }
 
+void BKE_armature_loc_pose_to_muscle(bMuscleChannel *pmuscle, const float inloc[3], float outloc[3])
+{
+    float xLocMat[4][4];
+    float nLocMat[4][4];
+
+    unit_m4(xLocMat);
+    copy_v3_v3(xLocMat[3], inloc);
+
+    BKE_armature_mat_pose_to_muscle(pmuscle, xLocMat, nLocMat);
+    copy_v3_v3(outloc, nLocMat[3]);
+}
+
 void BKE_armature_mat_pose_to_bone_ex(Object *ob, bPoseChannel *pchan, float inmat[4][4], float outmat[4][4])
 {
 	bPoseChannel work_pchan = *pchan;
@@ -1304,6 +1479,18 @@ void BKE_armature_mat_pose_to_bone_ex(Object *ob, bPoseChannel *pchan, float inm
 	BKE_pchan_apply_mat4(&work_pchan, outmat, false);
 
 	BKE_armature_mat_pose_to_bone(&work_pchan, inmat, outmat);
+}
+
+void BKE_armature_mat_pose_to_muscle_ex(Object *ob, bMuscleChannel *pmuscle, float inmat[4][4], float outmat[4][4])
+{
+    bMuscleChannel work_pmuscle = *pmuscle;
+
+    BKE_pose_where_is_muscle(NULL, ob, &work_pmuscle, 0.0f, false);
+
+    unit_m4(outmat);
+    BKE_pmuscle_apply_mat4(&work_pmuscle, outmat, false);
+
+    BKE_armature_mat_pose_to_muscle(&work_pmuscle, inmat, outmat);
 }
 
 /* same as BKE_object_mat3_to_rot() */
@@ -1325,6 +1512,24 @@ void BKE_pchan_mat3_to_rot(bPoseChannel *pchan, float mat[3][3], bool use_compat
 	}
 }
 
+void BKE_pmuscle_mat3_to_rot(bMuscleChannel *pmuscle, float mat[3][3], bool use_compat)
+{
+    switch (pmuscle->rotmode) {
+        case ROT_MODE_QUAT:
+            mat3_to_quat(pmuscle->quat, mat);
+            break;
+        case ROT_MODE_AXISANGLE:
+            mat3_to_axis_angle(pmuscle->rotAxis, &pmuscle->rotAngle, mat);
+            break;
+        default:
+            if (use_compat)
+                mat3_to_compatible_eulO(pmuscle->eul, pmuscle->eul, pmuscle->rotmode, mat);
+            else
+                mat3_to_eulO(pmuscle->eul, pmuscle->rotmode, mat);
+            break;
+    }
+}
+
 /* Apply a 4x4 matrix to the pose bone,
  * similar to BKE_object_apply_mat4() */
 void BKE_pchan_apply_mat4(bPoseChannel *pchan, float mat[4][4], bool use_compat)
@@ -1332,6 +1537,13 @@ void BKE_pchan_apply_mat4(bPoseChannel *pchan, float mat[4][4], bool use_compat)
 	float rot[3][3];
 	mat4_to_loc_rot_size(pchan->loc, rot, pchan->size, mat);
 	BKE_pchan_mat3_to_rot(pchan, rot, use_compat);
+}
+
+void BKE_pmuscle_apply_mat4(bMuscleChannel *pmuscle, float mat[4][4], bool use_compat)
+{
+    float rot[3][3];
+    mat4_to_loc_rot_size(pmuscle->loc, rot, pmuscle->size, mat);
+    BKE_pmuscle_mat3_to_rot(pmuscle, rot, use_compat);
 }
 
 /* Remove rest-position effects from pose-transform for obtaining
@@ -1586,15 +1798,46 @@ void BKE_armature_where_is_bone(Bone *bone, Bone *prevbone)
 	}
 }
 
+void BKE_armature_where_is_muscle(Muscle *muscle, Muscle *prevmuscle)
+{
+    float vec[3];
+
+    sub_v3_v3v3(vec, muscle->tail, muscle->head);
+    vec_roll_to_mat3(vec, muscle->roll, muscle->muscle_mat);
+
+    muscle->length = len_v3v3(muscle->head, muscle->tail);
+
+    if (prevmuscle) {
+        float offs_muscle[4][4];
+        get_offset_muscle_mat(muscle, offs_muscle);
+
+        mul_m4_m4m4(muscle->arm_mat, prevmuscle->arm_mat, offs_muscle);
+    }
+    else {
+        copy_m4_m3(muscle->arm_mat, muscle->muscle_mat);
+        copy_v3_v3(muscle->arm_mat[3], muscle->head);
+    }
+
+    prevmuscle = muscle;
+    for (muscle = muscle->childbase.first; muscle; muscle = muscle->next) {
+        BKE_armature_where_is_muscle(muscle, prevmuscle);
+    }
+}
+
 /* updates vectors and matrices on rest-position level, only needed
  * after editing armature itself, now only on reading file */
 void BKE_armature_where_is(bArmature *arm)
 {
 	Bone *bone;
+	Muscle *muscle;
 
 	/* hierarchical from root to children */
 	for (bone = arm->bonebase.first; bone; bone = bone->next) {
 		BKE_armature_where_is_bone(bone, NULL);
+	}
+
+	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
+        BKE_armature_where_is_muscle(muscle, NULL);
 	}
 }
 
@@ -1604,6 +1847,7 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 {
 	bPose *pose = ob->pose, *frompose = from->pose;
 	bPoseChannel *pchan, *pchanp;
+	bMuscleChannel *pmuscle, *pmusclep;
 	bConstraint *con;
 	int error = 0;
 
@@ -1625,6 +1869,19 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 	if (error)
 		return;
 
+    for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+        if (pmuscle->muscle->layer & layer_protected) {
+            if (BKE_pose_muscle_find_name(frompose, pmuscle->name) == NULL) {
+                printf("failed to sync proxy armature because '%s' is missing pose muscle '%s'\n",
+                       from->id.name, pmuscle->name);
+                error = 1;
+            }
+        }
+    }
+
+    if (error)
+        return;
+
 	/* clear all transformation values from library */
 	BKE_pose_rest(frompose);
 
@@ -1639,7 +1896,7 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 
 	for (pchan = pose->chanbase.first; pchan; pchan = pchan->next) {
 		pchanp = BKE_pose_channel_find_name(frompose, pchan->name);
-		
+
 		if (UNLIKELY(pchanp == NULL)) {
 			/* happens for proxies that become invalid because of a missing link
 			 * for regular cases it shouldn't happen at all */
@@ -1647,7 +1904,7 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 		else if (pchan->bone->layer & layer_protected) {
 			ListBase proxylocal_constraints = {NULL, NULL};
 			bPoseChannel pchanw;
-			
+
 			/* copy posechannel to temp, but restore important pointers */
 			pchanw = *pchanp;
 			pchanw.prev = pchan->prev;
@@ -1662,13 +1919,13 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 			/* this is freed so copy a copy, else undo crashes */
 			if (pchanw.prop) {
 				pchanw.prop = IDP_CopyProperty(pchanw.prop);
-				
+
 				/* use the values from the existing props */
 				if (pchan->prop) {
 					IDP_SyncGroupValues(pchanw.prop, pchan->prop);
 				}
 			}
-			
+
 			/* constraints - proxy constraints are flushed... local ones are added after
 			 *     1. extract constraints not from proxy (CONSTRAINT_PROXY_LOCAL) from pchan's constraints
 			 *     2. copy proxy-pchan's constraints on-to new
@@ -1680,29 +1937,29 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 			BKE_constraints_proxylocal_extract(&proxylocal_constraints, &pchan->constraints);
 			BKE_constraints_copy(&pchanw.constraints, &pchanp->constraints, false);
 			BLI_movelisttolist(&pchanw.constraints, &proxylocal_constraints);
-			
+
 			/* constraints - set target ob pointer to own object */
 			for (con = pchanw.constraints.first; con; con = con->next) {
 				bConstraintTypeInfo *cti = BKE_constraint_typeinfo_get(con);
 				ListBase targets = {NULL, NULL};
 				bConstraintTarget *ct;
-				
+
 				if (cti && cti->get_constraint_targets) {
 					cti->get_constraint_targets(con, &targets);
-					
+
 					for (ct = targets.first; ct; ct = ct->next) {
 						if (ct->tar == from)
 							ct->tar = ob;
 					}
-					
+
 					if (cti->flush_constraint_targets)
 						cti->flush_constraint_targets(con, &targets, 0);
 				}
 			}
-			
+
 			/* free stuff from current channel */
 			BKE_pose_channel_free(pchan);
-			
+
 			/* copy data in temp back over to the cleaned-out (but still allocated) original channel */
 			*pchan = pchanw;
 			if (pchan->custom) {
@@ -1738,6 +1995,61 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 			}
 		}
 	}
+
+	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+        pmusclep = BKE_pose_muscle_find_name(frompose, pmuscle->name);
+
+        if (UNLIKELY(pmusclep == NULL)) {
+
+        }
+        else if (pmuscle->muscle->layer & layer_protected) {
+            bMuscleChannel pmusclew;
+
+            pmusclew = *pmusclep;
+            pmusclew.prev = pmuscle->prev;
+            pmusclew.next = pmuscle->next;
+            pmusclew.parent = pmuscle->parent;
+            pmusclew.child = pmuscle->child;
+
+            if (pmusclew.prop) {
+                pmusclew.prop = IDP_CopyProperty(pmusclew.prop);
+
+                if (pmuscle->prop) {
+                    IDP_SyncGroupValues(pmusclew.prop, pmuscle->prop);
+                }
+            }
+
+            BKE_pose_muscle_free(pmuscle);
+
+            *pmuscle = pmusclew;
+            if (pmuscle->custom) {
+                id_us_plus(&pmuscle->custom->id);
+            }
+        }
+        else {
+            pmuscle->custom = pmusclep->custom;
+            if (pmuscle->custom) {
+                id_us_plus(&pmuscle->custom->id);
+            }
+
+            {
+                IDProperty *prop_orig = pmuscle->prop;
+                if (pmusclep->prop) {
+                    pmuscle->prop = IDP_CopyProperty(pmusclep->prop);
+                    if (prop_orig) {
+                        IDP_SyncGroupValues(pmuscle->prop, prop_orig);
+                    }
+                }
+                else {
+                    pmuscle->prop = NULL;
+                }
+                if (prop_orig) {
+                    IDP_FreeProperty(prop_orig);
+                    MEM_freeN(prop_orig);
+                }
+            }
+        }
+	}
 }
 
 static int rebuild_pose_bone(bPose *pose, Bone *bone, bPoseChannel *parchan, int counter)
@@ -1759,13 +2071,34 @@ static int rebuild_pose_bone(bPose *pose, Bone *bone, bPoseChannel *parchan, int
 	return counter;
 }
 
+static int rebuild_pose_muscle(bPose *pose, Muscle *muscle, bMuscleChannel *parmuscle, int counter)
+{
+    bMuscleChannel *pmuscle = BKE_pose_muscle_verify(pose, muscle->name);
+
+    pmuscle->muscle = muscle;
+    pmuscle->parent = parmuscle;
+
+    // counter++;
+
+    for (muscle = muscle->childbase.first; muscle; muscle = muscle->next) {
+        rebuild_pose_muscle(pose, muscle, pmuscle, 0);
+
+        if (muscle->flag & MUSCLE_CONNECTED)
+            pmuscle->child = BKE_pose_muscle_find_name(pose, muscle->name);
+    }
+
+    return counter;
+}
+
 /* only after leave editmode, duplicating, validating older files, library syncing */
 /* NOTE: pose->flag is set for it */
 void BKE_pose_rebuild(Object *ob, bArmature *arm)
 {
 	Bone *bone;
+	Muscle *muscle;
 	bPose *pose;
 	bPoseChannel *pchan, *next;
+	bMuscleChannel *pmuscle, *mnext;
 	int counter = 0;
 
 	/* only done here */
@@ -1784,9 +2117,18 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 		pchan->child = NULL;
 	}
 
+	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+        pmuscle->muscle = NULL;
+        pmuscle->child = NULL;
+	}
+
 	/* first step, check if all channels are there */
 	for (bone = arm->bonebase.first; bone; bone = bone->next) {
 		counter = rebuild_pose_bone(pose, bone, NULL, counter);
+	}
+
+	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
+        rebuild_pose_muscle(pose, muscle, NULL, 0);
 	}
 
 	/* and a check for garbage */
@@ -1797,6 +2139,15 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 			BKE_pose_channels_hash_free(pose);
 			BLI_freelinkN(&pose->chanbase, pchan);
 		}
+	}
+
+	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = mnext) {
+        mnext = pmuscle->next;
+        if (pmuscle->muscle == NULL) {
+            BKE_pose_muscle_free(pmuscle);
+            BKE_pose_muscles_hash_free(pose);
+            BLI_freelinkN(&pose->musclebase, pmuscle);
+        }
 	}
 	/* printf("rebuild pose %s, %d bones\n", ob->id.name, counter); */
 
@@ -1816,6 +2167,7 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 	ob->pose->flag |= POSE_WAS_REBUILT;
 
 	BKE_pose_channels_hash_make(ob->pose);
+    BKE_pose_muscles_hash_make(ob->pose);
 }
 
 
@@ -1883,7 +2235,7 @@ static void splineik_init_tree_from_pchan(Scene *scene, Object *UNUSED(ob), bPos
 		/* only happens on reload file, but violates depsgraph still... fix! */
 		if (ELEM(NULL,  ikData->tar->curve_cache, ikData->tar->curve_cache->path, ikData->tar->curve_cache->path->data)) {
 			BKE_displist_make_curveTypes(scene, ikData->tar, 0);
-			
+
 			/* path building may fail in EditMode after removing verts [#33268]*/
 			if (ELEM(NULL, ikData->tar->curve_cache->path, ikData->tar->curve_cache->path->data)) {
 				/* BLI_assert(cu->path != NULL); */
@@ -2302,6 +2654,35 @@ void BKE_pchan_to_mat4(bPoseChannel *pchan, float chan_mat[4][4])
 	}
 }
 
+void BKE_pmuscle_to_mat4(bMuscleChannel *pmuscle, float chan_mat[4][4])
+{
+    float smat[3][3];
+    float rmat[3][3];
+    float tmat[3][3];
+
+    size_to_mat3(smat, pmuscle->size);
+
+    if (pmuscle->rotmode > 0) {
+        eulO_to_mat3(rmat, pmuscle->eul, pmuscle->rotmode);
+    }
+    else if (pmuscle->rotmode == ROT_MODE_AXISANGLE) {
+        axis_angle_to_mat3(rmat, pmuscle->rotAxis, pmuscle->rotAngle);
+    }
+    else {
+        float quat[4];
+
+        normalize_qt_qt(quat, pmuscle->quat);
+        quat_to_mat3(rmat, quat);
+    }
+
+    mul_m3_m3m3(tmat, rmat, smat);
+    copy_m4_m3(chan_mat, tmat);
+
+    if ((pmuscle->muscle == NULL) || !(pmuscle->muscle->flag & MUSCLE_CONNECTED)) {
+        copy_v3_v3(chan_mat[3], pmuscle->loc);
+    }
+}
+
 /* loc/rot/size to mat4 */
 /* used in constraint.c too */
 void BKE_pchan_calc_mat(bPoseChannel *pchan)
@@ -2310,6 +2691,11 @@ void BKE_pchan_calc_mat(bPoseChannel *pchan)
 	 * and stores the result in any given channel
 	 */
 	BKE_pchan_to_mat4(pchan, pchan->chan_mat);
+}
+
+void BKE_pmuscle_calc_mat(bMuscleChannel *pmuscle)
+{
+    BKE_pmuscle_to_mat4(pmuscle, pmuscle->chan_mat);
 }
 
 #if 0 /* XXX OLD ANIMSYS, NLASTRIPS ARE NO LONGER USED */
@@ -2448,6 +2834,15 @@ void BKE_pose_where_is_bone_tail(bPoseChannel *pchan)
 	add_v3_v3v3(pchan->pose_tail, pchan->pose_head, vec);
 }
 
+void BKE_pose_where_is_muscle_tail(bMuscleChannel *pmuscle)
+{
+    float vec[3];
+
+    copy_v3_v3(vec, pmuscle->pose_mat[1]);
+    mul_v3_fl(vec, pmuscle->muscle->length);
+    add_v3_v3v3(pmuscle->pose_tail, pmuscle->pose_head, vec);
+}
+
 /* The main armature solver, does all constraints excluding IK */
 /* pchan is validated, as having bone and parent pointer
  * 'do_extra': when zero skips loc/size/rot, constraints and strip modifiers.
@@ -2511,13 +2906,33 @@ void BKE_pose_where_is_bone(Scene *scene, Object *ob, bPoseChannel *pchan, float
 	BKE_pose_where_is_bone_tail(pchan);
 }
 
+void BKE_pose_where_is_muscle(Scene *scene, Object *ob, bMuscleChannel *pmuscle, float ctime, bool do_extra)
+{
+    if (do_extra)
+        BKE_pmuscle_calc_mat(pmuscle);
+    else
+        unit_m4(pmuscle->chan_mat);
+
+    BKE_armature_mat_muscle_to_pose(pmuscle, pmuscle->chan_mat, pmuscle->pose_mat);
+
+//    if (!pmuscle->parent) {
+//        if (pmuscle->muscle && (pmuscle->muscle->flag & MUSCLE_NO))
+//    }
+
+    copy_v3_v3(pmuscle->pose_head, pmuscle->pose_mat[3]);
+
+    BKE_pose_where_is_muscle_tail(pmuscle);
+}
+
 /* This only reads anim data from channels, and writes to channels */
 /* This is the only function adding poses */
 void BKE_pose_where_is(Scene *scene, Object *ob)
 {
 	bArmature *arm;
 	Bone *bone;
+	Muscle *muscle;
 	bPoseChannel *pchan;
+	bMuscleChannel *pmuscle;
 	float imat[4][4];
 	float ctime;
 
@@ -2533,7 +2948,7 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 	ctime = BKE_scene_frame_get(scene); /* not accurate... */
 
 	/* In editmode or restposition we read the data from the bones */
-	if (arm->edbo || (arm->flag & ARM_RESTPOS)) {
+	if (arm->edbo || arm->edmu || (arm->flag & ARM_RESTPOS)) {
 		for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 			bone = pchan->bone;
 			if (bone) {
@@ -2541,6 +2956,14 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 				copy_v3_v3(pchan->pose_head, bone->arm_head);
 				copy_v3_v3(pchan->pose_tail, bone->arm_tail);
 			}
+		}
+		for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+            muscle = pmuscle->muscle;
+            if (muscle) {
+                copy_m4_m4(pmuscle->pose_mat, muscle->arm_mat);
+                copy_v3_v3(pmuscle->pose_head, muscle->arm_head);
+                copy_v3_v3(pmuscle->pose_tail, muscle->arm_tail);
+            }
 		}
 	}
 	else {
@@ -2586,12 +3009,20 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 			mul_m4_m4m4(pchan->chan_mat, pchan->pose_mat, imat);
 		}
 	}
+
+	for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+        if (pmuscle->muscle) {
+            invert_m4_m4(imat, pmuscle->muscle->arm_mat);
+            mul_m4_m4m4(pmuscle->chan_mat, pmuscle->pose_mat, imat);
+        }
+	}
 }
 
 /************** Bounding box ********************/
 static int minmax_armature(Object *ob, float r_min[3], float r_max[3])
 {
 	bPoseChannel *pchan;
+	bMuscleChannel *pmuscle;
 
 	/* For now, we assume BKE_pose_where_is has already been called (hence we have valid data in pachan). */
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
@@ -2599,7 +3030,12 @@ static int minmax_armature(Object *ob, float r_min[3], float r_max[3])
 		minmax_v3v3_v3(r_min, r_max, pchan->pose_tail);
 	}
 
-	return (BLI_listbase_is_empty(&ob->pose->chanbase) == false);
+	for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+        minmax_v3v3_v3(r_min, r_max, pmuscle->pose_head);
+        minmax_v3v3_v3(r_min, r_max, pmuscle->pose_tail);
+	}
+
+    return (BLI_listbase_is_empty(&ob->pose->chanbase) == false || BLI_listbase_is_empty(&ob->pose->musclebase) == false);
 }
 
 static void boundbox_armature(Object *ob, float loc[3], float size[3])

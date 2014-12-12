@@ -74,16 +74,39 @@ typedef struct EditBone {
 	 * animation are automatically relative to the bones' rest positions*/
 	int flag;
 	int layer;
-	
+
 	float dist, weight;
 	float xwidth, length, zwidth;  /* put them in order! transform uses this as scale */
 	float ease1, ease2;
 	float rad_head, rad_tail;
-	
+
 	float oldlength;        /* for envelope scaling */
-	
+
 	short segments;
 } EditBone;
+
+typedef struct EditMuscle {
+    struct EditMuscle *next, *prev;
+    struct IDProperty *prop;
+    struct EditMuscle *parent;
+
+    void    *temp;
+
+    char    name[64];   /* MAXMUSCLENAME */
+    float   roll;
+
+    float head[3];
+    float tail[3];
+
+    int flag;
+    int layer;
+
+    float length;
+    float rad_head, rad_tail;
+
+    short segments;
+    char pad[2];
+} EditMuscle;
 
 #define BONESEL_ROOT    (1 << 28)
 #define BONESEL_TIP     (1 << 29)
@@ -92,6 +115,13 @@ typedef struct EditBone {
 
 #define BONESEL_NOSEL   (1u << 31u)
 
+#define MUSCLESEL_ROOT  (1 << 28)
+#define MUSCLESEL_TIP   (1 << 29)
+#define MUSCLESEL_MUSC  (1 << 30)
+#define MUSCLESEL_ANY   (MUSCLESEL_ROOT | MUSCLESEL_TIP | MUSCLESEL_MUSC)
+
+#define MUSCLESEL_NOSEL (1u << 31u)
+
 /* useful macros */
 #define EBONE_VISIBLE(arm, ebone) ( \
 	CHECK_TYPE_INLINE(arm, bArmature *), \
@@ -99,12 +129,24 @@ typedef struct EditBone {
 	(((arm)->layer & (ebone)->layer) && !((ebone)->flag & BONE_HIDDEN_A)) \
 	)
 
+#define EMUSCLE_VISIBLE(arm, emuscle) ( \
+    CHECK_TYPE_INLINE(arm, bArmature *), \
+    CHECK_TYPE_INLINE(emuscle, EditMuscle *), \
+    (((arm)->layer & (emuscle)->layer) && !((emuscle)->flag & MUSCLE_HIDDEN_A)) \
+    )
+
 #define EBONE_SELECTABLE(arm, ebone) (EBONE_VISIBLE(arm, ebone) && !(ebone->flag & BONE_UNSELECTABLE))
+#define EMUSCLE_SELECTABLE(arm, emuscle) (EMUSCLE_VISIBLE(arm, emuscle) && !(emuscle->flag & MUSCLE_UNSELECTABLE))
 
 #define EBONE_EDITABLE(ebone) ( \
 	CHECK_TYPE_INLINE(ebone, EditBone *), \
 	(((ebone)->flag & BONE_SELECTED) && !((ebone)->flag & BONE_EDITMODE_LOCKED)) \
 	)
+
+#define EMUSCLE_EDITABLE(emuscle) ( \
+    CHECK_TYPE_INLINE(emuscle, EditMuscle *), \
+    (((emuscle)->flag & MUSCLE_SELECTED) && !((emuscle)->flag & MUSCLE_EDITMODE_LOCKED)) \
+    )
 
 /* used in armature_select_hierarchy_exec() */
 #define BONE_SELECT_PARENT  0
@@ -122,26 +164,34 @@ void ED_armature_edit_free(struct bArmature *arm);
 void ED_armature_deselect_all(struct Object *obedit, int toggle);
 void ED_armature_deselect_all_visible(struct Object *obedit);
 
-int ED_do_pose_selectbuffer(struct Scene *scene, struct Base *base, unsigned int *buffer, 
+int ED_do_pose_selectbuffer(struct Scene *scene, struct Base *base, unsigned int *buffer,
                             short hits, bool extend, bool deselect, bool toggle, bool do_nearest);
 bool mouse_armature(struct bContext *C, const int mval[2], bool extend, bool deselect, bool toggle);
 int join_armature_exec(struct bContext *C, struct wmOperator *op);
 struct Bone *get_indexed_bone(struct Object *ob, int index);
+struct Muscle *get_indexed_muscle(struct Object *ob, int index);
 float ED_rollBoneToVector(EditBone *bone, const float new_up_axis[3], const bool axis_only);
 EditBone *ED_armature_bone_find_name(const ListBase *edbo, const char *name);
 EditBone *ED_armature_bone_get_mirrored(const struct ListBase *edbo, EditBone *ebo);
+EditMuscle *ED_armature_muscle_find_name(const ListBase *edmu, const char *name);
 void ED_armature_sync_selection(struct ListBase *edbo);
 void ED_armature_validate_active(struct bArmature *arm);
+
+void ED_muscle_sync_selection(struct ListBase *edmu);
 
 EditBone *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned);
 EditBone *ED_armature_edit_bone_add(struct bArmature *arm, const char *name);
 void ED_armature_edit_bone_remove(struct bArmature *arm, EditBone *exBone);
+void ED_armature_edit_muscle_remove(struct bArmature *arm, EditMuscle *exMuscle);
 
 bool ED_armature_ebone_is_child_recursive(EditBone *ebone_parent, EditBone *ebone_child);
 EditBone *ED_armature_bone_find_shared_parent(EditBone *ebone_child[], const unsigned int ebone_child_tot);
 
 void ED_armature_ebone_to_mat3(EditBone *ebone, float mat[3][3]);
 void ED_armature_ebone_to_mat4(EditBone *ebone, float mat[4][4]);
+
+void ED_armature_emuscle_to_mat3(EditMuscle *emuscle, float mat[3][3]);
+void ED_armature_emuscle_to_mat4(EditMuscle *emuscle, float mat[4][4]);
 
 void ED_armature_ebone_from_mat3(EditBone *ebone, float mat[3][3]);
 void ED_armature_ebone_from_mat4(EditBone *ebone, float mat[4][4]);
@@ -172,6 +222,12 @@ void ED_armature_ebone_selectflag_set(EditBone *ebone, int flag);
 void ED_armature_ebone_select_set(EditBone *ebone, bool select);
 void ED_armature_ebone_selectflag_enable(EditBone *ebone, int flag);
 void ED_armature_ebone_selectflag_disable(EditBone *ebone, int flag);
+
+int  ED_armature_emuscle_selectflag_get(const EditMuscle *emuscle);
+void ED_armature_emuscle_selectflag_set(EditMuscle *emuscle, int flag);
+void ED_armature_emuscle_select_set(EditMuscle *emuscle, bool select);
+void ED_armature_emuscle_selectflag_enable(EditMuscle *emuscle, int flag);
+void ED_armature_emuscle_selectflag_disable(EditMuscle *emuscle, int flag);
 
 /* poseobject.c */
 void ED_armature_exit_posemode(struct bContext *C, struct Base *base);
@@ -205,7 +261,7 @@ int BDR_drawSketchNames(struct ViewContext *vc);
 void mesh_deform_bind(struct Scene *scene,
                       struct MeshDeformModifierData *mmd,
                       float *vertexcos, int totvert, float cagemat[4][4]);
-	
+
 #ifdef __cplusplus
 }
 #endif

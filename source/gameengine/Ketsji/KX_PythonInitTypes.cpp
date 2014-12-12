@@ -40,6 +40,7 @@
 #include "BL_ArmatureConstraint.h"
 #include "BL_ArmatureObject.h"
 #include "BL_ArmatureChannel.h"
+#include "BL_MuscleChannel.h"
 #include "KX_ArmatureSensor.h"
 #include "KX_BlenderMaterial.h"
 #include "KX_CameraActuator.h"
@@ -156,7 +157,7 @@ static void PyType_Ready_ADD(PyObject *dict, PyTypeObject *tp, PyAttributeDef *a
 		PyType_Ready(tp);
 		PyDict_SetItemString(dict, tp->tp_name, reinterpret_cast<PyObject *>(tp));
 	}
-	
+
 }
 
 
@@ -176,8 +177,8 @@ void initPyTypes(void)
 	PyObject *dict = PyModule_GetDict(mod);
 	PyDict_SetItemString(PySys_GetObject("modules"), "GameTypes", mod);
 	Py_DECREF(mod);
-	
-	
+
+
 	for (int init_getset= 1; init_getset > -1; init_getset--) { /* run twice, once to init the getsets another to run PyType_Ready */
 		PyType_Ready_Attr(dict, BL_ActionActuator, init_getset);
 		PyType_Ready_Attr(dict, BL_Shader, init_getset);
@@ -187,6 +188,8 @@ void initPyTypes(void)
 		PyType_Ready_Attr(dict, BL_ArmatureConstraint, init_getset);
 		PyType_Ready_AttrPtr(dict, BL_ArmatureBone, init_getset);
 		PyType_Ready_AttrPtr(dict, BL_ArmatureChannel, init_getset);
+		PyType_Ready_AttrPtr(dict, BL_ArmatureMuscle, init_getset);
+		PyType_Ready_AttrPtr(dict, BL_MuscleChannel, init_getset);
 		// PyType_Ready_Attr(dict, CPropValue, init_getset);  // doesn't use Py_Header
 		PyType_Ready_Attr(dict, CListValue, init_getset);
 		PyType_Ready_Attr(dict, CValue, init_getset);
