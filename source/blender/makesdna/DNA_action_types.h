@@ -4,7 +4,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version. 
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -72,10 +72,10 @@ typedef enum eMotionPathVert_Flag {
 typedef struct bMotionPath {
 	bMotionPathVert *points;    /* path samples */
 	int length;                 /* the number of cached verts */
-	
+
 	int start_frame;            /* for drawing paths, the start frame number */
 	int end_frame;              /* for drawing paths, the end frame number */
-	
+
 	int flag;                   /* baking settings - eMotionPath_Flag */
 } bMotionPath;
 
@@ -95,22 +95,22 @@ typedef struct bAnimVizSettings {
 	/* Onion-Skinning Settings ----------------- */
 	int ghost_sf, ghost_ef;         /* start and end frames of ghost-drawing range (only used for GHOST_TYPE_RANGE) */
 	int ghost_bc, ghost_ac;         /* number of frames before/after current frame to show */
-	
+
 	short ghost_type;               /* eOnionSkin_Types */
 	short ghost_step;               /* number of frames between each ghost shown (not for GHOST_TYPE_KEYS) */
-	
+
 	short ghost_flag;               /* eOnionSkin_Flag */
-	
+
 	/* General Settings ------------------------ */
 	short recalc;                   /* eAnimViz_RecalcFlags */
-	
+
 	/* Motion Path Settings ------------------- */
 	short path_type;                /* eMotionPath_Types */
 	short path_step;                /* number of frames between points indicated on the paths */
-	
+
 	short path_viewflag;            /* eMotionPaths_ViewFlag */
 	short path_bakeflag;            /* eMotionPaths_BakeFlag */
-	
+
 	int path_sf, path_ef;           /* start and end frames of path-calculation range */
 	int path_bc, path_ac;           /* number of frames before/after current frame to show */
 } bAnimVizSettings;
@@ -179,19 +179,19 @@ typedef enum eMotionPaths_BakeFlag {
 
 /* PoseChannel ------------------------------------ */
 
-/* PoseChannel 
+/* PoseChannel
  *
- * A PoseChannel stores the results of Actions and transform information 
- * with respect to the restposition of Armature bones 
+ * A PoseChannel stores the results of Actions and transform information
+ * with respect to the restposition of Armature bones
  */
 typedef struct bPoseChannel {
 	struct bPoseChannel *next, *prev;
-	
+
 	IDProperty          *prop;      /* User-Defined Properties on this PoseChannel */
-	
+
 	ListBase constraints;           /* Constraints that act on this PoseChannel */
 	char name[64];                  /* need to match bone name length: MAXBONENAME */
-	
+
 	short flag;                     /* dynamic, for detecting transform changes */
 	short ikflag;                   /* settings for IK bones */
 	short protectflag;              /* protect channels from being transformed */
@@ -223,16 +223,16 @@ typedef struct bPoseChannel {
 	float rotAxis[3], rotAngle;         /* axis-angle rotation */
 	short rotmode;                      /* eRotationModes - rotation representation to use */
 	short pad;
-	
+
 	float chan_mat[4][4];           /* matrix result of loc/quat/size, and where we put deform in, see next line */
 	float pose_mat[4][4];           /* constraints accumulate here. in the end, pose_mat = bone->arm_mat * chan_mat
 	                                 * this matrix is object space */
 	float constinv[4][4];           /* inverse result of constraints.
 	                                 * doesn't include effect of restposition, parent, and local transform*/
-	
+
 	float pose_head[3];             /* actually pose_mat[3] */
 	float pose_tail[3];             /* also used for drawing help lines... */
-	
+
 	float limitmin[3], limitmax[3]; /* DOF constraint, note! - these are stored in degrees, not radians */
 	float stiffness[3];             /* DOF stiffness */
 	float ikstretch;
@@ -242,6 +242,37 @@ typedef struct bPoseChannel {
 	void        *temp;              /* use for outliner */
 } bPoseChannel;
 
+typedef struct bMuscleChannel {
+    struct bMuscleChannel *next, *prev;
+
+    IDProperty            *prop;
+
+    char name[64];
+
+    struct Muscle         *muscle;
+    struct bMuscleChannel *parent;
+    struct bMuscleChannel *child;
+
+    struct Object *custom;
+
+    float loc[3];
+    float size[3];
+
+    float eul[3];
+    float quat[3];
+    float rotAxis[3], rotAngle;
+
+    float chan_mat[4][4];
+    float pose_mat[4][4];
+
+    float pose_head[3];
+    float pose_tail[3];
+
+    short rotmode;
+    char constflag;
+    char selectflag;
+    char pad[4];
+} bMuscleChannel;
 
 /* PoseChannel (transform) flags */
 typedef enum ePchan_Flag {
@@ -318,8 +349,8 @@ typedef enum eRotationModes {
 	ROT_MODE_YZX = 4,
 	ROT_MODE_ZXY = 5,
 	ROT_MODE_ZYX = 6,
-	/* NOTE: space is reserved here for 18 other possible 
-	 * euler rotation orders not implemented 
+	/* NOTE: space is reserved here for 18 other possible
+	 * euler rotation orders not implemented
 	 */
 	/* axis angle rotations */
 	ROT_MODE_AXISANGLE = -1,
@@ -330,31 +361,33 @@ typedef enum eRotationModes {
 
 /* Pose ------------------------------------ */
 
-/* Pose-Object. 
+/* Pose-Object.
  *
  * It is only found under ob->pose. It is not library data, even
  * though there is a define for it (hack for the outliner).
  */
 typedef struct bPose {
 	ListBase chanbase;          /* list of pose channels, PoseBones in RNA */
+	ListBase musclebase;
 	struct GHash *chanhash;     /* ghash for quicker string lookups */
-	
+	struct GHash *musclehash;
+
 	short flag, pad;
 	unsigned int proxy_layer;   /* proxy layer: copy from armature, gets synced */
 	int pad1;
-	
+
 	float ctime;                /* local action time of this pose */
 	float stride_offset[3];     /* applied to object */
 	float cyclic_offset[3];     /* result of match and cycles, applied in BKE_pose_where_is() */
-	
-	
+
+
 	ListBase agroups;           /* list of bActionGroups */
-	
+
 	int active_group;           /* index of active group (starts from 1) */
 	int iksolver;               /* ik solver to use, see ePose_IKSolverType */
 	void *ikdata;               /* temporary IK data, depends on the IK solver. Not saved in file */
 	void *ikparam;              /* IK solver parameters, structure depends on iksolver */
-	
+
 	bAnimVizSettings avs;       /* settings for visualization of bone animation */
 	char proxy_act_bone[64];    /* proxy active bone name, MAXBONENAME */
 } bPose;
@@ -428,14 +461,14 @@ typedef enum eItasc_Solver {
 
 /* Action-Channel Group (agrp)
  *
- * These are stored as a list per-Action, and are only used to 
- * group that Action's channels in an Animation Editor. 
+ * These are stored as a list per-Action, and are only used to
+ * group that Action's channels in an Animation Editor.
  *
  * Even though all FCurves live in a big list per Action, each group they are in also
  * holds references to the achans within that list which belong to it. Care must be taken to
  * ensure that action-groups never end up being the sole 'owner' of a channel.
- * 
- * This is also exploited for bone-groups. Bone-Groups are stored per bPose, and are used 
+ *
+ * This is also exploited for bone-groups. Bone-Groups are stored per bPose, and are used
  * primarily to color bones in the 3d-view. There are other benefits too, but those are mostly related
  * to Action-Groups.
  *
@@ -443,13 +476,13 @@ typedef enum eItasc_Solver {
  */
 typedef struct bActionGroup {
 	struct bActionGroup *next, *prev;
-	
+
 	ListBase channels;          /* Note: this must not be touched by standard listbase functions which would clear links to other channels */
-	
+
 	int flag;                   /* settings for this action-group */
 	int customCol;              /* index of custom color set to use when used for bones (0=default - used for all old files, -1=custom set) */
 	char name[64];              /* name of the group */
-	
+
 	ThemeWireColor cs;          /* color set to use when customCol == -1 */
 } bActionGroup;
 
@@ -469,7 +502,7 @@ typedef enum eActionGroup_Flag {
 	AGRP_NOTVISIBLE = (1 << 5),
 	/* for UI (Graph Editor), sub-channels are shown */
 	AGRP_EXPANDED_G = (1 << 6),
-	
+
 	AGRP_TEMP       = (1 << 30),
 	AGRP_MOVED      = (1 << 31)
 } eActionGroup_Flag;
@@ -477,27 +510,27 @@ typedef enum eActionGroup_Flag {
 
 /* Actions -------------------------------------- */
 
-/* Action - reusable F-Curve 'bag'  (act) 
+/* Action - reusable F-Curve 'bag'  (act)
  *
- * This contains F-Curves that may affect settings from more than one ID blocktype and/or 
- * datablock (i.e. sub-data linked/used directly to the ID block that the animation data is linked to), 
+ * This contains F-Curves that may affect settings from more than one ID blocktype and/or
+ * datablock (i.e. sub-data linked/used directly to the ID block that the animation data is linked to),
  * but with the restriction that the other unrelated data (i.e. data that is not directly used or linked to
  * by the source ID block).
  *
- * It serves as a 'unit' of reusable animation information (i.e. keyframes/motion data), that 
- * affects a group of related settings (as defined by the user). 
+ * It serves as a 'unit' of reusable animation information (i.e. keyframes/motion data), that
+ * affects a group of related settings (as defined by the user).
  */
 typedef struct bAction {
 	ID id;              /* ID-serialisation for relinking */
-	
+
 	ListBase curves;    /* function-curves (FCurve) */
 	ListBase chanbase DNA_DEPRECATED;  /* legacy data - Action Channels (bActionChannel) in pre-2.5 animation system */
 	ListBase groups;    /* groups of function-curves (bActionGroup) */
 	ListBase markers;   /* markers local to the Action (used to provide Pose-Libraries) */
-	
+
 	int flag;           /* settings for this action */
 	int active_marker;  /* index of the active marker */
-	
+
 	int idroot;         /* type of ID-blocks that action can be assigned to (if 0, will be set to whatever ID first evaluates it) */
 	int pad;
 } bAction;
@@ -523,13 +556,13 @@ typedef enum eAction_Flags {
 typedef struct bDopeSheet {
 	ID      *source;            /* currently ID_SCE (for Dopesheet), and ID_SC (for Grease Pencil) */
 	ListBase chanbase; /* cache for channels (only initialized when pinned) */           // XXX not used!
-	
+
 	struct Group *filter_grp;   /* object group for ADS_FILTER_ONLYOBGROUP filtering option */
 	char searchstr[64];         /* string to search for in displayed names of F-Curves for ADS_FILTER_BY_FCU_NAME filtering option */
-	
+
 	int filterflag;             /* flags to use for filtering data */
 	int flag;                   /* standard flags */
-	
+
 	int renameIndex;            /* index+1 of channel to rename - only gets set by renaming operator */
 	int pad;
 } bDopeSheet;
@@ -539,7 +572,7 @@ typedef struct bDopeSheet {
 typedef enum eDopeSheet_FilterFlag {
 	/* general filtering */
 	ADS_FILTER_ONLYSEL          = (1 << 0),   /* only include channels relating to selected data */
-	
+
 	/* temporary filters */
 	ADS_FILTER_ONLYDRIVERS      = (1 << 1),   /* for 'Drivers' editor - only include Driver data from AnimData */
 	ADS_FILTER_ONLYNLA          = (1 << 2),   /* for 'NLA' editor - only include NLA data from AnimData */
@@ -578,16 +611,16 @@ typedef enum eDopeSheet_FilterFlag {
 	ADS_FILTER_INCL_HIDDEN      = (1 << 26),  /* include 'hidden' channels too (i.e. those from hidden Objects/Bones) */
 	ADS_FILTER_BY_FCU_NAME      = (1 << 27),  /* for F-Curves, filter by the displayed name (i.e. to isolate all Location curves only) */
 	ADS_FILTER_ONLY_ERRORS		= (1 << 28),  /* show only F-Curves which are disabled/have errors - for debugging drivers */
-	
+
 	/* combination filters (some only used at runtime) */
 	ADS_FILTER_NOOBDATA = (ADS_FILTER_NOCAM | ADS_FILTER_NOMAT | ADS_FILTER_NOLAM | ADS_FILTER_NOCUR | ADS_FILTER_NOPART | ADS_FILTER_NOARM | ADS_FILTER_NOSPK | ADS_FILTER_NOMODIFIERS)
-} eDopeSheet_FilterFlag;	
+} eDopeSheet_FilterFlag;
 
 /* DopeSheet general flags */
 typedef enum eDopeSheet_Flag {
 	ADS_FLAG_SUMMARY_COLLAPSED  = (1 << 0),   /* when summary is shown, it is collapsed, so all other channels get hidden */
 	ADS_FLAG_SHOW_DBFILTERS     = (1 << 1)    /* show filters for datablocks */
-	
+
 	/* NOTE: datablock filter flags continued (1 << 10) onwards... */
 } eDopeSheet_Flag;
 
@@ -603,10 +636,10 @@ typedef struct SpaceAction {
 	short blockhandler[8];
 
 	View2D v2d DNA_DEPRECATED;  /* copied to region */
-	
+
 	bAction     *action;        /* the currently active action */
 	bDopeSheet ads;             /* the currently active context (when not showing action) */
-	
+
 	char mode, autosnap;        /* mode: editing context; autosnap: automatic keyframe snapping mode   */
 	short flag;                 /* flag: bitmapped settings; */
 	float timeslide;            /* for Time-Slide transform mode drawing - current frame? */
@@ -638,7 +671,7 @@ typedef enum eSAction_Flag {
 	SACTION_NOREALTIMEUPDATES = (1 << 10),
 	/* move markers as well as keyframes */
 	SACTION_MARKERS_MOVE = (1 << 11)
-} eSAction_Flag;	
+} eSAction_Flag;
 
 /* SpaceAction Mode Settings */
 typedef enum eAnimEdit_Context {
@@ -676,22 +709,22 @@ typedef enum eAnimEdit_AutoSnap {
 
 /* WARNING: Action Channels are now deprecated... they were part of the old animation system!
  *        (ONLY USED FOR DO_VERSIONS...)
- * 
- * Action Channels belong to Actions. They are linked with an IPO block, and can also own 
- * Constraint Channels in certain situations. 
+ *
+ * Action Channels belong to Actions. They are linked with an IPO block, and can also own
+ * Constraint Channels in certain situations.
  *
  * Action-Channels can only belong to one group at a time, but they still live the Action's
  * list of achans (to preserve backwards compatibility, and also minimize the code
  * that would need to be recoded). Grouped achans are stored at the start of the list, according
- * to the position of the group in the list, and their position within the group. 
+ * to the position of the group in the list, and their position within the group.
  */
 typedef struct bActionChannel {
 	struct bActionChannel   *next, *prev;
 	bActionGroup            *grp;           /* Action Group this Action Channel belongs to */
-	
+
 	struct Ipo              *ipo;           /* IPO block this action channel references */
 	ListBase constraintChannels;            /* Constraint Channels (when Action Channel represents an Object or Bone) */
-	
+
 	int flag;               /* settings accessed via bitmapping */
 	char name[64];          /* channel name, MAX_NAME */
 	int temp;               /* temporary setting - may be used to indicate group that channel belongs to during syncing  */
@@ -707,6 +740,6 @@ typedef enum ACHAN_FLAG {
 	ACHAN_SHOWIPO   = (1 << 5),
 	ACHAN_SHOWCONS  = (1 << 6),
 	ACHAN_MOVED     = (1 << 31)
-} ACHAN_FLAG; 
+} ACHAN_FLAG;
 
 #endif  /* __DNA_ACTION_TYPES_H__ */

@@ -75,12 +75,43 @@ typedef struct Bone {
 	short        pad[1];
 } Bone;
 
+typedef struct Muscle {
+    struct Muscle  *next, *prev; /* Next/prev elements within this list */
+    struct Bone    *start, *end; /* Bones the muscle is connected to */
+    IDProperty     *prop; /* User-defined properties */
+    struct Muscle  *parent;
+    ListBase        childbase;
+    char            name[64]; /* Name of the muscle */
+
+    float           roll;
+    float           head[3]; /* Offset from start bone head */
+    float           tail[3]; /* Offset from end bone head */
+    float           muscle_mat[3][3]; /* Rotation derived from head/tail */
+
+    int             flag;
+
+    float           arm_head[3];
+    float           arm_tail[3];
+    float           arm_mat[4][4];
+    float           arm_roll;
+
+    float           length;
+
+    float           rad_head, rad_tail;
+
+    int             layer; /* Layer that muscle appears on */
+    short           segments;
+    char            pad[6];
+} Muscle;
+
 typedef struct bArmature {
 	ID          id;
 	struct AnimData *adt;
 
 	ListBase    bonebase;
 	ListBase    chainbase;
+	ListBase    musclebase;
+	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
 	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
 
 	/* active bones should work like active object where possible
@@ -91,6 +122,9 @@ typedef struct bArmature {
 
 	Bone       *act_bone;               /* active bone */
 	struct EditBone *act_edbone;        /* active editbone (in editmode) */
+
+    Muscle     *act_muscle;
+	struct EditMuscle *act_edmuscle;
 
 	void       *sketch;                 /* sketch struct for etch-a-ton */
 
@@ -132,6 +166,13 @@ typedef enum eArmature_Flag {
 	ARM_DS_EXPAND       = (1<<13),  /* dopesheet channel is expanded */
 	ARM_HAS_VIZ_DEPS    = (1<<14),  /* other objects are used for visualizing various states (hack for efficient updates) */
 } eArmature_Flag;
+
+typedef enum Muscle_Flag {
+    MUSC_SELECTED   = (1 << 0),
+    MUSC_ROOTSEL    = (1 << 1),
+    MUSC_TIPSEL     = (1 << 2),
+    MUSC_TRANSFORM  = (1 << 3)
+} Muscle_Flag;
 
 /* armature->drawtype */
 typedef enum eArmature_Drawtype {
@@ -209,9 +250,27 @@ typedef enum eBone_Flag {
 	BONE_UNSELECTABLE           = (1 << 21),  /* bone cannot be selected */
 	BONE_NO_LOCAL_LOCATION      = (1 << 22),  /* bone location is in armature space */
 	BONE_RELATIVE_PARENTING     = (1 << 23)   /* object child will use relative transform (like deform) */
-	
+
 } eBone_Flag;
 
+/* muscle->flag */
+typedef enum eMuscle_Flag {
+    // TODO: Get more infor on how to do this stuff
+    MUSCLE_SELECTED             = (1 << 0),
+    MUSCLE_ROOTSEL              = (1 << 1),
+    MUSCLE_TIPSEL               = (1 << 2),
+    MUSCLE_CONNECTED            = (1 << 4),
+    MUSCLE_HIDDEN_P             = (1 << 6),
+    MUSCLE_DRAW_ACTIVE          = (1 << 8),
+    MUSCLE_HIDDEN_A             = (1 << 10),
+    MUSCLE_HIDDEN_PG            = (1 << 16),
+    MUSCLE_DRAWWIRE             = (1 << 17),
+    MUSCLE_EDITMODE_LOCKED      = (1 << 19),
+    MUSCLE_UNSELECTABLE         = (1 << 21),
+    MUSCLE_NO_LOCAL_LOCATION    = (1 << 22)
+} eMuscle_Flag;
+
 #define MAXBONENAME 64
+#define MAXMUSCLENAME 64
 
 #endif

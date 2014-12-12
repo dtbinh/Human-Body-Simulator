@@ -66,7 +66,7 @@ Bone *get_indexed_bone(Object *ob, int index)
 	bPoseChannel *pchan;
 	if (ob->pose == NULL) return NULL;
 	index >>= 16;     // bone selection codes use left 2 bytes
-	
+
 	pchan = BLI_findlink(&ob->pose->chanbase, index);
 	return pchan ? pchan->bone : NULL;
 }
@@ -83,27 +83,27 @@ void *get_bone_from_selectbuffer(Scene *scene, Base *base, unsigned int *buffer,
 	short i;
 	bool takeNext = false;
 	int minsel = 0xffffffff, minunsel = 0xffffffff;
-	
+
 	for (i = 0; i < hits; i++) {
 		hitresult = buffer[3 + (i * 4)];
-		
+
 		if (!(hitresult & BONESEL_NOSEL)) {
 			if (hitresult & BONESEL_ANY) {  /* to avoid including objects in selection */
 				bool sel;
-				
+
 				hitresult &= ~(BONESEL_ANY);
 				/* Determine what the current bone is */
 				if (obedit == NULL || base->object != obedit) {
 					/* no singular posemode, so check for correct object */
 					if (base->selcol == (hitresult & 0xFFFF)) {
 						bone = get_indexed_bone(base->object, hitresult);
-						
+
 						if (findunsel)
 							sel = (bone->flag & BONE_SELECTED);
 						else
 							sel = !(bone->flag & BONE_SELECTED);
-						
-						data = bone;						
+
+						data = bone;
 					}
 					else {
 						data = NULL;
@@ -112,16 +112,16 @@ void *get_bone_from_selectbuffer(Scene *scene, Base *base, unsigned int *buffer,
 				}
 				else {
 					bArmature *arm = obedit->data;
-					
+
 					ebone = BLI_findlink(arm->edbo, hitresult);
 					if (findunsel)
 						sel = (ebone->flag & BONE_SELECTED);
 					else
 						sel = !(ebone->flag & BONE_SELECTED);
-					
+
 					data = ebone;
 				}
-				
+
 				if (data) {
 					if (sel) {
 						if (do_nearest) {
@@ -151,10 +151,10 @@ void *get_bone_from_selectbuffer(Scene *scene, Base *base, unsigned int *buffer,
 			}
 		}
 	}
-	
+
 	if (firstunSel)
 		return firstunSel;
-	else 
+	else
 		return firstSel;
 }
 
@@ -167,19 +167,19 @@ void *get_nearest_bone(bContext *C, short findunsel, int x, int y)
 	rcti rect;
 	unsigned int buffer[MAXPICKBUF];
 	short hits;
-	
+
 	view3d_set_viewcontext(C, &vc);
-	
+
 	// rect.xmin = ... mouseco!
 	rect.xmin = rect.xmax = x;
 	rect.ymin = rect.ymax = y;
-	
+
 	glInitNames();
 	hits = view3d_opengl_select(&vc, buffer, MAXPICKBUF, &rect, true);
 
 	if (hits > 0)
 		return get_bone_from_selectbuffer(vc.scene, vc.scene->basact, buffer, hits, findunsel, true);
-	
+
 	return NULL;
 }
 
@@ -215,7 +215,7 @@ static int armature_select_linked_invoke(bContext *C, wmOperator *op, const wmEv
 				curBone->flag |= (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
 			}
 		}
-		
+
 		if (curBone->flag & BONE_CONNECTED)
 			next = curBone->parent;
 		else
@@ -244,11 +244,11 @@ static int armature_select_linked_invoke(bContext *C, wmOperator *op, const wmEv
 		if (!curBone)
 			bone = NULL;
 	}
-	
+
 	ED_armature_sync_selection(arm->edbo);
-	
+
 	WM_event_add_notifier(C, NC_OBJECT | ND_BONE_SELECT, obedit);
-	
+
 	return OPERATOR_FINISHED;
 }
 
@@ -263,15 +263,15 @@ void ARMATURE_OT_select_linked(wmOperatorType *ot)
 	ot->name = "Select Connected";
 	ot->idname = "ARMATURE_OT_select_linked";
 	ot->description = "Select bones related to selected ones by parent/child relationships";
-	
+
 	/* api callbacks */
 	/* leave 'exec' unset */
 	ot->invoke = armature_select_linked_invoke;
 	ot->poll = armature_select_linked_poll;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
-	
+
 	/* properties */
 	RNA_def_boolean(ot->srna, "extend", false, "Extend", "Extend selection instead of deselecting everything first");
 }
@@ -292,7 +292,7 @@ static EditBone *get_nearest_editbonepoint(ViewContext *vc, const int mval[2],
 	short hits;
 
 	glInitNames();
-	
+
 	/* find the bone after the current active bone, so as to bump up its chances in selection.
 	 * this way overlapping bones will cycle selection state as with objects. */
 	if (ebone_next_act &&
@@ -320,7 +320,7 @@ static EditBone *get_nearest_editbonepoint(ViewContext *vc, const int mval[2],
 	}
 	/* See if there are any selected bones in this group */
 	if (hits > 0) {
-		
+
 		if (hits == 1) {
 			if (!(buffer[3] & BONESEL_NOSEL))
 				besthitresult = buffer[3];
@@ -330,9 +330,9 @@ static EditBone *get_nearest_editbonepoint(ViewContext *vc, const int mval[2],
 				hitresult = buffer[3 + (i * 4)];
 				if (!(hitresult & BONESEL_NOSEL)) {
 					int dep;
-					
+
 					ebone = BLI_findlink(edbo, hitresult & ~BONESEL_ANY);
-					
+
 					/* clicks on bone points get advantage */
 					if (hitresult & (BONESEL_ROOT | BONESEL_TIP)) {
 						/* but also the unselected one */
@@ -341,7 +341,7 @@ static EditBone *get_nearest_editbonepoint(ViewContext *vc, const int mval[2],
 								dep = 1;
 							else if ( (hitresult & BONESEL_TIP) && (ebone->flag & BONE_TIPSEL) == 0)
 								dep = 1;
-							else 
+							else
 								dep = 2;
 						}
 						else {
@@ -372,11 +372,11 @@ static EditBone *get_nearest_editbonepoint(ViewContext *vc, const int mval[2],
 				}
 			}
 		}
-		
+
 		if (!(besthitresult & BONESEL_NOSEL)) {
-			
+
 			ebone = BLI_findlink(edbo, besthitresult & ~BONESEL_ANY);
-			
+
 			*selmask = 0;
 			if (besthitresult & BONESEL_ROOT)
 				*selmask |= BONE_ROOTSEL;
@@ -401,8 +401,9 @@ void ED_armature_deselect_all(Object *obedit, int toggle)
 {
 	bArmature *arm = obedit->data;
 	EditBone    *eBone;
+	EditMuscle  *eMuscle;
 	int sel = 1;
-	
+
 	if (toggle == 1) {
 		/* Determine if there are any selected bones
 		 * and therefore whether we are selecting or deselecting */
@@ -414,6 +415,13 @@ void ED_armature_deselect_all(Object *obedit, int toggle)
 			}
 			//			}
 		}
+
+		for (eMuscle = arm->edmu->first; eMuscle; eMuscle = eMuscle->next) {
+            if (eMuscle->flag & (MUSCLE_SELECTED | MUSCLE_TIPSEL | MUSCLE_ROOTSEL)) {
+                sel = 0;
+                break;
+            }
+        }
 	}
 	else {
 		sel = toggle;
@@ -444,7 +452,7 @@ void ED_armature_deselect_all(Object *obedit, int toggle)
 				arm->act_edbone = NULL;
 		}
 	}
-	
+
 	ED_armature_sync_selection(arm->edbo);
 }
 
@@ -484,18 +492,18 @@ bool mouse_armature(bContext *C, const int mval[2], bool extend, bool deselect, 
 	int selmask;
 
 	view3d_set_viewcontext(C, &vc);
-	
+
 	BIF_sk_selectStroke(C, mval, extend);
-	
+
 	nearBone = get_nearest_editbonepoint(&vc, mval, arm->edbo, 1, &selmask);
 	if (nearBone) {
 
 		if (!extend && !deselect && !toggle)
 			ED_armature_deselect_all(obedit, 0);
-		
+
 		/* by definition the non-root connected bones have no root point drawn,
 		 * so a root selection needs to be delivered to the parent tip */
-		
+
 		if (selmask & BONE_SELECTED) {
 			if (nearBone->parent && (nearBone->flag & BONE_CONNECTED)) {
 				/* click in a chain */
@@ -560,16 +568,16 @@ bool mouse_armature(bContext *C, const int mval[2], bool extend, bool deselect, 
 			else
 				nearBone->flag |= selmask;
 		}
-		
+
 		ED_armature_sync_selection(arm->edbo);
-		
+
 		if (nearBone) {
 			/* then now check for active status */
 			if (ebone_select_flag(nearBone)) {
 				arm->act_edbone = nearBone;
 			}
 		}
-		
+
 		WM_event_add_notifier(C, NC_OBJECT | ND_BONE_SELECT, vc.obedit);
 		return true;
 	}
@@ -597,7 +605,7 @@ static int armature_de_select_all_exec(bContext *C, wmOperator *op)
 		}
 		CTX_DATA_END;
 	}
-	
+
 	/*	Set the flags */
 	CTX_DATA_BEGIN(C, EditBone *, ebone, visible_bones)
 	{
@@ -632,7 +640,7 @@ static int armature_de_select_all_exec(bContext *C, wmOperator *op)
 	CTX_DATA_END;
 
 	WM_event_add_notifier(C, NC_OBJECT | ND_BONE_SELECT, NULL);
-	
+
 	return OPERATOR_FINISHED;
 }
 
@@ -642,14 +650,14 @@ void ARMATURE_OT_select_all(wmOperatorType *ot)
 	ot->name = "(De)select All";
 	ot->idname = "ARMATURE_OT_select_all";
 	ot->description = "Toggle selection status of all bones";
-	
+
 	/* api callbacks */
 	ot->exec = armature_de_select_all_exec;
 	ot->poll = ED_operator_editarmature;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
-	
+
 	WM_operator_properties_select_all(ot);
 }
 
@@ -967,7 +975,7 @@ void ARMATURE_OT_select_similar(wmOperatorType *ot)
 static EditBone *editbone_get_child(bArmature *arm, EditBone *pabone, short use_visibility)
 {
 	EditBone *curbone, *chbone = NULL;
-	
+
 	for (curbone = arm->edbo->first; curbone; curbone = curbone->next) {
 		if (curbone->parent == pabone) {
 			if (use_visibility) {
@@ -979,7 +987,7 @@ static EditBone *editbone_get_child(bArmature *arm, EditBone *pabone, short use_
 				chbone = curbone;
 		}
 	}
-	
+
 	return chbone;
 }
 
@@ -991,10 +999,10 @@ static int armature_select_hierarchy_exec(bContext *C, wmOperator *op)
 	EditBone *curbone, *pabone, *chbone;
 	int direction = RNA_enum_get(op->ptr, "direction");
 	const bool add_to_sel = RNA_boolean_get(op->ptr, "extend");
-	
+
 	ob = obedit;
 	arm = (bArmature *)ob->data;
-	
+
 	for (curbone = arm->edbo->first; curbone; curbone = curbone->next) {
 		/* only work on bone if it is visible and its selection can change */
 		if (EBONE_SELECTABLE(arm, curbone)) {
@@ -1002,25 +1010,25 @@ static int armature_select_hierarchy_exec(bContext *C, wmOperator *op)
 				if (direction == BONE_SELECT_PARENT) {
 					if (curbone->parent == NULL) continue;
 					else pabone = curbone->parent;
-					
+
 					if (EBONE_VISIBLE(arm, pabone)) {
 						pabone->flag |= (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
 						arm->act_edbone = pabone;
 						if (pabone->parent) pabone->parent->flag |= BONE_TIPSEL;
-						
+
 						if (!add_to_sel) curbone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
 						break;
 					}
-					
+
 				}
 				else { // BONE_SELECT_CHILD
 					chbone = editbone_get_child(arm, curbone, 1);
 					if (chbone == NULL) continue;
-					
+
 					if (EBONE_SELECTABLE(arm, chbone)) {
 						chbone->flag |= (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
 						arm->act_edbone = chbone;
-						
+
 						if (!add_to_sel) {
 							curbone->flag &= ~(BONE_SELECTED | BONE_ROOTSEL);
 							if (curbone->parent) curbone->parent->flag &= ~BONE_TIPSEL;
@@ -1031,11 +1039,11 @@ static int armature_select_hierarchy_exec(bContext *C, wmOperator *op)
 			}
 		}
 	}
-	
+
 	ED_armature_sync_selection(arm->edbo);
-	
+
 	WM_event_add_notifier(C, NC_OBJECT | ND_BONE_SELECT, ob);
-	
+
 	return OPERATOR_FINISHED;
 }
 
@@ -1046,16 +1054,16 @@ void ARMATURE_OT_select_hierarchy(wmOperatorType *ot)
 		{BONE_SELECT_CHILD, "CHILD", 0, "Select Child", ""},
 		{0, NULL, 0, NULL, NULL}
 	};
-	
+
 	/* identifiers */
 	ot->name = "Select Hierarchy";
 	ot->idname = "ARMATURE_OT_select_hierarchy";
 	ot->description = "Select immediate parent/children of selected bones";
-	
+
 	/* api callbacks */
 	ot->exec = armature_select_hierarchy_exec;
 	ot->poll = ED_operator_editarmature;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 

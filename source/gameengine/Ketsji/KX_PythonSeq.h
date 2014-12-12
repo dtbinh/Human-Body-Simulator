@@ -29,7 +29,7 @@
  *  \ingroup ketsji
  *  \brief Readonly sequence wrapper for lookups on logic bricks
  */
- 
+
 #ifndef __KX_PYTHONSEQ_H__
 #define __KX_PYTHONSEQ_H__
 
@@ -46,6 +46,7 @@ enum KX_PYGENSEQ_TYPE {
 	KX_PYGENSEQ_OB_TYPE_ACTUATORS,
 	KX_PYGENSEQ_OB_TYPE_CONSTRAINTS,
 	KX_PYGENSEQ_OB_TYPE_CHANNELS,
+	KX_PYGENSEQ_OB_TYPE_MUSCLES,
 };
 
 /* The Main PyType Object defined in Main.c */
