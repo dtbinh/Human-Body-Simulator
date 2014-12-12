@@ -215,10 +215,6 @@ bAction *BKE_action_copy(bAction *src)
 		}
 	}
 	
-	if (src->id.lib) {
-		BKE_id_lib_local_paths(G.main, src->id.lib, &dst->id);
-	}
-
 	return dst;
 }
 
@@ -454,9 +450,8 @@ bPoseChannel *BKE_pose_channel_find_name(const bPose *pose, const char *name)
 		return NULL;
 	
 	if (pose->chanhash)
-		return BLI_ghash_lookup(pose->chanhash, (const void *)name);
+		return BLI_ghash_lookup(pose->chanhash, (void *)name);
 	
-	return BLI_findstring(&((const bPose *)pose)->chanbase, name, offsetof(bPoseChannel, name));
 }
 
 /**

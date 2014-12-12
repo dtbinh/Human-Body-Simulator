@@ -1199,6 +1199,7 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	bArmature *arm;
 	EditArmatureElement *curBone, *ebone_next;
+	EditMuscle *curMuscle, *emuscle_next;
 	bConstraint *con;
 	Object *obedit = CTX_data_edit_object(C); // XXX get from context
 	bool changed = false;
@@ -1213,6 +1214,7 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 	/*  First erase any associated pose channel */
 	if (obedit->pose) {
 		bPoseChannel *pchan, *pchan_next;
+		bMuscleChannel *pmuscle, *pmuscle_next;
 		for (pchan = obedit->pose->chanbase.first; pchan; pchan = pchan_next) {
 			pchan_next = pchan->next;
 			curBone = ED_armature_armatureelement_find_name(arm->edbo, pchan->name);
@@ -1249,6 +1251,17 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 				}
 			}
 		}
+
+		for (pmuscle = obedit->pose->musclebase.first; pmuscle; pmuscle = pmuscle_next) {
+            pmuscle_next = pmuscle->next;
+            curMuscle = ED_armature_muscle_find_name(arm->edmu, pmuscle->name);
+
+            if (curMuscle && (curMuscle->flag & MUSCLE_SELECTED) && (arm->layer & curMuscle->layer)) {
+                BKE_pose_muscle_free(pmuscle);
+                BKE_pose_muscles_hash_free(obedit->pose);
+                BLI_freelinkN(&obedit->pose->musclebase, pmuscle);
+	}
+		}
 	}
 
 
@@ -1261,6 +1274,17 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 				changed = true;
 			}
 		}
+	}
+
+	for (curMuscle = arm->edmu->first; curMuscle; curMuscle = emuscle_next) {
+        emuscle_next = curMuscle->next;
+        if (arm->layer & curMuscle->layer) {
+            if (curMuscle->flag & MUSCLE_SELECTED) {
+                if (curMuscle == arm->act_edmuscle) arm->act_edmuscle = NULL;
+                ED_armature_edit_muscle_remove(arm, curMuscle);
+                changed = true;
+            }
+        }
 	}
 
 	if (!changed)
