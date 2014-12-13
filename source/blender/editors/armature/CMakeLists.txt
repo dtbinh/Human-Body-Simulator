@@ -57,6 +57,10 @@ set(SRC
 	pose_utils.c
 	reeb.c
 
+	muscle_add.c
+	muscle_select.c
+	muscle_utils.c
+
 	BIF_generate.h
 	BIF_retarget.h
 	armature_intern.h
