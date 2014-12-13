@@ -178,7 +178,7 @@ static PyObject *KX_PythonSeq_getIndex(PyObject *self, Py_ssize_t index)
 				return NULL;
 			}
 			return ((BL_ArmatureObject *)self_plus)->GetChannel(index)->GetProxy();
-
+        }
 		case KX_PYGENSEQ_OB_TYPE_MUSCLES:
         {
             int nb_muscle = ((BL_ArmatureObject *)self_plus)->GetMuscleNumber();
