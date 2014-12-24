@@ -89,6 +89,7 @@ typedef struct BoneData {
 typedef struct MuscleData {
     struct ArmatureElement *start, *end;
     float                   length;
+    char                    pad[4];
 } MuscleData;
 
 typedef struct Bone {
