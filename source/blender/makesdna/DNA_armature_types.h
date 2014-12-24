@@ -76,7 +76,7 @@ typedef struct ArmatureElement {
     void                   *custom;
 
     short                   pad[1];
-}
+} ArmatureElement;
 
 typedef struct BoneData {
     float   dist, weight;
