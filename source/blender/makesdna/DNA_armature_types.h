@@ -45,6 +45,52 @@ struct AnimData;
  *
  */
 
+typedef struct ArmatureElement {
+    // Common elements to both Bone and Muscle
+    struct ArmatureElement *next, *prev
+    IDProperty             *prop;
+    struct ArmatureElement *parent;
+    ListBase                childbase;
+    char                    name[64];
+
+    float                   roll;
+    float                   head[3];
+    float                   tail[3];
+    float                   AE_mat[3][3];
+
+    int                     flag;
+
+    float                   arm_head[3];
+    float                   arm_tail[3];
+    float                   arm_mat[4][4];
+    float                   arm_roll;
+
+    float                   rad_head, rad_tail;
+
+    int                     layer;
+    short                   segments;
+
+    // Custom elements go here
+    // Like the dist or weight values of a Bone struct
+    // Or the Bone pointers of a Muscle struct
+    void                   *custom;
+
+    short                   pad[1];
+}
+
+typedef struct BoneData {
+    float   dist, weight;
+    float   xwidth, length, zwidth;
+    float   ease1, ease2;
+
+    float   size[3];
+} BoneData;
+
+typedef struct MuscleData {
+    struct ArmatureElement *start, *end;
+    float                   length;
+} MuscleData;
+
 typedef struct Bone {
 	struct Bone *next, *prev;    /*  Next/prev elements within this list */
 	IDProperty  *prop;           /* User-Defined Properties on this Bone */
@@ -77,7 +123,6 @@ typedef struct Bone {
 
 typedef struct Muscle {
     struct Muscle  *next, *prev; /* Next/prev elements within this list */
-    struct Bone    *start, *end; /* Bones the muscle is connected to */
     IDProperty     *prop; /* User-defined properties */
     struct Muscle  *parent;
     ListBase        childbase;
@@ -95,6 +140,7 @@ typedef struct Muscle {
     float           arm_mat[4][4];
     float           arm_roll;
 
+    struct Bone    *start, *end; /* Bones the muscle is connected to */
     float           length;
 
     float           rad_head, rad_tail;
