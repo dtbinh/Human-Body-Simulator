@@ -2859,7 +2859,8 @@ static void convert_bonedata(WriteData *wd, ArmatureElement *armelem)
     writebone.prop = armelem->prop;
     writebone.parent = armelem->parent; // can bones be parented to muscles?
     writebone.childbase = armelem->childbase; // muscles can certainly be childed to bones
-    writebone.name = armelem->name;
+    memcpy(writebone.name, armelem->name, MAXBONENAME);
+//    writebone.name = armelem->name;
 
     writebone.roll = armelem->roll;
     copy_v3_v3(writebone.head, armelem->head);
