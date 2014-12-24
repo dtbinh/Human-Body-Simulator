@@ -47,7 +47,7 @@ struct AnimData;
 
 typedef struct ArmatureElement {
     // Common elements to both Bone and Muscle
-    struct ArmatureElement *next, *prev
+    struct ArmatureElement *next, *prev;
     IDProperty             *prop;
     struct ArmatureElement *parent;
     ListBase                childbase;
