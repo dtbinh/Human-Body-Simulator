@@ -50,6 +50,12 @@ typedef struct ArmatureElement {
     struct ArmatureElement *next, *prev;
     IDProperty             *prop;
     struct ArmatureElement *parent;
+
+    // Custom elements go here
+    // Like the dist or weight values of a Bone struct
+    // Or the Bone pointers of a Muscle struct
+    void                   *custom;
+
     ListBase                childbase;
     char                    name[64];
 
@@ -69,11 +75,6 @@ typedef struct ArmatureElement {
 
     int                     layer;
     short                   segments;
-
-    // Custom elements go here
-    // Like the dist or weight values of a Bone struct
-    // Or the Bone pointers of a Muscle struct
-    void                   *custom;
 
     short                   pad[1];
 } ArmatureElement;
