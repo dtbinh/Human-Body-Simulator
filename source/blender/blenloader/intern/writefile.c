@@ -143,6 +143,7 @@
 #include "BLI_blenlib.h"
 #include "BLI_linklist.h"
 #include "BLI_mempool.h"
+#include "BLI_math_vector.h"
 
 #include "BKE_action.h"
 #include "BKE_blender.h"
