@@ -2844,6 +2844,66 @@ static void write_muscle(WriteData *wd, Muscle *muscle)
     }
 }
 
+static void convert_bonedata(WriteData *wd, ArmatureElement *armelem)
+{
+    // Convert ArmatureElement with BoneData to Bone struct, then write Bone struct out
+    // Have to convert to maintain backwards compatibility
+    Bone writebone;
+    writebone.next = armelem->next;
+    writebone.prev = armelem->prev;
+    writebone.prop = armelem->prop;
+    writebone.parent = armelem->parent; // can bones be parented to muscles?
+    writebone.childbase = armelem->childbase; // muscles can certainly be childed to bones
+    writebone.name = armelem->name;
+
+    writebone.roll = armelem->roll;
+    copy_v3_v3(writebone.head, armelem->head);
+    copy_v3_v3(writebone.tail, armelem->tail);
+    copy_m4_m4(writebone.bone_mat, armelem->AE_mat);
+
+    writebone.flag = armelem->flag;
+
+    copy_v3_v3(writebone.arm_head, armelem->arm_head);
+    copy_v3_v3(writebone.arm_tail, armelem->arm_tail);
+    copy_m4_m4(writebone.arm_mat, armelem->arm_mat);
+    writebone.arm_roll = armelem->arm_roll;
+
+    writebone.dist = armelem->custom->dist;
+    writebone.weight = armelem->custom->weight;
+    writebone.xwidth = armelem->custom->xwidth;
+    writebone.length = armelem->custom->length;
+    writebone.zwidth = armelem->custom->zwidth;
+    writebone.ease1 = armelem->custom->ease1;
+    writebone.ease2 = armelem->custom->ease2;
+    writebone.rad_head = armelem->rad_head;
+    writebone.rad_tail = armelem->rad_tail;
+    //writebone.size = armelem->custom->size;
+
+    write_bone(wd, &writebone);
+}
+
+static void convert_muscledata(WriteData *wd, ArmatureElement *armelem)
+{
+    // Convert ArmatureElement with MuscleData to Muscle struct, then write Bone struct out
+    // Have to convert to maintain backwards compatibility
+}
+
+static void write_armatureelement(WriteData *wd, ArmatureElement *armelem)
+{
+    ArmatureElement* carmelem;
+
+    writestruct(wd, DATA, "ArmatureElement", 1, armelem);
+
+    if (armelem->prop)
+        IDP_WriteProperty(armelem->prop, wd);
+
+    carmelem = armelem->childbase.first;
+    while (carmelem) {
+        write_armatureelement(wd, carmelem);
+        carmelem = carmelem->next;
+    }
+}
+
 static void write_armatures(WriteData *wd, ListBase *idbase)
 {
 	bArmature	*arm;
