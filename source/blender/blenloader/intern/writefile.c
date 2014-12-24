@@ -2868,13 +2868,13 @@ static void convert_bonedata(WriteData *wd, ArmatureElement *armelem)
     copy_m4_m4(writebone.arm_mat, armelem->arm_mat);
     writebone.arm_roll = armelem->arm_roll;
 
-    writebone.dist = armelem->custom->dist;
-    writebone.weight = armelem->custom->weight;
-    writebone.xwidth = armelem->custom->xwidth;
-    writebone.length = armelem->custom->length;
-    writebone.zwidth = armelem->custom->zwidth;
-    writebone.ease1 = armelem->custom->ease1;
-    writebone.ease2 = armelem->custom->ease2;
+    writebone.dist = ((BoneData*)armelem->custom)->dist;
+    writebone.weight = ((BoneData*)armelem->custom)->weight;
+    writebone.xwidth = ((BoneData*)armelem->custom)->xwidth;
+    writebone.length = ((BoneData*)armelem->custom)->length;
+    writebone.zwidth = ((BoneData*)armelem->custom)->zwidth;
+    writebone.ease1 = ((BoneData*)armelem->custom)->ease1;
+    writebone.ease2 = ((BoneData*)armelem->custom)->ease2;
     writebone.rad_head = armelem->rad_head;
     writebone.rad_tail = armelem->rad_tail;
     //writebone.size = armelem->custom->size;
