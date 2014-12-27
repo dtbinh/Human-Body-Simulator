@@ -2740,11 +2740,7 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 {
 	RegionView3D *rv3d = ar->regiondata;
-<<<<<<< HEAD
 	EditArmatureElement *eelement;
-=======
-	EditArmatureElement *eElement;
->>>>>>> The drawing continues
 	bArmature *arm = ob->data;
 	float smat[4][4], imat[4][4], bmat[4][4];
 	unsigned int index;
@@ -2768,19 +2764,11 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 
 		if (v3d->zbuf) glDisable(GL_DEPTH_TEST);
 
-<<<<<<< HEAD
 		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
 			if (eelement->layer & arm->layer) {
 				if ((eelement->flag & (BONE_HIDDEN_A | BONE_NO_DEFORM)) == 0) {
 					if (eelement->flag & (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL))
 						draw_sphere_element_dist(smat, imat, NULL, eelement);
-=======
-		for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
-			if (eElement->layer & arm->layer) {
-				if ((eElement->flag & (BONE_HIDDEN_A | BONE_NO_DEFORM)) == 0) {
-					if (eElement->flag & (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL))
-						draw_sphere_element_dist(smat, imat, NULL, eElement);
->>>>>>> The drawing continues
 				}
 			}
 		}
@@ -2792,7 +2780,6 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 
 	/* if solid we draw it first */
 	if ((dt > OB_WIRE) && (arm->drawtype != ARM_LINE)) {
-<<<<<<< HEAD
 		for (eelement = arm->edbo->first, index = 0; eelement; eelement = eelement->next, index++) {
 			if (eelement->layer & arm->layer) {
 				if ((eelement->flag & BONE_HIDDEN_A) == 0) {
@@ -2803,23 +2790,10 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 					/* catch exception for bone with hidden parent */
 					flag = eelement->flag;
 					if ((eelement->parent) && !EBONE_VISIBLE(arm, eelement->parent)) {
-=======
-		for (eElement = arm->edbo->first, index = 0; eElement; eElement = eElement->next, index++) {
-			if (eElement->layer & arm->layer) {
-				if ((eElement->flag & BONE_HIDDEN_A) == 0) {
-					glPushMatrix();
-					get_matrix_editarmatureelement(eElement, bmat);
-					glMultMatrixf(bmat);
-
-					/* catch exception for bone with hidden parent */
-					flag = eElement->flag;
-					if ((eElement->parent) && !EBONE_VISIBLE(arm, eElement->parent)) {
->>>>>>> The drawing continues
 						flag &= ~BONE_CONNECTED;
 					}
 
 					/* set temporary flag for drawing bone as active, but only if selected */
-<<<<<<< HEAD
 					if (eelement == arm->act_edbone)
 						flag |= BONE_DRAW_ACTIVE;
 
@@ -2830,20 +2804,11 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 					else if (arm->drawtype == ARM_WIRE)
 						draw_wire_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eelement);
 					else {
+<<<<<<< HEAD
 						draw_element(OB_SOLID, arm->flag, flag, 0, index, eelement->length);
 =======
-					if (eElement == arm->act_edbone)
-						flag |= BONE_DRAW_ACTIVE;
-
-					if (arm->drawtype == ARM_ENVELOPE)
-						draw_sphere_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
-					else if (arm->drawtype == ARM_B_BONE)
-						draw_b_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
-					else if (arm->drawtype == ARM_WIRE)
-						draw_wire_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
-					else {
-						draw_element(OB_SOLID, arm->flag, flag, 0, index, eElement->length);
->>>>>>> The drawing continues
+						draw_element(OB_SOLID, arm->flag, flag, 0, index, ((BoneData*)eElement->custom)->length);
+>>>>>>> Draw on my wayward son
 					}
 
 					glPopMatrix();
@@ -2864,7 +2829,6 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 	else if (arm->flag & ARM_EDITMODE)
 		index = 0;  /* do selection codes */
 
-<<<<<<< HEAD
 	for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
 		arm->layer_used |= eelement->layer;
 		if (eelement->layer & arm->layer) {
@@ -2873,25 +2837,11 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 				/* catch exception for bone with hidden parent */
 				flag = eelement->flag;
 				if ((eelement->parent) && !EBONE_VISIBLE(arm, eelement->parent)) {
-=======
-	for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
-		arm->layer_used |= eElement->layer;
-		if (eElement->layer & arm->layer) {
-			if ((eElement->flag & BONE_HIDDEN_A) == 0) {
-
-				/* catch exception for bone with hidden parent */
-				flag = eElement->flag;
-				if ((eElement->parent) && !EBONE_VISIBLE(arm, eElement->parent)) {
->>>>>>> The drawing continues
 					flag &= ~BONE_CONNECTED;
 				}
 
 				/* set temporary flag for drawing bone as active, but only if selected */
-<<<<<<< HEAD
 				if (eelement == arm->act_edbone)
-=======
-				if (eElement == arm->act_edbone)
->>>>>>> The drawing continues
 					flag |= BONE_DRAW_ACTIVE;
 
 				if (arm->drawtype == ARM_ENVELOPE) {
@@ -2900,7 +2850,6 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 				}
 				else {
 					glPushMatrix();
-<<<<<<< HEAD
 					get_matrix_editarmatureelement(eelement, bmat);
 					glMultMatrixf(bmat);
 
@@ -2912,41 +2861,19 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 						draw_b_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eelement);
 					else
 						draw_element(OB_WIRE, arm->flag, flag, 0, index, eelement->length);
-=======
-					get_matrix_editbone(eElement, bmat);
-					glMultMatrixf(bmat);
-
-					if (arm->drawtype == ARM_LINE)
-						draw_line_element(arm->flag, flag, 0, index, NULL, eElement);
-					else if (arm->drawtype == ARM_WIRE)
-						draw_wire_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eElement);
-					else if (arm->drawtype == ARM_B_BONE)
-						draw_b_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eElement);
-					else
-						draw_element(OB_WIRE, arm->flag, flag, 0, index, eElement->length);
->>>>>>> The drawing continues
 
 					glPopMatrix();
 				}
 
 				/* offset to parent */
-<<<<<<< HEAD
 				if (eelement->parent) {
-=======
-				if (eElement->parent) {
->>>>>>> The drawing continues
 					UI_ThemeColor(TH_WIRE_EDIT);
 					GPU_select_load_id(-1);  /* -1 here is OK! */
 					setlinestyle(3);
 
 					glBegin(GL_LINES);
-<<<<<<< HEAD
 					glVertex3fv(eelement->parent->tail);
 					glVertex3fv(eelement->head);
-=======
-					glVertex3fv(eElement->parent->tail);
-					glVertex3fv(eElement->head);
->>>>>>> The drawing continues
 					glEnd();
 
 					setlinestyle(0);
@@ -2978,7 +2905,6 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 
 			if (v3d->zbuf) glDisable(GL_DEPTH_TEST);
 
-<<<<<<< HEAD
 			for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
 				if (eelement->layer & arm->layer) {
 					if ((eelement->flag & BONE_HIDDEN_A) == 0) {
@@ -2990,38 +2916,16 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 							mid_v3_v3v3(vec, eelement->head, eelement->tail);
 							glRasterPos3fv(vec);
 							view3d_cached_text_draw_add(vec, eelement->name, strlen(eelement->name), 10, 0, col);
-=======
-			for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
-				if (eElement->layer & arm->layer) {
-					if ((eElement->flag & BONE_HIDDEN_A) == 0) {
-
-						UI_GetThemeColor3ubv((eElement->flag & BONE_SELECTED) ? TH_TEXT_HI : TH_TEXT, col);
-
-						/*	Draw name */
-						if (arm->flag & ARM_DRAWNAMES) {
-							mid_v3_v3v3(vec, eElement->head, eElement->tail);
-							glRasterPos3fv(vec);
-							view3d_cached_text_draw_add(vec, eElement->name, strlen(eElement->name), 10, 0, col);
->>>>>>> The drawing continues
 						}
 						/*	Draw additional axes */
 						if (arm->flag & ARM_DRAWAXES) {
 							glPushMatrix();
-<<<<<<< HEAD
 							get_matrix_editarmatureelement(eelement, bmat);
 							bone_matrix_translate_y(bmat, eelement->length);
 							glMultMatrixf(bmat);
 
 							glColor3ubv(col);
 							drawaxes(eelement->length * 0.25f, OB_ARROWS);
-=======
-							get_matrix_editarmatureelement(eElement, bmat);
-							bone_matrix_translate_y(bmat, ((BoneData*)eElement->custom)->length);
-							glMultMatrixf(bmat);
-
-							glColor3ubv(col);
-							drawaxes(((BoneData*)eElement->custom)->length * 0.25f, OB_ARROWS);
->>>>>>> The drawing continues
 
 							glPopMatrix();
 						}
