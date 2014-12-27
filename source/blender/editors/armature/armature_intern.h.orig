@@ -228,15 +228,14 @@ void MUSCLE_OT_muscle_primitive_add(struct wmOperatorType *ot);
  * within each file, but some tools still have a bit of overlap which makes things messy -- Feb 2013
  */
 
-<<<<<<< HEAD
 EditArmatureElement *make_elementList(struct ListBase *edList, struct ListBase *elements, struct EditArmatureElement *parent, struct ArmatureElement *actElement);
+<<<<<<< HEAD
 //EditBone *make_boneList(struct ListBase *edbo, struct ListBase *bones, struct EditBone *parent, struct Bone *actBone);
 //EditMuscle *make_muscleList(struct ListBase *edmu, struct ListBase *muscles, struct EditMuscle *parent, struct Muscle *actMuscle);
 =======
-EditArmatureElement *make_elementList(struct ListBase *edList, struct ListBase *elements, EditArmatureElement *parent, ArmatureElement *actElement);
 EditBone *make_boneList(struct ListBase *edbo, struct ListBase *bones, struct EditBone *parent, struct Bone *actBone);
 EditMuscle *make_muscleList(struct ListBase *edmu, struct ListBase *muscles, struct EditMuscle *parent, struct Muscle *actMuscle);
->>>>>>> Continuing
+>>>>>>> Stupid struct issue
 void BIF_sk_selectStroke(struct bContext *C, const int mval[2], short extend);
 
 /* duplicate method */
