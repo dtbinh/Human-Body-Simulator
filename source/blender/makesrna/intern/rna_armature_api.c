@@ -44,9 +44,9 @@
 
 #include "BKE_armature.h"
 
-static void rna_EditBone_align_roll(EditBone *ebo, float no[3])
+static void rna_EditBone_align_roll(EditArmatureElement *eel, float no[3])
 {
-	ebo->roll = ED_rollBoneToVector(ebo, no, false);
+	eel->roll = ED_rollElementToVector(eel, no, false);
 }
 
 static float rna_Bone_do_envelope(Bone *bone, float *vec)
