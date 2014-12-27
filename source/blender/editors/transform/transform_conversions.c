@@ -454,7 +454,7 @@ static short apply_targetless_ik(Object *ob)
 				if (segcount == data->rootbone || segcount > 255) break;  // 255 is weak
 			}
 			for (; segcount; segcount--) {
-				Bone *bone;
+				ArmatureElement *element;
 				float rmat[4][4] /*, tmat[4][4], imat[4][4]*/;
 
 				/* pose_mat(b) = pose_mat(b-1) * offs_bone * channel * constraint * IK  */
@@ -463,8 +463,8 @@ static short apply_targetless_ik(Object *ob)
 				/* rmat = pose_mat(b) * inv(pose_mat(b-1) * offs_bone ) */
 
 				parchan = chanlist[segcount - 1];
-				bone = parchan->bone;
-				bone->flag |= BONE_TRANSFORM;   /* ensures it gets an auto key inserted */
+				element = parchan->bone;
+				element->flag |= BONE_TRANSFORM;   /* ensures it gets an auto key inserted */
 
 				BKE_armature_mat_pose_to_bone(parchan, parchan->pose_mat, rmat);
 
@@ -637,7 +637,7 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 		}
 		else {
 			// abusive storage of scale in the loc pointer :)
-			td->loc = &bone->xwidth;
+			td->loc = &element->xwidth;
 			copy_v3_v3(td->iloc, td->loc);
 			td->val = NULL;
 		}
@@ -702,7 +702,7 @@ int count_set_pose_transflags(int *out_mode, short around, Object *ob)
 
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 		element = pchan->bone;
-		if (PBONE_VISIBLE(arm, bone)) {
+		if (PELEMENT_VISIBLE(arm, element)) {
 			if ((element->flag & BONE_SELECTED))
 				element->flag |= BONE_TRANSFORM;
 			else
@@ -933,10 +933,10 @@ static short pose_grab_with_ik_children(bPose *pose, ArmatureElement *element)
 	short wentdeeper = 0, added = 0;
 
 	/* go deeper if children & children are connected */
-	for (bonec = element->childbase.first; bonec; bonec = bonec->next) {
-		if (bonec->flag & BONE_CONNECTED) {
+	for (elementc = element->childbase.first; elementc; elementc = elementc->next) {
+		if (elementc->flag & BONE_CONNECTED) {
 			wentdeeper = 1;
-			added += pose_grab_with_ik_children(pose, bonec);
+			added += pose_grab_with_ik_children(pose, elementc);
 		}
 	}
 	if (wentdeeper == 0) {
@@ -966,12 +966,12 @@ static short pose_grab_with_ik(Object *ob)
 		if (pchan->bone->layer & arm->layer) {
 			if (pchan->bone->flag & BONE_SELECTED) {
 				/* Rule: no IK for solitatry (unconnected) bones */
-				for (bonec = pchan->bone->childbase.first; bonec; bonec = bonec->next) {
-					if (bonec->flag & BONE_CONNECTED) {
+				for (elementc = pchan->bone->childbase.first; elementc; elementc = elementc->next) {
+					if (elementc->flag & BONE_CONNECTED) {
 						break;
 					}
 				}
-				if ((pchan->bone->flag & BONE_CONNECTED) == 0 && (bonec == NULL))
+				if ((pchan->bone->flag & BONE_CONNECTED) == 0 && (elementc == NULL))
 					continue;
 
 				/* rule: if selected Bone is not a root bone, it gets a temporal IK */
