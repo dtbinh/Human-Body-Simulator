@@ -984,7 +984,7 @@ static void draw_sphere_element(const short dt, int armflag, int boneflag, short
 
 	/* figure out the sizes of spheres */
 	if (eelement) {
-		length = ((BoneData*)eelement->custom)->length;
+		length = eelement->length;
 		tail = eelement->rad_tail;
 		if (eelement->parent && (boneflag & BONE_CONNECTED))
 			head = eelement->parent->rad_tail;
@@ -1220,7 +1220,7 @@ static void draw_line_element(int armflag, int boneflag, short constflag, unsign
 	if (pchan)
 		length = pchan->bone->length;
 	else
-		length = ((BoneData*)eelement->custom)->length;
+		length = eelement->length;
 
 	glPushMatrix();
 	glScalef(length, length, length);
@@ -2535,7 +2535,7 @@ static void get_matrix_editmuscle(EditMuscle *emuscle, float bmat[4][4])
 
 static void get_matrix_editarmatureelement(EditArmatureElement *eelement, float bmat[4][4])
 {
-    ((BoneData*)eelement->custom)->length = len_v3v3(eelement->tail, eelement->head);
+    eelement->length = len_v3v3(eelement->tail, eelement->head);
     ED_armature_eelement_to_mat4(eelement, bmat);
 }
 
@@ -2658,7 +2658,7 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 					else if (arm->drawtype == ARM_B_BONE)
 						draw_b_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eelement);
 					else
-						draw_element(OB_WIRE, arm->flag, flag, 0, index, ((BoneData*)eelement->custom)->length);
+						draw_element(OB_WIRE, arm->flag, flag, 0, index, eelement->length);
 
 					glPopMatrix();
 				}
@@ -2723,7 +2723,7 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 							glMultMatrixf(bmat);
 
 							glColor3ubv(col);
-							drawaxes(((BoneData*)eelement->custom)->length * 0.25f, OB_ARROWS);
+							drawaxes(eelement->length * 0.25f, OB_ARROWS);
 
 							glPopMatrix();
 						}
@@ -2842,19 +2842,11 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 
 				if (arm->drawtype == ARM_ENVELOPE) {
 					if (dt < OB_SOLID)
-<<<<<<< HEAD
 						draw_sphere_element_wire(smat, imat, arm->flag, flag, 0, index, NULL, eelement);
 				}
 				else {
 					glPushMatrix();
 					get_matrix_editarmatureelement(eelement, bmat);
-=======
-						draw_sphere_element_wire(smat, imat, arm->flag, flag, 0, index, NULL, eElement);
-				}
-				else {
-					glPushMatrix();
-					get_matrix_editarmatureelement(eElement, bmat);
->>>>>>> Drawing
 					glMultMatrixf(bmat);
 
 					if (arm->drawtype == ARM_LINE)
@@ -2924,7 +2916,11 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 						/*	Draw additional axes */
 						if (arm->flag & ARM_DRAWAXES) {
 							glPushMatrix();
+<<<<<<< HEAD
 							get_matrix_editarmatureelement(eelement, bmat);
+=======
+							get_matrix_editarmatureelement(eElement, bmat);
+>>>>>>> Reordered values
 							bone_matrix_translate_y(bmat, eelement->length);
 							glMultMatrixf(bmat);
 
