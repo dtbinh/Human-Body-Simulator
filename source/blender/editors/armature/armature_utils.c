@@ -450,8 +450,8 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		/*	Copy relevant data from bone to eBone */
 		eElement->parent = parent;
-		BLI_strncpy(eElement->name, curBone->name, sizeof(eElement->name));
-		eElement->flag = curBone->flag;
+		BLI_strncpy(eElement->name, curElement->name, sizeof(eElement->name));
+		eElement->flag = curElement->flag;
 
 		/* fix selection flags */
 		if (eElement->flag & BONE_SELECTED) {
@@ -506,7 +506,7 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		/*	Add children if necessary */
 		if (curElement->childbase.first) {
-			eElementTest = make_boneList(edList, &curElement->childbase, eElement, actElement);
+			eElementTest = make_elementList(edList, &curElement->childbase, eElement, actElement);
 			if (eElementTest)
 				eElementAct = eElementTest;
 		}
