@@ -56,11 +56,11 @@ struct wmOperator;
 <<<<<<< HEAD
 =======
 typedef enum {
-    Bone = 0,
-    Muscle = 1
+    BoneType = 0,
+    MuscleType = 1
 } EAETypes;
 
->>>>>>> Initial work on making armature's less silly
+>>>>>>> Enum naming issue
 typedef struct EditArmatureElement {
     struct EditArmatureElement *next, *prev;
     struct IDProperty          *prop;
@@ -68,17 +68,10 @@ typedef struct EditArmatureElement {
 
     void                       *temp;
 
-<<<<<<< HEAD
     void                       *data;
 
     char                        name[64]; /* MAXBONENAME */
     int                         type;
-=======
-    void                       *custom;
-
-    char                        name[64]; /* MAXBONENAME */
-    EAETypes                    type;
->>>>>>> Initial work on making armature's less silly
 
     float                       roll;
 
@@ -90,34 +83,20 @@ typedef struct EditArmatureElement {
 
     float                       rad_head, rad_tail;
 
-<<<<<<< HEAD
     float                       xwidth, length, zwidth;
     float                       oldlength;
 
-=======
->>>>>>> Initial work on making armature's less silly
     short                       segments;
     char                        pad[2];
 } EditArmatureElement;
 
 typedef struct EditBoneElement {
     float dist, weight;
-<<<<<<< HEAD
     float ease1, ease2;
-=======
-    float xwidth, length, zwidth;
-    float ease1, ease2;
-    float oldlength;
->>>>>>> Initial work on making armature's less silly
 } EditBoneElement;
 
 typedef struct EditMuscleElement {
     struct EditArmatureElement *start, *end;
-<<<<<<< HEAD
-=======
-    float                       length;
-    char                        pad[4];
->>>>>>> Initial work on making armature's less silly
 } EditMuscleElement;
 
 typedef struct EditBone {
@@ -242,13 +221,8 @@ void ED_armature_validate_active(struct bArmature *arm);
 void ED_muscle_sync_selection(struct ListBase *edmu);
 
 EditArmatureElement *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned);
-<<<<<<< HEAD
 EditArmatureElement *ED_armature_edit_armature_element_add(struct bArmature *arm, const char *name, int type);
 void ED_armature_edit_bone_remove(struct bArmature *arm, EditArmatureElement *exBone);
-=======
-EditArmatureElement *ED_armature_edit_bone_add(struct bArmature *arm, const char *name);
-void ED_armature_edit_bone_remove(struct bArmature *arm, EditBone *exBone);
->>>>>>> Initial work on making armature's less silly
 void ED_armature_edit_muscle_remove(struct bArmature *arm, EditMuscle *exMuscle);
 
 bool ED_armature_ebone_is_child_recursive(EditArmatureElement *ebone_parent, EditArmatureElement *ebone_child);
