@@ -45,11 +45,17 @@ struct AnimData;
  *
  */
 
+<<<<<<< HEAD
 #define AE_BONE     0
 #define AE_MUSCLE   1
 typedef enum AETypes {
     BoneType = 0,
     MuscleType = 1
+=======
+typedef enum {
+    Bone = 0,
+    Muscle = 1
+>>>>>>> Initial work on making armature's less silly
 } AETypes;
 
 typedef struct ArmatureElement {
@@ -61,16 +67,16 @@ typedef struct ArmatureElement {
     // Custom elements go here
     // Like the dist or weight values of a Bone struct
     // Or the Bone pointers of a Muscle struct
-<<<<<<< HEAD
     void                   *data;
-=======
-    void                   *custom;
->>>>>>> Alignment error in struct ArmatureElement`
 
     ListBase                childbase;
     char                    name[64];
 
+<<<<<<< HEAD
     int                     type;
+=======
+    AETypes                 type;
+>>>>>>> Initial work on making armature's less silly
 
     float                   roll;
     float                   head[3];
@@ -91,11 +97,7 @@ typedef struct ArmatureElement {
     int                     layer;
     short                   segments;
 
-<<<<<<< HEAD
     char                    pad[2];
-=======
-    short                   pad[1];
->>>>>>> Alignment error in struct ArmatureElement`
 } ArmatureElement;
 
 typedef struct BoneData {
@@ -191,6 +193,9 @@ typedef struct bArmature {
 //
 //    ArmatureElement *act_muscle;
 //	struct EditArmatureElement *act_edmuscle;
+
+	ArmatureElement *act_element;
+	struct EditArmatureElement *act_edelement;
 
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;

@@ -53,6 +53,14 @@ struct ViewContext;
 struct wmKeyConfig;
 struct wmOperator;
 
+<<<<<<< HEAD
+=======
+typedef enum {
+    Bone = 0,
+    Muscle = 1
+} EAETypes;
+
+>>>>>>> Initial work on making armature's less silly
 typedef struct EditArmatureElement {
     struct EditArmatureElement *next, *prev;
     struct IDProperty          *prop;
@@ -60,10 +68,17 @@ typedef struct EditArmatureElement {
 
     void                       *temp;
 
+<<<<<<< HEAD
     void                       *data;
 
     char                        name[64]; /* MAXBONENAME */
     int                         type;
+=======
+    void                       *custom;
+
+    char                        name[64]; /* MAXBONENAME */
+    EAETypes                    type;
+>>>>>>> Initial work on making armature's less silly
 
     float                       roll;
 
@@ -75,20 +90,34 @@ typedef struct EditArmatureElement {
 
     float                       rad_head, rad_tail;
 
+<<<<<<< HEAD
     float                       xwidth, length, zwidth;
     float                       oldlength;
 
+=======
+>>>>>>> Initial work on making armature's less silly
     short                       segments;
     char                        pad[2];
 } EditArmatureElement;
 
 typedef struct EditBoneElement {
     float dist, weight;
+<<<<<<< HEAD
     float ease1, ease2;
+=======
+    float xwidth, length, zwidth;
+    float ease1, ease2;
+    float oldlength;
+>>>>>>> Initial work on making armature's less silly
 } EditBoneElement;
 
 typedef struct EditMuscleElement {
     struct EditArmatureElement *start, *end;
+<<<<<<< HEAD
+=======
+    float                       length;
+    char                        pad[4];
+>>>>>>> Initial work on making armature's less silly
 } EditMuscleElement;
 
 typedef struct EditBone {
@@ -146,7 +175,6 @@ typedef struct EditMuscle {
     char pad[2];
 } EditMuscle;
 
-<<<<<<< HEAD
 //#define BONESEL_ROOT    (1 << 28)
 //#define BONESEL_TIP     (1 << 29)
 //#define BONESEL_BONE    (1 << 30)
@@ -179,47 +207,7 @@ typedef struct EditMuscle {
 #define EELEMENT_EDITABLE(eelement) ( \
 	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
 	(((eelement)->flag & ELEMENT_SELECTED) && !((eelement)->flag & ELEMENT_EDITMODE_LOCKED)) \
-=======
-#define BONESEL_ROOT    (1 << 28)
-#define BONESEL_TIP     (1 << 29)
-#define BONESEL_BONE    (1 << 30)
-#define BONESEL_ANY     (BONESEL_TIP | BONESEL_ROOT | BONESEL_BONE)
-
-#define BONESEL_NOSEL   (1u << 31u)
-
-#define MUSCLESEL_ROOT  (1 << 28)
-#define MUSCLESEL_TIP   (1 << 29)
-#define MUSCLESEL_MUSC  (1 << 30)
-#define MUSCLESEL_ANY   (MUSCLESEL_ROOT | MUSCLESEL_TIP | MUSCLESEL_MUSC)
-
-#define MUSCLESEL_NOSEL (1u << 31u)
-
-/* useful macros */
-#define EBONE_VISIBLE(arm, ebone) ( \
-	CHECK_TYPE_INLINE(arm, bArmature *), \
-	CHECK_TYPE_INLINE(ebone, EditBone *), \
-	(((arm)->layer & (ebone)->layer) && !((ebone)->flag & BONE_HIDDEN_A)) \
 	)
-
-#define EMUSCLE_VISIBLE(arm, emuscle) ( \
-    CHECK_TYPE_INLINE(arm, bArmature *), \
-    CHECK_TYPE_INLINE(emuscle, EditMuscle *), \
-    (((arm)->layer & (emuscle)->layer) && !((emuscle)->flag & MUSCLE_HIDDEN_A)) \
-    )
-
-#define EBONE_SELECTABLE(arm, ebone) (EBONE_VISIBLE(arm, ebone) && !(ebone->flag & BONE_UNSELECTABLE))
-#define EMUSCLE_SELECTABLE(arm, emuscle) (EMUSCLE_VISIBLE(arm, emuscle) && !(emuscle->flag & MUSCLE_UNSELECTABLE))
-
-#define EBONE_EDITABLE(ebone) ( \
-	CHECK_TYPE_INLINE(ebone, EditBone *), \
-	(((ebone)->flag & BONE_SELECTED) && !((ebone)->flag & BONE_EDITMODE_LOCKED)) \
->>>>>>> Testing additions
-	)
-
-#define EMUSCLE_EDITABLE(emuscle) ( \
-    CHECK_TYPE_INLINE(emuscle, EditMuscle *), \
-    (((emuscle)->flag & MUSCLE_SELECTED) && !((emuscle)->flag & MUSCLE_EDITMODE_LOCKED)) \
-    )
 
 /* used in armature_select_hierarchy_exec() */
 #define BONE_SELECT_PARENT  0
@@ -243,31 +231,24 @@ bool mouse_armature(struct bContext *C, const int mval[2], bool extend, bool des
 int join_armature_exec(struct bContext *C, struct wmOperator *op);
 struct Bone *get_indexed_bone(struct Object *ob, int index);
 struct Muscle *get_indexed_muscle(struct Object *ob, int index);
-<<<<<<< HEAD
 //float ED_rollBoneToVector(EditBone *bone, const float new_up_axis[3], const bool axis_only);
 float ED_rollElementToVector(EditArmatureElement *element, const float new_up_axis[3], const bool axis_only);
 EditArmatureElement *ED_armature_armatureelement_find_name(const ListBase *edbo, const char *name);
 EditArmatureElement *ED_armature_bone_get_mirrored(const struct ListBase *edbo, EditArmatureElement *eel);
-=======
-float ED_rollBoneToVector(EditBone *bone, const float new_up_axis[3], const bool axis_only);
-EditBone *ED_armature_bone_find_name(const ListBase *edbo, const char *name);
-EditBone *ED_armature_bone_get_mirrored(const struct ListBase *edbo, EditBone *ebo);
->>>>>>> Testing additions
 EditMuscle *ED_armature_muscle_find_name(const ListBase *edmu, const char *name);
 void ED_armature_sync_selection(struct ListBase *edbo);
 void ED_armature_validate_active(struct bArmature *arm);
 
 void ED_muscle_sync_selection(struct ListBase *edmu);
 
-<<<<<<< HEAD
 EditArmatureElement *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned);
+<<<<<<< HEAD
 EditArmatureElement *ED_armature_edit_armature_element_add(struct bArmature *arm, const char *name, int type);
 void ED_armature_edit_bone_remove(struct bArmature *arm, EditArmatureElement *exBone);
 =======
-EditBone *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned);
-EditBone *ED_armature_edit_bone_add(struct bArmature *arm, const char *name);
+EditArmatureElement *ED_armature_edit_bone_add(struct bArmature *arm, const char *name);
 void ED_armature_edit_bone_remove(struct bArmature *arm, EditBone *exBone);
->>>>>>> Testing additions
+>>>>>>> Initial work on making armature's less silly
 void ED_armature_edit_muscle_remove(struct bArmature *arm, EditMuscle *exMuscle);
 
 bool ED_armature_ebone_is_child_recursive(EditArmatureElement *ebone_parent, EditArmatureElement *ebone_child);
@@ -276,16 +257,8 @@ EditBone *ED_armature_bone_find_shared_parent(EditBone *ebone_child[], const uns
 void ED_armature_eelement_to_mat3(EditArmatureElement *eelement, float mat[3][3]);
 void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4]);
 
-<<<<<<< HEAD
 void ED_armature_eelement_from_mat3(EditArmatureElement *eelement, float mat[3][3]);
 void ED_armature_eelement_from_mat4(EditArmatureElement *eelement, float mat[4][4]);
-=======
-void ED_armature_emuscle_to_mat3(EditMuscle *emuscle, float mat[3][3]);
-void ED_armature_emuscle_to_mat4(EditMuscle *emuscle, float mat[4][4]);
-
-void ED_armature_ebone_from_mat3(EditBone *ebone, float mat[3][3]);
-void ED_armature_ebone_from_mat4(EditBone *ebone, float mat[4][4]);
->>>>>>> Testing additions
 
 void transform_armature_mirror_update(struct Object *obedit);
 void ED_armature_origin_set(struct Scene *scene, struct Object *ob, float cursor[3], int centermode, int around);

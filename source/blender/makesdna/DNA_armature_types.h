@@ -187,6 +187,9 @@ typedef struct bArmature {
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;
 
+	ArmatureElement *act_element;
+	struct EditArmatureElement *act_edelement;
+
 	void       *sketch;                 /* sketch struct for etch-a-ton */
 
 	int         flag;
