@@ -114,8 +114,8 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
 	bone->flag |= BONE_TIPSEL;
 	((EditBoneElement*)bone->custom)->weight = 1.0f;
 	((EditBoneElement*)bone->custom)->dist = 0.25f;
-	((EditBoneElement*)bone->custom)->xwidth = 0.1f;
-	((EditBoneElement*)bone->custom)->zwidth = 0.1f;
+	bone->xwidth = 0.1f;
+	bone->zwidth = 0.1f;
 	((EditBoneElement*)bone->custom)->ease1 = 1.0f;
 	((EditBoneElement*)bone->custom)->ease2 = 1.0f;
 	bone->rad_head = 0.10f;
@@ -124,7 +124,7 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
 	bone->layer = arm->layer;
 
 	return bone;
->>>>>>> Apparently hadn't fixed it
+>>>>>>> Edit struct issue
 }
 
 EditArmatureElement *ED_armature_edit_bone_add_primitive(Object *obedit_arm, float length, bool view_aligned)
