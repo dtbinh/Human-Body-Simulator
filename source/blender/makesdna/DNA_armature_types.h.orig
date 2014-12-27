@@ -48,10 +48,9 @@ struct AnimData;
 <<<<<<< HEAD
 #define AE_BONE     0
 #define AE_MUSCLE   1
-typedef enum AETypes {
 =======
-typedef enum {
->>>>>>> Name "Bone" can't be part of an enum
+>>>>>>> makesdna doesn't like typedef enum {} name, wants typedef enum name {}
+typedef enum AETypes {
     BoneType = 0,
     MuscleType = 1
 } AETypes;
