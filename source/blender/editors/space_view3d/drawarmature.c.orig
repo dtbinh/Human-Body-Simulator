@@ -748,20 +748,19 @@ static const float co[16] = {
 
 
 /* smat, imat = mat & imat to draw screenaligned */
-<<<<<<< HEAD
 static void draw_sphere_element_dist(float smat[4][4], float imat[4][4], bPoseChannel *pchan, EditArmatureElement *eelement)
-=======
-static void draw_sphere_element_dist(float smat[4][4], float imat[4][4], bPoseChannel *pchan, EditArmatureElement *eElement)
->>>>>>> Draw armature elements part 1
 {
 	float head, tail, dist /*, length*/;
 	float *headvec, *tailvec, dirvec[3];
 
 	/* figure out the sizes of spheres */
-<<<<<<< HEAD
 	if (eelement) {
 		/* this routine doesn't call get_matrix_editbone() that calculates it */
+<<<<<<< HEAD
 		eelement->length = len_v3v3(eelement->head, eelement->tail);
+=======
+		((BoneData*)eelement->custom)->length = len_v3v3(eelement->head, eelement->tail);
+>>>>>>> The drawing continues
 
 		/*length = eelement->length;*/ /*UNUSED*/
 		tail = eelement->rad_tail;
@@ -772,21 +771,6 @@ static void draw_sphere_element_dist(float smat[4][4], float imat[4][4], bPoseCh
 			head = eelement->rad_head;
 		headvec = eelement->head;
 		tailvec = eelement->tail;
-=======
-	if (eElement) {
-		/* this routine doesn't call get_matrix_editbone() that calculates it */
-		eElement->length = len_v3v3(eElement->head, eElement->tail);
-
-		/*length = eElement->length;*/ /*UNUSED*/
-		tail = eElement->rad_tail;
-		dist = eElement->dist;
-		if (eElement->parent && (eElement->flag & BONE_CONNECTED))
-			head = eElement->parent->rad_tail;
-		else
-			head = eElement->rad_head;
-		headvec = eElement->head;
-		tailvec = eElement->tail;
->>>>>>> Draw armature elements part 1
 	}
 	else {
 		/*length = pchan->bone->length;*/ /*UNUSED*/
@@ -895,7 +879,11 @@ static void draw_sphere_element_wire(float smat[4][4], float imat[4][4],
 	/* figure out the sizes of spheres */
 	if (eelement) {
 		/* this routine doesn't call get_matrix_editbone() that calculates it */
+<<<<<<< HEAD
 		eelement->length = len_v3v3(eelement->head, eelement->tail);
+=======
+		((BoneData*)eelement->custom)->length = len_v3v3(eelement->head, eelement->tail);
+>>>>>>> The drawing continues
 
 		/*length = ebone->length;*/ /*UNUSED*/
 		tail = eelement->rad_tail;
@@ -1004,7 +992,7 @@ static void draw_sphere_element(const short dt, int armflag, int boneflag, short
 
 	/* figure out the sizes of spheres */
 	if (eelement) {
-		length = eelement->length;
+		length = ((BoneData*)eelement->custom)->length;
 		tail = eelement->rad_tail;
 		if (eelement->parent && (boneflag & BONE_CONNECTED))
 			head = eelement->parent->rad_tail;
@@ -1240,7 +1228,7 @@ static void draw_line_element(int armflag, int boneflag, short constflag, unsign
 	if (pchan)
 		length = pchan->bone->length;
 	else
-		length = eelement->length;
+		length = ((BoneData*)eelement->custom)->length;
 
 	glPushMatrix();
 	glScalef(length, length, length);
@@ -1378,15 +1366,9 @@ static void draw_b_element(const short dt, int armflag, int boneflag, short cons
 		zwidth = pchan->bone->zwidth;
 	}
 	else {
-<<<<<<< HEAD
 		xwidth = eelement->xwidth;
 		length = eelement->length;
 		zwidth = eelement->zwidth;
-=======
-		xwidth = ((BoneData*)eelement->custom)->xwidth;
-		length = ((BoneData*)eelement->custom)->length;
-		zwidth = ((BoneData*)eelement->custom)->zwidth;
->>>>>>> Draw armature elements part 1
 	}
 
 	/* draw points only if... */
@@ -1505,11 +1487,7 @@ static void draw_wire_element(const short dt, int armflag, int boneflag, short c
 		}
 	}
 	else
-<<<<<<< HEAD
 		length = eelement->length;
-=======
-		length = ((BoneData*)eelement->custom)->length;
->>>>>>> Draw armature elements part 1
 
 	/* draw points only if... */
 	if (armflag & ARM_EDITMODE) {
@@ -2043,8 +2021,13 @@ static void draw_pose_bones(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 					if (((element->flag & (BONE_HIDDEN_P | BONE_NO_DEFORM | BONE_HIDDEN_PG)) == 0) &&
 					    ((G.f & G_PICKSEL) == 0 || (element->flag & BONE_UNSELECTABLE) == 0))
 					{
+<<<<<<< HEAD
 						if (element->flag & (BONE_SELECTED)) {
 							if (element->layer & arm->layer)
+=======
+						if (bone->flag & (BONE_SELECTED)) {
+							if (bone->layer & arm->layer)
+>>>>>>> The drawing continues
 								draw_sphere_element_dist(smat, imat, pchan, NULL);
 						}
 					}
@@ -2143,7 +2126,11 @@ static void draw_pose_bones(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 							draw_b_element(OB_SOLID, arm->flag, flag, 0, index, pchan, NULL);
 						}
 						else {
+<<<<<<< HEAD
 							draw_element(OB_SOLID, arm->flag, flag, 0, index, element->length);
+=======
+							draw_element(OB_SOLID, arm->flag, flag, 0, index, bone->length);
+>>>>>>> The drawing continues
 						}
 					}
 
@@ -2341,7 +2328,11 @@ static void draw_pose_bones(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 					else if (arm->drawtype == ARM_B_BONE)
 						draw_b_element(OB_WIRE, arm->flag, flag, constflag, index, pchan, NULL);
 					else
+<<<<<<< HEAD
 						draw_element(OB_WIRE, arm->flag, flag, constflag, index, element->length);
+=======
+						draw_element(OB_WIRE, arm->flag, flag, constflag, index, bone->length);
+>>>>>>> The drawing continues
 
 					glPopMatrix();
 				}
@@ -2565,7 +2556,7 @@ static void get_matrix_editmuscle(EditMuscle *emuscle, float bmat[4][4])
 
 static void get_matrix_editarmatureelement(EditArmatureElement *eelement, float bmat[4][4])
 {
-    eelement->length = len_v3v3(eelement->tail, eelement->head);
+    ((BoneData*)eelement->custom)->length = len_v3v3(eelement->tail, eelement->head);
     ED_armature_eelement_to_mat4(eelement, bmat);
 }
 
@@ -2636,11 +2627,7 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 					else if (arm->drawtype == ARM_WIRE)
 						draw_wire_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eelement);
 					else {
-<<<<<<< HEAD
 						draw_element(OB_SOLID, arm->flag, flag, 0, index, eelement->length);
-=======
-						draw_element(OB_SOLID, arm->flag, flag, 0, index, ((BoneData*)eelement->custom)->length);
->>>>>>> Draw armature elements part 1
 					}
 
 					glPopMatrix();
@@ -2678,19 +2665,11 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 
 				if (arm->drawtype == ARM_ENVELOPE) {
 					if (dt < OB_SOLID)
-<<<<<<< HEAD
 						draw_sphere_element_wire(smat, imat, arm->flag, flag, 0, index, NULL, eelement);
 				}
 				else {
 					glPushMatrix();
 					get_matrix_editarmatureelement(eelement, bmat);
-=======
-						draw_sphere_bone_wire(smat, imat, arm->flag, flag, 0, index, NULL, eelement);
-				}
-				else {
-					glPushMatrix();
-					get_matrix_editbone(eelement, bmat);
->>>>>>> Draw armature elements part 1
 					glMultMatrixf(bmat);
 
 					if (arm->drawtype == ARM_LINE)
@@ -2700,7 +2679,7 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 					else if (arm->drawtype == ARM_B_BONE)
 						draw_b_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eelement);
 					else
-						draw_element(OB_WIRE, arm->flag, flag, 0, index, eelement->length);
+						draw_element(OB_WIRE, arm->flag, flag, 0, index, ((BoneData*)eelement->custom)->length);
 
 					glPopMatrix();
 				}
@@ -2760,17 +2739,16 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 						/*	Draw additional axes */
 						if (arm->flag & ARM_DRAWAXES) {
 							glPushMatrix();
-<<<<<<< HEAD
 							get_matrix_editarmatureelement(eelement, bmat);
+<<<<<<< HEAD
 							bone_matrix_translate_y(bmat, eelement->length);
 =======
-							get_matrix_editbone(eelement, bmat);
 							bone_matrix_translate_y(bmat, ((BoneData*)eelement->custom)->length);
->>>>>>> Draw armature elements part 1
+>>>>>>> The drawing continues
 							glMultMatrixf(bmat);
 
 							glColor3ubv(col);
-							drawaxes(eelement->length * 0.25f, OB_ARROWS);
+							drawaxes(((BoneData*)eelement->custom)->length * 0.25f, OB_ARROWS);
 
 							glPopMatrix();
 						}
