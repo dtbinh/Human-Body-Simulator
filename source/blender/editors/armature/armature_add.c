@@ -71,14 +71,14 @@ EditArmatureElement *ED_armature_edit_bone_add(bArmature *arm, const char *name)
 
 	BLI_addtail(arm->edbo, bone);
 
-    bone->type = Bone;
+    bone->type = BoneType;
 	bone->flag |= BONE_TIPSEL;
-	bone->custom->weight = 1.0f;
-	bone->custom->dist = 0.25f;
-	bone->custom->xwidth = 0.1f;
-	bone->custom->zwidth = 0.1f;
-	bone->custom->ease1 = 1.0f;
-	bone->custom->ease2 = 1.0f;
+	((BoneType*)bone->custom)->weight = 1.0f;
+	((BoneType*)bone->custom)->dist = 0.25f;
+	((BoneType*)bone->custom)->xwidth = 0.1f;
+	((BoneType*)bone->custom)->zwidth = 0.1f;
+	((BoneType*)bone->custom)->ease1 = 1.0f;
+	((BoneType*)bone->custom)->ease2 = 1.0f;
 	bone->rad_head = 0.10f;
 	bone->rad_tail = 0.05f;
 	bone->segments = 1;
