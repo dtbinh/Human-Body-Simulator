@@ -53,6 +53,50 @@ struct ViewContext;
 struct wmKeyConfig;
 struct wmOperator;
 
+typedef enum {
+    Bone = 0,
+    Muscle = 1
+} EAETypes;
+
+typedef struct EditArmatureElement {
+    struct EditArmatureElement *next, *prev;
+    struct IDProperty          *prop;
+    struct EditArmatureElement *parent;
+
+    void                       *temp;
+
+    void                       *custom;
+
+    char                        name[64]; /* MAXBONENAME */
+    EAETypes                    type;
+
+    float                       roll;
+
+    float                       head[3];
+    float                       tail[3];
+
+    int                         flag;
+    int                         layer;
+
+    float                       rad_head, rad_tail;
+
+    short                       segments;
+    char                        pad[2];
+} EditArmatureElement;
+
+typedef struct EditBoneElement {
+    float dist, weight;
+    float xwidth, length, zwidth;
+    float ease1, ease2;
+    float oldlength;
+} EditBoneElement;
+
+typedef struct EditMuscleElement {
+    struct EditArmatureElement *start, *end;
+    float                       length;
+    char                        pad[4];
+} EditMuscleElement;
+
 typedef struct EditBone {
 	struct EditBone *next, *prev;
 	struct IDProperty *prop; /* User-Defined Properties on this Bone */
@@ -179,8 +223,8 @@ void ED_armature_validate_active(struct bArmature *arm);
 
 void ED_muscle_sync_selection(struct ListBase *edmu);
 
-EditBone *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned);
-EditBone *ED_armature_edit_bone_add(struct bArmature *arm, const char *name);
+EditArmatureElement *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned);
+EditArmatureElement *ED_armature_edit_bone_add(struct bArmature *arm, const char *name);
 void ED_armature_edit_bone_remove(struct bArmature *arm, EditBone *exBone);
 void ED_armature_edit_muscle_remove(struct bArmature *arm, EditMuscle *exMuscle);
 
