@@ -249,7 +249,6 @@ void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4]
     copy_v3_v3(mat[3], eelement->head);
 }
 
-<<<<<<< HEAD
 //void ED_armature_ebone_from_mat3(EditBone *ebone, float mat[3][3])
 //{
 //	float vec[3], roll;
@@ -276,27 +275,6 @@ void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4]
 //}
 
 void ED_armature_eelement_from_mat3(EditArmatureElement *eelement, float mat[3][3])
-=======
-void ED_armature_eelement_to_mat3(EditArmatureElement *eelement, float mat[3][3])
-{
-    float delta[3];
-
-    sub_v3_v3v3(delta, eelement->tail, eelement->head);
-    vec_roll_to_mat3(delta, eelement->roll, mat);
-}
-
-void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4])
-{
-    float m3[3][3];
-
-    ED_armature_eelement_to_mat3(eelement, m3);
-
-    copy_m4_m3(mat, m3);
-    copy_v3_v3(mat[3], eelement->head);
-}
-
-void ED_armature_ebone_from_mat3(EditBone *ebone, float mat[3][3])
->>>>>>> Draw armature elements part 1
 {
     float vec[3], roll;
 	const float len = len_v3v3(eelement->head, eelement->tail);
@@ -492,8 +470,13 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		/*	Copy relevant data from bone to eBone */
 		eElement->parent = parent;
+<<<<<<< HEAD
 		BLI_strncpy(eElement->name, curElement->name, sizeof(eElement->name));
 		eElement->flag = curElement->flag;
+=======
+		BLI_strncpy(eElement->name, curBone->name, sizeof(eElement->name));
+		eElement->flag = curBone->flag;
+>>>>>>> Trying to fix unfreed memory blocks
 
 		/* fix selection flags */
 		if (eElement->flag & BONE_SELECTED) {
@@ -531,6 +514,7 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		switch(eElement->type)
 		{
+<<<<<<< HEAD
                 case(AE_BONE):
                     eElement->data = MEM_callocN(sizeof(EditBoneElement), "make_editbonedata");
                     ((EditBoneElement*)eElement->data)->dist = ((BoneData*)curElement->data)->dist;
@@ -539,6 +523,15 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
                     ((EditBoneElement*)eElement->data)->ease2 = ((BoneData*)curElement->data)->ease2;
                     break;
                 case(AE_MUSCLE):
+=======
+                case(BoneType):
+                    ((EditBoneElement*)eElement->custom)->dist = ((BoneData*)curElement->custom)->dist;
+                    ((EditBoneElement*)eElement->custom)->weight = ((BoneData*)curElement->custom)->weight;
+                    ((EditBoneElement*)eElement->custom)->ease1 = ((BoneData*)curElement->custom)->ease1;
+                    ((EditBoneElement*)eElement->custom)->ease2 = ((BoneData*)curElement->custom)->ease2;
+                    break;
+                case(MuscleType):
+>>>>>>> Trying to fix unfreed memory blocks
                     break;
 		}
 
@@ -549,7 +542,11 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		/*	Add children if necessary */
 		if (curElement->childbase.first) {
+<<<<<<< HEAD
 			eElementTest = make_elementList(edList, &curElement->childbase, eElement, actElement);
+=======
+			eElementTest = make_boneList(edList, &curElement->childbase, eElement, actElement);
+>>>>>>> Trying to fix unfreed memory blocks
 			if (eElementTest)
 				eElementAct = eElementTest;
 		}
@@ -763,7 +760,11 @@ void ED_armature_edit_free(struct bArmature *arm)
 					IDP_FreeProperty(eElement->prop);
 					MEM_freeN(eElement->prop);
 				}
+<<<<<<< HEAD
 				MEM_freeN(eElement->data);
+=======
+				MEM_freeN(eElement->custom);
+>>>>>>> Trying to fix unfreed memory blocks
 			}
 
 			BLI_freelistN(arm->edbo);
@@ -780,7 +781,11 @@ void ED_armature_edit_free(struct bArmature *arm)
                     IDP_FreeProperty(eElement->prop);
                     MEM_freeN(eElement->prop);
                 }
+<<<<<<< HEAD
                 MEM_freeN(eElement->data);
+=======
+                MEM_freeN(eElement->custom);
+>>>>>>> Trying to fix unfreed memory blocks
             }
 
             BLI_freelistN(arm->edmu);
