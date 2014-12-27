@@ -2804,7 +2804,7 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 					else if (arm->drawtype == ARM_WIRE)
 						draw_wire_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
 					else {
-						draw_element(OB_SOLID, arm->flag, flag, 0, index, eElement->length);
+						draw_element(OB_SOLID, arm->flag, flag, 0, index, ((BoneData*)eElement->custom)->length);
 					}
 
 					glPopMatrix();
