@@ -873,7 +873,7 @@ static void rna_def_armature_edit_bones(BlenderRNA *brna, PropertyRNA *cprop)
 	RNA_def_property_flag(parm, PROP_REQUIRED);
 
 	/* return type */
-	parm = RNA_def_pointer(func, "bone", "EditBone", "", "Newly created edit bone");
+	parm = RNA_def_pointer(func, "bone", "EditArmatureElement", "", "Newly created edit bone");
 	RNA_def_function_return(func, parm);
 
 	/* remove target */
