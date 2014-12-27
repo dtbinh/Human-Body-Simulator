@@ -519,7 +519,7 @@ static short apply_targetless_ik(Object *ob)
 
 static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, TransData *td)
 {
-	Bone *bone = pchan->bone;
+	ArmatureElement *element = pchan->bone;
 	float pmat[3][3], omat[3][3];
 	float cmat[3][3], tmat[3][3];
 	float vec[3];
@@ -529,11 +529,11 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 
 	td->ob = ob;
 	td->flag = TD_SELECTED;
-	if (bone->flag & BONE_HINGE_CHILD_TRANSFORM) {
+	if (element->flag & BONE_HINGE_CHILD_TRANSFORM) {
 		td->flag |= TD_NOCENTER;
 	}
 
-	if (bone->flag & BONE_TRANSFORM_CHILD) {
+	if (element->flag & BONE_TRANSFORM_CHILD) {
 		td->flag |= TD_NOCENTER;
 		td->flag |= TD_NO_LOC;
 	}
@@ -615,7 +615,7 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 		if (pchan->parent) {
 			/* same as td->smtx but without pchan->bone->bone_mat */
 			td->flag |= TD_PBONE_LOCAL_MTX_C;
-			mul_m3_m3m3(td->ext->l_smtx, pchan->bone->bone_mat, td->smtx);
+			mul_m3_m3m3(td->ext->l_smtx, pchan->bone->AE_mat, td->smtx);
 		}
 		else {
 			td->flag |= TD_PBONE_LOCAL_MTX_P;
@@ -632,8 +632,8 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 
 		if (arm->drawtype == ARM_ENVELOPE) {
 			td->loc = NULL;
-			td->val = &bone->dist;
-			td->ival = bone->dist;
+			td->val = &((BoneData*)element->custom)->dist;
+			td->ival = ((BoneData*)element->custom)->dist;
 		}
 		else {
 			// abusive storage of scale in the loc pointer :)
@@ -695,41 +695,41 @@ int count_set_pose_transflags(int *out_mode, short around, Object *ob)
 {
 	bArmature *arm = ob->data;
 	bPoseChannel *pchan;
-	Bone *bone;
+	ArmatureElement *element;
 	int mode = *out_mode;
 	int hastranslation = 0;
 	int total = 0;
 
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-		bone = pchan->bone;
+		element = pchan->bone;
 		if (PBONE_VISIBLE(arm, bone)) {
-			if ((bone->flag & BONE_SELECTED))
-				bone->flag |= BONE_TRANSFORM;
+			if ((element->flag & BONE_SELECTED))
+				element->flag |= BONE_TRANSFORM;
 			else
-				bone->flag &= ~BONE_TRANSFORM;
+				element->flag &= ~BONE_TRANSFORM;
 			
-			bone->flag &= ~BONE_HINGE_CHILD_TRANSFORM;
-			bone->flag &= ~BONE_TRANSFORM_CHILD;
+			element->flag &= ~BONE_HINGE_CHILD_TRANSFORM;
+			element->flag &= ~BONE_TRANSFORM_CHILD;
 		}
 		else
-			bone->flag &= ~BONE_TRANSFORM;
+			element->flag &= ~BONE_TRANSFORM;
 	}
 
 	/* make sure no bone can be transformed when a parent is transformed */
 	/* since pchans are depsgraph sorted, the parents are in beginning of list */
 	if (mode != TFM_BONESIZE) {
 		for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-			bone = pchan->bone;
-			if (bone->flag & BONE_TRANSFORM)
-				bone_children_clear_transflag(mode, around, &bone->childbase);
+			element = pchan->bone;
+			if (element->flag & BONE_TRANSFORM)
+				bone_children_clear_transflag(mode, around, &element->childbase);
 		}
 	}
 	/* now count, and check if we have autoIK or have to switch from translate to rotate */
 	hastranslation = 0;
 
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-		bone = pchan->bone;
-		if (bone->flag & BONE_TRANSFORM) {
+		element = pchan->bone;
+		if (element->flag & BONE_TRANSFORM) {
 			total++;
 			
 			if (mode == TFM_TRANSLATION) {
@@ -927,20 +927,20 @@ static short pose_grab_with_ik_add(bPoseChannel *pchan)
 }
 
 /* bone is a candidate to get IK, but we don't do it if it has children connected */
-static short pose_grab_with_ik_children(bPose *pose, Bone *bone)
+static short pose_grab_with_ik_children(bPose *pose, ArmatureElement *element)
 {
-	Bone *bonec;
+	ArmatureElement *elementc;
 	short wentdeeper = 0, added = 0;
 
 	/* go deeper if children & children are connected */
-	for (bonec = bone->childbase.first; bonec; bonec = bonec->next) {
+	for (bonec = element->childbase.first; bonec; bonec = bonec->next) {
 		if (bonec->flag & BONE_CONNECTED) {
 			wentdeeper = 1;
 			added += pose_grab_with_ik_children(pose, bonec);
 		}
 	}
 	if (wentdeeper == 0) {
-		bPoseChannel *pchan = BKE_pose_channel_find_name(pose, bone->name);
+		bPoseChannel *pchan = BKE_pose_channel_find_name(pose, element->name);
 		if (pchan)
 			added += pose_grab_with_ik_add(pchan);
 	}
@@ -953,7 +953,7 @@ static short pose_grab_with_ik(Object *ob)
 {
 	bArmature *arm;
 	bPoseChannel *pchan, *parent;
-	Bone *bonec;
+	ArmatureElement *elementc;
 	short tot_ik = 0;
 
 	if ((ob == NULL) || (ob->pose == NULL) || (ob->mode & OB_MODE_POSE) == 0)
