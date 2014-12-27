@@ -2427,6 +2427,204 @@ static void get_matrix_editmuscle(EditMuscle *emuscle, float bmat[4][4])
     ED_armature_emuscle_to_mat4(emuscle, bmat);
 }
 
+static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
+{
+	RegionView3D *rv3d = ar->regiondata;
+	EditArmatureElement *eElement;
+	bArmature *arm = ob->data;
+	float smat[4][4], imat[4][4], bmat[4][4];
+	unsigned int index;
+	int flag;
+
+	/* being set in code below */
+	arm->layer_used = 0;
+
+	ED_view3d_check_mats_rv3d(rv3d);
+
+	/* envelope (deform distance) */
+	if (arm->drawtype == ARM_ENVELOPE) {
+		/* precalc inverse matrix for drawing screen aligned */
+		copy_m4_m4(smat, rv3d->viewmatob);
+		mul_mat3_m4_fl(smat, 1.0f / len_v3(ob->obmat[0]));
+		invert_m4_m4(imat, smat);
+
+		/* and draw blended distances */
+		glEnable(GL_BLEND);
+		//glShadeModel(GL_SMOOTH);
+
+		if (v3d->zbuf) glDisable(GL_DEPTH_TEST);
+
+		for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
+			if (eElement->layer & arm->layer) {
+				if ((eElement->flag & (BONE_HIDDEN_A | BONE_NO_DEFORM)) == 0) {
+					if (eElement->flag & (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL))
+						draw_sphere_bone_dist(smat, imat, NULL, eElement);
+				}
+			}
+		}
+
+		if (v3d->zbuf) glEnable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		//glShadeModel(GL_FLAT);
+	}
+
+	/* if solid we draw it first */
+	if ((dt > OB_WIRE) && (arm->drawtype != ARM_LINE)) {
+		for (eElement = arm->edbo->first, index = 0; eElement; eElement = eElement->next, index++) {
+			if (eElement->layer & arm->layer) {
+				if ((eElement->flag & BONE_HIDDEN_A) == 0) {
+					glPushMatrix();
+					get_matrix_editbone(eElement, bmat);
+					glMultMatrixf(bmat);
+
+					/* catch exception for bone with hidden parent */
+					flag = eElement->flag;
+					if ((eElement->parent) && !EBONE_VISIBLE(arm, eElement->parent)) {
+						flag &= ~BONE_CONNECTED;
+					}
+
+					/* set temporary flag for drawing bone as active, but only if selected */
+					if (eElement == arm->act_edbone)
+						flag |= BONE_DRAW_ACTIVE;
+
+					if (arm->drawtype == ARM_ENVELOPE)
+						draw_sphere_bone(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
+					else if (arm->drawtype == ARM_B_BONE)
+						draw_b_bone(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
+					else if (arm->drawtype == ARM_WIRE)
+						draw_wire_bone(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
+					else {
+						draw_bone(OB_SOLID, arm->flag, flag, 0, index, eElement->length);
+					}
+
+					glPopMatrix();
+				}
+			}
+		}
+	}
+
+	/* if wire over solid, set offset */
+	index = -1;
+	GPU_select_load_id(-1);
+	if (ELEM(arm->drawtype, ARM_LINE, ARM_WIRE)) {
+		if (G.f & G_PICKSEL)
+			index = 0;
+	}
+	else if (dt > OB_WIRE)
+		ED_view3d_polygon_offset(rv3d, 1.0);
+	else if (arm->flag & ARM_EDITMODE)
+		index = 0;  /* do selection codes */
+
+	for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
+		arm->layer_used |= eElement->layer;
+		if (eElement->layer & arm->layer) {
+			if ((eElement->flag & BONE_HIDDEN_A) == 0) {
+
+				/* catch exception for bone with hidden parent */
+				flag = eElement->flag;
+				if ((eElement->parent) && !EBONE_VISIBLE(arm, eElement->parent)) {
+					flag &= ~BONE_CONNECTED;
+				}
+
+				/* set temporary flag for drawing bone as active, but only if selected */
+				if (eElement == arm->act_edbone)
+					flag |= BONE_DRAW_ACTIVE;
+
+				if (arm->drawtype == ARM_ENVELOPE) {
+					if (dt < OB_SOLID)
+						draw_sphere_bone_wire(smat, imat, arm->flag, flag, 0, index, NULL, eElement);
+				}
+				else {
+					glPushMatrix();
+					get_matrix_editbone(eElement, bmat);
+					glMultMatrixf(bmat);
+
+					if (arm->drawtype == ARM_LINE)
+						draw_line_bone(arm->flag, flag, 0, index, NULL, eElement);
+					else if (arm->drawtype == ARM_WIRE)
+						draw_wire_bone(OB_WIRE, arm->flag, flag, 0, index, NULL, eElement);
+					else if (arm->drawtype == ARM_B_BONE)
+						draw_b_bone(OB_WIRE, arm->flag, flag, 0, index, NULL, eElement);
+					else
+						draw_bone(OB_WIRE, arm->flag, flag, 0, index, eElement->length);
+
+					glPopMatrix();
+				}
+
+				/* offset to parent */
+				if (eElement->parent) {
+					UI_ThemeColor(TH_WIRE_EDIT);
+					GPU_select_load_id(-1);  /* -1 here is OK! */
+					setlinestyle(3);
+
+					glBegin(GL_LINES);
+					glVertex3fv(eElement->parent->tail);
+					glVertex3fv(eElement->head);
+					glEnd();
+
+					setlinestyle(0);
+				}
+			}
+		}
+		if (index != -1) index++;
+	}
+
+	/* restore */
+	if (index != -1) {
+		GPU_select_load_id(-1);
+	}
+
+	if (ELEM(arm->drawtype, ARM_LINE, ARM_WIRE)) {
+		/* pass */
+	}
+	else if (dt > OB_WIRE) {
+		ED_view3d_polygon_offset(rv3d, 0.0);
+	}
+
+	/* finally names and axes */
+	if (arm->flag & (ARM_DRAWNAMES | ARM_DRAWAXES)) {
+		/* patch for several 3d cards (IBM mostly) that crash on GL_SELECT with text drawing */
+		if ((G.f & G_PICKSEL) == 0) {
+			float vec[3];
+			unsigned char col[4];
+			col[3] = 255;
+
+			if (v3d->zbuf) glDisable(GL_DEPTH_TEST);
+
+			for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
+				if (eElement->layer & arm->layer) {
+					if ((eElement->flag & BONE_HIDDEN_A) == 0) {
+
+						UI_GetThemeColor3ubv((eElement->flag & BONE_SELECTED) ? TH_TEXT_HI : TH_TEXT, col);
+
+						/*	Draw name */
+						if (arm->flag & ARM_DRAWNAMES) {
+							mid_v3_v3v3(vec, eElement->head, eElement->tail);
+							glRasterPos3fv(vec);
+							view3d_cached_text_draw_add(vec, eElement->name, strlen(eElement->name), 10, 0, col);
+						}
+						/*	Draw additional axes */
+						if (arm->flag & ARM_DRAWAXES) {
+							glPushMatrix();
+							get_matrix_editbone(eElement, bmat);
+							bone_matrix_translate_y(bmat, eElement->length);
+							glMultMatrixf(bmat);
+
+							glColor3ubv(col);
+							drawaxes(eElement->length * 0.25f, OB_ARROWS);
+
+							glPopMatrix();
+						}
+
+					}
+				}
+			}
+
+			if (v3d->zbuf) glEnable(GL_DEPTH_TEST);
+		}
+	}
+}
+
 static void draw_ebones(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 {
 	RegionView3D *rv3d = ar->regiondata;
@@ -2979,7 +3177,8 @@ bool draw_armature(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 	/* editmode? */
 	if (arm->edbo) {
 		arm->flag |= ARM_EDITMODE;
-		draw_ebones(v3d, ar, ob, dt);
+		//draw_ebones(v3d, ar, ob, dt);
+		draw_earmature_elements(v3d, ar, ob, dt);
 		// TODO: Fix this so that edmu is made at the same time as edbo
 		if (arm->edmu) {
             draw_emuscles(v3d, ar, ob, dt);
