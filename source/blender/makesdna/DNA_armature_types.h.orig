@@ -90,8 +90,8 @@ typedef struct ArmatureElement {
 <<<<<<< HEAD
     char                    pad[2];
 =======
-    char                   pad[6];
->>>>>>> Size error in struct
+    char                   pad[2];
+>>>>>>> Struct size error
 } ArmatureElement;
 
 typedef struct BoneData {
