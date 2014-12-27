@@ -1409,5 +1409,6 @@ void RNA_def_armature(BlenderRNA *brna)
 //	rna_def_edit_bone(brna);
 	rna_def_armatureelement(brna);
 	rna_def_editarmatureelement(brna);
+	rna_def_armatureelement(brna);
 }
 #endif

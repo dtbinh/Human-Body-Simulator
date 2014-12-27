@@ -524,21 +524,7 @@ static void rna_ArmatureElement_type_set(struct PointerRNA *ptr, int value)
     }
 }
 
-<<<<<<< HEAD
 EnumPropertyItem *rna_ArmatureElement_type_itemf(bContext *C, PointerRNA *ptr, PropertyRNA *UNUSED(prop), bool *r_free)
-=======
-static void rna_def_armatureelement(BlenderRNA *brna)
-{
-    StructRNA *srna;
-    PropertyRNA *prop;
-
-    srna = RNA_def_struct(brna, "ArmatureElement", NULL);
-    RNA_def_struct_ui_text(srna, "Armature Element", "Armature element in an Armature datablock");
-}
-
-/* err... bones should not be directly edited (only editbones should be...) */
-static void rna_def_bone(BlenderRNA *brna)
->>>>>>> Think I understand RNA now
 {
     EnumPropertyItem *item = NULL;
     Object *ob = NULL;
@@ -1419,9 +1405,15 @@ static void rna_def_armature(BlenderRNA *brna)
 void RNA_def_armature(BlenderRNA *brna)
 {
 	rna_def_armature(brna);
+<<<<<<< HEAD
 //	rna_def_bone(brna);
 //	rna_def_edit_bone(brna);
 	rna_def_armatureelement(brna);
 	rna_def_editarmatureelement(brna);
+=======
+	rna_def_bone(brna);
+	rna_def_edit_bone(brna);
+	rna_def_armatureelement(brna);
+>>>>>>> Stupid mistake
 }
 #endif
