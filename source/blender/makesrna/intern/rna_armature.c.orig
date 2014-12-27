@@ -832,6 +832,7 @@ static void rna_def_armatureelement(BlenderRNA *brna)
     srna = RNA_def_struct(brna, "ArmatureElement", NULL);
     RNA_def_struct_ui_text(srna, "Armature Element", "Armature element in an Armature datablock");
     RNA_def_struct_ui_icon(srna, ICON_BONE_DATA);
+<<<<<<< HEAD
     RNA_def_struct_path_func(srna, "rna_ArmatureElement_path");
     RNA_def_struct_idprops_func(srna, "rna_ArmatureElement_idprops");
 
@@ -921,6 +922,8 @@ static void rna_def_armatureelement(BlenderRNA *brna)
     RNA_def_property_ui_range(prop, -FLT_MAX, FLT_MAX, 1, RNA_TRANSLATION_PREC_DEFAULT);
 
     RNA_api_armatureelement(srna);
+=======
+>>>>>>> Yeah, don't understand it
 }
 
 static void rna_def_editarmatureelement(BlenderRNA *brna)
@@ -1405,15 +1408,10 @@ static void rna_def_armature(BlenderRNA *brna)
 void RNA_def_armature(BlenderRNA *brna)
 {
 	rna_def_armature(brna);
-<<<<<<< HEAD
 //	rna_def_bone(brna);
 //	rna_def_edit_bone(brna);
 	rna_def_armatureelement(brna);
 	rna_def_editarmatureelement(brna);
-=======
-	rna_def_bone(brna);
-	rna_def_edit_bone(brna);
 	rna_def_armatureelement(brna);
->>>>>>> Stupid mistake
 }
 #endif
