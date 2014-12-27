@@ -158,11 +158,19 @@ static float rollBoneByQuatAligned(EditArmatureElement *element, float old_up_ax
 
 	if (angle_normalized_v3v3(x_axis, new_up_axis) < angle_normalized_v3v3(z_axis, new_up_axis)) {
 		rotation_between_vecs_to_quat(qroll, new_up_axis, x_axis); /* set roll rotation quat */
+<<<<<<< HEAD
 		return ED_rollElementToVector(element, x_axis, false);
 	}
 	else {
 		rotation_between_vecs_to_quat(qroll, new_up_axis, z_axis); /* set roll rotation quat */
 		return ED_rollElementToVector(element, z_axis, false);
+=======
+		return ED_rollBoneToVector(element, x_axis, false);
+	}
+	else {
+		rotation_between_vecs_to_quat(qroll, new_up_axis, z_axis); /* set roll rotation quat */
+		return ED_rollBoneToVector(element, z_axis, false);
+>>>>>>> Yay RNA :\
 	}
 }
 
@@ -1192,11 +1200,7 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureEleme
 	}
 
 	/* If the loop exited without forking */
-<<<<<<< HEAD
 	if (arc != NULL && element == NULL) {
-=======
-	if (arc != NULL && bone == NULL) {
->>>>>>> Retarget stuff
 		newRigNodeTail(rg, arc, last_element->tail);
 	}
 
