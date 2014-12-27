@@ -45,6 +45,11 @@ struct AnimData;
  *
  */
 
+typedef enum {
+    Bone = 0,
+    Muscle = 1
+} AETypes;
+
 typedef struct ArmatureElement {
     // Common elements to both Bone and Muscle
     struct ArmatureElement *next, *prev;
@@ -58,6 +63,8 @@ typedef struct ArmatureElement {
 
     ListBase                childbase;
     char                    name[64];
+
+    AETypes                 type;
 
     float                   roll;
     float                   head[3];
@@ -173,6 +180,9 @@ typedef struct bArmature {
 
     Muscle     *act_muscle;
 	struct EditMuscle *act_edmuscle;
+
+	ArmatureElement *act_element;
+	struct EditArmatureElement *act_edelement;
 
 	void       *sketch;                 /* sketch struct for etch-a-ton */
 
