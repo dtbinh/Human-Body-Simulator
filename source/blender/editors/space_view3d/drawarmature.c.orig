@@ -2842,11 +2842,19 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 
 				if (arm->drawtype == ARM_ENVELOPE) {
 					if (dt < OB_SOLID)
+<<<<<<< HEAD
 						draw_sphere_element_wire(smat, imat, arm->flag, flag, 0, index, NULL, eelement);
 				}
 				else {
 					glPushMatrix();
 					get_matrix_editarmatureelement(eelement, bmat);
+=======
+						draw_sphere_element_wire(smat, imat, arm->flag, flag, 0, index, NULL, eElement);
+				}
+				else {
+					glPushMatrix();
+					get_matrix_editarmatureelement(eElement, bmat);
+>>>>>>> Drawing
 					glMultMatrixf(bmat);
 
 					if (arm->drawtype == ARM_LINE)
@@ -2856,11 +2864,7 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 					else if (arm->drawtype == ARM_B_BONE)
 						draw_b_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eelement);
 					else
-<<<<<<< HEAD
 						draw_element(OB_WIRE, arm->flag, flag, 0, index, eelement->length);
-=======
-						draw_element(OB_WIRE, arm->flag, flag, 0, index, ((BoneData*)eElement->custom)->length);
->>>>>>> Drawing
 
 					glPopMatrix();
 				}
