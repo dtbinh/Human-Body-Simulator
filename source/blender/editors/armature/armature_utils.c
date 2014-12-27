@@ -231,6 +231,24 @@ void ED_armature_ebone_to_mat4(EditBone *ebone, float mat[4][4])
 	copy_v3_v3(mat[3], ebone->head);
 }
 
+void ED_armature_eelement_to_mat3(EditArmatureElement *eelement, float mat[3][3])
+{
+    float delta[3];
+
+    sub_v3_v3v3(delta, eelement->tail, eelement->head);
+    vec_roll_to_mat3(delta, eelement->roll, mat);
+}
+
+void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4])
+{
+    float m3[3][3];
+
+    ED_armature_eelement_to_mat3(eelement, m3);
+
+    copy_m4_m3(mat, m3);
+    copy_v3_v3(mat[3], eelement->head);
+}
+
 void ED_armature_ebone_from_mat3(EditBone *ebone, float mat[3][3])
 {
 	float vec[3], roll;
