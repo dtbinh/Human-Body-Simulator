@@ -54,8 +54,8 @@ struct wmKeyConfig;
 struct wmOperator;
 
 typedef enum {
-    Bone = 0,
-    Muscle = 1
+    BoneType = 0,
+    MuscleType = 1
 } EAETypes;
 
 typedef struct EditArmatureElement {
