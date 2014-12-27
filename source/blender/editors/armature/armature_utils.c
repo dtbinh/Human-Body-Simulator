@@ -438,75 +438,84 @@ void transform_armature_mirror_update(Object *obedit)
 /* Armature EditMode Conversions */
 
 /* converts Bones to EditBone list, used for tools as well */
-EditBone *make_boneList(ListBase *edbo, ListBase *bones, EditBone *parent, Bone *actBone)
+EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, EditArmatureElement *parent, ArmatureElement *actElement)
 {
-	EditBone    *eBone;
-	EditBone    *eBoneAct = NULL;
-	EditBone    *eBoneTest = NULL;
-	Bone        *curBone;
+    EditArmatureElement *eElement;
+    EditArmatureElement *eElementAct = NULL;
+    EditArmatureElement *eElementTest = NULL;
+    ArmatureElement     *curElement;
 
-	for (curBone = bones->first; curBone; curBone = curBone->next) {
-		eBone = MEM_callocN(sizeof(EditBone), "make_editbone");
+	for (curElement = elements->first; curElement; curElement = curElement->next) {
+        eElement = MEM_callocN(sizeof(EditArmatureElement), "make_editbone");
 
 		/*	Copy relevant data from bone to eBone */
-		eBone->parent = parent;
-		BLI_strncpy(eBone->name, curBone->name, sizeof(eBone->name));
-		eBone->flag = curBone->flag;
+		eElement->parent = parent;
+		BLI_strncpy(eElement->name, curBone->name, sizeof(eElement->name));
+		eElement->flag = curBone->flag;
 
 		/* fix selection flags */
-		if (eBone->flag & BONE_SELECTED) {
+		if (eElement->flag & BONE_SELECTED) {
 			/* if the bone is selected the copy its root selection to the parents tip */
-			eBone->flag |= BONE_TIPSEL;
-			if (eBone->parent && (eBone->flag & BONE_CONNECTED)) {
-				eBone->parent->flag |= BONE_TIPSEL;
-				eBone->flag &= ~BONE_ROOTSEL; /* this is ignored when there is a connected parent, so unset it */
+			eElement->flag |= BONE_TIPSEL;
+			if (eElement->parent && (eElement->flag & BONE_CONNECTED)) {
+				eElement->parent->flag |= BONE_TIPSEL;
+				eElement->flag &= ~BONE_ROOTSEL; /* this is ignored when there is a connected parent, so unset it */
 			}
 			else {
-				eBone->flag |= BONE_ROOTSEL;
+				eElement->flag |= BONE_ROOTSEL;
 			}
 		}
 		else {
 			/* if the bone is not selected, but connected to its parent
 			 * always use the parents tip selection state */
-			if (eBone->parent && (eBone->flag & BONE_CONNECTED)) {
-				eBone->flag &= ~BONE_ROOTSEL;
+			if (eElement->parent && (eElement->flag & BONE_CONNECTED)) {
+				eElement->flag &= ~BONE_ROOTSEL;
 			}
 		}
 
-		copy_v3_v3(eBone->head, curBone->arm_head);
-		copy_v3_v3(eBone->tail, curBone->arm_tail);
-		eBone->roll = curBone->arm_roll;
+		copy_v3_v3(eElement->head, curElement->arm_head);
+		copy_v3_v3(eElement->tail, curElement->arm_tail);
+		eElement->type = curElement->type;
+		eElement->roll = curElement->arm_roll;
 
 		/* rest of stuff copy */
-		eBone->length = curBone->length;
-		eBone->dist = curBone->dist;
-		eBone->weight = curBone->weight;
-		eBone->xwidth = curBone->xwidth;
-		eBone->zwidth = curBone->zwidth;
-		eBone->ease1 = curBone->ease1;
-		eBone->ease2 = curBone->ease2;
-		eBone->rad_head = curBone->rad_head;
-		eBone->rad_tail = curBone->rad_tail;
-		eBone->segments = curBone->segments;
-		eBone->layer = curBone->layer;
+		eElement->length = curElement->length;
+		eElement->xwidth = curElement->xwidth;
+		eElement->zwidth = curElement->zwidth;
+		eElement->rad_head = curElement->rad_head;
+		eElement->rad_tail = curElement->rad_tail;
+		eElement->segments = curElement->segments;
+		eElement->layer = curElement->layer;
 
-		if (curBone->prop)
-			eBone->prop = IDP_CopyProperty(curBone->prop);
-
-		BLI_addtail(edbo, eBone);
-
-		/*	Add children if necessary */
-		if (curBone->childbase.first) {
-			eBoneTest = make_boneList(edbo, &curBone->childbase, eBone, actBone);
-			if (eBoneTest)
-				eBoneAct = eBoneTest;
+		switch(eElement->type)
+		{
+                case(BoneType):
+                    ((EditBoneElement*)eElement->custom)->dist = ((BoneData*)curElement->custom)->dist;
+                    ((EditBoneElement*)eElement->custom)->weight = ((BoneData*)curElement->custom)->weight;
+                    ((EditBoneElement*)eElement->custom)->ease1 = ((BoneData*)curElement->custom)->ease1;
+                    ((EditBoneElement*)eElement->custom)->ease2 = ((BoneData*)curElement->custom)->ease2;
+                    break;
+                case(MuscleType):
+                    break;
 		}
 
-		if (curBone == actBone)
-			eBoneAct = eBone;
+		if (curElement->prop)
+			eElement->prop = IDP_CopyProperty(curElement->prop);
+
+		BLI_addtail(edList, eElement);
+
+		/*	Add children if necessary */
+		if (curElement->childbase.first) {
+			eElementTest = make_boneList(edList, &curElement->childbase, eElement, actElement);
+			if (eElementTest)
+				eElementAct = eElementTest;
+		}
+
+		if (curElement == actElement)
+			eElementAct = eElement;
 	}
 
-	return eBoneAct;
+	return eElementAct;
 }
 
 /* nasty stuff for converting roll in editbones into bones */
@@ -766,17 +775,17 @@ void ED_armature_from_edit(bArmature *arm)
 
 void ED_armature_edit_free(struct bArmature *arm)
 {
-	EditBone *eBone;
-	EditMuscle *eMuscle;
+	EditArmatureElement *eElement;
 
 	/*	Clear the editbones list */
 	if (arm->edbo) {
 		if (arm->edbo->first) {
-			for (eBone = arm->edbo->first; eBone; eBone = eBone->next) {
-				if (eBone->prop) {
-					IDP_FreeProperty(eBone->prop);
-					MEM_freeN(eBone->prop);
+			for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
+				if (eElement->prop) {
+					IDP_FreeProperty(eElement->prop);
+					MEM_freeN(eElement->prop);
 				}
+				MEM_freeN(eElement->custom);
 			}
 
 			BLI_freelistN(arm->edbo);
@@ -788,11 +797,12 @@ void ED_armature_edit_free(struct bArmature *arm)
 
 	if (arm->edmu) {
         if (arm->edmu->first) {
-            for (eMuscle = arm->edmu->first; eMuscle; eMuscle = eMuscle->next) {
-                if (eMuscle->prop) {
-                    IDP_FreeProperty(eMuscle->prop);
-                    MEM_freeN(eMuscle->prop);
+            for (eElement = arm->edmu->first; eElement; eElement = eElement->next) {
+                if (eElement->prop) {
+                    IDP_FreeProperty(eElement->prop);
+                    MEM_freeN(eElement->prop);
                 }
+                MEM_freeN(eElement->custom);
             }
 
             BLI_freelistN(arm->edmu);
@@ -808,10 +818,10 @@ void ED_armature_to_edit(bArmature *arm)
 {
 	ED_armature_edit_free(arm);
 	arm->edbo = MEM_callocN(sizeof(ListBase), "edbo armature");
-	arm->act_edbone = make_boneList(arm->edbo, &arm->bonebase, NULL, arm->act_bone);
+	arm->act_edbone = make_elementList(arm->edbo, &arm->bonebase, NULL, arm->act_bone);
 
 	arm->edmu = MEM_callocN(sizeof(ListBase), "edmu armature");
-	arm->act_edmuscle = make_muscleList(arm->edmu, &arm->musclebase, NULL, arm->act_muscle);
+	arm->act_edmuscle = make_elementList(arm->edmu, &arm->musclebase, NULL, arm->act_muscle);
 
 //	BIF_freeTemplates(); /* force template update when entering editmode */
 }
