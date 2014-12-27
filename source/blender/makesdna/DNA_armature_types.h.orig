@@ -49,13 +49,11 @@ struct AnimData;
 #define AE_BONE     0
 #define AE_MUSCLE   1
 typedef enum AETypes {
-    BoneType = 0,
-    MuscleType = 1
 =======
 typedef enum {
-    Bone = 0,
-    Muscle = 1
->>>>>>> Initial work on making armature's less silly
+>>>>>>> Name "Bone" can't be part of an enum
+    BoneType = 0,
+    MuscleType = 1
 } AETypes;
 
 typedef struct ArmatureElement {
@@ -72,11 +70,7 @@ typedef struct ArmatureElement {
     ListBase                childbase;
     char                    name[64];
 
-<<<<<<< HEAD
     int                     type;
-=======
-    AETypes                 type;
->>>>>>> Initial work on making armature's less silly
 
     float                   roll;
     float                   head[3];
