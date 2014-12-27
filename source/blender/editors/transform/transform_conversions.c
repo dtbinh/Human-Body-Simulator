@@ -2817,8 +2817,8 @@ void flushTransUVs(TransInfo *t)
 		td->loc2d[1] = td->loc[1] * invy;
 
 		if ((sima->flag & SI_PIXELSNAP) && (t->state != TRANS_CANCEL)) {
-			td->loc2d[0] = roundf(width * td->loc2d[0]) / width;
-			td->loc2d[1] = roundf(height * td->loc2d[1]) / height;
+			td->loc2d[0] = floorf(width * td->loc2d[0] + 0.5f) / width;
+			td->loc2d[1] = floorf(height * td->loc2d[1] + 0.5f) / height;
 		}
 	}
 }
@@ -3831,9 +3831,9 @@ static void createTransGraphEditData(bContext *C, TransInfo *t)
 		/* only include BezTriples whose 'keyframe' occurs on the same side of the current frame as mouse */
 		for (i = 0, bezt = fcu->bezt; i < fcu->totvert; i++, bezt++) {
 			if (FrameOnMouseSide(t->frame_side, bezt->vec[1][0], cfra)) {
-				const bool sel2 = (bezt->f2 & SELECT) != 0;
-				const bool sel1 = use_handle ? (bezt->f1 & SELECT) != 0 : sel2;
-				const bool sel3 = use_handle ? (bezt->f3 & SELECT) != 0 : sel2;
+				const bool sel2 = bezt->f2 & SELECT;
+				const bool sel1 = use_handle ? bezt->f1 & SELECT : sel2;
+				const bool sel3 = use_handle ? bezt->f3 & SELECT : sel2;
 
 				if (!is_translation_mode || !(sel2)) {
 					if (sel1) {
@@ -3917,9 +3917,9 @@ static void createTransGraphEditData(bContext *C, TransInfo *t)
 		/* only include BezTriples whose 'keyframe' occurs on the same side of the current frame as mouse (if applicable) */
 		for (i = 0, bezt = fcu->bezt; i < fcu->totvert; i++, bezt++) {
 			if (FrameOnMouseSide(t->frame_side, bezt->vec[1][0], cfra)) {
-				const bool sel2 = (bezt->f2 & SELECT) != 0;
-				const bool sel1 = use_handle ? (bezt->f1 & SELECT) != 0 : sel2;
-				const bool sel3 = use_handle ? (bezt->f3 & SELECT) != 0 : sel2;
+				const bool sel2 = bezt->f2 & SELECT;
+				const bool sel1 = use_handle ? bezt->f1 & SELECT : sel2;
+				const bool sel3 = use_handle ? bezt->f3 & SELECT : sel2;
 
 				TransDataCurveHandleFlags *hdata = NULL;
 				/* short h1=1, h2=1; */ /* UNUSED */
@@ -4751,7 +4751,7 @@ static void createTransSeqData(bContext *C, TransInfo *t)
 	TransData2D *td2d = NULL;
 	TransDataSeq *tdsq = NULL;
 	TransSeq *ts = NULL;
-	int xmouse;
+	float xmouse, ymouse;
 
 	int count = 0;
 
@@ -4762,7 +4762,7 @@ static void createTransSeqData(bContext *C, TransInfo *t)
 
 	t->customFree = freeSeqData;
 
-	xmouse = (int)UI_view2d_region_to_view_x(v2d, t->imval[0]);
+	UI_view2d_region_to_view(v2d, t->imval[0], t->imval[1], &xmouse, &ymouse);
 
 	/* which side of the current frame should be allowed */
 	if (t->mode == TFM_TIME_EXTEND) {
@@ -7321,11 +7321,6 @@ static void createTransGPencil(bContext *C, TransInfo *t)
 			bGPDstroke *gps;
 			
 			for (gps = gpf->strokes.first; gps; gps = gps->next) {
-				/* skip strokes that are invalid for current view */
-				if (ED_gpencil_stroke_can_use(C, gps) == false) {
-					continue;
-				}
-				
 				if (propedit) {
 					/* Proportional Editing... */
 					if (propedit_connected) {
@@ -7428,11 +7423,6 @@ static void createTransGPencil(bContext *C, TransInfo *t)
 				TransData *head = td;
 				TransData *tail = td;
 				bool stroke_ok;
-				
-				/* skip strokes that are invalid for current view */
-				if (ED_gpencil_stroke_can_use(C, gps) == false) {
-					continue;
-				}
 				
 				/* What we need to include depends on proportional editing settings... */
 				if (propedit) {
