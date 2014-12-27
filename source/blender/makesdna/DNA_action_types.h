@@ -200,9 +200,9 @@ typedef struct bPoseChannel {
 	char selectflag;                /* copy of bone flag, so you can work with library armatures, not for runtime use */
 	char pad0[6];
 
-	struct Bone         *bone;      /* set on read file or rebuild pose */
-	struct bPoseChannel *parent;    /* set on read file or rebuild pose */
-	struct bPoseChannel *child;     /* set on read file or rebuild pose, the 'ik' child, for b-bones */
+	struct ArmatureElement  *bone;      /* set on read file or rebuild pose */
+	struct bPoseChannel     *parent;    /* set on read file or rebuild pose */
+	struct bPoseChannel     *child;     /* set on read file or rebuild pose, the 'ik' child, for b-bones */
 
 	struct ListBase iktree;         /* "IK trees" - only while evaluating pose */
 	struct ListBase siktree;        /* Spline-IK "trees" - only while evaluating pose */
