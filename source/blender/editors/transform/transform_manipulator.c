@@ -141,9 +141,9 @@ static void protectflag_to_drawflags(short protectflag, short *drawflags)
 /* for pose mode */
 static void stats_pose(Scene *scene, RegionView3D *rv3d, bPoseChannel *pchan)
 {
-	Bone *bone = pchan->bone;
+	ArmatureElement *element = pchan->bone;
 
-	if (bone) {
+	if (element) {
 		calc_tw_center(scene, pchan->pose_head);
 		protectflag_to_drawflags(pchan->protectflag, &rv3d->twdrawflag);
 	}
@@ -213,7 +213,7 @@ bool gimbal_axis(Object *ob, float gmat[3][3])
 
 
 				/* apply bone transformation */
-				mul_m3_m3m3(tmat, pchan->bone->bone_mat, mat);
+				mul_m3_m3m3(tmat, pchan->bone->AE_mat, mat);
 
 				if (pchan->parent) {
 					float parent_mat[3][3];
@@ -354,7 +354,7 @@ static int calc_manipulator_stats(const bContext *C)
 		} /* end editmesh */
 		else if (obedit->type == OB_ARMATURE) {
 			bArmature *arm = obedit->data;
-			EditBone *ebo;
+			ArmatureElement *ebo;
 
 			if ((v3d->around == V3D_ACTIVE) && (ebo = arm->act_edbone)) {
 				/* doesn't check selection or visibility intentionally */
@@ -505,8 +505,8 @@ static int calc_manipulator_stats(const bContext *C)
 
 		if ((v3d->around == V3D_ACTIVE) && (pchan = BKE_pose_channel_active(ob))) {
 			/* doesn't check selection or visibility intentionally */
-			Bone *bone = pchan->bone;
-			if (bone) {
+			ArmatureElement *element = pchan->bone;
+			if (element) {
 				stats_pose(scene, rv3d, pchan);
 				totsel = 1;
 				ok = true;
@@ -518,8 +518,8 @@ static int calc_manipulator_stats(const bContext *C)
 			if (totsel) {
 				/* use channels to get stats */
 				for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-					Bone *bone = pchan->bone;
-					if (bone && (bone->flag & BONE_TRANSFORM)) {
+					ArmatureElement *element = pchan->bone;
+					if (element && (element->flag & BONE_TRANSFORM)) {
 						stats_pose(scene, rv3d, pchan);
 					}
 				}
@@ -587,7 +587,7 @@ static int calc_manipulator_stats(const bContext *C)
 	if (ob && totsel) {
 
 		switch (v3d->twmode) {
-		
+
 			case V3D_MANIP_GLOBAL:
 			{
 				break; /* nothing to do */
@@ -1006,7 +1006,7 @@ static void draw_manipulator_rotate(
 
 
 	ortho = is_orthogonal_m4(rv3d->twmat);
-	
+
 	/* apply the transform delta */
 	if (is_moving) {
 		copy_m4_m4(matt, rv3d->twmat); // to copy the parts outside of [3][3]
