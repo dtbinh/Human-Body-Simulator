@@ -45,7 +45,7 @@ struct AnimData;
  *
  */
 
-typedef enum {
+typedef enum AETypes {
     BoneType = 0,
     MuscleType = 1
 } AETypes;
