@@ -1192,7 +1192,7 @@ static void rna_def_armature_edit_bones(BlenderRNA *brna, PropertyRNA *cprop)
 	RNA_def_function_flag(func, FUNC_USE_REPORTS);
 	RNA_def_function_ui_description(func, "Remove an existing bone from the armature");
 	/* target to remove*/
-	parm = RNA_def_pointer(func, "bone", "EditArmatureElement", "", "EditBone to remove");
+	parm = RNA_def_pointer(func, "bone", "EditBone", "", "EditBone to remove");
 	RNA_def_property_flag(parm, PROP_REQUIRED | PROP_NEVER_NULL | PROP_RNAPTR);
 	RNA_def_property_clear_flag(parm, PROP_THICK_WRAP);
 }
