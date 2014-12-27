@@ -2842,11 +2842,11 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 
 				if (arm->drawtype == ARM_ENVELOPE) {
 					if (dt < OB_SOLID)
-						draw_sphere_bone_wire(smat, imat, arm->flag, flag, 0, index, NULL, eBone);
+						draw_sphere_element_wire(smat, imat, arm->flag, flag, 0, index, NULL, eElement);
 				}
 				else {
 					glPushMatrix();
-					get_matrix_editbone(eElement, bmat);
+					get_matrix_editarmatureelement(eElement, bmat);
 					glMultMatrixf(bmat);
 
 					if (arm->drawtype == ARM_LINE)
