@@ -2804,11 +2804,7 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 					else if (arm->drawtype == ARM_WIRE)
 						draw_wire_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eelement);
 					else {
-<<<<<<< HEAD
 						draw_element(OB_SOLID, arm->flag, flag, 0, index, eelement->length);
-=======
-						draw_element(OB_SOLID, arm->flag, flag, 0, index, ((BoneData*)eElement->custom)->length);
->>>>>>> Draw on my wayward son
 					}
 
 					glPopMatrix();
@@ -2860,7 +2856,11 @@ static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 					else if (arm->drawtype == ARM_B_BONE)
 						draw_b_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eelement);
 					else
+<<<<<<< HEAD
 						draw_element(OB_WIRE, arm->flag, flag, 0, index, eelement->length);
+=======
+						draw_element(OB_WIRE, arm->flag, flag, 0, index, ((BoneData*)eElement->custom)->length);
+>>>>>>> Drawing
 
 					glPopMatrix();
 				}
