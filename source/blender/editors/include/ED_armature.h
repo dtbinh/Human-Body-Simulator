@@ -53,11 +53,6 @@ struct ViewContext;
 struct wmKeyConfig;
 struct wmOperator;
 
-typedef enum {
-    BoneType = 0,
-    MuscleType = 1
-} EAETypes;
-
 typedef struct EditArmatureElement {
     struct EditArmatureElement *next, *prev;
     struct IDProperty          *prop;
@@ -68,7 +63,7 @@ typedef struct EditArmatureElement {
     void                       *custom;
 
     char                        name[64]; /* MAXBONENAME */
-    EAETypes                    type;
+    int                         type;
 
     float                       roll;
 
