@@ -2872,9 +2872,9 @@ static void convert_bonedata(WriteData *wd, ArmatureElement *armelem)
 
     writebone.dist = ((BoneData*)armelem->custom)->dist;
     writebone.weight = ((BoneData*)armelem->custom)->weight;
-    writebone.xwidth = ((BoneData*)armelem->custom)->xwidth;
-    writebone.length = ((BoneData*)armelem->custom)->length;
-    writebone.zwidth = ((BoneData*)armelem->custom)->zwidth;
+    writebone.xwidth = armelem->xwidth;
+    writebone.length = armelem->length;
+    writebone.zwidth = armelem->zwidth;
     writebone.ease1 = ((BoneData*)armelem->custom)->ease1;
     writebone.ease2 = ((BoneData*)armelem->custom)->ease2;
     writebone.rad_head = armelem->rad_head;
