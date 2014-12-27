@@ -87,11 +87,7 @@ typedef struct ArmatureElement {
     int                     layer;
     short                   segments;
 
-<<<<<<< HEAD
     char                    pad[2];
-=======
-    char                   pad[2];
->>>>>>> Struct size error
 } ArmatureElement;
 
 typedef struct BoneData {
@@ -182,6 +178,7 @@ typedef struct bArmature {
 	 * - from the user perspective active == last selected
 	 * - active should be ignored when not visible (hidden layer) */
 
+<<<<<<< HEAD
 //	ArmatureElement *act_bone;               /* active bone */
 //	struct EditArmatureElement *act_edbone;        /* active editbone (in editmode) */
 //
@@ -190,6 +187,13 @@ typedef struct bArmature {
 
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;
+=======
+	ArmatureElement *act_bone;               /* active bone */
+	struct EditArmatureElement *act_edbone;        /* active editbone (in editmode) */
+
+    ArmatureElement *act_muscle;
+	struct EditArmatureElement *act_edmuscle;
+>>>>>>> Continuing
 
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;

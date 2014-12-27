@@ -48,12 +48,9 @@ struct Bone;
 struct EditMuscle;
 struct Muscle;
 
-<<<<<<< HEAD
 struct EditArmatureElement;
 struct ArmatureElement;
 
-=======
->>>>>>> Testing additions
 struct ListBase;
 struct LinkData;
 
@@ -236,9 +233,10 @@ EditArmatureElement *make_elementList(struct ListBase *edList, struct ListBase *
 //EditBone *make_boneList(struct ListBase *edbo, struct ListBase *bones, struct EditBone *parent, struct Bone *actBone);
 //EditMuscle *make_muscleList(struct ListBase *edmu, struct ListBase *muscles, struct EditMuscle *parent, struct Muscle *actMuscle);
 =======
+EditArmatureElement *make_elementList(struct ListBase *edList, struct ListBase *elements, EditArmatureElement *parent, ArmatureElement *actElement);
 EditBone *make_boneList(struct ListBase *edbo, struct ListBase *bones, struct EditBone *parent, struct Bone *actBone);
 EditMuscle *make_muscleList(struct ListBase *edmu, struct ListBase *muscles, struct EditMuscle *parent, struct Muscle *actMuscle);
->>>>>>> Testing additions
+>>>>>>> Continuing
 void BIF_sk_selectStroke(struct bContext *C, const int mval[2], short extend);
 
 /* duplicate method */
@@ -253,13 +251,9 @@ struct EditArmatureElement *duplicateEditBoneObjects(struct EditArmatureElement 
 /* editbones is the source list */
 void updateDuplicateSubtargetObjects(struct EditArmatureElement *dupBone, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
 
-<<<<<<< HEAD
 EditArmatureElement *add_points_bone(struct Object *obedit, float head[3], float tail[3]);
 void bone_free(struct bArmature *arm, struct EditArmatureElement *bone);
-=======
-EditBone *add_points_bone(struct Object *obedit, float head[3], float tail[3]);
-void bone_free(struct bArmature *arm, struct EditBone *bone);
->>>>>>> Testing additions
+void muscle_free(struct bArmature *arm, struct EditMuscle *muscle);
 void muscle_free(struct bArmature *arm, struct EditMuscle *muscle);
 
 void armature_tag_select_mirrored(struct bArmature *arm);
