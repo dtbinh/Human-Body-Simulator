@@ -229,6 +229,9 @@ EditBone *ED_armature_bone_find_shared_parent(EditBone *ebone_child[], const uns
 void ED_armature_ebone_to_mat3(EditBone *ebone, float mat[3][3]);
 void ED_armature_ebone_to_mat4(EditBone *ebone, float mat[4][4]);
 
+void ED_armature_eelement_to_mat3(EditArmatureElement *eelement, float mat[3][3]);
+void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4]);
+
 void ED_armature_emuscle_to_mat3(EditMuscle *emuscle, float mat[3][3]);
 void ED_armature_emuscle_to_mat4(EditMuscle *emuscle, float mat[4][4]);
 
