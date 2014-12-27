@@ -163,6 +163,12 @@ void b_muscle_spline_setup(struct bPoseChannel *pchan, int rest, Mat4 result_arr
 #define PBONE_SELECTABLE(arm, bone) \
 	(PBONE_VISIBLE(arm, bone) && !((bone)->flag & BONE_UNSELECTABLE))
 
+#define PELEMENT_VISIBLE(arm, element) ( \
+	CHECK_TYPE_INLINE(arm, bArmature *), \
+	CHECK_TYPE_INLINE(element, ArmatureElement *), \
+	(((element)->layer & (arm)->layer) && !((element)->flag & BONE_HIDDEN_P)) \
+	)
+
 #ifdef __cplusplus
 }
 #endif
