@@ -97,13 +97,8 @@ static int countEditBoneChildren(ListBase *list, EditArmatureElement *parent)
 	EditBone *eelement;
 	int count = 0;
 
-<<<<<<< HEAD
 	for (eelement = list->first; eelement; eelement = eelement->next) {
 		if (eelement->parent == parent) {
-=======
-	for (ebone = list->first; ebone; ebone = ebone->next) {
-		if (ebone->parent == parent) {
->>>>>>> Retarget stuff
 			count++;
 		}
 	}
@@ -113,17 +108,10 @@ static int countEditBoneChildren(ListBase *list, EditArmatureElement *parent)
 
 static EditArmatureElement *nextEditBoneChild(ListBase *list, EditArmatureElement *parent, int n)
 {
-<<<<<<< HEAD
 	EditArmatureElement *eelement;
 
 	for (eelement = list->first; eelement; eelement = eelement->next) {
 		if (eelement->parent == parent) {
-=======
-	EditBone *ebone;
-
-	for (ebone = list->first; ebone; ebone = ebone->next) {
-		if (ebone->parent == parent) {
->>>>>>> Retarget stuff
 			if (n == 0) {
 				return eelement;
 			}
@@ -138,11 +126,7 @@ static void getEditBoneRollUpAxis(EditArmatureElement *element, float roll, floa
 {
 	float mat[3][3], nor[3];
 
-<<<<<<< HEAD
 	sub_v3_v3v3(nor, element->tail, element->head);
-=======
-	sub_v3_v3v3(nor, bone->tail, bone->head);
->>>>>>> Retarget stuff
 
 	vec_roll_to_mat3(nor, roll, mat);
 	copy_v3_v3(up_axis, mat[2]);
@@ -155,11 +139,7 @@ static float rollBoneByQuatAligned(EditArmatureElement *element, float old_up_ax
 	copy_v3_v3(new_up_axis, old_up_axis);
 	mul_qt_v3(qrot, new_up_axis);
 
-<<<<<<< HEAD
 	sub_v3_v3v3(nor, element->tail, element->head);
-=======
-	sub_v3_v3v3(nor, bone->tail, bone->head);
->>>>>>> Retarget stuff
 
 	cross_v3_v3v3(x_axis, nor, aligned_axis);
 	cross_v3_v3v3(z_axis, x_axis, nor);
@@ -238,11 +218,7 @@ float rollBoneByQuat(EditBone *bone, float old_up_axis[3], float qrot[4])
 	copy_v3_v3(new_up_axis, old_up_axis);
 	mul_qt_v3(qrot, new_up_axis);
 
-<<<<<<< HEAD
 	return ED_rollElementToVector(bone, new_up_axis, false);
-=======
-	return ED_rollBoneToVector(bone, new_up_axis, false);
->>>>>>> Retarget stuff
 }
 
 /************************************ DESTRUCTORS ******************************************************/
@@ -448,11 +424,7 @@ static void renameTemplateBone(char *name, char *template_name, ListBase *editbo
 
 	name[j] = '\0';
 
-<<<<<<< HEAD
 	unique_editelement_name(editbones, name, NULL);
-=======
-	unique_editbone_name(editbones, name, NULL);
->>>>>>> Retarget stuff
 }
 
 static RigControl *cloneControl(RigGraph *rg, RigGraph *src_rg, RigControl *src_ctrl, GHash *ptr_hash, char *side_string, char *num_string)
@@ -1162,21 +1134,12 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureEleme
 	RigArc *arc = NULL;
 	int contain_head = 0;
 
-<<<<<<< HEAD
 	for (element = root_element; element; element = nextEditBoneChild(list, element, 0)) {
 		int nb_children;
 
 		if (selected == 0 || (element->flag & BONE_SELECTED)) {
 			if ((element->flag & BONE_NO_DEFORM) == 0) {
 				BLI_ghash_insert(rg->bones_map, element->name, element);
-=======
-	for (bone = root_bone; bone; bone = nextEditBoneChild(list, bone, 0)) {
-		int nb_children;
-
-		if (selected == 0 || (bone->flag & BONE_SELECTED)) {
-			if ((bone->flag & BONE_NO_DEFORM) == 0) {
-				BLI_ghash_insert(rg->bones_map, bone->name, bone);
->>>>>>> Retarget stuff
 
 				if (arc == NULL) {
 					arc = newRigArc(rg);
@@ -1189,7 +1152,6 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureEleme
 					}
 				}
 
-<<<<<<< HEAD
 				if (element->parent && (element->flag & BONE_CONNECTED) == 0) {
 					RIG_addEdgeToArc(arc, element->head, NULL);
 				}
@@ -1199,17 +1161,6 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureEleme
 				last_element = element;
 
 				if (strcmp(element->name, "head") == 0) {
-=======
-				if (bone->parent && (bone->flag & BONE_CONNECTED) == 0) {
-					RIG_addEdgeToArc(arc, bone->head, NULL);
-				}
-
-				RIG_addEdgeToArc(arc, bone->tail, bone);
-
-				last_bone = bone;
-
-				if (strcmp(bone->name, "head") == 0) {
->>>>>>> Retarget stuff
 					contain_head = 1;
 				}
 			}
@@ -1218,11 +1169,7 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureEleme
 			}
 		}
 
-<<<<<<< HEAD
 		nb_children = countEditBoneChildren(list, element);
-=======
-		nb_children = countEditBoneChildren(list, bone);
->>>>>>> Retarget stuff
 		if (nb_children > 1) {
 			RigNode *end_node = NULL;
 			int i;
@@ -1245,7 +1192,11 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureEleme
 	}
 
 	/* If the loop exited without forking */
+<<<<<<< HEAD
 	if (arc != NULL && element == NULL) {
+=======
+	if (arc != NULL && bone == NULL) {
+>>>>>>> Retarget stuff
 		newRigNodeTail(rg, arc, last_element->tail);
 	}
 
@@ -1488,11 +1439,7 @@ static EditBone *add_editbonetolist(char *name, ListBase *list)
 	EditBone *bone = MEM_callocN(sizeof(EditBone), "eBone");
 
 	BLI_strncpy(bone->name, name, sizeof(bone->name));
-<<<<<<< HEAD
 	unique_editelement_name(list, bone->name, NULL);
-=======
-	unique_editbone_name(list, bone->name, NULL);
->>>>>>> Retarget stuff
 
 	BLI_addtail(list, bone);
 
