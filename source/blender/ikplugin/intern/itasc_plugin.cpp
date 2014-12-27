@@ -878,7 +878,7 @@ static int convert_channels(IK_Scene *ikscene, PoseTree *tree, float ctime)
 		ikchan->owner = ikscene->blArmature;
 
 		// the constraint and channels must be applied before we build the iTaSC scene,
-		// this is because some of the pose data (e.g. pose head) don't have corresponding 
+		// this is because some of the pose data (e.g. pose head) don't have corresponding
 		// joint angles and can't be applied to the iTaSC armature dynamically
 		if (!(pchan->flag & POSE_DONE))
 			BKE_pose_where_is_bone(ikscene->blscene, ikscene->blArmature, pchan, ctime, 1);
@@ -995,7 +995,7 @@ static void convert_pose(IK_Scene *ikscene)
 	KDL::Rotation boneRot;
 	bPoseChannel *pchan;
 	IK_Channel *ikchan;
-	Bone *bone;
+	ArmatureElement *element;
 	float rmat[4][4];   // rest pose of bone with parent taken into account
 	float bmat[4][4];   // difference
 	float scale;
@@ -1007,14 +1007,14 @@ static void convert_pose(IK_Scene *ikscene)
 	rot = ikscene->jointArray(0);
 	for (joint = a = 0, ikchan = ikscene->channels; a < ikscene->numchan && joint < ikscene->numjoint; ++a, ++ikchan) {
 		pchan = ikchan->pchan;
-		bone = pchan->bone;
+		element = pchan->bone;
 
 		if (pchan->parent) {
 			unit_m4(bmat);
-			mul_m4_m4m3(bmat, pchan->parent->pose_mat, bone->bone_mat);
+			mul_m4_m4m3(bmat, pchan->parent->pose_mat, element->AE_mat);
 		}
 		else {
-			copy_m4_m4(bmat, bone->arm_mat);
+			copy_m4_m4(bmat, element->arm_mat);
 		}
 		invert_m4_m4(rmat, bmat);
 		mul_m4_m4m4(bmat, rmat, pchan->pose_mat);
@@ -1035,7 +1035,7 @@ static void BKE_pose_rest(IK_Scene *ikscene)
 {
 	bPoseChannel *pchan;
 	IK_Channel *ikchan;
-	Bone *bone;
+	ArmatureElement *element;
 	float scale;
 	double *rot;
 	int a, joint;
@@ -1048,10 +1048,10 @@ static void BKE_pose_rest(IK_Scene *ikscene)
 	rot = ikscene->jointArray(0);
 	for (joint = a = 0, ikchan = ikscene->channels; a < ikscene->numchan && joint < ikscene->numjoint; ++a, ++ikchan) {
 		pchan = ikchan->pchan;
-		bone = pchan->bone;
+		element = pchan->bone;
 
 		if (ikchan->jointType & IK_TRANSY)
-			rot[ikchan->ndof - 1] = bone->length * scale;
+			rot[ikchan->ndof - 1] = element->length * scale;
 		rot += ikchan->ndof;
 		joint += ikchan->ndof;
 	}
@@ -1070,7 +1070,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 	IK_Channel *ikchan;
 	KDL::Frame initPose;
 	KDL::Rotation boneRot;
-	Bone *bone;
+	ArmatureElement *element;
 	int a, numtarget;
 	unsigned int t;
 	float length;
@@ -1149,11 +1149,11 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 
 	for (a = 0, ikchan = ikscene->channels; a < tree->totchannel; ++a, ++ikchan) {
 		pchan = ikchan->pchan;
-		bone = pchan->bone;
+		element = pchan->bone;
 
 		KDL::Frame tip(iTaSC::F_identity);
 		// compute the position and rotation of the head from previous segment
-		Vector3 *fl = bone->bone_mat;
+		Vector3 *fl = element->AE_mat;
 		KDL::Rotation brot(
 		    fl[0][0], fl[1][0], fl[2][0],
 		    fl[0][1], fl[1][1], fl[2][1],
@@ -1181,11 +1181,11 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 		KDL::Frame head(brot, bpos);
 
 		// rest pose length of the bone taking scaling into account
-		length = bone->length * ikscene->blScale;
+		length = element->length * ikscene->blScale;
 		parent = (a > 0) ? ikscene->channels[tree->parent[a]].tail : root;
 		// first the fixed segment to the bone head
 		if (!(ikchan->pchan->bone->flag & BONE_CONNECTED) || head.M.GetRot().Norm() > KDL::epsilon) {
-			joint = bone->name;
+			joint = element->name;
 			joint += ":H";
 			ret = arm->addSegment(joint, parent, KDL::Joint::None, 0.0, head);
 			parent = joint;
@@ -1194,7 +1194,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 			// fixed length, put it in tip
 			tip.p[1] = length;
 		}
-		joint = bone->name;
+		joint = element->name;
 		weight[0] = (1.0 - pchan->stiffness[0]);
 		weight[1] = (1.0 - pchan->stiffness[1]);
 		weight[2] = (1.0 - pchan->stiffness[2]);
@@ -1228,7 +1228,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 				weights.push_back(weight[0]);
 				if (ret) {
 					parent = joint;
-					joint = bone->name;
+					joint = element->name;
 					joint += ":RY";
 					ret = arm->addSegment(joint, parent, KDL::Joint::RotY, rot[1], tip);
 					weights.push_back(weight[1]);
@@ -1247,7 +1247,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 				weights.push_back(weight[2]);
 				if (ret) {
 					parent = joint;
-					joint = bone->name;
+					joint = element->name;
 					joint += ":RY";
 					ret = arm->addSegment(joint, parent, KDL::Joint::RotY, rot[1], tip);
 					weights.push_back(weight[1]);
@@ -1261,7 +1261,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 				weights.push_back(weight[2]);
 				if (ret) {
 					parent = joint;
-					joint = bone->name;
+					joint = element->name;
 					joint += ":RY";
 					ret = arm->addSegment(joint, parent, KDL::Joint::RotY, rot[2], tip);
 					weights.push_back(weight[1]);
@@ -1277,7 +1277,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 		}
 		if (ret && (ikchan->jointType & IK_TRANSY)) {
 			parent = joint;
-			joint = bone->name;
+			joint = element->name;
 			joint += ":TY";
 			ret = arm->addSegment(joint, parent, KDL::Joint::TransY, rot[ikchan->ndof - 1]);
 			const float ikstretch = pchan->ikstretch * pchan->ikstretch;
@@ -1294,7 +1294,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 		// in case of error
 		ret = false;
 		if ((ikchan->jointType & IK_XDOF) && (pchan->ikflag & (BONE_IK_XLIMIT | BONE_IK_ROTCTL))) {
-			joint = bone->name;
+			joint = element->name;
 			joint += ":RX";
 			if (pchan->ikflag & BONE_IK_XLIMIT) {
 				if (arm->addLimitConstraint(joint, 0, pchan->limitmin[0], pchan->limitmax[0]) < 0)
@@ -1306,7 +1306,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 			}
 		}
 		if ((ikchan->jointType & IK_YDOF) && (pchan->ikflag & (BONE_IK_YLIMIT | BONE_IK_ROTCTL))) {
-			joint = bone->name;
+			joint = element->name;
 			joint += ":RY";
 			if (pchan->ikflag & BONE_IK_YLIMIT) {
 				if (arm->addLimitConstraint(joint, 0, pchan->limitmin[1], pchan->limitmax[1]) < 0)
@@ -1318,7 +1318,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 			}
 		}
 		if ((ikchan->jointType & IK_ZDOF) && (pchan->ikflag & (BONE_IK_ZLIMIT | BONE_IK_ROTCTL))) {
-			joint = bone->name;
+			joint = element->name;
 			joint += ":RZ";
 			if (pchan->ikflag & BONE_IK_ZLIMIT) {
 				if (arm->addLimitConstraint(joint, 0, pchan->limitmin[2], pchan->limitmax[2]) < 0)
@@ -1330,7 +1330,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 			}
 		}
 		if ((ikchan->jointType & IK_SWING) && (pchan->ikflag & (BONE_IK_XLIMIT | BONE_IK_ZLIMIT | BONE_IK_ROTCTL))) {
-			joint = bone->name;
+			joint = element->name;
 			joint += ":SW";
 			if (pchan->ikflag & BONE_IK_XLIMIT) {
 				if (arm->addLimitConstraint(joint, 0, pchan->limitmin[0], pchan->limitmax[0]) < 0)
@@ -1346,7 +1346,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 			}
 		}
 		if ((ikchan->jointType & IK_REVOLUTE) && (pchan->ikflag & BONE_IK_ROTCTL)) {
-			joint = bone->name;
+			joint = element->name;
 			joint += ":SJ";
 			if (arm->addConstraint(joint, joint_callback, ikchan, false, false) < 0)
 				break;
