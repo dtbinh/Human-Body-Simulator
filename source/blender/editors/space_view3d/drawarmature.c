@@ -2302,7 +2302,7 @@ static void draw_pose_bones(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 					}
 					else if (arm->drawtype == ARM_ENVELOPE) {
 						if (dt < OB_SOLID)
-							draw_sphere_bone_wire(smat, imat, arm->flag, flag, constflag, index, pchan, NULL);
+							draw_sphere_element_wire(smat, imat, arm->flag, flag, constflag, index, pchan, NULL);
 					}
 					else if (arm->drawtype == ARM_LINE)
 						draw_line_element(arm->flag, flag, constflag, index, pchan, NULL);
@@ -2737,10 +2737,10 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 	}
 }
 
-static void draw_ebones(View3D *v3d, ARegion *ar, Object *ob, const short dt)
+static void draw_eelements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 {
 	RegionView3D *rv3d = ar->regiondata;
-	EditBone *eBone;
+	EditArmatureElement *eElement;
 	bArmature *arm = ob->data;
 	float smat[4][4], imat[4][4], bmat[4][4];
 	unsigned int index;
@@ -2764,11 +2764,11 @@ static void draw_ebones(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 
 		if (v3d->zbuf) glDisable(GL_DEPTH_TEST);
 
-		for (eBone = arm->edbo->first; eBone; eBone = eBone->next) {
-			if (eBone->layer & arm->layer) {
-				if ((eBone->flag & (BONE_HIDDEN_A | BONE_NO_DEFORM)) == 0) {
-					if (eBone->flag & (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL))
-						draw_sphere_bone_dist(smat, imat, NULL, eBone);
+		for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
+			if (eElement->layer & arm->layer) {
+				if ((eElement->flag & (BONE_HIDDEN_A | BONE_NO_DEFORM)) == 0) {
+					if (eElement->flag & (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL))
+						draw_sphere_element_dist(smat, imat, NULL, eElement);
 				}
 			}
 		}
@@ -2780,31 +2780,31 @@ static void draw_ebones(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 
 	/* if solid we draw it first */
 	if ((dt > OB_WIRE) && (arm->drawtype != ARM_LINE)) {
-		for (eBone = arm->edbo->first, index = 0; eBone; eBone = eBone->next, index++) {
-			if (eBone->layer & arm->layer) {
-				if ((eBone->flag & BONE_HIDDEN_A) == 0) {
+		for (eElement = arm->edbo->first, index = 0; eElement; eElement = eElement->next, index++) {
+			if (eElement->layer & arm->layer) {
+				if ((eElement->flag & BONE_HIDDEN_A) == 0) {
 					glPushMatrix();
-					get_matrix_editbone(eBone, bmat);
+					get_matrix_editarmatureelement(eElement, bmat);
 					glMultMatrixf(bmat);
 
 					/* catch exception for bone with hidden parent */
-					flag = eBone->flag;
-					if ((eBone->parent) && !EBONE_VISIBLE(arm, eBone->parent)) {
+					flag = eElement->flag;
+					if ((eElement->parent) && !EBONE_VISIBLE(arm, eElement->parent)) {
 						flag &= ~BONE_CONNECTED;
 					}
 
 					/* set temporary flag for drawing bone as active, but only if selected */
-					if (eBone == arm->act_edbone)
+					if (eElement == arm->act_edbone)
 						flag |= BONE_DRAW_ACTIVE;
 
 					if (arm->drawtype == ARM_ENVELOPE)
-						draw_sphere_bone(OB_SOLID, arm->flag, flag, 0, index, NULL, eBone);
+						draw_sphere_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
 					else if (arm->drawtype == ARM_B_BONE)
-						draw_b_bone(OB_SOLID, arm->flag, flag, 0, index, NULL, eBone);
+						draw_b_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
 					else if (arm->drawtype == ARM_WIRE)
-						draw_wire_bone(OB_SOLID, arm->flag, flag, 0, index, NULL, eBone);
+						draw_wire_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
 					else {
-						draw_bone(OB_SOLID, arm->flag, flag, 0, index, eBone->length);
+						draw_element(OB_SOLID, arm->flag, flag, 0, index, eElement->length);
 					}
 
 					glPopMatrix();
@@ -2825,19 +2825,19 @@ static void draw_ebones(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 	else if (arm->flag & ARM_EDITMODE)
 		index = 0;  /* do selection codes */
 
-	for (eBone = arm->edbo->first; eBone; eBone = eBone->next) {
-		arm->layer_used |= eBone->layer;
-		if (eBone->layer & arm->layer) {
-			if ((eBone->flag & BONE_HIDDEN_A) == 0) {
+	for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
+		arm->layer_used |= eElement->layer;
+		if (eElement->layer & arm->layer) {
+			if ((eElement->flag & BONE_HIDDEN_A) == 0) {
 
 				/* catch exception for bone with hidden parent */
-				flag = eBone->flag;
-				if ((eBone->parent) && !EBONE_VISIBLE(arm, eBone->parent)) {
+				flag = eElement->flag;
+				if ((eElement->parent) && !EBONE_VISIBLE(arm, eElement->parent)) {
 					flag &= ~BONE_CONNECTED;
 				}
 
 				/* set temporary flag for drawing bone as active, but only if selected */
-				if (eBone == arm->act_edbone)
+				if (eElement == arm->act_edbone)
 					flag |= BONE_DRAW_ACTIVE;
 
 				if (arm->drawtype == ARM_ENVELOPE) {
@@ -2846,30 +2846,30 @@ static void draw_ebones(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 				}
 				else {
 					glPushMatrix();
-					get_matrix_editbone(eBone, bmat);
+					get_matrix_editbone(eElement, bmat);
 					glMultMatrixf(bmat);
 
 					if (arm->drawtype == ARM_LINE)
-						draw_line_bone(arm->flag, flag, 0, index, NULL, eBone);
+						draw_line_element(arm->flag, flag, 0, index, NULL, eElement);
 					else if (arm->drawtype == ARM_WIRE)
-						draw_wire_bone(OB_WIRE, arm->flag, flag, 0, index, NULL, eBone);
+						draw_wire_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eElement);
 					else if (arm->drawtype == ARM_B_BONE)
-						draw_b_bone(OB_WIRE, arm->flag, flag, 0, index, NULL, eBone);
+						draw_b_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eElement);
 					else
-						draw_bone(OB_WIRE, arm->flag, flag, 0, index, eBone->length);
+						draw_element(OB_WIRE, arm->flag, flag, 0, index, eElement->length);
 
 					glPopMatrix();
 				}
 
 				/* offset to parent */
-				if (eBone->parent) {
+				if (eElement->parent) {
 					UI_ThemeColor(TH_WIRE_EDIT);
 					GPU_select_load_id(-1);  /* -1 here is OK! */
 					setlinestyle(3);
 
 					glBegin(GL_LINES);
-					glVertex3fv(eBone->parent->tail);
-					glVertex3fv(eBone->head);
+					glVertex3fv(eElement->parent->tail);
+					glVertex3fv(eElement->head);
 					glEnd();
 
 					setlinestyle(0);
@@ -2901,27 +2901,27 @@ static void draw_ebones(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 
 			if (v3d->zbuf) glDisable(GL_DEPTH_TEST);
 
-			for (eBone = arm->edbo->first; eBone; eBone = eBone->next) {
-				if (eBone->layer & arm->layer) {
-					if ((eBone->flag & BONE_HIDDEN_A) == 0) {
+			for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
+				if (eElement->layer & arm->layer) {
+					if ((eElement->flag & BONE_HIDDEN_A) == 0) {
 
-						UI_GetThemeColor3ubv((eBone->flag & BONE_SELECTED) ? TH_TEXT_HI : TH_TEXT, col);
+						UI_GetThemeColor3ubv((eElement->flag & BONE_SELECTED) ? TH_TEXT_HI : TH_TEXT, col);
 
 						/*	Draw name */
 						if (arm->flag & ARM_DRAWNAMES) {
-							mid_v3_v3v3(vec, eBone->head, eBone->tail);
+							mid_v3_v3v3(vec, eElement->head, eElement->tail);
 							glRasterPos3fv(vec);
-							view3d_cached_text_draw_add(vec, eBone->name, strlen(eBone->name), 10, 0, col);
+							view3d_cached_text_draw_add(vec, eElement->name, strlen(eElement->name), 10, 0, col);
 						}
 						/*	Draw additional axes */
 						if (arm->flag & ARM_DRAWAXES) {
 							glPushMatrix();
-							get_matrix_editbone(eBone, bmat);
-							bone_matrix_translate_y(bmat, eBone->length);
+							get_matrix_editarmatureelement(eElement, bmat);
+							bone_matrix_translate_y(bmat, ((BoneData*)eElement->custom)->length);
 							glMultMatrixf(bmat);
 
 							glColor3ubv(col);
-							drawaxes(eBone->length * 0.25f, OB_ARROWS);
+							drawaxes(((BoneData*)eElement->custom)->length * 0.25f, OB_ARROWS);
 
 							glPopMatrix();
 						}
