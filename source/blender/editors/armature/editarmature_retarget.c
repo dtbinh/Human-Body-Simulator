@@ -92,13 +92,13 @@ float rollBoneByQuat(EditBone *bone, float old_up_axis[3], float qrot[4]);
 
 /*********************************** EDITBONE UTILS ****************************************************/
 
-static int countEditBoneChildren(ListBase *list, EditBone *parent)
+static int countEditBoneChildren(ListBase *list, EditArmatureElement *parent)
 {
-	EditBone *ebone;
+	EditBone *eelement;
 	int count = 0;
 
-	for (ebone = list->first; ebone; ebone = ebone->next) {
-		if (ebone->parent == parent) {
+	for (eelement = list->first; eelement; eelement = eelement->next) {
+		if (eelement->parent == parent) {
 			count++;
 		}
 	}
@@ -106,14 +106,14 @@ static int countEditBoneChildren(ListBase *list, EditBone *parent)
 	return count;
 }
 
-static EditBone *nextEditBoneChild(ListBase *list, EditBone *parent, int n)
+static EditArmatureElement *nextEditBoneChild(ListBase *list, EditArmatureElement *parent, int n)
 {
-	EditBone *ebone;
+	EditArmatureElement *eelement;
 
-	for (ebone = list->first; ebone; ebone = ebone->next) {
-		if (ebone->parent == parent) {
+	for (eelement = list->first; eelement; eelement = eelement->next) {
+		if (eelement->parent == parent) {
 			if (n == 0) {
-				return ebone;
+				return eelement;
 			}
 			n--;
 		}
@@ -122,24 +122,24 @@ static EditBone *nextEditBoneChild(ListBase *list, EditBone *parent, int n)
 	return NULL;
 }
 
-static void getEditBoneRollUpAxis(EditBone *bone, float roll, float up_axis[3])
+static void getEditBoneRollUpAxis(EditArmatureElement *element, float roll, float up_axis[3])
 {
 	float mat[3][3], nor[3];
 
-	sub_v3_v3v3(nor, bone->tail, bone->head);
+	sub_v3_v3v3(nor, element->tail, element->head);
 
 	vec_roll_to_mat3(nor, roll, mat);
 	copy_v3_v3(up_axis, mat[2]);
 }
 
-static float rollBoneByQuatAligned(EditBone *bone, float old_up_axis[3], float qrot[4], float qroll[4], float aligned_axis[3])
+static float rollBoneByQuatAligned(EditArmatureElement *element, float old_up_axis[3], float qrot[4], float qroll[4], float aligned_axis[3])
 {
 	float nor[3], new_up_axis[3], x_axis[3], z_axis[3];
 
 	copy_v3_v3(new_up_axis, old_up_axis);
 	mul_qt_v3(qrot, new_up_axis);
 
-	sub_v3_v3v3(nor, bone->tail, bone->head);
+	sub_v3_v3v3(nor, element->tail, element->head);
 
 	cross_v3_v3v3(x_axis, nor, aligned_axis);
 	cross_v3_v3v3(z_axis, x_axis, nor);
@@ -158,11 +158,11 @@ static float rollBoneByQuatAligned(EditBone *bone, float old_up_axis[3], float q
 
 	if (angle_normalized_v3v3(x_axis, new_up_axis) < angle_normalized_v3v3(z_axis, new_up_axis)) {
 		rotation_between_vecs_to_quat(qroll, new_up_axis, x_axis); /* set roll rotation quat */
-		return ED_rollBoneToVector(bone, x_axis, false);
+		return ED_rollBoneToVector(element, x_axis, false);
 	}
 	else {
 		rotation_between_vecs_to_quat(qroll, new_up_axis, z_axis); /* set roll rotation quat */
-		return ED_rollBoneToVector(bone, z_axis, false);
+		return ED_rollBoneToVector(element, z_axis, false);
 	}
 }
 
