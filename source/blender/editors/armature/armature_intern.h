@@ -229,8 +229,8 @@ void MUSCLE_OT_muscle_primitive_add(struct wmOperatorType *ot);
  */
 
 EditArmatureElement *make_elementList(struct ListBase *edList, struct ListBase *elements, struct EditArmatureElement *parent, struct ArmatureElement *actElement);
-EditBone *make_boneList(struct ListBase *edbo, struct ListBase *bones, struct EditBone *parent, struct Bone *actBone);
-EditMuscle *make_muscleList(struct ListBase *edmu, struct ListBase *muscles, struct EditMuscle *parent, struct Muscle *actMuscle);
+//EditBone *make_boneList(struct ListBase *edbo, struct ListBase *bones, struct EditBone *parent, struct Bone *actBone);
+//EditMuscle *make_muscleList(struct ListBase *edmu, struct ListBase *muscles, struct EditMuscle *parent, struct Muscle *actMuscle);
 void BIF_sk_selectStroke(struct bContext *C, const int mval[2], short extend);
 
 /* duplicate method */
