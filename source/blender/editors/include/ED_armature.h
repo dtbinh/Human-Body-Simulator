@@ -75,21 +75,20 @@ typedef struct EditArmatureElement {
 
     float                       rad_head, rad_tail;
 
+    float                       xwidth, length, zwidth;
+    float                       oldlength;
+
     short                       segments;
     char                        pad[2];
 } EditArmatureElement;
 
 typedef struct EditBoneElement {
     float dist, weight;
-    float xwidth, length, zwidth;
     float ease1, ease2;
-    float oldlength;
 } EditBoneElement;
 
 typedef struct EditMuscleElement {
     struct EditArmatureElement *start, *end;
-    float                       length;
-    char                        pad[4];
 } EditMuscleElement;
 
 typedef struct EditBone {
