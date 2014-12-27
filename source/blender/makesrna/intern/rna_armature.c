@@ -633,6 +633,7 @@ static void rna_def_armatureelement(BlenderRNA *brna)
 
     srna = RNA_def_struct(brna, "ArmatureElement", NULL);
     RNA_def_struct_ui_text(srna, "Armature Element", "Armature element in an Armature datablock");
+    RNA_def_struct_ui_icon(srna, ICON_BONE_DATA);
 }
 
 /* err... bones should not be directly edited (only editbones should be...) */
