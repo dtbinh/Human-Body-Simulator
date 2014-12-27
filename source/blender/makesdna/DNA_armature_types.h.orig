@@ -45,11 +45,8 @@ struct AnimData;
  *
  */
 
-<<<<<<< HEAD
 #define AE_BONE     0
 #define AE_MUSCLE   1
-=======
->>>>>>> makesdna doesn't like typedef enum {} name, wants typedef enum name {}
 typedef enum AETypes {
     BoneType = 0,
     MuscleType = 1
@@ -90,7 +87,11 @@ typedef struct ArmatureElement {
     int                     layer;
     short                   segments;
 
+<<<<<<< HEAD
     char                    pad[2];
+=======
+    char                   pad[6];
+>>>>>>> Size error in struct
 } ArmatureElement;
 
 typedef struct BoneData {
