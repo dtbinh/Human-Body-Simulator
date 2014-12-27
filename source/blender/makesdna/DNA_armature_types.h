@@ -80,6 +80,8 @@ typedef struct ArmatureElement {
 
     float                   rad_head, rad_tail;
 
+    float                   xwidth, length, zwidth;
+
     int                     layer;
     short                   segments;
 
@@ -88,7 +90,6 @@ typedef struct ArmatureElement {
 
 typedef struct BoneData {
     float   dist, weight;
-    float   xwidth, length, zwidth;
     float   ease1, ease2;
 
     float   size[3];
@@ -96,8 +97,6 @@ typedef struct BoneData {
 
 typedef struct MuscleData {
     struct ArmatureElement *start, *end;
-    float                   length;
-    char                    pad[4];
 } MuscleData;
 
 typedef struct Bone {
