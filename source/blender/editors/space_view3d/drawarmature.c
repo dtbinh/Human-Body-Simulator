@@ -748,25 +748,25 @@ static const float co[16] = {
 
 
 /* smat, imat = mat & imat to draw screenaligned */
-static void draw_sphere_bone_dist(float smat[4][4], float imat[4][4], bPoseChannel *pchan, EditBone *ebone)
+static void draw_sphere_element_dist(float smat[4][4], float imat[4][4], bPoseChannel *pchan, EditArmatureElement *eElement)
 {
 	float head, tail, dist /*, length*/;
 	float *headvec, *tailvec, dirvec[3];
 
 	/* figure out the sizes of spheres */
-	if (ebone) {
+	if (eElement) {
 		/* this routine doesn't call get_matrix_editbone() that calculates it */
-		ebone->length = len_v3v3(ebone->head, ebone->tail);
+		eElement->length = len_v3v3(eElement->head, eElement->tail);
 
-		/*length = ebone->length;*/ /*UNUSED*/
-		tail = ebone->rad_tail;
-		dist = ebone->dist;
-		if (ebone->parent && (ebone->flag & BONE_CONNECTED))
-			head = ebone->parent->rad_tail;
+		/*length = eElement->length;*/ /*UNUSED*/
+		tail = eElement->rad_tail;
+		dist = eElement->dist;
+		if (eElement->parent && (eElement->flag & BONE_CONNECTED))
+			head = eElement->parent->rad_tail;
 		else
-			head = ebone->rad_head;
-		headvec = ebone->head;
-		tailvec = ebone->tail;
+			head = eElement->rad_head;
+		headvec = eElement->head;
+		tailvec = eElement->tail;
 	}
 	else {
 		/*length = pchan->bone->length;*/ /*UNUSED*/
@@ -863,7 +863,6 @@ static void draw_sphere_bone_dist(float smat[4][4], float imat[4][4], bPoseChann
 		glEnd();
 	}
 }
-
 
 /* smat, imat = mat & imat to draw screenaligned */
 static void draw_sphere_bone_wire(float smat[4][4], float imat[4][4],
@@ -973,8 +972,8 @@ static void draw_sphere_bone_wire(float smat[4][4], float imat[4][4],
 }
 
 /* does wire only for outline selecting */
-static void draw_sphere_bone(const short dt, int armflag, int boneflag, short constflag, unsigned int id,
-                             bPoseChannel *pchan, EditBone *ebone)
+static void draw_sphere_element(const short dt, int armflag, int boneflag, short constflag, unsigned int id,
+                             bPoseChannel *pchan, EditArmatureElement *eelement)
 {
 	GLUquadricObj *qobj;
 	float head, tail, length;
@@ -984,13 +983,13 @@ static void draw_sphere_bone(const short dt, int armflag, int boneflag, short co
 	qobj = gluNewQuadric();
 
 	/* figure out the sizes of spheres */
-	if (ebone) {
-		length = ebone->length;
-		tail = ebone->rad_tail;
-		if (ebone->parent && (boneflag & BONE_CONNECTED))
-			head = ebone->parent->rad_tail;
+	if (eelement) {
+		length = eelement->length;
+		tail = eelement->rad_tail;
+		if (eelement->parent && (boneflag & BONE_CONNECTED))
+			head = eelement->parent->rad_tail;
 		else
-			head = ebone->rad_head;
+			head = eelement->rad_head;
 	}
 	else {
 		length = pchan->bone->length;
@@ -1211,7 +1210,114 @@ static void draw_line_bone(int armflag, int boneflag, short constflag, unsigned 
 	glPopMatrix();
 }
 
-static void draw_b_bone_boxes(const short dt, bPoseChannel *pchan, float xwidth, float length, float zwidth)
+static void draw_line_element(int armflag, int boneflag, short constflag, unsigned int id,
+                           bPoseChannel *pchan, EditArmatureElement *eelement)
+{
+	float length;
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	if (pchan)
+		length = pchan->bone->length;
+	else
+		length = eelement->length;
+
+	glPushMatrix();
+	glScalef(length, length, length);
+
+	/* this chunk not in object mode */
+	if (armflag & (ARM_EDITMODE | ARM_POSEMODE)) {
+		glLineWidth(4.0f);
+		if (armflag & ARM_POSEMODE)
+			set_pchan_glColor(PCHAN_COLOR_NORMAL, boneflag, constflag);
+		else if (armflag & ARM_EDITMODE) {
+			UI_ThemeColor(TH_WIRE_EDIT);
+		}
+
+		/*	Draw root point if we are not connected */
+		if ((boneflag & BONE_CONNECTED) == 0) {
+			if (G.f & G_PICKSEL) {  /* no bitmap in selection mode, crashes 3d cards... */
+				GPU_select_load_id(id | BONESEL_ROOT);
+				glBegin(GL_POINTS);
+				glVertex3f(0.0f, 0.0f, 0.0f);
+				glEnd();
+			}
+			else {
+				glRasterPos3f(0.0f, 0.0f, 0.0f);
+				glBitmap(8, 8, 4, 4, 0, 0, bm_dot8);
+			}
+		}
+
+		if (id != -1)
+			GPU_select_load_id((GLuint) id | BONESEL_BONE);
+
+		glBegin(GL_LINES);
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 1.0f, 0.0f);
+		glEnd();
+
+		/* tip */
+		if (G.f & G_PICKSEL) {
+			/* no bitmap in selection mode, crashes 3d cards... */
+			GPU_select_load_id(id | BONESEL_TIP);
+			glBegin(GL_POINTS);
+			glVertex3f(0.0f, 1.0f, 0.0f);
+			glEnd();
+		}
+		else {
+			glRasterPos3f(0.0f, 1.0f, 0.0f);
+			glBitmap(8, 8, 4, 4, 0, 0, bm_dot7);
+		}
+
+		/* further we send no names */
+		if (id != -1)
+			GPU_select_load_id(id & 0xFFFF);  /* object tag, for bordersel optim */
+
+		if (armflag & ARM_POSEMODE)
+			set_pchan_glColor(PCHAN_COLOR_LINEBONE, boneflag, constflag);
+	}
+
+	glLineWidth(2.0);
+
+	/*Draw root point if we are not connected */
+	if ((boneflag & BONE_CONNECTED) == 0) {
+		if ((G.f & G_PICKSEL) == 0) {
+			/* no bitmap in selection mode, crashes 3d cards... */
+			if (armflag & ARM_EDITMODE) {
+				if (boneflag & BONE_ROOTSEL) UI_ThemeColor(TH_VERTEX_SELECT);
+				else UI_ThemeColor(TH_VERTEX);
+			}
+			glRasterPos3f(0.0f, 0.0f, 0.0f);
+			glBitmap(8, 8, 4, 4, 0, 0, bm_dot6);
+		}
+	}
+
+	if (armflag & ARM_EDITMODE) {
+		if (boneflag & BONE_SELECTED) UI_ThemeColor(TH_EDGE_SELECT);
+		else UI_ThemeColorShade(TH_BACK, -30);
+	}
+	glBegin(GL_LINES);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glEnd();
+
+	/* tip */
+	if ((G.f & G_PICKSEL) == 0) {
+		/* no bitmap in selection mode, crashes 3d cards... */
+		if (armflag & ARM_EDITMODE) {
+			if (boneflag & BONE_TIPSEL) UI_ThemeColor(TH_VERTEX_SELECT);
+			else UI_ThemeColor(TH_VERTEX);
+		}
+		glRasterPos3f(0.0f, 1.0f, 0.0f);
+		glBitmap(8, 8, 4, 4, 0, 0, bm_dot5);
+	}
+
+	glLineWidth(1.0);
+
+	glPopMatrix();
+}
+
+static void draw_b_element_boxes(const short dt, bPoseChannel *pchan, float xwidth, float length, float zwidth)
 {
 	int segments = 0;
 
@@ -1241,8 +1347,8 @@ static void draw_b_bone_boxes(const short dt, bPoseChannel *pchan, float xwidth,
 	}
 }
 
-static void draw_b_bone(const short dt, int armflag, int boneflag, short constflag, unsigned int id,
-                        bPoseChannel *pchan, EditBone *ebone)
+static void draw_b_element(const short dt, int armflag, int boneflag, short constflag, unsigned int id,
+                        bPoseChannel *pchan, EditArmatureElement *eelement)
 {
 	float xwidth, length, zwidth;
 
@@ -1252,9 +1358,9 @@ static void draw_b_bone(const short dt, int armflag, int boneflag, short constfl
 		zwidth = pchan->bone->zwidth;
 	}
 	else {
-		xwidth = ebone->xwidth;
-		length = ebone->length;
-		zwidth = ebone->zwidth;
+		xwidth = ((BoneData*)eelement->custom)->xwidth;
+		length = ((BoneData*)eelement->custom)->length;
+		zwidth = ((BoneData*)eelement->custom)->zwidth;
 	}
 
 	/* draw points only if... */
@@ -1296,7 +1402,7 @@ static void draw_b_bone(const short dt, int armflag, int boneflag, short constfl
 		else
 			UI_ThemeColor(TH_BONE_SOLID);
 
-		draw_b_bone_boxes(OB_SOLID, pchan, xwidth, length, zwidth);
+		draw_b_element_boxes(OB_SOLID, pchan, xwidth, length, zwidth);
 
 		/* disable solid drawing */
 		glDisable(GL_COLOR_MATERIAL);
@@ -1320,7 +1426,7 @@ static void draw_b_bone(const short dt, int armflag, int boneflag, short constfl
 			}
 		}
 
-		draw_b_bone_boxes(OB_WIRE, pchan, xwidth, length, zwidth);
+		draw_b_element_boxes(OB_WIRE, pchan, xwidth, length, zwidth);
 	}
 }
 
@@ -1355,8 +1461,8 @@ static void draw_wire_bone_segments(bPoseChannel *pchan, Mat4 *bbones, float len
 	}
 }
 
-static void draw_wire_bone(const short dt, int armflag, int boneflag, short constflag, unsigned int id,
-                           bPoseChannel *pchan, EditBone *ebone)
+static void draw_wire_element(const short dt, int armflag, int boneflag, short constflag, unsigned int id,
+                           bPoseChannel *pchan, EditArmatureElement *eelement)
 {
 	Mat4 bbones_array[MAX_BBONE_SUBDIV];
 	Mat4 *bbones = NULL;
@@ -1373,7 +1479,7 @@ static void draw_wire_bone(const short dt, int armflag, int boneflag, short cons
 		}
 	}
 	else
-		length = ebone->length;
+		length = ((BoneData*)eelement->custom)->length;
 
 	/* draw points only if... */
 	if (armflag & ARM_EDITMODE) {
@@ -1494,7 +1600,7 @@ static void draw_wire_muscle(const short dt, int armflag, int muscleflag, short 
     draw_wire_muscle_segments(pmuscle, bmuscles, length, segments);
 }
 
-static void draw_bone(const short dt, int armflag, int boneflag, short constflag, unsigned int id, float length)
+static void draw_element(const short dt, int armflag, int boneflag, short constflag, unsigned int id, float length)
 {
 
 	/* Draw a 3d octahedral bone, we use normalized space based on length,
@@ -2427,10 +2533,16 @@ static void get_matrix_editmuscle(EditMuscle *emuscle, float bmat[4][4])
     ED_armature_emuscle_to_mat4(emuscle, bmat);
 }
 
+static void get_matrix_editarmatureelement(EditArmatureElement *eelement, float bmat[4][4])
+{
+    eelement->length = len_v3v3(eelement->tail, eelement->head);
+    ED_armature_eelement_to_mat4(eelement, bmat);
+}
+
 static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const short dt)
 {
 	RegionView3D *rv3d = ar->regiondata;
-	EditArmatureElement *eElement;
+	EditArmatureElement *eelement;
 	bArmature *arm = ob->data;
 	float smat[4][4], imat[4][4], bmat[4][4];
 	unsigned int index;
@@ -2454,11 +2566,11 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 
 		if (v3d->zbuf) glDisable(GL_DEPTH_TEST);
 
-		for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
-			if (eElement->layer & arm->layer) {
-				if ((eElement->flag & (BONE_HIDDEN_A | BONE_NO_DEFORM)) == 0) {
-					if (eElement->flag & (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL))
-						draw_sphere_bone_dist(smat, imat, NULL, eElement);
+		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
+			if (eelement->layer & arm->layer) {
+				if ((eelement->flag & (BONE_HIDDEN_A | BONE_NO_DEFORM)) == 0) {
+					if (eelement->flag & (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL))
+						draw_sphere_element_dist(smat, imat, NULL, eelement);
 				}
 			}
 		}
@@ -2470,31 +2582,31 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 
 	/* if solid we draw it first */
 	if ((dt > OB_WIRE) && (arm->drawtype != ARM_LINE)) {
-		for (eElement = arm->edbo->first, index = 0; eElement; eElement = eElement->next, index++) {
-			if (eElement->layer & arm->layer) {
-				if ((eElement->flag & BONE_HIDDEN_A) == 0) {
+		for (eelement = arm->edbo->first, index = 0; eelement; eelement = eelement->next, index++) {
+			if (eelement->layer & arm->layer) {
+				if ((eelement->flag & BONE_HIDDEN_A) == 0) {
 					glPushMatrix();
-					get_matrix_editbone(eElement, bmat);
+					get_matrix_editarmatureelement(eelement, bmat);
 					glMultMatrixf(bmat);
 
 					/* catch exception for bone with hidden parent */
-					flag = eElement->flag;
-					if ((eElement->parent) && !EBONE_VISIBLE(arm, eElement->parent)) {
+					flag = eelement->flag;
+					if ((eelement->parent) && !EBONE_VISIBLE(arm, eelement->parent)) {
 						flag &= ~BONE_CONNECTED;
 					}
 
 					/* set temporary flag for drawing bone as active, but only if selected */
-					if (eElement == arm->act_edbone)
+					if (eelement == arm->act_edbone)
 						flag |= BONE_DRAW_ACTIVE;
 
 					if (arm->drawtype == ARM_ENVELOPE)
-						draw_sphere_bone(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
+						draw_sphere_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eelement);
 					else if (arm->drawtype == ARM_B_BONE)
-						draw_b_bone(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
+						draw_b_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eelement);
 					else if (arm->drawtype == ARM_WIRE)
-						draw_wire_bone(OB_SOLID, arm->flag, flag, 0, index, NULL, eElement);
+						draw_wire_element(OB_SOLID, arm->flag, flag, 0, index, NULL, eelement);
 					else {
-						draw_bone(OB_SOLID, arm->flag, flag, 0, index, eElement->length);
+						draw_element(OB_SOLID, arm->flag, flag, 0, index, ((BoneData*)eelement->custom)->length);
 					}
 
 					glPopMatrix();
@@ -2515,51 +2627,51 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 	else if (arm->flag & ARM_EDITMODE)
 		index = 0;  /* do selection codes */
 
-	for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
-		arm->layer_used |= eElement->layer;
-		if (eElement->layer & arm->layer) {
-			if ((eElement->flag & BONE_HIDDEN_A) == 0) {
+	for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
+		arm->layer_used |= eelement->layer;
+		if (eelement->layer & arm->layer) {
+			if ((eelement->flag & BONE_HIDDEN_A) == 0) {
 
 				/* catch exception for bone with hidden parent */
-				flag = eElement->flag;
-				if ((eElement->parent) && !EBONE_VISIBLE(arm, eElement->parent)) {
+				flag = eelement->flag;
+				if ((eelement->parent) && !EBONE_VISIBLE(arm, eelement->parent)) {
 					flag &= ~BONE_CONNECTED;
 				}
 
 				/* set temporary flag for drawing bone as active, but only if selected */
-				if (eElement == arm->act_edbone)
+				if (eelement == arm->act_edbone)
 					flag |= BONE_DRAW_ACTIVE;
 
 				if (arm->drawtype == ARM_ENVELOPE) {
 					if (dt < OB_SOLID)
-						draw_sphere_bone_wire(smat, imat, arm->flag, flag, 0, index, NULL, eElement);
+						draw_sphere_bone_wire(smat, imat, arm->flag, flag, 0, index, NULL, eelement);
 				}
 				else {
 					glPushMatrix();
-					get_matrix_editbone(eElement, bmat);
+					get_matrix_editbone(eelement, bmat);
 					glMultMatrixf(bmat);
 
 					if (arm->drawtype == ARM_LINE)
-						draw_line_bone(arm->flag, flag, 0, index, NULL, eElement);
+						draw_line_element(arm->flag, flag, 0, index, NULL, eelement);
 					else if (arm->drawtype == ARM_WIRE)
-						draw_wire_bone(OB_WIRE, arm->flag, flag, 0, index, NULL, eElement);
+						draw_wire_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eelement);
 					else if (arm->drawtype == ARM_B_BONE)
-						draw_b_bone(OB_WIRE, arm->flag, flag, 0, index, NULL, eElement);
+						draw_b_element(OB_WIRE, arm->flag, flag, 0, index, NULL, eelement);
 					else
-						draw_bone(OB_WIRE, arm->flag, flag, 0, index, eElement->length);
+						draw_element(OB_WIRE, arm->flag, flag, 0, index, eelement->length);
 
 					glPopMatrix();
 				}
 
 				/* offset to parent */
-				if (eElement->parent) {
+				if (eelement->parent) {
 					UI_ThemeColor(TH_WIRE_EDIT);
 					GPU_select_load_id(-1);  /* -1 here is OK! */
 					setlinestyle(3);
 
 					glBegin(GL_LINES);
-					glVertex3fv(eElement->parent->tail);
-					glVertex3fv(eElement->head);
+					glVertex3fv(eelement->parent->tail);
+					glVertex3fv(eelement->head);
 					glEnd();
 
 					setlinestyle(0);
@@ -2591,27 +2703,27 @@ static void draw_earmature_elements(View3D *v3d, ARegion *ar, Object *ob, const 
 
 			if (v3d->zbuf) glDisable(GL_DEPTH_TEST);
 
-			for (eElement = arm->edbo->first; eElement; eElement = eElement->next) {
-				if (eElement->layer & arm->layer) {
-					if ((eElement->flag & BONE_HIDDEN_A) == 0) {
+			for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
+				if (eelement->layer & arm->layer) {
+					if ((eelement->flag & BONE_HIDDEN_A) == 0) {
 
-						UI_GetThemeColor3ubv((eElement->flag & BONE_SELECTED) ? TH_TEXT_HI : TH_TEXT, col);
+						UI_GetThemeColor3ubv((eelement->flag & BONE_SELECTED) ? TH_TEXT_HI : TH_TEXT, col);
 
 						/*	Draw name */
 						if (arm->flag & ARM_DRAWNAMES) {
-							mid_v3_v3v3(vec, eElement->head, eElement->tail);
+							mid_v3_v3v3(vec, eelement->head, eelement->tail);
 							glRasterPos3fv(vec);
-							view3d_cached_text_draw_add(vec, eElement->name, strlen(eElement->name), 10, 0, col);
+							view3d_cached_text_draw_add(vec, eelement->name, strlen(eelement->name), 10, 0, col);
 						}
 						/*	Draw additional axes */
 						if (arm->flag & ARM_DRAWAXES) {
 							glPushMatrix();
-							get_matrix_editbone(eElement, bmat);
-							bone_matrix_translate_y(bmat, eElement->length);
+							get_matrix_editbone(eelement, bmat);
+							bone_matrix_translate_y(bmat, ((BoneData*)eelement->custom)->length);
 							glMultMatrixf(bmat);
 
 							glColor3ubv(col);
-							drawaxes(eElement->length * 0.25f, OB_ARROWS);
+							drawaxes(eelement->length * 0.25f, OB_ARROWS);
 
 							glPopMatrix();
 						}
