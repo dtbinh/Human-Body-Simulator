@@ -626,6 +626,15 @@ static void rna_def_bone_common(StructRNA *srna, int editbone)
 	RNA_def_property_update(prop, 0, "rna_Armature_update_data");
 }
 
+static void rna_def_armatureelement(BlenderRNA *brna)
+{
+    StructRNA *srna;
+    PropertyRNA *prop;
+
+    srna = RNA_def_struct(brna, "ArmatureElement", NULL);
+    RNA_def_struct_ui_text(srna, "Armature Element", "Armature element in an Armature datablock");
+}
+
 /* err... bones should not be directly edited (only editbones should be...) */
 static void rna_def_bone(BlenderRNA *brna)
 {
