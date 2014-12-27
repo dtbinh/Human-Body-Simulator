@@ -1128,62 +1128,62 @@ static void RIG_removeUneededOffsets(RigGraph *rg)
 	}
 }
 
-static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditBone *root_bone, RigNode *starting_node, bool selected)
+static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureElement *root_element, RigNode *starting_node, bool selected)
 {
-	EditBone *bone, *last_bone = root_bone;
+	EditArmatureElement *element, *last_element = root_element;
 	RigArc *arc = NULL;
 	int contain_head = 0;
 
-	for (bone = root_bone; bone; bone = nextEditBoneChild(list, bone, 0)) {
+	for (element = root_element; element; element = nextEditBoneChild(list, element, 0)) {
 		int nb_children;
 
-		if (selected == 0 || (bone->flag & BONE_SELECTED)) {
-			if ((bone->flag & BONE_NO_DEFORM) == 0) {
-				BLI_ghash_insert(rg->bones_map, bone->name, bone);
+		if (selected == 0 || (element->flag & BONE_SELECTED)) {
+			if ((element->flag & BONE_NO_DEFORM) == 0) {
+				BLI_ghash_insert(rg->bones_map, element->name, element);
 
 				if (arc == NULL) {
 					arc = newRigArc(rg);
 
 					if (starting_node == NULL) {
-						starting_node = newRigNodeHead(rg, arc, root_bone->head);
+						starting_node = newRigNodeHead(rg, arc, root_element->head);
 					}
 					else {
 						addRigNodeHead(rg, arc, starting_node);
 					}
 				}
 
-				if (bone->parent && (bone->flag & BONE_CONNECTED) == 0) {
-					RIG_addEdgeToArc(arc, bone->head, NULL);
+				if (element->parent && (element->flag & BONE_CONNECTED) == 0) {
+					RIG_addEdgeToArc(arc, element->head, NULL);
 				}
 
-				RIG_addEdgeToArc(arc, bone->tail, bone);
+				RIG_addEdgeToArc(arc, element->tail, element);
 
-				last_bone = bone;
+				last_element = element;
 
-				if (strcmp(bone->name, "head") == 0) {
+				if (strcmp(element->name, "head") == 0) {
 					contain_head = 1;
 				}
 			}
-			else if ((bone->flag & BONE_EDITMODE_LOCKED) == 0) { /* ignore locked bones */
-				RIG_addControlBone(rg, bone);
+			else if ((element->flag & BONE_EDITMODE_LOCKED) == 0) { /* ignore locked bones */
+				RIG_addControlBone(rg, element);
 			}
 		}
 
-		nb_children = countEditBoneChildren(list, bone);
+		nb_children = countEditBoneChildren(list, element);
 		if (nb_children > 1) {
 			RigNode *end_node = NULL;
 			int i;
 
 			if (arc != NULL) {
-				end_node = newRigNodeTail(rg, arc, bone->tail);
+				end_node = newRigNodeTail(rg, arc, element->tail);
 			}
 			else {
-				end_node = newRigNode(rg, bone->tail);
+				end_node = newRigNode(rg, element->tail);
 			}
 
 			for (i = 0; i < nb_children; i++) {
-				root_bone = nextEditBoneChild(list, bone, i);
-				RIG_arcFromBoneChain(rg, list, root_bone, end_node, selected);
+				root_element = nextEditBoneChild(list, element, i);
+				RIG_arcFromBoneChain(rg, list, root_element, end_node, selected);
 			}
 
 			/* arc ends here, break */
@@ -1193,7 +1193,7 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditBone *root_bo
 
 	/* If the loop exited without forking */
 	if (arc != NULL && bone == NULL) {
-		newRigNodeTail(rg, arc, last_bone->tail);
+		newRigNodeTail(rg, arc, last_element->tail);
 	}
 
 	if (contain_head) {
@@ -1384,7 +1384,7 @@ static RigGraph *armatureSelectedToGraph(bContext *C, Object *ob, bArmature *arm
 {
 	Object *obedit = CTX_data_edit_object(C);
 	Scene *scene = CTX_data_scene(C);
-	EditBone *ebone;
+	EditArmatureElement *eelement;
 	RigGraph *rg;
 
 	rg = newRigGraph();
@@ -1394,16 +1394,16 @@ static RigGraph *armatureSelectedToGraph(bContext *C, Object *ob, bArmature *arm
 	}
 	else {
 		rg->editbones = MEM_callocN(sizeof(ListBase), "EditBones");
-		make_boneList(rg->editbones, &arm->bonebase, NULL, NULL);
+		make_elementList(rg->editbones, &arm->bonebase, NULL, NULL);
 		rg->flag |= RIG_FREE_BONELIST;
 	}
 
 	rg->ob = ob;
 
 	/* Do the rotations */
-	for (ebone = rg->editbones->first; ebone; ebone = ebone->next) {
-		if (ebone->parent == NULL) {
-			RIG_arcFromBoneChain(rg, rg->editbones, ebone, NULL, 1);
+	for (eelement = rg->editbones->first; eelement; eelement = eelement->next) {
+		if (eelement->parent == NULL) {
+			RIG_arcFromBoneChain(rg, rg->editbones, eelement, NULL, 1);
 		}
 	}
 
