@@ -48,6 +48,9 @@ struct Bone;
 struct EditMuscle;
 struct Muscle;
 
+struct EditArmatureElement;
+struct ArmatureElement;
+
 struct ListBase;
 struct LinkData;
 
