@@ -64,7 +64,7 @@ typedef struct ArmatureElement {
     ListBase                childbase;
     char                    name[64];
 
-    AETypes                 type;
+    int                     type;
 
     float                   roll;
     float                   head[3];
