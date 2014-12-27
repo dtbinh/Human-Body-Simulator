@@ -83,7 +83,7 @@ typedef struct ArmatureElement {
     int                     layer;
     short                   segments;
 
-    short                   pad[1];
+    char                   pad[6];
 } ArmatureElement;
 
 typedef struct BoneData {
