@@ -174,11 +174,11 @@ typedef struct bArmature {
 	 * - from the user perspective active == last selected
 	 * - active should be ignored when not visible (hidden layer) */
 
-	Bone       *act_bone;               /* active bone */
-	struct EditBone *act_edbone;        /* active editbone (in editmode) */
+	ArmatureElement *act_bone;               /* active bone */
+	struct EditArmatureElement *act_edbone;        /* active editbone (in editmode) */
 
-    Muscle     *act_muscle;
-	struct EditMuscle *act_edmuscle;
+    ArmatureElement *act_muscle;
+	struct EditArmatureElement *act_edmuscle;
 
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;
