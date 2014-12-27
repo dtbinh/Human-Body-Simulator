@@ -208,7 +208,8 @@ bool mouse_armature(struct bContext *C, const int mval[2], bool extend, bool des
 int join_armature_exec(struct bContext *C, struct wmOperator *op);
 struct Bone *get_indexed_bone(struct Object *ob, int index);
 struct Muscle *get_indexed_muscle(struct Object *ob, int index);
-float ED_rollBoneToVector(EditBone *bone, const float new_up_axis[3], const bool axis_only);
+//float ED_rollBoneToVector(EditBone *bone, const float new_up_axis[3], const bool axis_only);
+float ED_rollElementToVector(EditArmatureElement *element, const float new_up_axis[3], const bool axis_only);
 EditBone *ED_armature_bone_find_name(const ListBase *edbo, const char *name);
 EditBone *ED_armature_bone_get_mirrored(const struct ListBase *edbo, EditBone *ebo);
 EditMuscle *ED_armature_muscle_find_name(const ListBase *edmu, const char *name);

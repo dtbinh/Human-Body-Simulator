@@ -200,14 +200,14 @@ void ED_armature_origin_set(Scene *scene, Object *ob, float cursor[3], int cente
 /* adjust bone roll to align Z axis with vector
  * vec is in local space and is normalized
  */
-float ED_rollBoneToVector(EditBone *bone, const float align_axis[3], const bool axis_only)
+float ED_rollElementToVector(EditArmatureElement *element, const float align_axis[3], const bool axis_only)
 {
 	float mat[3][3], nor[3];
 	float vec[3], align_axis_proj[3], roll = 0.0f;
 
 	BLI_ASSERT_UNIT_V3(align_axis);
 
-	sub_v3_v3v3(nor, bone->tail, bone->head);
+	sub_v3_v3v3(nor, element->tail, element->head);
 
 	/* If tail == head or the bone is aligned with the axis... */
 	if (normalize_v3(nor) <= FLT_EPSILON || (fabsf(dot_v3v3(align_axis, nor)) >= (1.0f - FLT_EPSILON))) {
