@@ -215,6 +215,7 @@ extern StructRNA RNA_DynamicPaintCanvasSettings;
 extern StructRNA RNA_DynamicPaintModifier;
 extern StructRNA RNA_DynamicPaintSurface;
 extern StructRNA RNA_EdgeSplitModifier;
+extern StructRNA RNA_EditArmatureElement;
 extern StructRNA RNA_EditBone;
 extern StructRNA RNA_EffectSequence;
 extern StructRNA RNA_EffectorWeights;

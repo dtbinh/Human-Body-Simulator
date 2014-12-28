@@ -198,7 +198,7 @@ static char *rna_Bone_path(PointerRNA *ptr)
 	BLI_strescape(name_esc, bone->name, sizeof(name_esc));
 
 	/* special exception for trying to get the path where ID-block is Object
-	 * - this will be assumed to be from a Pose Bone...
+	 * - this will be assumed to be from a Pose  ...
 	 */
 	if (id) {
 		if (GS(id->name) == ID_OB) {
@@ -633,6 +633,16 @@ static void rna_def_armatureelement(BlenderRNA *brna)
 
     srna = RNA_def_struct(brna, "ArmatureElement", NULL);
     RNA_def_struct_ui_text(srna, "Armature Element", "Armature element in an Armature datablock");
+    RNA_def_struct_ui_icon(srna, ICON_BONE_DATA);
+}
+
+static void rna_def_editarmatureelement(BlenderRNA *brna)
+{
+    StructRNA *srna;
+    PropertyRNA *prop;
+
+    srna = RNA_def_struct(brna, "EditArmatureElement", NULL);
+    RNA_def_struct_ui_text(srna, "Edit Armature Element", "Editmode armature element in an Armature datablock");
     RNA_def_struct_ui_icon(srna, ICON_BONE_DATA);
 }
 
