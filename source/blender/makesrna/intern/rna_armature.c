@@ -497,7 +497,7 @@ static void rna_def_bone_common(StructRNA *srna, int editbone)
 
 	/* flags */
 	prop = RNA_def_property(srna, "layers", PROP_BOOLEAN, PROP_LAYER_MEMBER);
-	RNA_def_property_boolean_sdna(prop, NULL, "layer", 1);
+	RNA_def_property_boolean_sdna(prop, NULL, "layer", 1);\
 	RNA_def_property_array(prop, 32);
 	if (editbone) RNA_def_property_boolean_funcs(prop, NULL, "rna_EditBone_layer_set");
 	else RNA_def_property_boolean_funcs(prop, NULL, "rna_Bone_layer_set");
@@ -644,6 +644,9 @@ static void rna_def_editarmatureelement(BlenderRNA *brna)
     srna = RNA_def_struct(brna, "EditArmatureElement", NULL);
     RNA_def_struct_ui_text(srna, "Edit Armature Element", "Editmode armature element in an Armature datablock");
     RNA_def_struct_ui_icon(srna, ICON_BONE_DATA);
+
+    RNA_api_armature_edit_bone(srna);
+
 }
 
 /* err... bones should not be directly edited (only editbones should be...) */
@@ -828,7 +831,7 @@ static void rna_def_edit_bone(BlenderRNA *brna)
 	                         "in armature space (WARNING: does not include/support bone's length/size)");
 	RNA_def_property_float_funcs(prop, "rna_EditBone_matrix_get", "rna_EditBone_matrix_set", NULL);
 
-	RNA_api_armature_edit_bone(srna);
+//	RNA_api_armature_edit_bone(srna);
 
 	RNA_define_verify_sdna(1);
 }
