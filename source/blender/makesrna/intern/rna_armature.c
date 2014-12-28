@@ -700,7 +700,7 @@ static void rna_def_armatureelement_common(StructRNA *srna, int editelement)
 
     /* flags */
     prop = RNA_def_property(srna, "layers", PROP_BOOLEAN, PROP_LAYER_MEMBER);
-    RNA_def_property_boolean_sdna(prop, NULL, "layer", 1);
+	RNA_def_property_boolean_sdna(prop, NULL, "layer", 1);\
     RNA_def_property_array(prop, 32);
     if (editelement) RNA_def_property_boolean_funcs(prop, NULL, "rna_EditArmatureElement_layer_set");
     else RNA_def_property_boolean_funcs(prop, NULL, "rna_ArmatureElement_layer_set");
