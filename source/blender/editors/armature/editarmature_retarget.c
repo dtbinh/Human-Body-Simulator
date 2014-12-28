@@ -207,7 +207,7 @@ static float rollBoneByQuatJoint(RigEdge *edge, RigEdge *previous, float qrot[4]
 		/* real qroll between normal and up_axis */
 		rotation_between_vecs_to_quat(qroll, new_up_axis, normal);
 
-		return ED_rollBoneToVector(edge->bone, normal, false);
+		return ED_rollElementToVector(edge->bone, normal, false);
 	}
 }
 
@@ -218,7 +218,7 @@ float rollBoneByQuat(EditBone *bone, float old_up_axis[3], float qrot[4])
 	copy_v3_v3(new_up_axis, old_up_axis);
 	mul_qt_v3(qrot, new_up_axis);
 
-	return ED_rollBoneToVector(bone, new_up_axis, false);
+	return ED_rollElementToVector(bone, new_up_axis, false);
 }
 
 /************************************ DESTRUCTORS ******************************************************/
