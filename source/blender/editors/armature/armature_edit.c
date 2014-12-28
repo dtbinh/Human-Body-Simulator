@@ -383,18 +383,18 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 		if (axis_flip) negate_v3(vec);
 
 		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
-			if (EBONE_VISIBLE(arm, eelement) && EBONE_EDITABLE(eelement)) {
+			if (EELEMENT_VISIBLE(arm, eelement) && EELEMENT_EDITABLE(eelement)) {
 				/* roll func is a callback which assumes that all is well */
-				eelement->roll = ED_rollBoneToVector(eelement, vec, axis_only);
+				eelement->roll = ED_rollElementToVector(eelement, vec, axis_only);
 			}
 		}
 	}
 
 	if (arm->flag & ARM_MIRROR_EDIT) {
 		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
-			if ((EBONE_VISIBLE(arm, eelement) && EBONE_EDITABLE(eelement)) == 0) {
+			if ((EELEMENT_VISIBLE(arm, eelement) && EELEMENT_EDITABLE(eelement)) == 0) {
 				EditArmatureElement *eelement_mirr = ED_armature_bone_get_mirrored(arm->edbo, eelement);
-				if (eelement_mirr && (EBONE_VISIBLE(arm, eelement_mirr) && EBONE_EDITABLE(eelement_mirr))) {
+				if (eelement_mirr && (EELEMENT_VISIBLE(arm, eelement_mirr) && EELEMENT_EDITABLE(eelement_mirr))) {
 					eelement->roll = -eelement_mirr->roll;
 				}
 			}
