@@ -91,11 +91,7 @@ void ED_armature_transform_bones(struct bArmature *arm, float mat[4][4])
 		float tmat[3][3];
 
 		/* find the current bone's roll matrix */
-<<<<<<< HEAD
 		ED_armature_eelement_to_mat3(eelem, tmat);
-=======
-		ED_armature_ebone_to_mat3(ebone, tmat);
->>>>>>> Testing additions
 
 		/* transform the roll matrix */
 		mul_m3_m3m3(tmat, mat3, tmat);
@@ -105,19 +101,11 @@ void ED_armature_transform_bones(struct bArmature *arm, float mat[4][4])
 		mul_m4_v3(mat, eelem->tail);
 
 		/* apply the transformed roll back */
-<<<<<<< HEAD
 		mat3_to_vec_roll(tmat, NULL, &eelem->roll);
 
 		eelem->rad_head *= scale;
 		eelem->rad_tail *= scale;
 		((BoneData *)eelem->data)->dist     *= scale;
-=======
-		mat3_to_vec_roll(tmat, NULL, &ebone->roll);
-
-		ebone->rad_head *= scale;
-		ebone->rad_tail *= scale;
-		ebone->dist     *= scale;
->>>>>>> Testing additions
 
 		/* we could be smarter and scale by the matrix along the x & z axis */
 		eelem->xwidth   *= scale;
@@ -287,7 +275,11 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 	float imat[3][3];
 
 	bArmature *arm = ob->data;
+<<<<<<< HEAD
 	EditArmatureElement *eelement;
+=======
+	EditArmatureElement *ebone;
+>>>>>>> Now it gets ugly
 
 	copy_m3_m4(imat, ob->obmat);
 	invert_m3(imat);
@@ -309,7 +301,11 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 				sub_v3_v3v3(cursor_rel, cursor_local, eelement->head);
 				if (axis_flip) negate_v3(cursor_rel);
 				if (normalize_v3(cursor_rel) != 0.0f) {
+<<<<<<< HEAD
 					eelement->roll = ED_rollElementToVector(eelement, cursor_rel, axis_only);
+=======
+					ebone->roll = ED_rollElementToVector(ebone, cursor_rel, axis_only);
+>>>>>>> Now it gets ugly
 				}
 			}
 		}
@@ -321,7 +317,11 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 				bool is_edit_parent = (EELEMENT_VISIBLE(arm, eelement->parent) && EELEMENT_EDITABLE(eelement->parent));
 
 				if (is_edit || is_edit_parent) {
+<<<<<<< HEAD
 					EditArmatureElement *eelement_other = eelement->parent;
+=======
+					EditArmatureElement *ebone_other = ebone->parent;
+>>>>>>> Now it gets ugly
 					float dir_a[3];
 					float dir_b[3];
 					float vec[3];
@@ -376,17 +376,18 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 		}
 		else if (type == CALC_ROLL_ACTIVE) {
 			float mat[3][3];
+<<<<<<< HEAD
 			eelement = (EditArmatureElement *)arm->act_edelement;
 			if (eelement == NULL) {
+=======
+			ebone = (EditArmatureElement *)arm->act_edbone;
+			if (ebone == NULL) {
+>>>>>>> Now it gets ugly
 				BKE_report(op->reports, RPT_ERROR, "No active bone set");
 				return OPERATOR_CANCELLED;
 			}
 
-<<<<<<< HEAD
 			ED_armature_eelement_to_mat3(eelement, mat);
-=======
-			ED_armature_ebone_to_mat3(ebone, mat);
->>>>>>> Testing additions
 			copy_v3_v3(vec, mat[2]);
 		}
 		else { /* Axis */
@@ -398,13 +399,8 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 
 		if (axis_flip) negate_v3(vec);
 
-<<<<<<< HEAD
 		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
 			if (EELEMENT_VISIBLE(arm, eelement) && EELEMENT_EDITABLE(eelement)) {
-=======
-		for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-			if (EBONE_VISIBLE(arm, ebone) && EBONE_EDITABLE(ebone)) {
->>>>>>> Testing additions
 				/* roll func is a callback which assumes that all is well */
 				eelement->roll = ED_rollElementToVector(eelement, vec, axis_only);
 			}
@@ -412,11 +408,19 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 	}
 
 	if (arm->flag & ARM_MIRROR_EDIT) {
+<<<<<<< HEAD
 		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
 			if ((EELEMENT_VISIBLE(arm, eelement) && EELEMENT_EDITABLE(eelement)) == 0) {
 				EditArmatureElement *eelement_mirr = ED_armature_bone_get_mirrored(arm->edbo, eelement);
 				if (eelement_mirr && (EELEMENT_VISIBLE(arm, eelement_mirr) && EELEMENT_EDITABLE(eelement_mirr))) {
 					eelement->roll = -eelement_mirr->roll;
+=======
+		for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
+			if ((EBONE_VISIBLE(arm, ebone) && EBONE_EDITABLE(ebone)) == 0) {
+				EditArmatureElement *ebone_mirr = ED_armature_bone_get_mirrored(arm->edbo, ebone);
+				if (ebone_mirr && (EBONE_VISIBLE(arm, ebone_mirr) && EBONE_EDITABLE(ebone_mirr))) {
+					ebone->roll = -ebone_mirr->roll;
+>>>>>>> Now it gets ugly
 				}
 			}
 		}
@@ -455,13 +459,8 @@ void ARMATURE_OT_calculate_roll(wmOperatorType *ot)
 typedef struct EditBonePoint {
 	struct EditBonePoint *next, *prev;
 
-<<<<<<< HEAD
 	EditArmatureElement *head_owner;       /* EditBone which uses this point as a 'head' point */
 	EditArmatureElement *tail_owner;       /* EditBone which uses this point as a 'tail' point */
-=======
-	EditBone *head_owner;       /* EditBone which uses this point as a 'head' point */
-	EditBone *tail_owner;       /* EditBone which uses this point as a 'tail' point */
->>>>>>> Testing additions
 
 	float vec[3];               /* the actual location of the point in local/EditMode space */
 } EditBonePoint;
@@ -585,11 +584,7 @@ static int armature_fill_bones_exec(bContext *C, wmOperator *op)
 	{
 		if (!(ebone->flag & ELEMENT_CONNECTED) && (ebone->flag & ELEMENT_ROOTSEL))
 			fill_add_joint(ebone, 0, &points);
-<<<<<<< HEAD
 		if (ebone->flag & ELEMENT_TIPSEL)
-=======
-		if (ebone->flag & BONE_TIPSEL)
->>>>>>> Testing additions
 			fill_add_joint(ebone, 1, &points);
 	}
 	CTX_DATA_END;
@@ -678,11 +673,7 @@ static int armature_fill_bones_exec(bContext *C, wmOperator *op)
 
 		/* add new bone and parent it to the appropriate end */
 		if (headtail) {
-<<<<<<< HEAD
 			EditArmatureElement *newbone = add_points_bone(obedit, head, tail);
-=======
-			EditBone *newbone = add_points_bone(obedit, head, tail);
->>>>>>> Testing additions
 
 			/* do parenting (will need to set connected flag too) */
 			if (headtail == 2) {
@@ -778,13 +769,8 @@ static void bones_merge(Object *obedit, EditArmatureElement *start, EditArmature
 	newbone->parent = start->parent;
 
 	/* TODO, copy more things to the new bone */
-<<<<<<< HEAD
 	newbone->flag = start->flag & (ELEMENT_HINGE | ELEMENT_NO_DEFORM | ELEMENT_NO_SCALE |
 	                               ELEMENT_NO_CYCLICOFFSET | ELEMENT_NO_LOCAL_LOCATION | ELEMENT_DONE);
-=======
-	newbone->flag = start->flag & (BONE_HINGE | BONE_NO_DEFORM | BONE_NO_SCALE |
-	                               BONE_NO_CYCLICOFFSET | BONE_NO_LOCAL_LOCATION | BONE_DONE);
->>>>>>> Testing additions
 
 	/* step 2a: reparent any side chains which may be parented to any bone in the chain of bones to merge
 	 *	- potentially several tips for side chains leading to some tree exist...
@@ -824,11 +810,7 @@ static void bones_merge(Object *obedit, EditArmatureElement *start, EditArmature
 		bone_free(arm, ebo);
 	}
 
-<<<<<<< HEAD
 	newbone->flag |= (ELEMENT_ROOTSEL | ELEMENT_TIPSEL | ELEMENT_SELECTED);
-=======
-	newbone->flag |= (BONE_ROOTSEL | BONE_TIPSEL | BONE_SELECTED);
->>>>>>> Testing additions
 	ED_armature_sync_selection(arm->edbo);
 }
 
@@ -848,11 +830,7 @@ static int armature_merge_exec(bContext *C, wmOperator *op)
 		/* go down chains, merging bones */
 		ListBase chains = {NULL, NULL};
 		LinkData *chain, *nchain;
-<<<<<<< HEAD
 		EditArmatureElement *ebo;
-=======
-		EditBone *ebo;
->>>>>>> Testing additions
 
 		armature_tag_select_mirrored(arm);
 
@@ -862,13 +840,8 @@ static int armature_merge_exec(bContext *C, wmOperator *op)
 
 		/* each 'chain' is the last bone in the chain (with no children) */
 		for (chain = chains.first; chain; chain = nchain) {
-<<<<<<< HEAD
 			EditArmatureElement *bstart = NULL, *bend = NULL;
 			EditArmatureElement *bchild = NULL, *child = NULL;
-=======
-			EditBone *bstart = NULL, *bend = NULL;
-			EditBone *bchild = NULL, *child = NULL;
->>>>>>> Testing additions
 
 			/* temporarily remove chain from list of chains */
 			nchain = chain->next;
@@ -955,11 +928,7 @@ void ARMATURE_OT_merge(wmOperatorType *ot)
 /* helper to clear BONE_TRANSFORM flags */
 static void armature_clear_swap_done_flags(bArmature *arm)
 {
-<<<<<<< HEAD
 	EditArmatureElement *ebone;
-=======
-	EditBone *ebone;
->>>>>>> Testing additions
 
 	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
 		ebone->flag &= ~ELEMENT_TRANSFORM;
@@ -988,11 +957,7 @@ static int armature_switch_direction_exec(bContext *C, wmOperator *UNUSED(op))
 
 	/* loop over chains, only considering selected and visible bones */
 	for (chain = chains.first; chain; chain = chain->next) {
-<<<<<<< HEAD
 		EditArmatureElement *ebo, *child = NULL, *parent = NULL;
-=======
-		EditBone *ebo, *child = NULL, *parent = NULL;
->>>>>>> Testing additions
 
 		/* loop over bones in chain */
 		for (ebo = chain->data; ebo; ebo = parent) {
@@ -1019,11 +984,7 @@ static int armature_switch_direction_exec(bContext *C, wmOperator *UNUSED(op))
 					if ((child) && equals_v3v3(ebo->head, child->tail))
 						ebo->flag |= ELEMENT_CONNECTED;
 					else
-<<<<<<< HEAD
 						ebo->flag &= ~ELEMENT_CONNECTED;
-=======
-						ebo->flag &= ~BONE_CONNECTED;
->>>>>>> Testing additions
 
 					/* get next bones
 					 *	- child will become the new parent of next bone
@@ -1087,11 +1048,7 @@ static void fix_connected_bone(EditArmatureElement *ebone)
 {
 	float diff[3];
 
-<<<<<<< HEAD
 	if (!(ebone->parent) || !(ebone->flag & ELEMENT_CONNECTED) || equals_v3v3(ebone->parent->tail, ebone->head))
-=======
-	if (!(ebone->parent) || !(ebone->flag & BONE_CONNECTED) || equals_v3v3(ebone->parent->tail, ebone->head))
->>>>>>> Testing additions
 		return;
 
 	/* if the parent has moved we translate child's head and tail accordingly */
@@ -1103,11 +1060,7 @@ static void fix_connected_bone(EditArmatureElement *ebone)
 /* helper to recursively find chains of connected bones starting at ebone and fix their position */
 static void fix_editbone_connected_children(ListBase *edbo, EditArmatureElement *ebone)
 {
-<<<<<<< HEAD
 	EditArmatureElement *selbone;
-=======
-	EditBone *selbone;
->>>>>>> Testing additions
 
 	for (selbone = edbo->first; selbone; selbone = selbone->next) {
 		if ((selbone->parent) && (selbone->parent == ebone) && (selbone->flag & ELEMENT_CONNECTED)) {
@@ -1270,12 +1223,8 @@ void ARMATURE_OT_split(wmOperatorType *ot)
 static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	bArmature *arm;
-<<<<<<< HEAD
 	EditArmatureElement *curBone, *ebone_next;
-=======
-	EditBone *curBone, *ebone_next;
 	EditMuscle *curMuscle, *emuscle_next;
->>>>>>> Testing additions
 	bConstraint *con;
 	Object *obedit = CTX_data_edit_object(C); // XXX get from context
 	bool changed = false;
@@ -1293,15 +1242,9 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 		bMuscleChannel *pmuscle, *pmuscle_next;
 		for (pchan = obedit->pose->chanbase.first; pchan; pchan = pchan_next) {
 			pchan_next = pchan->next;
-<<<<<<< HEAD
 			curBone = ED_armature_armatureelement_find_name(arm->edbo, pchan->name);
 
 			if (curBone && (curBone->flag & ELEMENT_SELECTED) && (arm->layer & curBone->layer)) {
-=======
-			curBone = ED_armature_bone_find_name(arm->edbo, pchan->name);
-
-			if (curBone && (curBone->flag & BONE_SELECTED) && (arm->layer & curBone->layer)) {
->>>>>>> Testing additions
 				BKE_pose_channel_free(pchan);
 				BKE_pose_channels_hash_free(obedit->pose);
 				BLI_freelinkN(&obedit->pose->chanbase, pchan);
@@ -1342,7 +1285,7 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
                 BKE_pose_muscle_free(pmuscle);
                 BKE_pose_muscles_hash_free(obedit->pose);
                 BLI_freelinkN(&obedit->pose->musclebase, pmuscle);
-            }
+	}
 		}
 	}
 
@@ -1358,8 +1301,6 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 		}
 	}
 
-<<<<<<< HEAD
-=======
 	for (curMuscle = arm->edmu->first; curMuscle; curMuscle = emuscle_next) {
         emuscle_next = curMuscle->next;
         if (arm->layer & curMuscle->layer) {
@@ -1371,7 +1312,6 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
         }
 	}
 
->>>>>>> Testing additions
 	if (!changed)
 		return OPERATOR_CANCELLED;
 
@@ -1449,7 +1389,6 @@ static int armature_reveal_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	Object *obedit = CTX_data_edit_object(C);
 	bArmature *arm = obedit->data;
-<<<<<<< HEAD
 	EditArmatureElement *eelem;
 
 	for (eelem = arm->edbo->first; eelem; eelem = eelem->next) {
@@ -1457,15 +1396,6 @@ static int armature_reveal_exec(bContext *C, wmOperator *UNUSED(op))
 			if (eelem->flag & ELEMENT_HIDDEN_A) {
 				if (!(eelem->flag & ELEMENT_UNSELECTABLE)) {
 					eelem->flag |= (ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
-=======
-	EditBone *ebone;
-
-	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-		if (arm->layer & ebone->layer) {
-			if (ebone->flag & BONE_HIDDEN_A) {
-				if (!(ebone->flag & BONE_UNSELECTABLE)) {
-					ebone->flag |= (BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
->>>>>>> Testing additions
 				}
 				eelem->flag &= ~ELEMENT_HIDDEN_A;
 			}
