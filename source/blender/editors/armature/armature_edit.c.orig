@@ -275,11 +275,7 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 	float imat[3][3];
 
 	bArmature *arm = ob->data;
-<<<<<<< HEAD
 	EditArmatureElement *eelement;
-=======
-	EditArmatureElement *ebone;
->>>>>>> Now it gets ugly
 
 	copy_m3_m4(imat, ob->obmat);
 	invert_m3(imat);
@@ -301,11 +297,7 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 				sub_v3_v3v3(cursor_rel, cursor_local, eelement->head);
 				if (axis_flip) negate_v3(cursor_rel);
 				if (normalize_v3(cursor_rel) != 0.0f) {
-<<<<<<< HEAD
 					eelement->roll = ED_rollElementToVector(eelement, cursor_rel, axis_only);
-=======
-					ebone->roll = ED_rollElementToVector(ebone, cursor_rel, axis_only);
->>>>>>> Now it gets ugly
 				}
 			}
 		}
@@ -317,11 +309,7 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 				bool is_edit_parent = (EELEMENT_VISIBLE(arm, eelement->parent) && EELEMENT_EDITABLE(eelement->parent));
 
 				if (is_edit || is_edit_parent) {
-<<<<<<< HEAD
 					EditArmatureElement *eelement_other = eelement->parent;
-=======
-					EditArmatureElement *ebone_other = ebone->parent;
->>>>>>> Now it gets ugly
 					float dir_a[3];
 					float dir_b[3];
 					float vec[3];
@@ -378,11 +366,10 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 			float mat[3][3];
 <<<<<<< HEAD
 			eelement = (EditArmatureElement *)arm->act_edelement;
-			if (eelement == NULL) {
 =======
-			ebone = (EditArmatureElement *)arm->act_edbone;
-			if (ebone == NULL) {
->>>>>>> Now it gets ugly
+			eelement = (EditArmatureElement *)arm->act_edbone;
+>>>>>>> Warning: There are warnings
+			if (eelement == NULL) {
 				BKE_report(op->reports, RPT_ERROR, "No active bone set");
 				return OPERATOR_CANCELLED;
 			}
@@ -400,27 +387,31 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 		if (axis_flip) negate_v3(vec);
 
 		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
+<<<<<<< HEAD
 			if (EELEMENT_VISIBLE(arm, eelement) && EELEMENT_EDITABLE(eelement)) {
 				/* roll func is a callback which assumes that all is well */
 				eelement->roll = ED_rollElementToVector(eelement, vec, axis_only);
+=======
+			if (EBONE_VISIBLE(arm, eelement) && EBONE_EDITABLE(eelement)) {
+				/* roll func is a callback which assumes that all is well */
+				eelement->roll = ED_rollBoneToVector(eelement, vec, axis_only);
+>>>>>>> Warning: There are warnings
 			}
 		}
 	}
 
 	if (arm->flag & ARM_MIRROR_EDIT) {
-<<<<<<< HEAD
 		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
+<<<<<<< HEAD
 			if ((EELEMENT_VISIBLE(arm, eelement) && EELEMENT_EDITABLE(eelement)) == 0) {
 				EditArmatureElement *eelement_mirr = ED_armature_bone_get_mirrored(arm->edbo, eelement);
 				if (eelement_mirr && (EELEMENT_VISIBLE(arm, eelement_mirr) && EELEMENT_EDITABLE(eelement_mirr))) {
-					eelement->roll = -eelement_mirr->roll;
 =======
-		for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-			if ((EBONE_VISIBLE(arm, ebone) && EBONE_EDITABLE(ebone)) == 0) {
-				EditArmatureElement *ebone_mirr = ED_armature_bone_get_mirrored(arm->edbo, ebone);
-				if (ebone_mirr && (EBONE_VISIBLE(arm, ebone_mirr) && EBONE_EDITABLE(ebone_mirr))) {
-					ebone->roll = -ebone_mirr->roll;
->>>>>>> Now it gets ugly
+			if ((EBONE_VISIBLE(arm, eelement) && EBONE_EDITABLE(eelement)) == 0) {
+				EditArmatureElement *eelement_mirr = ED_armature_bone_get_mirrored(arm->edbo, eelement);
+				if (eelement_mirr && (EBONE_VISIBLE(arm, eelement_mirr) && EBONE_EDITABLE(eelement_mirr))) {
+>>>>>>> Warning: There are warnings
+					eelement->roll = -eelement_mirr->roll;
 				}
 			}
 		}

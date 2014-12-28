@@ -173,13 +173,37 @@ typedef struct EditMuscle {
     (((arm)->layer & (eelement)->layer) && !((eelement)->flag & ELEMENT_HIDDEN_A)) \
     )
 
+<<<<<<< HEAD
 #define EELEMENT_SELECTABLE(arm, eelement) (EELEMENT_VISIBLE(arm, eelement) && !(eelement->flag & ELEMENT_UNSELECTABLE))
+=======
+#define EELEMENT_VISIBLE(arm, eelement) ( \
+    CHECK_TYPE_INLINE(arm, bArmature *), \
+    CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
+    (((arm)->layer & (eelement)->layer) && !((eelement)->flag & BONE_HIDDEN_A)) \
+    )
+
+#define EBONE_SELECTABLE(arm, ebone) (EBONE_VISIBLE(arm, ebone) && !(ebone->flag & BONE_UNSELECTABLE))
+#define EMUSCLE_SELECTABLE(arm, emuscle) (EMUSCLE_VISIBLE(arm, emuscle) && !(emuscle->flag & MUSCLE_UNSELECTABLE))
+>>>>>>> Warning: There are warnings
 
 #define EELEMENT_EDITABLE(eelement) ( \
 	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
 	(((eelement)->flag & ELEMENT_SELECTED) && !((eelement)->flag & ELEMENT_EDITMODE_LOCKED)) \
 	)
 
+<<<<<<< HEAD
+=======
+#define EMUSCLE_EDITABLE(emuscle) ( \
+    CHECK_TYPE_INLINE(emuscle, EditMuscle *), \
+    (((emuscle)->flag & MUSCLE_SELECTED) && !((emuscle)->flag & MUSCLE_EDITMODE_LOCKED)) \
+    )
+
+#define EELEMENT_EDITABLE(eelement) ( \
+	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
+	(((eelement)->flag & BONE_SELECTED) && !((eelement)->flag & BONE_EDITMODE_LOCKED)) \
+	)
+
+>>>>>>> Warning: There are warnings
 /* used in armature_select_hierarchy_exec() */
 #define BONE_SELECT_PARENT  0
 #define BONE_SELECT_CHILD   1
@@ -204,13 +228,8 @@ struct Bone *get_indexed_bone(struct Object *ob, int index);
 struct Muscle *get_indexed_muscle(struct Object *ob, int index);
 //float ED_rollBoneToVector(EditBone *bone, const float new_up_axis[3], const bool axis_only);
 float ED_rollElementToVector(EditArmatureElement *element, const float new_up_axis[3], const bool axis_only);
-<<<<<<< HEAD
 EditArmatureElement *ED_armature_armatureelement_find_name(const ListBase *edbo, const char *name);
 EditArmatureElement *ED_armature_bone_get_mirrored(const struct ListBase *edbo, EditArmatureElement *eel);
-=======
-EditBone *ED_armature_bone_find_name(const ListBase *edbo, const char *name);
-EditBone *ED_armature_bone_get_mirrored(const struct ListBase *edbo, EditBone *ebo);
->>>>>>> And so it begins :\
 EditMuscle *ED_armature_muscle_find_name(const ListBase *edmu, const char *name);
 void ED_armature_sync_selection(struct ListBase *edbo);
 void ED_armature_validate_active(struct bArmature *arm);
