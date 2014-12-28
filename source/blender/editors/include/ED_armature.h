@@ -173,6 +173,12 @@ typedef struct EditMuscle {
     (((arm)->layer & (emuscle)->layer) && !((emuscle)->flag & MUSCLE_HIDDEN_A)) \
     )
 
+#define EELEMENT_VISIBLE(arm, eelement) ( \
+    CHECK_TYPE_INLINE(arm, bArmature *), \
+    CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
+    (((arm)->layer & (eelement)->layer) && !((eelement)->flag & BONE_HIDDEN_A)) \
+    )
+
 #define EBONE_SELECTABLE(arm, ebone) (EBONE_VISIBLE(arm, ebone) && !(ebone->flag & BONE_UNSELECTABLE))
 #define EMUSCLE_SELECTABLE(arm, emuscle) (EMUSCLE_VISIBLE(arm, emuscle) && !(emuscle->flag & MUSCLE_UNSELECTABLE))
 
@@ -185,6 +191,11 @@ typedef struct EditMuscle {
     CHECK_TYPE_INLINE(emuscle, EditMuscle *), \
     (((emuscle)->flag & MUSCLE_SELECTED) && !((emuscle)->flag & MUSCLE_EDITMODE_LOCKED)) \
     )
+
+#define EELEMENT_EDITABLE(eelement) ( \
+	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
+	(((eelement)->flag & BONE_SELECTED) && !((eelement)->flag & BONE_EDITMODE_LOCKED)) \
+	)
 
 /* used in armature_select_hierarchy_exec() */
 #define BONE_SELECT_PARENT  0
