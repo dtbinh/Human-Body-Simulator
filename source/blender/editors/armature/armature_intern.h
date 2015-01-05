@@ -246,7 +246,7 @@ struct EditArmatureElement *duplicateEditBoneObjects(struct EditArmatureElement 
 void updateDuplicateSubtargetObjects(struct EditArmatureElement *dupBone, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
 
 EditArmatureElement *add_points_bone(struct Object *obedit, float head[3], float tail[3]);
-void bone_free(struct bArmature *arm, struct EditBone *bone);
+void bone_free(struct bArmature *arm, struct EditArmatureElement *bone);
 void muscle_free(struct bArmature *arm, struct EditMuscle *muscle);
 
 void armature_tag_select_mirrored(struct bArmature *arm);
