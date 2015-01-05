@@ -79,10 +79,6 @@ struct bArmature *BKE_armature_add(struct Main *bmain, const char *name);
 struct bArmature *BKE_armature_from_object(struct Object *ob);
 void BKE_armature_bonelist_free(struct ListBase *lb);
 void BKE_armature_musclelist_free(struct ListBase *lb);
-<<<<<<< HEAD
-void BKE_armature_elementlist_free(struct ListBase *lb);
-=======
->>>>>>> Testing additions
 void BKE_armature_free(struct bArmature *arm);
 void BKE_armature_make_local(struct bArmature *arm);
 struct bArmature *BKE_armature_copy(struct bArmature *arm);
@@ -102,11 +98,10 @@ float distfactor_to_bone(const float vec[3], const float b1[3], const float b2[3
 
 void BKE_armature_where_is(struct bArmature *arm);
 <<<<<<< HEAD
-void BKE_armature_where_is_bone(struct ArmatureElement *bone, struct ArmatureElement *prevbone);
 =======
-void BKE_armature_where_is_bone(struct Bone *bone, struct Bone *prevbone);
->>>>>>> Testing additions
+void BKE_armature_where_is_bone(struct ArmatureElement *bone, struct ArmatureElement *prevbone);
 void BKE_armature_where_is_muscle(struct Muscle *muscle, struct Muscle *prevmuscle);
+>>>>>>> Errors
 void BKE_pose_rebuild(struct Object *ob, struct bArmature *arm);
 void BKE_pose_where_is(struct Scene *scene, struct Object *ob);
 void BKE_pose_where_is_bone(struct Scene *scene, struct Object *ob, struct bPoseChannel *pchan, float ctime, bool do_extra);
@@ -162,7 +157,6 @@ typedef struct Mat4 {
 } Mat4;
 
 void b_bone_spline_setup(struct bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BBONE_SUBDIV]);
-void b_muscle_spline_setup(struct bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BMUSCLE_SUBDIV]);
 
 /* like EBONE_VISIBLE */
 #define PBONE_VISIBLE(arm, bone) ( \

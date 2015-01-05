@@ -120,7 +120,6 @@ void BKE_armature_musclelist_free(ListBase *lb)
     BLI_freelistN(lb);
 }
 
-<<<<<<< HEAD
 void BKE_armature_elementlist_free(ListBase *lb) {
     ArmatureElement *elem;
 
@@ -136,20 +135,14 @@ void BKE_armature_elementlist_free(ListBase *lb) {
     BLI_freelistN(lb);
 }
 
-=======
->>>>>>> Testing additions
 void BKE_armature_free(bArmature *arm)
 {
 	if (arm) {
-//		BKE_armature_bonelist_free(&arm->bonebase);
 
         /* free muscle */
 //        BKE_armature_musclelist_free(&arm->musclebase);
 
         BKE_armature_elementlist_free(&arm->elementbase);
-
-        /* free muscle */
-        BKE_armature_musclelist_free(&arm->musclebase);
 
 		/* free editmode data */
 		if (arm->edbo) {
@@ -246,7 +239,6 @@ static void copy_armaturelementchildren(ArmatureElement *newBone, ArmatureElemen
 	}
 }
 
-<<<<<<< HEAD
 //static void copy_musclechildren(Muscle *newMuscle, Muscle *oldMuscle, Muscle *actMuscle, Muscle **newActMuscle)
 //{
 //    Muscle *curMuscle, *newChildMuscle;
@@ -266,27 +258,6 @@ static void copy_armaturelementchildren(ArmatureElement *newBone, ArmatureElemen
 //        newChildMuscle = newChildMuscle->next;
 //    }
 //}
-=======
-static void copy_musclechildren(Muscle *newMuscle, Muscle *oldMuscle, Muscle *actMuscle, Muscle **newActMuscle)
-{
-    Muscle *curMuscle, *newChildMuscle;
-
-    if (oldMuscle == actMuscle)
-        *newActMuscle = newMuscle;
-
-    if (oldMuscle->prop)
-        newMuscle->prop = IDP_CopyProperty(oldMuscle->prop);
-
-    BLI_duplicatelist(&newMuscle->childbase, &oldMuscle->childbase);
-
-    newChildMuscle = newMuscle->childbase.first;
-    for (curMuscle = oldMuscle->childbase.first; curMuscle; curMuscle = curMuscle->next) {
-        newChildMuscle->parent = newMuscle;
-        copy_musclechildren(newChildMuscle, curMuscle, actMuscle, newActMuscle);
-        newChildMuscle = newChildMuscle->next;
-    }
-}
->>>>>>> Testing additions
 
 bArmature *BKE_armature_copy(bArmature *arm)
 {
@@ -297,16 +268,9 @@ bArmature *BKE_armature_copy(bArmature *arm)
 //	Muscle *oldMuscle, *newMuscle;
 //	Muscle *newActMuscle = NULL;
 
-	Muscle *oldMuscle, *newMuscle;
-	Muscle *newActMuscle = NULL;
-
 	newArm = BKE_libblock_copy(&arm->id);
 	BLI_duplicatelist(&newArm->bonebase, &arm->bonebase);
-<<<<<<< HEAD
 //	BLI_duplicatelist(&newArm->musclebase, &arm->musclebase);
-=======
-	BLI_duplicatelist(&newArm->musclebase, &arm->musclebase);
->>>>>>> Testing additions
 
 	/* Duplicate the childrens' lists */
 	newBone = newArm->bonebase.first;
@@ -316,7 +280,6 @@ bArmature *BKE_armature_copy(bArmature *arm)
 		newBone = newBone->next;
 	}
 
-<<<<<<< HEAD
 //    newMuscle = newArm->musclebase.first;
 //	for (oldMuscle = arm->musclebase.first; oldMuscle; oldMuscle = oldMuscle->next) {
 //        newMuscle->parent = NULL;
@@ -326,17 +289,6 @@ bArmature *BKE_armature_copy(bArmature *arm)
 
 	newArm->act_bone = newActBone;
 //	newArm->act_muscle = newActMuscle;
-=======
-    newMuscle = newArm->musclebase.first;
-	for (oldMuscle = arm->musclebase.first; oldMuscle; oldMuscle = oldMuscle->next) {
-        newMuscle->parent = NULL;
-        copy_musclechildren(newMuscle, oldMuscle, arm->act_muscle, &newActMuscle);
-        newMuscle = newMuscle->next;
-	}
-
-	newArm->act_bone = newActBone;
-	newArm->act_muscle = newActMuscle;
->>>>>>> Testing additions
 
 	newArm->edbo = NULL;
 	newArm->edmu = NULL;
@@ -418,7 +370,6 @@ Bone *BKE_armature_find_bone_name(bArmature *arm, const char *name)
 	return bone;
 }
 
-<<<<<<< HEAD
 //Muscle *BKE_armature_find_muscle_name (bArmature *arm, const char *name)
 //{
 //    Muscle *muscle = NULL, *curMuscle;
@@ -434,23 +385,6 @@ Bone *BKE_armature_find_bone_name(bArmature *arm, const char *name)
 //
 //    return muscle;
 //}
-=======
-Muscle *BKE_armature_find_muscle_name (bArmature *arm, const char *name)
-{
-    Muscle *muscle = NULL, *curMuscle;
-
-    if (!arm)
-        return NULL;
-
-    for (curMuscle = arm->musclebase.first; curMuscle; curMuscle = curMuscle->next) {
-        muscle = get_named_muscle_musclechildren(curMuscle, name);
-        if (muscle)
-            return muscle;
-    }
-
-    return muscle;
-}
->>>>>>> Testing additions
 
 /* Finds the best possible extension to the name on a particular axis. (For renaming, check for
  * unique names afterwards) strip_number: removes number extensions  (TODO: not used)
@@ -1761,18 +1695,18 @@ void mat3_to_vec_roll(float mat[3][3], float r_vec[3], float *r_roll)
  *   -> w = (-v.x, v.y, -v.z)
  *
  * Solving this, we get (x, y and z being the components of v):
- *     Ñ° (x^2 * y + z^2) / (x^2 + z^2),   x,   x * z * (y - 1) / (x^2 + z^2) Ñ¢
- * M = Ñ†  x * (y^2 - 1)  / (x^2 + z^2),   y,    z * (y^2 - 1)  / (x^2 + z^2) Ñ†
- *     Ñ§ x * z * (y - 1) / (x^2 + z^2),   z,   (x^2 + z^2 * y) / (x^2 + z^2) Ñ£
+ *     ‚îå (x^2 * y + z^2) / (x^2 + z^2),   x,   x * z * (y - 1) / (x^2 + z^2) ‚îê
+ * M = ‚îÇ  x * (y^2 - 1)  / (x^2 + z^2),   y,    z * (y^2 - 1)  / (x^2 + z^2) ‚îÇ
+ *     ‚îî x * z * (y - 1) / (x^2 + z^2),   z,   (x^2 + z^2 * y) / (x^2 + z^2) ‚îò
  *
  * This is stable as long as v (the bone) is not too much aligned with +/-Y (i.e. x and z components
  * are not too close to 0).
  *
  * Since v is normalized, we have x^2 + y^2 + z^2 = 1, hence x^2 + z^2 = 1 - y^2 = (1 - y)(1 + y).
  * This allows to simplifies M like this:
- *     Ñ° 1 - x^2 / (1 + y),   x,     -x * z / (1 + y) Ñ¢
- * M = Ñ†                -x,   y,                   -z Ñ†
- *     Ñ§  -x * z / (1 + y),   z,    1 - z^2 / (1 + y) Ñ£
+ *     ‚îå 1 - x^2 / (1 + y),   x,     -x * z / (1 + y) ‚îê
+ * M = ‚îÇ                -x,   y,                   -z ‚îÇ
+ *     ‚îî  -x * z / (1 + y),   z,    1 - z^2 / (1 + y) ‚îò
  *
  * Written this way, we see the case v = +Y is no more a singularity. The only one remaining is the bone being
  * aligned with -Y.
@@ -1784,17 +1718,17 @@ void mat3_to_vec_roll(float mat[3][3], float r_vec[3], float *r_roll)
  * will degenerate. So let's now focus on these corner elements.
  *
  * We rewrite M so that it only contains its four corner elements, and combine the 1 / (1 + y) factor:
- *                    Ñ° 1 + y - x^2,        -x * z Ñ¢
- * M* = 1 / (1 + y) * Ñ†                            Ñ†
- *                    Ñ§      -x * z,   1 + y - z^2 Ñ£
+ *                    ‚îå 1 + y - x^2,        -x * z ‚îê
+ * M* = 1 / (1 + y) * ‚îÇ                            ‚îÇ
+ *                    ‚îî      -x * z,   1 + y - z^2 ‚îò
  *
  * When y is close to -1, computing 1 / (1 + y) will cause severe numerical instability, so we ignore it and
  * normalize M instead. We know y^2 = 1 - (x^2 + z^2), and y < 0, hence y = -sqrt(1 - (x^2 + z^2)).
  * Since x and z are both close to 0, we apply the binomial expansion to the first order:
  * y = -sqrt(1 - (x^2 + z^2)) = -1 + (x^2 + z^2) / 2. Which gives:
- *                        Ñ°  z^2 - x^2,  -2 * x * z Ñ¢
- * M* = 1 / (x^2 + z^2) * Ñ†                         Ñ†
- *                        Ñ§ -2 * x * z,   x^2 - z^2 Ñ£
+ *                        ‚îå  z^2 - x^2,  -2 * x * z ‚îê
+ * M* = 1 / (x^2 + z^2) * ‚îÇ                         ‚îÇ
+ *                        ‚îî -2 * x * z,   x^2 - z^2 ‚îò
  */
 void vec_roll_to_mat3_normalized(const float nor[3], const float roll, float mat[3][3])
 {
@@ -1931,28 +1865,17 @@ void BKE_armature_where_is_muscle(Muscle *muscle, Muscle *prevmuscle)
  * after editing armature itself, now only on reading file */
 void BKE_armature_where_is(bArmature *arm)
 {
-<<<<<<< HEAD
 	ArmatureElement *bone;
 //	Muscle *muscle;
-=======
-	Bone *bone;
-	Muscle *muscle;
->>>>>>> Testing additions
 
 	/* hierarchical from root to children */
 	for (bone = arm->bonebase.first; bone; bone = bone->next) {
 		BKE_armature_where_is_bone(bone, NULL);
 	}
 
-<<<<<<< HEAD
 //	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
 //        BKE_armature_where_is_muscle(muscle, NULL);
 //	}
-=======
-	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
-        BKE_armature_where_is_muscle(muscle, NULL);
-	}
->>>>>>> Testing additions
 }
 
 /* if bone layer is protected, copy the data from from->pose
@@ -2208,19 +2131,11 @@ static int rebuild_pose_muscle(bPose *pose, Muscle *muscle, bMuscleChannel *parm
 /* NOTE: pose->flag is set for it */
 void BKE_pose_rebuild(Object *ob, bArmature *arm)
 {
-<<<<<<< HEAD
 	ArmatureElement *bone;
 //	Muscle *muscle;
 	bPose *pose;
 	bPoseChannel *pchan, *next;
 //	bMuscleChannel *pmuscle, *mnext;
-=======
-	Bone *bone;
-	Muscle *muscle;
-	bPose *pose;
-	bPoseChannel *pchan, *next;
-	bMuscleChannel *pmuscle, *mnext;
->>>>>>> Testing additions
 	int counter = 0;
 
 	/* only done here */
@@ -2239,32 +2154,19 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 		pchan->child = NULL;
 	}
 
-<<<<<<< HEAD
 //	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
 //        pmuscle->muscle = NULL;
 //        pmuscle->child = NULL;
 //	}
-=======
-	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-        pmuscle->muscle = NULL;
-        pmuscle->child = NULL;
-	}
->>>>>>> Testing additions
 
 	/* first step, check if all channels are there */
 	for (bone = arm->bonebase.first; bone; bone = bone->next) {
 		counter = rebuild_pose_bone(pose, bone, NULL, counter);
 	}
 
-<<<<<<< HEAD
 //	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
 //        rebuild_pose_muscle(pose, muscle, NULL, 0);
 //	}
-=======
-	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
-        rebuild_pose_muscle(pose, muscle, NULL, 0);
-	}
->>>>>>> Testing additions
 
 	/* and a check for garbage */
 	for (pchan = pose->chanbase.first; pchan; pchan = next) {
@@ -2276,7 +2178,6 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 		}
 	}
 
-<<<<<<< HEAD
 //	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = mnext) {
 //        mnext = pmuscle->next;
 //        if (pmuscle->muscle == NULL) {
@@ -2285,16 +2186,6 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 //            BLI_freelinkN(&pose->musclebase, pmuscle);
 //        }
 //	}
-=======
-	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = mnext) {
-        mnext = pmuscle->next;
-        if (pmuscle->muscle == NULL) {
-            BKE_pose_muscle_free(pmuscle);
-            BKE_pose_muscles_hash_free(pose);
-            BLI_freelinkN(&pose->musclebase, pmuscle);
-        }
-	}
->>>>>>> Testing additions
 	/* printf("rebuild pose %s, %d bones\n", ob->id.name, counter); */
 
 	/* synchronize protected layers with proxy */
@@ -2313,11 +2204,7 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 	ob->pose->flag |= POSE_WAS_REBUILT;
 
 	BKE_pose_channels_hash_make(ob->pose);
-<<<<<<< HEAD
 //    BKE_pose_muscles_hash_make(ob->pose);
-=======
-    BKE_pose_muscles_hash_make(ob->pose);
->>>>>>> Testing additions
 }
 
 
@@ -3127,14 +3014,14 @@ void BKE_pose_where_is_muscle(Scene *scene, Object *ob, bMuscleChannel *pmuscle,
 void BKE_pose_where_is(Scene *scene, Object *ob)
 {
 	bArmature *arm;
-<<<<<<< HEAD
 	ArmatureElement *bone;
-=======
-	Bone *bone;
-	Muscle *muscle;
->>>>>>> Testing additions
+<<<<<<< HEAD
 	bPoseChannel *pchan;
-	bMuscleChannel *pmuscle;
+=======
+//	Muscle *muscle;
+	bPoseChannel *pchan;
+//	bMuscleChannel *pmuscle;
+>>>>>>> Errors
 	float imat[4][4];
 	float ctime;
 
@@ -3158,14 +3045,6 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 				copy_v3_v3(pchan->pose_head, bone->arm_head);
 				copy_v3_v3(pchan->pose_tail, bone->arm_tail);
 			}
-		}
-		for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-            muscle = pmuscle->muscle;
-            if (muscle) {
-                copy_m4_m4(pmuscle->pose_mat, muscle->arm_mat);
-                copy_v3_v3(pmuscle->pose_head, muscle->arm_head);
-                copy_v3_v3(pmuscle->pose_tail, muscle->arm_tail);
-            }
 		}
 	}
 	else {
@@ -3211,13 +3090,16 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 			mul_m4_m4m4(pchan->chan_mat, pchan->pose_mat, imat);
 		}
 	}
+<<<<<<< HEAD
+=======
 
-	for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-        if (pmuscle->muscle) {
-            invert_m4_m4(imat, pmuscle->muscle->arm_mat);
-            mul_m4_m4m4(pmuscle->chan_mat, pmuscle->pose_mat, imat);
-        }
-	}
+//	for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+//        if (pmuscle->muscle) {
+//            invert_m4_m4(imat, pmuscle->muscle->arm_mat);
+//            mul_m4_m4m4(pmuscle->chan_mat, pmuscle->pose_mat, imat);
+//        }
+//	}
+>>>>>>> Errors
 }
 
 /************** Bounding box ********************/
