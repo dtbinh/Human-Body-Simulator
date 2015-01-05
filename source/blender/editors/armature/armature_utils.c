@@ -294,16 +294,16 @@ EditMuscle *ED_armature_muscle_find_name(const ListBase *edmu, const char *name)
 /**
  * \see #BKE_pose_channel_get_mirrored (pose-mode, matching function)
  */
-EditBone *ED_armature_bone_get_mirrored(const ListBase *edbo, EditBone *ebo)
+EditArmatureElement *ED_armature_bone_get_mirrored(const ListBase *edbo, EditArmatureElement *eel)
 {
 	char name_flip[MAXBONENAME];
 
-	if (ebo == NULL)
+	if (eel == NULL)
 		return NULL;
 
-	BKE_deform_flip_side_name(name_flip, ebo->name, false);
+	BKE_deform_flip_side_name(name_flip, eel->name, false);
 
-	if (!STREQ(name_flip, ebo->name)) {
+	if (!STREQ(name_flip, eel->name)) {
 		return ED_armature_bone_find_name(edbo, name_flip);
 	}
 
