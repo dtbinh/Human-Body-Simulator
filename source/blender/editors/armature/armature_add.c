@@ -173,7 +173,7 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 			if (flipelement == NULL)
 				break;
 			else {
-				SWAP(EditBone *, flipelement, eelement);
+				SWAP(EditArmatureElement *, flipelement, eelement);
 			}
 		}
 
@@ -205,7 +205,7 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 
 		newelement->length = len_v3v3(newelement->head, newelement->tail);
 		newelement->rad_tail = newelement->length * 0.05f;
-		newelement->dist = newelement->length * 0.25f;
+		((BoneData*)newelement->custom)->dist = newelement->length * 0.25f;
 
 	}
 
@@ -270,15 +270,15 @@ void ARMATURE_OT_click_extrude(wmOperatorType *ot)
 /* adds an EditBone between the nominated locations (should be in the right space) */
 EditArmatureElement *add_points_bone(Object *obedit, float head[3], float tail[3])
 {
-	EditBone *ebo;
+	EditArmatureElement *eel;
 
     // TODO: Fix this up so it creates the right type
-	ebo = ED_armature_edit_armature_element_add(obedit->data, "Bone", BoneType);
+	eel = ED_armature_edit_armature_element_add(obedit->data, "Bone", BoneType);
 
-	copy_v3_v3(ebo->head, head);
-	copy_v3_v3(ebo->tail, tail);
+	copy_v3_v3(eel->head, head);
+	copy_v3_v3(eel->tail, tail);
 
-	return ebo;
+	return eel;
 }
 
 
@@ -367,13 +367,25 @@ void updateDuplicateSubtarget(EditBone *dupBone, ListBase *editbones, Object *ob
 }
 
 
-EditBone *duplicateEditBoneObjects(EditBone *curBone, const char *name, ListBase *editbones,
+EditArmatureElement *duplicateEditBoneObjects(EditArmatureElement *curBone, const char *name, ListBase *editbones,
                                    Object *src_ob, Object *dst_ob)
 {
-	EditBone *eBone = MEM_mallocN(sizeof(EditBone), "addup_editbone");
+	EditArmatureElement *eBone = MEM_mallocN(sizeof(EditArmatureElement), "addup_editbone");
 
 	/*	Copy data from old bone to new bone */
-	memcpy(eBone, curBone, sizeof(EditBone));
+	memcpy(eBone, curBone, sizeof(EditArmatureElement));
+
+	switch(curBone->type)
+    {
+        case BoneType:
+            eBone->custom = MEM_mallocN(sizeof(EditBoneElement), "addup_editbonedata");
+            memcpy(eBone->custom, curBone->custom, sizeof(EditBoneElement));
+            break;
+        case MuscleType:
+            eBone->custom = MEM_mallocN(sizeof(EditMuscleElement), "addup_editmuscledata");
+            memcpy(eBone->custom, curBone->custom, sizeof(EditMuscleElement));
+            break;
+    }
 
 	curBone->temp = eBone;
 	eBone->temp = curBone;
@@ -411,18 +423,18 @@ EditBone *duplicateEditBoneObjects(EditBone *curBone, const char *name, ListBase
 	return eBone;
 }
 
-EditBone *duplicateEditBone(EditBone *curBone, const char *name, ListBase *editbones, Object *ob)
+EditArmatureElement *duplicateEditBone(EditArmatureElement *curElem, const char *name, ListBase *editbones, Object *ob)
 {
-	return duplicateEditBoneObjects(curBone, name, editbones, ob, ob);
+	return duplicateEditBoneObjects(curElem, name, editbones, ob, ob);
 }
 
 /* previously adduplicate_armature */
 static int armature_duplicate_selected_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	bArmature *arm;
-	EditBone    *eBone = NULL;
-	EditBone    *curBone;
-	EditBone    *firstDup = NULL; /*	The beginning of the duplicated bones in the edbo list */
+	EditArmatureElement    *eElem = NULL;
+	EditArmatureElement    *curElem;
+	EditArmatureElement    *firstDup = NULL; /*	The beginning of the duplicated bones in the edbo list */
 
 	Object *obedit = CTX_data_edit_object(C);
 	arm = obedit->data;
@@ -437,12 +449,12 @@ static int armature_duplicate_selected_exec(bContext *C, wmOperator *UNUSED(op))
 
 	/* Select mirrored bones */
 	if (arm->flag & ARM_MIRROR_EDIT) {
-		for (curBone = arm->edbo->first; curBone; curBone = curBone->next) {
-			if (EBONE_VISIBLE(arm, curBone)) {
-				if (curBone->flag & BONE_SELECTED) {
-					eBone = ED_armature_bone_get_mirrored(arm->edbo, curBone);
-					if (eBone)
-						eBone->flag |= BONE_SELECTED;
+		for (curElem = arm->edbo->first; curElem; curElem = curElem->next) {
+			if (EBONE_VISIBLE(arm, curElem)) {
+				if (curElem->flag & BONE_SELECTED) {
+					eElem = ED_armature_bone_get_mirrored(arm->edbo, curElem);
+					if (eElem)
+						eElem->flag |= BONE_SELECTED;
 				}
 			}
 		}
@@ -450,64 +462,64 @@ static int armature_duplicate_selected_exec(bContext *C, wmOperator *UNUSED(op))
 
 
 	/*	Find the selected bones and duplicate them as needed */
-	for (curBone = arm->edbo->first; curBone && curBone != firstDup; curBone = curBone->next) {
-		if (EBONE_VISIBLE(arm, curBone)) {
-			if (curBone->flag & BONE_SELECTED) {
+	for (curElem = arm->edbo->first; curElem && curElem != firstDup; curElem = curElem->next) {
+		if (EBONE_VISIBLE(arm, curElem)) {
+			if (curElem->flag & BONE_SELECTED) {
 
-				eBone = duplicateEditBone(curBone, curBone->name, arm->edbo, obedit);
+				eElem = duplicateEditBone(curElem, curElem->name, arm->edbo, obedit);
 
 				if (!firstDup)
-					firstDup = eBone;
+					firstDup = eElem;
 
 			}
 		}
 	}
 
 	/*	Run though the list and fix the pointers */
-	for (curBone = arm->edbo->first; curBone && curBone != firstDup; curBone = curBone->next) {
-		if (EBONE_VISIBLE(arm, curBone)) {
-			if (curBone->flag & BONE_SELECTED) {
-				eBone = (EditBone *) curBone->temp;
+	for (curElem = arm->edbo->first; curElem && curElem != firstDup; curElem = curElem->next) {
+		if (EBONE_VISIBLE(arm, curElem)) {
+			if (curElem->flag & BONE_SELECTED) {
+				eElem = (EditBone *) curElem->temp;
 
-				if (!curBone->parent) {
+				if (!curElem->parent) {
 					/* If this bone has no parent,
 					 * Set the duplicate->parent to NULL
 					 */
-					eBone->parent = NULL;
+					eElem->parent = NULL;
 				}
-				else if (curBone->parent->temp) {
+				else if (curElem->parent->temp) {
 					/* If this bone has a parent that was duplicated,
-					 * Set the duplicate->parent to the curBone->parent->temp
+					 * Set the duplicate->parent to the curElem->parent->temp
 					 */
-					eBone->parent = (EditBone *)curBone->parent->temp;
+					eElem->parent = (EditBone *)curElem->parent->temp;
 				}
 				else {
 					/* If this bone has a parent that IS not selected,
-					 * Set the duplicate->parent to the curBone->parent
+					 * Set the duplicate->parent to the curElem->parent
 					 */
-					eBone->parent = (EditBone *) curBone->parent;
-					eBone->flag &= ~BONE_CONNECTED;
+					eElem->parent = (EditBone *) curElem->parent;
+					eElem->flag &= ~BONE_CONNECTED;
 				}
 
 				/* Lets try to fix any constraint subtargets that might
 				 * have been duplicated
 				 */
-				updateDuplicateSubtarget(eBone, arm->edbo, obedit);
+				updateDuplicateSubtarget(eElem, arm->edbo, obedit);
 			}
 		}
 	}
 
 	/* correct the active bone */
 	if (arm->act_edbone) {
-		eBone = arm->act_edbone;
-		if (eBone->temp)
-			arm->act_edbone = eBone->temp;
+		eElem = arm->act_edbone;
+		if (eElem->temp)
+			arm->act_edbone = eElem->temp;
 	}
 
 	/*	Deselect the old bones and select the new ones */
-	for (curBone = arm->edbo->first; curBone && curBone != firstDup; curBone = curBone->next) {
-		if (EBONE_VISIBLE(arm, curBone))
-			curBone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
+	for (curElem = arm->edbo->first; curElem && curElem != firstDup; curElem = curElem->next) {
+		if (EBONE_VISIBLE(arm, curElem))
+			curElem->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
 	}
 
 	ED_armature_validate_active(arm);
@@ -542,7 +554,7 @@ static int armature_extrude_exec(bContext *C, wmOperator *op)
 {
 	Object *obedit;
 	bArmature *arm;
-	EditBone *newbone, *ebone, *flipbone, *first = NULL;
+	EditArmatureElement *newelem, *ebone, *flipbone, *first = NULL;
 	int a, totbone = 0, do_extrude;
 	bool forked = RNA_boolean_get(op->ptr, "forked");
 
@@ -599,59 +611,61 @@ static int armature_extrude_exec(bContext *C, wmOperator *op)
 						if (flipbone == NULL)
 							break;
 						else {
-							SWAP(EditBone *, flipbone, ebone);
+							SWAP(EditArmatureElement *, flipbone, ebone);
 						}
 					}
 
 					totbone++;
-					newbone = MEM_callocN(sizeof(EditBone), "extrudebone");
+					newelem = MEM_callocN(sizeof(EditArmatureElement), "extrudebone");
+					// TODO: Switch for muscles aswell
+					newelem->custom = MEM_callocN(sizeof(EditBoneElement), "extrudebonedata");
 
 					if (do_extrude == true) {
-						copy_v3_v3(newbone->head, ebone->tail);
-						copy_v3_v3(newbone->tail, newbone->head);
-						newbone->parent = ebone;
+						copy_v3_v3(newelem->head, ebone->tail);
+						copy_v3_v3(newelem->tail, newelem->head);
+						newelem->parent = ebone;
 
-						newbone->flag = ebone->flag & (BONE_TIPSEL | BONE_RELATIVE_PARENTING);  // copies it, in case mirrored bone
+						newelem->flag = ebone->flag & (BONE_TIPSEL | BONE_RELATIVE_PARENTING);  // copies it, in case mirrored bone
 
-						if (newbone->parent) newbone->flag |= BONE_CONNECTED;
+						if (newelem->parent) newelem->flag |= BONE_CONNECTED;
 					}
 					else {
-						copy_v3_v3(newbone->head, ebone->head);
-						copy_v3_v3(newbone->tail, ebone->head);
-						newbone->parent = ebone->parent;
+						copy_v3_v3(newelem->head, ebone->head);
+						copy_v3_v3(newelem->tail, ebone->head);
+						newelem->parent = ebone->parent;
 
-						newbone->flag = BONE_TIPSEL;
+						newelem->flag = BONE_TIPSEL;
 
-						if (newbone->parent && (ebone->flag & BONE_CONNECTED)) {
-							newbone->flag |= BONE_CONNECTED;
+						if (newelem->parent && (ebone->flag & BONE_CONNECTED)) {
+							newelem->flag |= BONE_CONNECTED;
 						}
 					}
 
-					newbone->weight = ebone->weight;
-					newbone->dist = ebone->dist;
-					newbone->xwidth = ebone->xwidth;
-					newbone->zwidth = ebone->zwidth;
-					newbone->ease1 = ebone->ease1;
-					newbone->ease2 = ebone->ease2;
-					newbone->rad_head = ebone->rad_tail; // don't copy entire bone...
-					newbone->rad_tail = ebone->rad_tail;
-					newbone->segments = 1;
-					newbone->layer = ebone->layer;
+					((EditBoneElement*)newelem->custom)->weight = ebone->weight;
+					((EditBoneElement*)newelem->custom)->dist = ebone->dist;
+					newelem->xwidth = ebone->xwidth;
+					newelem->zwidth = ebone->zwidth;
+					((EditBoneElement*)newelem->custom)->ease1 = ebone->ease1;
+					((EditBoneElement*)newelem->custom)->ease2 = ebone->ease2;
+					newelem->rad_head = ebone->rad_tail; // don't copy entire bone...
+					newelem->rad_tail = ebone->rad_tail;
+					newelem->segments = 1;
+					newelem->layer = ebone->layer;
 
-					BLI_strncpy(newbone->name, ebone->name, sizeof(newbone->name));
+					BLI_strncpy(newelem->name, ebone->name, sizeof(newelem->name));
 
 					if (flipbone && forked) {   // only set if mirror edit
-						if (strlen(newbone->name) < (MAXBONENAME - 2)) {
-							if (a == 0) strcat(newbone->name, "_L");
-							else strcat(newbone->name, "_R");
+						if (strlen(newelem->name) < (MAXBONENAME - 2)) {
+							if (a == 0) strcat(newelem->name, "_L");
+							else strcat(newelem->name, "_R");
 						}
 					}
-					unique_editbone_name(arm->edbo, newbone->name, NULL);
+					unique_editbone_name(arm->edbo, newelem->name, NULL);
 
 					/* Add the new bone to the list */
-					BLI_addtail(arm->edbo, newbone);
+					BLI_addtail(arm->edbo, newelem);
 					if (!first)
-						first = newbone;
+						first = newelem;
 
 					/* restore ebone if we were flipping */
 					if (a == 1 && flipbone)
