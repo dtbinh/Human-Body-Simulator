@@ -542,8 +542,8 @@ void b_bone_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BB
 		}
 	}
 
-	hlength1 = bone->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
-	hlength2 = bone->ease2 * length * 0.390464f;
+	hlength1 = ((BoneData*)bone->custom)->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
+	hlength2 = ((BoneData*)bone->custom)->ease2 * length * 0.390464f;
 
 	/* evaluate next and prev bones */
 	if (bone->flag & BONE_CONNECTED)
@@ -836,10 +836,10 @@ static float dist_bone_deform(bPoseChannel *pchan, bPoseChanDeform *pdef_info, f
 
 	copy_v3_v3(cop, co);
 
-	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, bone->dist);
+	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, ((BoneData*)bone->custom)->dist);
 
 	if (fac > 0.0f) {
-		fac *= bone->weight;
+		fac *= ((BoneData*)bone->custom)->weight;
 		contrib = fac;
 		if (contrib > 0.0f) {
 			if (vec) {
@@ -1085,7 +1085,7 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 
 					if (bone && bone->flag & BONE_MULT_VG_ENV) {
 						weight *= distfactor_to_bone(co, bone->arm_head, bone->arm_tail,
-						                             bone->rad_head, bone->rad_tail, bone->dist);
+						                             bone->rad_head, bone->rad_tail, ((BoneData*)bone->custom)->dist);
 					}
 					pchan_bone_deform(pchan, pdef_info, weight, vec, dq, smat, co, &contrib);
 				}
@@ -1832,17 +1832,17 @@ void BKE_armature_where_is_muscle(Muscle *muscle, Muscle *prevmuscle)
  * after editing armature itself, now only on reading file */
 void BKE_armature_where_is(bArmature *arm)
 {
-	Bone *bone;
-	Muscle *muscle;
+	ArmatureElement *bone;
+//	Muscle *muscle;
 
 	/* hierarchical from root to children */
 	for (bone = arm->bonebase.first; bone; bone = bone->next) {
 		BKE_armature_where_is_bone(bone, NULL);
 	}
 
-	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
-        BKE_armature_where_is_muscle(muscle, NULL);
-	}
+//	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
+//        BKE_armature_where_is_muscle(muscle, NULL);
+//	}
 }
 
 /* if bone layer is protected, copy the data from from->pose
@@ -2098,11 +2098,11 @@ static int rebuild_pose_muscle(bPose *pose, Muscle *muscle, bMuscleChannel *parm
 /* NOTE: pose->flag is set for it */
 void BKE_pose_rebuild(Object *ob, bArmature *arm)
 {
-	Bone *bone;
-	Muscle *muscle;
+	ArmatureElement *bone;
+//	Muscle *muscle;
 	bPose *pose;
 	bPoseChannel *pchan, *next;
-	bMuscleChannel *pmuscle, *mnext;
+//	bMuscleChannel *pmuscle, *mnext;
 	int counter = 0;
 
 	/* only done here */
@@ -2121,19 +2121,19 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 		pchan->child = NULL;
 	}
 
-	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-        pmuscle->muscle = NULL;
-        pmuscle->child = NULL;
-	}
+//	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+//        pmuscle->muscle = NULL;
+//        pmuscle->child = NULL;
+//	}
 
 	/* first step, check if all channels are there */
 	for (bone = arm->bonebase.first; bone; bone = bone->next) {
 		counter = rebuild_pose_bone(pose, bone, NULL, counter);
 	}
 
-	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
-        rebuild_pose_muscle(pose, muscle, NULL, 0);
-	}
+//	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
+//        rebuild_pose_muscle(pose, muscle, NULL, 0);
+//	}
 
 	/* and a check for garbage */
 	for (pchan = pose->chanbase.first; pchan; pchan = next) {
@@ -2145,14 +2145,14 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 		}
 	}
 
-	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = mnext) {
-        mnext = pmuscle->next;
-        if (pmuscle->muscle == NULL) {
-            BKE_pose_muscle_free(pmuscle);
-            BKE_pose_muscles_hash_free(pose);
-            BLI_freelinkN(&pose->musclebase, pmuscle);
-        }
-	}
+//	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = mnext) {
+//        mnext = pmuscle->next;
+//        if (pmuscle->muscle == NULL) {
+//            BKE_pose_muscle_free(pmuscle);
+//            BKE_pose_muscles_hash_free(pose);
+//            BLI_freelinkN(&pose->musclebase, pmuscle);
+//        }
+//	}
 	/* printf("rebuild pose %s, %d bones\n", ob->id.name, counter); */
 
 	/* synchronize protected layers with proxy */
@@ -2171,7 +2171,7 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 	ob->pose->flag |= POSE_WAS_REBUILT;
 
 	BKE_pose_channels_hash_make(ob->pose);
-    BKE_pose_muscles_hash_make(ob->pose);
+//    BKE_pose_muscles_hash_make(ob->pose);
 }
 
 
