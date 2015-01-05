@@ -1217,13 +1217,13 @@ void BKE_armature_loc_world_to_pose(Object *ob, const float inloc[3], float outl
 /* Simple helper, computes the offset bone matrix.
  *     offs_bone = yoffs(b-1) + root(b) + bonemat(b).
  * Not exported, as it is only used in this file currently... */
-static void get_offset_bone_mat(Bone *bone, float offs_bone[4][4])
+static void get_offset_bone_mat(ArmatureElement *bone, float offs_bone[4][4])
 {
 	if (!bone->parent)
 		return;
 
 	/* Bone transform itself. */
-	copy_m4_m3(offs_bone, bone->bone_mat);
+	copy_m4_m3(offs_bone, bone->AE_mat);
 
 	/* The bone's root offset (is in the parent's coordinate system). */
 	copy_v3_v3(offs_bone[3], bone->head);
@@ -1761,13 +1761,13 @@ void vec_roll_to_mat3(const float vec[3], const float roll, float mat[3][3])
 
 /* recursive part, calculates restposition of entire tree of children */
 /* used by exiting editmode too */
-void BKE_armature_where_is_bone(Bone *bone, Bone *prevbone)
+void BKE_armature_where_is_bone(ArmatureElement *bone, ArmatureElement *prevbone)
 {
 	float vec[3];
 
 	/* Bone Space */
 	sub_v3_v3v3(vec, bone->tail, bone->head);
-	vec_roll_to_mat3(vec, bone->roll, bone->bone_mat);
+	vec_roll_to_mat3(vec, bone->roll, bone->AE_mat);
 
 	bone->length = len_v3v3(bone->head, bone->tail);
 
@@ -1787,7 +1787,7 @@ void BKE_armature_where_is_bone(Bone *bone, Bone *prevbone)
 		mul_m4_m4m4(bone->arm_mat, prevbone->arm_mat, offs_bone);
 	}
 	else {
-		copy_m4_m3(bone->arm_mat, bone->bone_mat);
+		copy_m4_m3(bone->arm_mat, bone->AE_mat);
 		copy_v3_v3(bone->arm_mat[3], bone->head);
 	}
 
