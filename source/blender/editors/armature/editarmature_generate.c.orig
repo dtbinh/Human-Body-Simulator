@@ -255,8 +255,8 @@ EditBone *subdivideArcBy(ToolSettings *toolsettings, bArmature *arm, ListBase *U
 <<<<<<< HEAD
 	parent = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
 =======
-	parent = ED_armature_edit_bone_add(arm, "Bone");
->>>>>>> I'm out of things to say
+	parent = ED_armature_edit_armature_element_add(arm, "Bone", BoneType);
+>>>>>>> Bone creation stuff
 	copy_v3_v3(parent->head, iter->p);
 
 	if (iter->size > FLT_EPSILON) {
@@ -269,7 +269,11 @@ EditBone *subdivideArcBy(ToolSettings *toolsettings, bArmature *arm, ListBase *U
 	while (index != -1) {
 		IT_peek(iter, index);
 
+<<<<<<< HEAD
 		child = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
+=======
+		child = ED_armature_edit_armature_element_add(arm, "Bone", BoneType);
+>>>>>>> Bone creation stuff
 		copy_v3_v3(child->head, parent->tail);
 		child->parent = parent;
 		child->flag |= BONE_CONNECTED;

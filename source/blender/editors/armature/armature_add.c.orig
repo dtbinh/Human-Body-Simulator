@@ -94,12 +94,6 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
             // Muscle properties go here
             // None yet
 //            ((EditMuscleElement*)elem->data)->
-            break;
-    }
-
-
-
-	return elem;
 =======
 	EditArmatureElement *bone = MEM_callocN(sizeof(EditArmatureElement), "eBone");
 
@@ -112,19 +106,37 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
 
     bone->type = BoneType;
 	bone->flag |= BONE_TIPSEL;
-	((EditBoneElement*)bone->custom)->weight = 1.0f;
-	((EditBoneElement*)bone->custom)->dist = 0.25f;
 	bone->xwidth = 0.1f;
 	bone->zwidth = 0.1f;
-	((EditBoneElement*)bone->custom)->ease1 = 1.0f;
-	((EditBoneElement*)bone->custom)->ease2 = 1.0f;
 	bone->rad_head = 0.10f;
 	bone->rad_tail = 0.05f;
 	bone->segments = 1;
 	bone->layer = arm->layer;
 
+    switch(type)
+    {
+        case BoneType:
+            ((EditBoneElement*)bone->custom)->ease1 = 1.0f;
+            ((EditBoneElement*)bone->custom)->ease2 = 1.0f;
+            ((EditBoneElement*)bone->custom)->weight = 1.0f;
+            ((EditBoneElement*)bone->custom)->dist = 0.25f;
+            break;
+        case MuscleType:
+            // TODO:
+            // Muscle properties go here
+            // None yet
+//            ((EditMuscleElement*)bone->custom)->
+>>>>>>> Bone creation stuff
+            break;
+    }
+
+
+
+<<<<<<< HEAD
+	return elem;
+=======
 	return bone;
->>>>>>> Edit struct issue
+>>>>>>> Bone creation stuff
 }
 
 EditArmatureElement *ED_armature_edit_bone_add_primitive(Object *obedit_arm, float length, bool view_aligned)
@@ -135,7 +147,11 @@ EditArmatureElement *ED_armature_edit_bone_add_primitive(Object *obedit_arm, flo
 	ED_armature_deselect_all(obedit_arm, 0);
 
 	/* Create a bone */
+<<<<<<< HEAD
 	bone = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
+=======
+	bone = ED_armature_edit_armature_element_add(arm, "Bone", BoneType);
+>>>>>>> Bone creation stuff
 
 	arm->act_edelement = bone;
 
@@ -169,7 +185,11 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 	/* find the active or selected bone */
 	for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
 		if (EELEMENT_VISIBLE(arm, eelement)) {
+<<<<<<< HEAD
 			if (eelement->flag & ELEMENT_TIPSEL || arm->act_edelement == eelement)
+=======
+			if (eelement->flag & BONE_TIPSEL || arm->act_edbone == eelement)
+>>>>>>> Bone creation stuff
 				break;
 		}
 	}
@@ -177,7 +197,11 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 	if (eelement == NULL) {
 		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
 			if (EELEMENT_VISIBLE(arm, eelement)) {
+<<<<<<< HEAD
 				if (eelement->flag & ELEMENT_ROOTSEL || arm->act_edelement == eelement)
+=======
+				if (eelement->flag & BONE_ROOTSEL || arm->act_edbone == eelement)
+>>>>>>> Bone creation stuff
 					break;
 			}
 		}
@@ -199,12 +223,20 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 			if (flipelement == NULL)
 				break;
 			else {
+<<<<<<< HEAD
 				SWAP(EditArmatureElement *, flipelement, eelement);
+=======
+				SWAP(EditBone *, flipelement, eelement);
+>>>>>>> Bone creation stuff
 			}
 		}
 
 		newelement = ED_armature_edit_armature_element_add(arm, eelement->name, eelement->type);
+<<<<<<< HEAD
 		arm->act_edelement = newelement;
+=======
+		arm->act_edbone = newelement;
+>>>>>>> Bone creation stuff
 
 		if (to_root) {
 			copy_v3_v3(newelement->head, eelement->head);
@@ -215,7 +247,11 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 			copy_v3_v3(newelement->head, eelement->tail);
 			newelement->rad_head = eelement->rad_tail;
 			newelement->parent = eelement;
+<<<<<<< HEAD
 			newelement->flag |= ELEMENT_CONNECTED;
+=======
+			newelement->flag |= BONE_CONNECTED;
+>>>>>>> Bone creation stuff
 		}
 
 		curs = ED_view3d_cursor3d_get(scene, v3d);
@@ -231,7 +267,11 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 
 		newelement->length = len_v3v3(newelement->head, newelement->tail);
 		newelement->rad_tail = newelement->length * 0.05f;
+<<<<<<< HEAD
 		((BoneData*)newelement->data)->dist = newelement->length * 0.25f;
+=======
+		newelement->dist = newelement->length * 0.25f;
+>>>>>>> Bone creation stuff
 
 	}
 
@@ -299,7 +339,11 @@ EditArmatureElement *add_points_bone(Object *obedit, float head[3], float tail[3
 	EditArmatureElement *eel;
 
     // TODO: Fix this up so it creates the right type
+<<<<<<< HEAD
 	eel = ED_armature_edit_armature_element_add(obedit->data, "Bone", AE_BONE);
+=======
+	ebo = ED_armature_edit_armature_element_add(obedit->data, "Bone", BoneType);
+>>>>>>> Bone creation stuff
 
 	copy_v3_v3(eel->head, head);
 	copy_v3_v3(eel->tail, tail);
@@ -765,7 +809,11 @@ static int armature_bone_primitive_add_exec(bContext *C, wmOperator *op)
 	ED_armature_deselect_all(obedit, 0);
 
 	/*	Create a bone	*/
+<<<<<<< HEAD
 	bone = ED_armature_edit_armature_element_add(obedit->data, name, AE_BONE);
+=======
+	bone = ED_armature_edit_armature_element_add(obedit->data, name, BoneType);
+>>>>>>> Bone creation stuff
 
 	copy_v3_v3(bone->head, curs);
 
