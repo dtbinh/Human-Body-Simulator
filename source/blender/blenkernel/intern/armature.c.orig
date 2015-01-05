@@ -575,8 +575,13 @@ void b_bone_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BB
 		}
 	}
 
+<<<<<<< HEAD
 	hlength1 = ((BoneData*)bone->data)->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
 	hlength2 = ((BoneData*)bone->data)->ease2 * length * 0.390464f;
+=======
+	hlength1 = ((BoneData*)bone->custom)->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
+	hlength2 = ((BoneData*)bone->custom)->ease2 * length * 0.390464f;
+>>>>>>> Errors and warnings
 
 	/* evaluate next and prev bones */
 	if (bone->flag & BONE_CONNECTED)
@@ -869,10 +874,17 @@ static float dist_bone_deform(bPoseChannel *pchan, bPoseChanDeform *pdef_info, f
 
 	copy_v3_v3(cop, co);
 
+<<<<<<< HEAD
 	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, ((BoneData*)bone->data)->dist);
 
 	if (fac > 0.0f) {
 		fac *= ((BoneData*)bone->data)->weight;
+=======
+	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, ((BoneData*)bone->custom)->dist);
+
+	if (fac > 0.0f) {
+		fac *= ((BoneData*)bone->custom)->weight;
+>>>>>>> Errors and warnings
 		contrib = fac;
 		if (contrib > 0.0f) {
 			if (vec) {
@@ -1118,7 +1130,11 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 
 					if (bone && bone->flag & BONE_MULT_VG_ENV) {
 						weight *= distfactor_to_bone(co, bone->arm_head, bone->arm_tail,
+<<<<<<< HEAD
 						                             bone->rad_head, bone->rad_tail, ((BoneData*)bone->data)->dist);
+=======
+						                             bone->rad_head, bone->rad_tail, ((BoneData*)bone->custom)->dist);
+>>>>>>> Errors and warnings
 					}
 					pchan_bone_deform(pchan, pdef_info, weight, vec, dq, smat, co, &contrib);
 				}
@@ -3040,17 +3056,6 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 				copy_v3_v3(pchan->pose_tail, bone->arm_tail);
 			}
 		}
-<<<<<<< HEAD
-=======
-//		for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-//            muscle = pmuscle->muscle;
-//            if (muscle) {
-//                copy_m4_m4(pmuscle->pose_mat, muscle->arm_mat);
-//                copy_v3_v3(pmuscle->pose_head, muscle->arm_head);
-//                copy_v3_v3(pmuscle->pose_tail, muscle->arm_tail);
-//            }
-//		}
->>>>>>> Forgot to commit
 	}
 	else {
 		invert_m4_m4(ob->imat, ob->obmat); /* imat is needed */
