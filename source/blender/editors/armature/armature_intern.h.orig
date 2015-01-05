@@ -229,13 +229,8 @@ void MUSCLE_OT_muscle_primitive_add(struct wmOperatorType *ot);
  */
 
 EditArmatureElement *make_elementList(struct ListBase *edList, struct ListBase *elements, struct EditArmatureElement *parent, struct ArmatureElement *actElement);
-<<<<<<< HEAD
 //EditBone *make_boneList(struct ListBase *edbo, struct ListBase *bones, struct EditBone *parent, struct Bone *actBone);
 //EditMuscle *make_muscleList(struct ListBase *edmu, struct ListBase *muscles, struct EditMuscle *parent, struct Muscle *actMuscle);
-=======
-EditBone *make_boneList(struct ListBase *edbo, struct ListBase *bones, struct EditBone *parent, struct Bone *actBone);
-EditMuscle *make_muscleList(struct ListBase *edmu, struct ListBase *muscles, struct EditMuscle *parent, struct Muscle *actMuscle);
->>>>>>> Stupid struct issue
 void BIF_sk_selectStroke(struct bContext *C, const int mval[2], short extend);
 
 /* duplicate method */
@@ -251,8 +246,12 @@ struct EditArmatureElement *duplicateEditBoneObjects(struct EditArmatureElement 
 void updateDuplicateSubtargetObjects(struct EditArmatureElement *dupBone, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
 
 EditArmatureElement *add_points_bone(struct Object *obedit, float head[3], float tail[3]);
+<<<<<<< HEAD
 void bone_free(struct bArmature *arm, struct EditArmatureElement *bone);
 void muscle_free(struct bArmature *arm, struct EditMuscle *muscle);
+=======
+void bone_free(struct bArmature *arm, struct EditBone *bone);
+>>>>>>> Errors
 void muscle_free(struct bArmature *arm, struct EditMuscle *muscle);
 
 void armature_tag_select_mirrored(struct bArmature *arm);

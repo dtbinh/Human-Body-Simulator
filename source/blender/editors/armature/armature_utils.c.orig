@@ -324,7 +324,11 @@ EditArmatureElement *ED_armature_bone_get_mirrored(const ListBase *edbo, EditArm
 	BKE_deform_flip_side_name(name_flip, eel->name, false);
 
 	if (!STREQ(name_flip, eel->name)) {
+<<<<<<< HEAD
 		return ED_armature_armatureelement_find_name(edbo, name_flip);
+=======
+		return ED_armature_bone_find_name(edbo, name_flip);
+>>>>>>> Errors
 	}
 
 	return NULL;
@@ -470,13 +474,8 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		/*	Copy relevant data from bone to eBone */
 		eElement->parent = parent;
-<<<<<<< HEAD
 		BLI_strncpy(eElement->name, curElement->name, sizeof(eElement->name));
 		eElement->flag = curElement->flag;
-=======
-		BLI_strncpy(eElement->name, curBone->name, sizeof(eElement->name));
-		eElement->flag = curBone->flag;
->>>>>>> Trying to fix unfreed memory blocks
 
 		/* fix selection flags */
 		if (eElement->flag & BONE_SELECTED) {
@@ -514,7 +513,6 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		switch(eElement->type)
 		{
-<<<<<<< HEAD
                 case(AE_BONE):
                     eElement->data = MEM_callocN(sizeof(EditBoneElement), "make_editbonedata");
                     ((EditBoneElement*)eElement->data)->dist = ((BoneData*)curElement->data)->dist;
@@ -523,15 +521,6 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
                     ((EditBoneElement*)eElement->data)->ease2 = ((BoneData*)curElement->data)->ease2;
                     break;
                 case(AE_MUSCLE):
-=======
-                case(BoneType):
-                    ((EditBoneElement*)eElement->custom)->dist = ((BoneData*)curElement->custom)->dist;
-                    ((EditBoneElement*)eElement->custom)->weight = ((BoneData*)curElement->custom)->weight;
-                    ((EditBoneElement*)eElement->custom)->ease1 = ((BoneData*)curElement->custom)->ease1;
-                    ((EditBoneElement*)eElement->custom)->ease2 = ((BoneData*)curElement->custom)->ease2;
-                    break;
-                case(MuscleType):
->>>>>>> Trying to fix unfreed memory blocks
                     break;
 		}
 
@@ -542,11 +531,7 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		/*	Add children if necessary */
 		if (curElement->childbase.first) {
-<<<<<<< HEAD
 			eElementTest = make_elementList(edList, &curElement->childbase, eElement, actElement);
-=======
-			eElementTest = make_boneList(edList, &curElement->childbase, eElement, actElement);
->>>>>>> Trying to fix unfreed memory blocks
 			if (eElementTest)
 				eElementAct = eElementTest;
 		}
@@ -760,11 +745,7 @@ void ED_armature_edit_free(struct bArmature *arm)
 					IDP_FreeProperty(eElement->prop);
 					MEM_freeN(eElement->prop);
 				}
-<<<<<<< HEAD
 				MEM_freeN(eElement->data);
-=======
-				MEM_freeN(eElement->custom);
->>>>>>> Trying to fix unfreed memory blocks
 			}
 
 			BLI_freelistN(arm->edbo);
@@ -781,11 +762,7 @@ void ED_armature_edit_free(struct bArmature *arm)
                     IDP_FreeProperty(eElement->prop);
                     MEM_freeN(eElement->prop);
                 }
-<<<<<<< HEAD
                 MEM_freeN(eElement->data);
-=======
-                MEM_freeN(eElement->custom);
->>>>>>> Trying to fix unfreed memory blocks
             }
 
             BLI_freelistN(arm->edmu);
