@@ -522,8 +522,8 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 /* also sets restposition in armature (arm_mat) */
 static void fix_bonelist_roll(ListBase *bonelist, ListBase *editbonelist)
 {
-	Bone *curBone;
-	EditBone *ebone;
+	ArmatureElement *curBone;
+	EditArmatureElement *ebone;
 	float premat[3][3];
 	float postmat[3][3];
 	float difmat[3][3];
