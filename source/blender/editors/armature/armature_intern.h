@@ -235,15 +235,15 @@ void BIF_sk_selectStroke(struct bContext *C, const int mval[2], short extend);
 
 /* duplicate method */
 void preEditBoneDuplicate(struct ListBase *editbones);
-struct EditArmatureElement *duplicateEditBone(struct EditBone *curBone, const char *name, struct ListBase *editbones, struct Object *ob);
-void updateDuplicateSubtarget(struct EditBone *dupBone, struct ListBase *editbones, struct Object *ob);
+struct EditArmatureElement *duplicateEditBone(struct EditArmatureElement *curBone, const char *name, struct ListBase *editbones, struct Object *ob);
+void updateDuplicateSubtarget(struct EditArmatureElement *dupBone, struct ListBase *editbones, struct Object *ob);
 
 /* duplicate method (cross objects) */
 /* editbones is the target list */
 struct EditArmatureElement *duplicateEditBoneObjects(struct EditArmatureElement *curBone, const char *name, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
 
 /* editbones is the source list */
-void updateDuplicateSubtargetObjects(struct EditBone *dupBone, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
+void updateDuplicateSubtargetObjects(struct EditArmatureElement *dupBone, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
 
 EditArmatureElement *add_points_bone(struct Object *obedit, float head[3], float tail[3]);
 void bone_free(struct bArmature *arm, struct EditBone *bone);
