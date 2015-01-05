@@ -3009,14 +3009,14 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 				copy_v3_v3(pchan->pose_tail, bone->arm_tail);
 			}
 		}
-		for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-            muscle = pmuscle->muscle;
-            if (muscle) {
-                copy_m4_m4(pmuscle->pose_mat, muscle->arm_mat);
-                copy_v3_v3(pmuscle->pose_head, muscle->arm_head);
-                copy_v3_v3(pmuscle->pose_tail, muscle->arm_tail);
-            }
-		}
+//		for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+//            muscle = pmuscle->muscle;
+//            if (muscle) {
+//                copy_m4_m4(pmuscle->pose_mat, muscle->arm_mat);
+//                copy_v3_v3(pmuscle->pose_head, muscle->arm_head);
+//                copy_v3_v3(pmuscle->pose_tail, muscle->arm_tail);
+//            }
+//		}
 	}
 	else {
 		invert_m4_m4(ob->imat, ob->obmat); /* imat is needed */
