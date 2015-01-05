@@ -632,11 +632,8 @@ void ED_armature_from_edit(bArmature *arm)
 {
 	EditArmatureElement *eElem, *neElem;
 	ArmatureElement *newElem;
-<<<<<<< HEAD
-=======
-	EditMuscle *eMuscle, *neMuscle;
-	Muscle *newMuscle;
->>>>>>> Errors on venus
+//	EditMuscle *eMuscle, *neMuscle;
+//	Muscle *newMuscle;
 	Object *obt;
 
 	/* armature bones */
@@ -764,15 +761,9 @@ void ED_armature_from_edit(bArmature *arm)
 	/* Fix parenting in a separate pass to ensure ebone->bone connections
 	 * are valid at this point */
 	for (eElem = arm->edbo->first; eElem; eElem = eElem->next) {
-<<<<<<< HEAD
 		newElem = (ArmatureElement *)eElem->temp;
 		if (eElem->parent) {
 			newElem->parent = (ArmatureElement *)eElem->parent->temp;
-=======
-		newElem = (Bone *)eElem->temp;
-		if (eElem->parent) {
-			newElem->parent = (Bone *)eElem->parent->temp;
->>>>>>> Errors on venus
 			BLI_addtail(&newElem->parent->childbase, newElem);
 
 			{
@@ -780,11 +771,7 @@ void ED_armature_from_edit(bArmature *arm)
 				float iM_parentRest[3][3];
 
 				/* Get the parent's  matrix (rotation only) */
-<<<<<<< HEAD
 				ED_armature_eelement_to_mat3(eElem->parent, M_parentRest);
-=======
-				ED_armature_ebone_to_mat3(eElem->parent, M_parentRest);
->>>>>>> Errors on venus
 
 				/* Invert the parent matrix */
 				invert_m3_m3(iM_parentRest, M_parentRest);
