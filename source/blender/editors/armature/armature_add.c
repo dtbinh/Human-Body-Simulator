@@ -60,7 +60,7 @@
 
 /* default bone add, returns it selected, but without tail set */
 /* XXX should be used everywhere, now it mallocs bones still locally in functions */
-EditArmatureElement *ED_armature_edit_bone_add(bArmature *arm, const char *name)
+EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const char *name, int type)
 {
 	EditArmatureElement *bone = MEM_callocN(sizeof(EditArmatureElement), "eBone");
 
@@ -73,16 +73,30 @@ EditArmatureElement *ED_armature_edit_bone_add(bArmature *arm, const char *name)
 
     bone->type = BoneType;
 	bone->flag |= BONE_TIPSEL;
-	((EditBoneElement*)bone->custom)->weight = 1.0f;
-	((EditBoneElement*)bone->custom)->dist = 0.25f;
 	bone->xwidth = 0.1f;
 	bone->zwidth = 0.1f;
-	((EditBoneElement*)bone->custom)->ease1 = 1.0f;
-	((EditBoneElement*)bone->custom)->ease2 = 1.0f;
 	bone->rad_head = 0.10f;
 	bone->rad_tail = 0.05f;
 	bone->segments = 1;
 	bone->layer = arm->layer;
+
+    switch(type)
+    {
+        case BoneType:
+            ((EditBoneElement*)bone->custom)->ease1 = 1.0f;
+            ((EditBoneElement*)bone->custom)->ease2 = 1.0f;
+            ((EditBoneElement*)bone->custom)->weight = 1.0f;
+            ((EditBoneElement*)bone->custom)->dist = 0.25f;
+            break;
+        case MuscleType:
+            // TODO:
+            // Muscle properties go here
+            // None yet
+//            ((EditMuscleElement*)bone->custom)->
+            break;
+    }
+
+
 
 	return bone;
 }
@@ -95,7 +109,7 @@ EditArmatureElement *ED_armature_edit_bone_add_primitive(Object *obedit_arm, flo
 	ED_armature_deselect_all(obedit_arm, 0);
 
 	/* Create a bone */
-	bone = ED_armature_edit_bone_add(arm, "Bone");
+	bone = ED_armature_edit_armature_element_add(arm, "Bone", BoneType);
 
 	arm->act_edelement = bone;
 
@@ -114,7 +128,7 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	View3D *v3d;
 	bArmature *arm;
-	EditBone *ebone, *newbone, *flipbone;
+	EditArmatureElement *eelement, *newelement, *flipelement;
 	float mat[3][3], imat[3][3];
 	const float *curs;
 	int a, to_root = 0;
@@ -127,21 +141,21 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 	arm = obedit->data;
 
 	/* find the active or selected bone */
-	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-		if (EBONE_VISIBLE(arm, ebone)) {
-			if (ebone->flag & BONE_TIPSEL || arm->act_edbone == ebone)
+	for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
+		if (EELEMENT_VISIBLE(arm, eelement)) {
+			if (eelement->flag & BONE_TIPSEL || arm->act_edbone == eelement)
 				break;
 		}
 	}
 
-	if (ebone == NULL) {
-		for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-			if (EBONE_VISIBLE(arm, ebone)) {
-				if (ebone->flag & BONE_ROOTSEL || arm->act_edbone == ebone)
+	if (eelement == NULL) {
+		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
+			if (EELEMENT_VISIBLE(arm, eelement)) {
+				if (eelement->flag & BONE_ROOTSEL || arm->act_edbone == eelement)
 					break;
 			}
 		}
-		if (ebone == NULL)
+		if (eelement == NULL)
 			return OPERATOR_CANCELLED;
 
 		to_root = 1;
@@ -150,48 +164,48 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 	ED_armature_deselect_all(obedit, 0);
 
 	/* we re-use code for mirror editing... */
-	flipbone = NULL;
+	flipelement = NULL;
 	if (arm->flag & ARM_MIRROR_EDIT)
-		flipbone = ED_armature_bone_get_mirrored(arm->edbo, ebone);
+		flipelement = ED_armature_bone_get_mirrored(arm->edbo, eelement);
 
 	for (a = 0; a < 2; a++) {
 		if (a == 1) {
-			if (flipbone == NULL)
+			if (flipelement == NULL)
 				break;
 			else {
-				SWAP(EditBone *, flipbone, ebone);
+				SWAP(EditBone *, flipelement, eelement);
 			}
 		}
 
-		newbone = ED_armature_edit_bone_add(arm, ebone->name);
-		arm->act_edbone = newbone;
+		newelement = ED_armature_edit_armature_element_add(arm, eelement->name, eelement->type);
+		arm->act_edbone = newelement;
 
 		if (to_root) {
-			copy_v3_v3(newbone->head, ebone->head);
-			newbone->rad_head = ebone->rad_tail;
-			newbone->parent = ebone->parent;
+			copy_v3_v3(newelement->head, eelement->head);
+			newelement->rad_head = eelement->rad_tail;
+			newelement->parent = eelement->parent;
 		}
 		else {
-			copy_v3_v3(newbone->head, ebone->tail);
-			newbone->rad_head = ebone->rad_tail;
-			newbone->parent = ebone;
-			newbone->flag |= BONE_CONNECTED;
+			copy_v3_v3(newelement->head, eelement->tail);
+			newelement->rad_head = eelement->rad_tail;
+			newelement->parent = eelement;
+			newelement->flag |= BONE_CONNECTED;
 		}
 
 		curs = ED_view3d_cursor3d_get(scene, v3d);
-		copy_v3_v3(newbone->tail, curs);
-		sub_v3_v3v3(newbone->tail, newbone->tail, obedit->obmat[3]);
+		copy_v3_v3(newelement->tail, curs);
+		sub_v3_v3v3(newelement->tail, newelement->tail, obedit->obmat[3]);
 
 		if (a == 1)
-			newbone->tail[0] = -newbone->tail[0];
+			newelement->tail[0] = -newelement->tail[0];
 
 		copy_m3_m4(mat, obedit->obmat);
 		invert_m3_m3(imat, mat);
-		mul_m3_v3(imat, newbone->tail);
+		mul_m3_v3(imat, newelement->tail);
 
-		newbone->length = len_v3v3(newbone->head, newbone->tail);
-		newbone->rad_tail = newbone->length * 0.05f;
-		newbone->dist = newbone->length * 0.25f;
+		newelement->length = len_v3v3(newelement->head, newelement->tail);
+		newelement->rad_tail = newelement->length * 0.05f;
+		newelement->dist = newelement->length * 0.25f;
 
 	}
 
@@ -254,11 +268,12 @@ void ARMATURE_OT_click_extrude(wmOperatorType *ot)
 }
 
 /* adds an EditBone between the nominated locations (should be in the right space) */
-EditBone *add_points_bone(Object *obedit, float head[3], float tail[3])
+EditArmatureElement *add_points_bone(Object *obedit, float head[3], float tail[3])
 {
 	EditBone *ebo;
 
-	ebo = ED_armature_edit_bone_add(obedit->data, "Bone");
+    // TODO: Fix this up so it creates the right type
+	ebo = ED_armature_edit_armature_element_add(obedit->data, "Bone", BoneType);
 
 	copy_v3_v3(ebo->head, head);
 	copy_v3_v3(ebo->tail, tail);
@@ -710,7 +725,7 @@ static int armature_bone_primitive_add_exec(bContext *C, wmOperator *op)
 	ED_armature_deselect_all(obedit, 0);
 
 	/*	Create a bone	*/
-	bone = ED_armature_edit_bone_add(obedit->data, name);
+	bone = ED_armature_edit_armature_element_add(obedit->data, name, BoneType);
 
 	copy_v3_v3(bone->head, curs);
 
