@@ -491,13 +491,13 @@ static int armature_duplicate_selected_exec(bContext *C, wmOperator *UNUSED(op))
 					/* If this bone has a parent that was duplicated,
 					 * Set the duplicate->parent to the curElem->parent->temp
 					 */
-					eElem->parent = (EditBone *)curElem->parent->temp;
+					eElem->parent = (EditArmatureElement *)curElem->parent->temp;
 				}
 				else {
 					/* If this bone has a parent that IS not selected,
 					 * Set the duplicate->parent to the curElem->parent
 					 */
-					eElem->parent = (EditBone *) curElem->parent;
+					eElem->parent = (EditArmatureElement *) curElem->parent;
 					eElem->flag &= ~BONE_CONNECTED;
 				}
 
@@ -641,12 +641,12 @@ static int armature_extrude_exec(bContext *C, wmOperator *op)
 						}
 					}
 
-					((EditBoneElement*)newelem->custom)->weight = ebone->weight;
-					((EditBoneElement*)newelem->custom)->dist = ebone->dist;
+					((EditBoneElement*)newelem->custom)->weight = ((EditBoneElement*)ebone->custom)->weight;
+					((EditBoneElement*)newelem->custom)->dist = ((EditBoneElement*)ebone->custom)->dist;
 					newelem->xwidth = ebone->xwidth;
 					newelem->zwidth = ebone->zwidth;
-					((EditBoneElement*)newelem->custom)->ease1 = ebone->ease1;
-					((EditBoneElement*)newelem->custom)->ease2 = ebone->ease2;
+					((EditBoneElement*)newelem->custom)->ease1 = ((EditBoneElement*)ebone->custom)->ease1;
+					((EditBoneElement*)newelem->custom)->ease2 = ((EditBoneElement*)ebone->custom)->ease2;
 					newelem->rad_head = ebone->rad_tail; // don't copy entire bone...
 					newelem->rad_tail = ebone->rad_tail;
 					newelem->segments = 1;
