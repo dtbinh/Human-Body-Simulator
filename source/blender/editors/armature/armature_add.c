@@ -312,13 +312,13 @@ void preEditBoneDuplicate(ListBase *editbones)
  * Note: When duplicating cross objects, editbones here is the list of bones
  * from the SOURCE object but ob is the DESTINATION object
  * */
-void updateDuplicateSubtargetObjects(EditBone *dupBone, ListBase *editbones, Object *src_ob, Object *dst_ob)
+void updateDuplicateSubtargetObjects(EditArmatureElement *dupBone, ListBase *editbones, Object *src_ob, Object *dst_ob)
 {
 	/* If an edit bone has been duplicated, lets
 	 * update it's constraints if the subtarget
 	 * they point to has also been duplicated
 	 */
-	EditBone     *oldtarget, *newtarget;
+	EditArmatureElement     *oldtarget, *newtarget;
 	bPoseChannel *pchan;
 	bConstraint  *curcon;
 	ListBase     *conlist;
@@ -346,7 +346,7 @@ void updateDuplicateSubtargetObjects(EditBone *dupBone, ListBase *editbones, Obj
 								 * duplicate of the old subtarget.
 								 */
 								if (oldtarget->temp) {
-									newtarget = (EditBone *) oldtarget->temp;
+									newtarget = (EditArmatureElement *) oldtarget->temp;
 									BLI_strncpy(ct->subtarget, newtarget->name, sizeof(ct->subtarget));
 								}
 							}
@@ -361,7 +361,7 @@ void updateDuplicateSubtargetObjects(EditBone *dupBone, ListBase *editbones, Obj
 	}
 }
 
-void updateDuplicateSubtarget(EditBone *dupBone, ListBase *editbones, Object *ob)
+void updateDuplicateSubtarget(EditArmatureElement *dupBone, ListBase *editbones, Object *ob)
 {
 	updateDuplicateSubtargetObjects(dupBone, editbones, ob, ob);
 }
@@ -450,7 +450,7 @@ static int armature_duplicate_selected_exec(bContext *C, wmOperator *UNUSED(op))
 	/* Select mirrored bones */
 	if (arm->flag & ARM_MIRROR_EDIT) {
 		for (curElem = arm->edbo->first; curElem; curElem = curElem->next) {
-			if (EBONE_VISIBLE(arm, curElem)) {
+			if (EELEMENT_VISIBLE(arm, curElem)) {
 				if (curElem->flag & BONE_SELECTED) {
 					eElem = ED_armature_bone_get_mirrored(arm->edbo, curElem);
 					if (eElem)
@@ -463,7 +463,7 @@ static int armature_duplicate_selected_exec(bContext *C, wmOperator *UNUSED(op))
 
 	/*	Find the selected bones and duplicate them as needed */
 	for (curElem = arm->edbo->first; curElem && curElem != firstDup; curElem = curElem->next) {
-		if (EBONE_VISIBLE(arm, curElem)) {
+		if (EELEMENT_VISIBLE(arm, curElem)) {
 			if (curElem->flag & BONE_SELECTED) {
 
 				eElem = duplicateEditBone(curElem, curElem->name, arm->edbo, obedit);
@@ -477,9 +477,9 @@ static int armature_duplicate_selected_exec(bContext *C, wmOperator *UNUSED(op))
 
 	/*	Run though the list and fix the pointers */
 	for (curElem = arm->edbo->first; curElem && curElem != firstDup; curElem = curElem->next) {
-		if (EBONE_VISIBLE(arm, curElem)) {
+		if (EELEMENT_VISIBLE(arm, curElem)) {
 			if (curElem->flag & BONE_SELECTED) {
-				eElem = (EditBone *) curElem->temp;
+				eElem = (EditArmatureElement *) curElem->temp;
 
 				if (!curElem->parent) {
 					/* If this bone has no parent,
@@ -518,7 +518,7 @@ static int armature_duplicate_selected_exec(bContext *C, wmOperator *UNUSED(op))
 
 	/*	Deselect the old bones and select the new ones */
 	for (curElem = arm->edbo->first; curElem && curElem != firstDup; curElem = curElem->next) {
-		if (EBONE_VISIBLE(arm, curElem))
+		if (EELEMENT_VISIBLE(arm, curElem))
 			curElem->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
 	}
 
@@ -563,7 +563,7 @@ static int armature_extrude_exec(bContext *C, wmOperator *op)
 
 	/* since we allow root extrude too, we have to make sure selection is OK */
 	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-		if (EBONE_VISIBLE(arm, ebone)) {
+		if (EELEMENT_VISIBLE(arm, ebone)) {
 			if (ebone->flag & BONE_ROOTSEL) {
 				if (ebone->parent && (ebone->flag & BONE_CONNECTED)) {
 					if (ebone->parent->flag & BONE_TIPSEL)
@@ -575,7 +575,7 @@ static int armature_extrude_exec(bContext *C, wmOperator *op)
 
 	/* Duplicate the necessary bones */
 	for (ebone = arm->edbo->first; ((ebone) && (ebone != first)); ebone = ebone->next) {
-		if (EBONE_VISIBLE(arm, ebone)) {
+		if (EELEMENT_VISIBLE(arm, ebone)) {
 			/* we extrude per definition the tip */
 			do_extrude = false;
 			if (ebone->flag & (BONE_TIPSEL | BONE_SELECTED)) {
@@ -669,7 +669,7 @@ static int armature_extrude_exec(bContext *C, wmOperator *op)
 
 					/* restore ebone if we were flipping */
 					if (a == 1 && flipbone)
-						SWAP(EditBone *, flipbone, ebone);
+						SWAP(EditArmatureElement *, flipbone, ebone);
 				}
 			}
 
