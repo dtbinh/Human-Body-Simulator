@@ -52,12 +52,12 @@
 
 static float rna_PoseBone_do_envelope(bPoseChannel *chan, float *vec)
 {
-	Bone *bone = chan->bone;
+	ArmatureElement *element = chan->bone;
 
-	float scale = (bone->flag & BONE_MULT_VG_ENV) == BONE_MULT_VG_ENV ? bone->weight : 1.0f;
+	float scale = (element->flag & BONE_MULT_VG_ENV) == BONE_MULT_VG_ENV ? ((BoneData*)element->custom)->weight : 1.0f;
 
-	return distfactor_to_bone(vec, chan->pose_head, chan->pose_tail, bone->rad_head * scale,
-	                          bone->rad_tail * scale, bone->dist * scale);
+	return distfactor_to_bone(vec, chan->pose_head, chan->pose_tail, element->rad_head * scale,
+	                          element->rad_tail * scale, ((BoneData*)element->custom)->dist * scale);
 }
 #else
 
