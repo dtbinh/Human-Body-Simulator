@@ -302,9 +302,20 @@ void ED_armature_eelement_from_mat4(EditArmatureElement *eelement, float mat[4][
 /**
  * Return a pointer to the bone of the given name
  */
+<<<<<<< HEAD
 EditArmatureElement *ED_armature_armatureelement_find_name(const ListBase *edbo, const char *name)
 {
 	return BLI_findstring(edbo, name, offsetof(EditArmatureElement, name));
+=======
+EditArmatureElement *ED_armature_bone_find_name(const ListBase *edbo, const char *name)
+{
+	return BLI_findstring(edbo, name, offsetof(EditArmatureElement, name));
+}
+
+EditMuscle *ED_armature_muscle_find_name(const ListBase *edmu, const char *name)
+{
+    return BLI_findstring(edmu, name, offsetof(EditMuscle, name));
+>>>>>>> Errors on venus
 }
 
 
@@ -621,6 +632,11 @@ void ED_armature_from_edit(bArmature *arm)
 {
 	EditArmatureElement *eElem, *neElem;
 	ArmatureElement *newElem;
+<<<<<<< HEAD
+=======
+	EditMuscle *eMuscle, *neMuscle;
+	Muscle *newMuscle;
+>>>>>>> Errors on venus
 	Object *obt;
 
 	/* armature bones */
@@ -645,10 +661,34 @@ void ED_armature_from_edit(bArmature *arm)
 		}
 	}
 
+<<<<<<< HEAD
 	/*	Copy the bones from the editData into the armature */
 	for (eElem = arm->edbo->first; eElem; eElem = eElem->next) {
 		newElem = MEM_callocN(sizeof(ArmatureElement), "bone");
 		newElem->data = MEM_callocN(sizeof(BoneData), "bonedata");
+=======
+//	/* remove zero sized muscles */
+//	for (eMuscle = arm->edmu->first; eMuscle; eMuscle = neMuscle) {
+//        float len = len_v3v3(eMuscle->head, eMuscle->tail);
+//        neMuscle = eMuscle->next;
+//        if (len <= 0.000001f) {
+//            EditMuscle *fMuscle;
+//
+//            for (fMuscle = arm->edmu->first; fMuscle; fMuscle = fMuscle->next) {
+//                if (fMuscle->parent == eMuscle)
+//                    fMuscle->parent = eMuscle->parent;
+//            }
+//            if (G.debug & G_DEBUG)
+//                printf("Warning: removed zero sized muscle: %s\n", eMuscle->name);
+//            muscle_free(arm, eMuscle);
+//        }
+//	}
+
+	/*	Copy the bones from the editData into the armature */
+	for (eElem = arm->edbo->first; eElem; eElem = eElem->next) {
+		newElem = MEM_callocN(sizeof(ArmatureElement), "bone");
+		newElem->custom = MEM_callocN(sizeof(BoneData), "bonedata");
+>>>>>>> Errors on venus
 		eElem->temp = newElem;   /* Associate the real Bones with the EditBones */
 
 		BLI_strncpy(newElem->name, eElem->name, sizeof(newElem->name));
@@ -666,6 +706,7 @@ void ED_armature_from_edit(bArmature *arm)
 		}
 		newElem->roll = 0.0f;
 
+<<<<<<< HEAD
 		((BoneData*)newElem->data)->weight = ((EditBoneElement*)eElem->data)->weight;
 		((BoneData*)newElem->data)->dist = ((EditBoneElement*)eElem->data)->dist;
 
@@ -673,6 +714,15 @@ void ED_armature_from_edit(bArmature *arm)
 		newElem->zwidth = eElem->zwidth;
 		((BoneData*)newElem->data)->ease1 = ((EditBoneElement*)eElem->data)->ease1;
 		((BoneData*)newElem->data)->ease2 = ((EditBoneElement*)eElem->data)->ease2;
+=======
+		((BoneData*)newElem->custom)->weight = ((EditBoneElement*)eElem->custom)->weight;
+		((BoneData*)newElem->custom)->dist = ((EditBoneElement*)eElem->custom)->dist;
+
+		newElem->xwidth = eElem->xwidth;
+		newElem->zwidth = eElem->zwidth;
+		((BoneData*)newElem->custom)->ease1 = ((EditBoneElement*)eElem->custom)->ease1;
+		((BoneData*)newElem->custom)->ease2 = ((EditBoneElement*)eElem->custom)->ease2;
+>>>>>>> Errors on venus
 		newElem->rad_head = eElem->rad_head;
 		newElem->rad_tail = eElem->rad_tail;
 		newElem->segments = eElem->segments;
@@ -681,13 +731,48 @@ void ED_armature_from_edit(bArmature *arm)
 		if (eElem->prop)
 			newElem->prop = IDP_CopyProperty(eElem->prop);
 	}
+<<<<<<< HEAD
+=======
+
+	/* Copy the muscles from the editData into the armature */
+//	for (eMuscle = arm->edmu->first; eMuscle; eMuscle = eMuscle->next) {
+//        newMuscle = MEM_callocN(sizeof(Muscle), "muscle");
+//        eMuscle->temp = newMuscle;
+//
+//        BLI_strncpy(newMuscle->name, eMuscle->name, sizeof(newMuscle->name));
+//        copy_v3_v3(newMuscle->arm_head, eMuscle->head);
+//        copy_v3_v3(newMuscle->arm_tail, eMuscle->tail);
+//        newMuscle->arm_roll = eMuscle->roll;
+//
+//        newMuscle->flag = eMuscle->flag;
+//
+//        if (eMuscle == arm->act_edmuscle) {
+//            arm->act_muscle = newMuscle;
+//        }
+//        newMuscle->roll = 0.0f;
+//
+//        newMuscle->rad_head = eMuscle->rad_head;
+//        newMuscle->rad_tail = eMuscle->rad_tail;
+//        newMuscle->segments = eMuscle->segments;
+//        newMuscle->layer = eMuscle->layer;
+//
+//        if (eMuscle->prop)
+//            newMuscle->prop = IDP_CopyProperty(eMuscle->prop);
+//	}
+>>>>>>> Errors on venus
 
 	/* Fix parenting in a separate pass to ensure ebone->bone connections
 	 * are valid at this point */
 	for (eElem = arm->edbo->first; eElem; eElem = eElem->next) {
+<<<<<<< HEAD
 		newElem = (ArmatureElement *)eElem->temp;
 		if (eElem->parent) {
 			newElem->parent = (ArmatureElement *)eElem->parent->temp;
+=======
+		newElem = (Bone *)eElem->temp;
+		if (eElem->parent) {
+			newElem->parent = (Bone *)eElem->parent->temp;
+>>>>>>> Errors on venus
 			BLI_addtail(&newElem->parent->childbase, newElem);
 
 			{
@@ -695,7 +780,11 @@ void ED_armature_from_edit(bArmature *arm)
 				float iM_parentRest[3][3];
 
 				/* Get the parent's  matrix (rotation only) */
+<<<<<<< HEAD
 				ED_armature_eelement_to_mat3(eElem->parent, M_parentRest);
+=======
+				ED_armature_ebone_to_mat3(eElem->parent, M_parentRest);
+>>>>>>> Errors on venus
 
 				/* Invert the parent matrix */
 				invert_m3_m3(iM_parentRest, M_parentRest);
@@ -712,6 +801,7 @@ void ED_armature_from_edit(bArmature *arm)
 		else {
 			copy_v3_v3(newElem->head, eElem->head);
 			copy_v3_v3(newElem->tail, eElem->tail);
+<<<<<<< HEAD
 			BLI_addtail(&arm->elementbase, newElem);
 		}
 	}
@@ -719,6 +809,33 @@ void ED_armature_from_edit(bArmature *arm)
 	/* Make a pass through the new armature to fix rolling */
 	/* also builds restposition again (like BKE_armature_where_is) */
 	fix_bonelist_roll(&arm->elementbase, arm->edbo);
+=======
+			BLI_addtail(&arm->bonebase, newElem);
+		}
+	}
+
+//	for (eMuscle = arm->edmu->first; eMuscle; eMuscle = eMuscle->next) {
+//        newMuscle = (Muscle *)eMuscle->temp;
+//        if (eMuscle->parent) {
+//            newMuscle = (Muscle *)eMuscle->parent->temp;
+//
+//            BLI_addtail(&newMuscle->parent->childbase, newMuscle);
+//            // Other stuff in here
+//        }
+//        else {
+//            copy_v3_v3(newMuscle->head, eMuscle->head);
+//            copy_v3_v3(newMuscle->tail, eMuscle->tail);
+//
+//            BLI_addtail(&arm->musclebase, newMuscle);
+//        }
+//	}
+
+	/* Make a pass through the new armature to fix rolling */
+	/* also builds restposition again (like BKE_armature_where_is) */
+	fix_bonelist_roll(&arm->bonebase, arm->edbo);
+
+//	fix_musclelist_roll(&arm->musclebase, arm->edmu);
+>>>>>>> Errors on venus
 
 	/* so all users of this armature should get rebuilt */
 	for (obt = G.main->object.first; obt; obt = obt->id.next) {
