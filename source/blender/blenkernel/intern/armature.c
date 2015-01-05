@@ -201,9 +201,9 @@ void BKE_armature_make_local(bArmature *arm)
 	}
 }
 
-static void copy_bonechildren(Bone *newBone, Bone *oldBone, Bone *actBone, Bone **newActBone)
+static void copy_armaturelementchildren(ArmatureElement *newBone, ArmatureElement *oldBone, ArmatureElement *actBone, ArmatureElement **newActBone)
 {
-	Bone *curBone, *newChildBone;
+	ArmatureElement *curBone, *newChildBone;
 
 	if (oldBone == actBone)
 		*newActBone = newBone;
@@ -218,39 +218,39 @@ static void copy_bonechildren(Bone *newBone, Bone *oldBone, Bone *actBone, Bone 
 	newChildBone = newBone->childbase.first;
 	for (curBone = oldBone->childbase.first; curBone; curBone = curBone->next) {
 		newChildBone->parent = newBone;
-		copy_bonechildren(newChildBone, curBone, actBone, newActBone);
+		copy_armaturelementchildren(newChildBone, curBone, actBone, newActBone);
 		newChildBone = newChildBone->next;
 	}
 }
 
-static void copy_musclechildren(Muscle *newMuscle, Muscle *oldMuscle, Muscle *actMuscle, Muscle **newActMuscle)
-{
-    Muscle *curMuscle, *newChildMuscle;
-
-    if (oldMuscle == actMuscle)
-        *newActMuscle = newMuscle;
-
-    if (oldMuscle->prop)
-        newMuscle->prop = IDP_CopyProperty(oldMuscle->prop);
-
-    BLI_duplicatelist(&newMuscle->childbase, &oldMuscle->childbase);
-
-    newChildMuscle = newMuscle->childbase.first;
-    for (curMuscle = oldMuscle->childbase.first; curMuscle; curMuscle = curMuscle->next) {
-        newChildMuscle->parent = newMuscle;
-        copy_musclechildren(newChildMuscle, curMuscle, actMuscle, newActMuscle);
-        newChildMuscle = newChildMuscle->next;
-    }
-}
+//static void copy_musclechildren(Muscle *newMuscle, Muscle *oldMuscle, Muscle *actMuscle, Muscle **newActMuscle)
+//{
+//    Muscle *curMuscle, *newChildMuscle;
+//
+//    if (oldMuscle == actMuscle)
+//        *newActMuscle = newMuscle;
+//
+//    if (oldMuscle->prop)
+//        newMuscle->prop = IDP_CopyProperty(oldMuscle->prop);
+//
+//    BLI_duplicatelist(&newMuscle->childbase, &oldMuscle->childbase);
+//
+//    newChildMuscle = newMuscle->childbase.first;
+//    for (curMuscle = oldMuscle->childbase.first; curMuscle; curMuscle = curMuscle->next) {
+//        newChildMuscle->parent = newMuscle;
+//        copy_musclechildren(newChildMuscle, curMuscle, actMuscle, newActMuscle);
+//        newChildMuscle = newChildMuscle->next;
+//    }
+//}
 
 bArmature *BKE_armature_copy(bArmature *arm)
 {
 	bArmature *newArm;
-	Bone *oldBone, *newBone;
-	Bone *newActBone = NULL;
+	ArmatureElement *oldBone, *newBone;
+	ArmatureElement *newActBone = NULL;
 
-	Muscle *oldMuscle, *newMuscle;
-	Muscle *newActMuscle = NULL;
+//	Muscle *oldMuscle, *newMuscle;
+//	Muscle *newActMuscle = NULL;
 
 	newArm = BKE_libblock_copy(&arm->id);
 	BLI_duplicatelist(&newArm->bonebase, &arm->bonebase);
@@ -260,19 +260,19 @@ bArmature *BKE_armature_copy(bArmature *arm)
 	newBone = newArm->bonebase.first;
 	for (oldBone = arm->bonebase.first; oldBone; oldBone = oldBone->next) {
 		newBone->parent = NULL;
-		copy_bonechildren(newBone, oldBone, arm->act_bone, &newActBone);
+		copy_armaturelementchildren(newBone, oldBone, arm->act_bone, &newActBone);
 		newBone = newBone->next;
 	}
 
-    newMuscle = newArm->musclebase.first;
-	for (oldMuscle = arm->musclebase.first; oldMuscle; oldMuscle = oldMuscle->next) {
-        newMuscle->parent = NULL;
-        copy_musclechildren(newMuscle, oldMuscle, arm->act_muscle, &newActMuscle);
-        newMuscle = newMuscle->next;
-	}
+//    newMuscle = newArm->musclebase.first;
+//	for (oldMuscle = arm->musclebase.first; oldMuscle; oldMuscle = oldMuscle->next) {
+//        newMuscle->parent = NULL;
+//        copy_musclechildren(newMuscle, oldMuscle, arm->act_muscle, &newActMuscle);
+//        newMuscle = newMuscle->next;
+//	}
 
 	newArm->act_bone = newActBone;
-	newArm->act_muscle = newActMuscle;
+//	newArm->act_muscle = newActMuscle;
 
 	newArm->edbo = NULL;
 	newArm->edmu = NULL;
@@ -520,7 +520,7 @@ static void equalize_bezier(float *data, int desired)
 void b_bone_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BBONE_SUBDIV])
 {
 	bPoseChannel *next, *prev;
-	Bone *bone = pchan->bone;
+	ArmatureElement *bone = pchan->bone;
 	float h1[3], h2[3], scale[3], length, hlength1, hlength2, roll1 = 0.0f, roll2;
 	float mat3[3][3], imat[4][4], posemat[4][4], scalemat[4][4], iscalemat[4][4];
 	float data[MAX_BBONE_SUBDIV + 1][4], *fp;
@@ -688,7 +688,7 @@ typedef struct bPoseChanDeform {
 
 static void pchan_b_bone_defmats(bPoseChannel *pchan, bPoseChanDeform *pdef_info, int use_quaternion)
 {
-	Bone *bone = pchan->bone;
+	ArmatureElement *bone = pchan->bone;
 	Mat4 b_bone[MAX_BBONE_SUBDIV], b_bone_rest[MAX_BBONE_SUBDIV];
 	Mat4 *b_bone_mats;
 	DualQuat *b_bone_dual_quats = NULL;
@@ -728,7 +728,7 @@ static void pchan_b_bone_defmats(bPoseChannel *pchan, bPoseChanDeform *pdef_info
 	}
 }
 
-static void b_bone_deform(bPoseChanDeform *pdef_info, Bone *bone, float co[3], DualQuat *dq, float defmat[3][3])
+static void b_bone_deform(bPoseChanDeform *pdef_info, ArmatureElement *bone, float co[3], DualQuat *dq, float defmat[3][3])
 {
 	Mat4 *b_bone = pdef_info->b_bone_mats;
 	float (*mat)[4] = b_bone[0].mat;
@@ -826,7 +826,7 @@ static void pchan_deform_mat_add(bPoseChannel *pchan, float weight, float bbonem
 static float dist_bone_deform(bPoseChannel *pchan, bPoseChanDeform *pdef_info, float vec[3], DualQuat *dq,
                               float mat[3][3], const float co[3])
 {
-	Bone *bone = pchan->bone;
+	ArmatureElement *bone = pchan->bone;
 	float fac, contrib = 0.0;
 	float cop[3], bbonemat[3][3];
 	DualQuat bbonedq;
@@ -1078,7 +1078,7 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 				const int index = dw->def_nr;
 				if (index >= 0 && index < defbase_tot && (pchan = defnrToPC[index])) {
 					float weight = dw->weight;
-					Bone *bone = pchan->bone;
+					ArmatureElement *bone = pchan->bone;
 					pdef_info = pdef_info_array + defnrToPCIndex[index];
 
 					deformed = 1;
@@ -1267,7 +1267,7 @@ static void get_offset_muscle_mat(Muscle *muscle, float offs_muscle[4][4])
  */
 void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float loc_mat[4][4])
 {
-	Bone *bone, *parbone;
+	ArmatureElement *bone, *parbone;
 	bPoseChannel *parchan;
 
 	/* set up variables for quicker access below */
@@ -2056,7 +2056,7 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 	}
 }
 
-static int rebuild_pose_bone(bPose *pose, Bone *bone, bPoseChannel *parchan, int counter)
+static int rebuild_pose_bone(bPose *pose, ArmatureElement *bone, bPoseChannel *parchan, int counter)
 {
 	bPoseChannel *pchan = BKE_pose_channel_verify(pose, bone->name); /* verify checks and/or adds */
 
@@ -2981,10 +2981,10 @@ void BKE_pose_where_is_muscle(Scene *scene, Object *ob, bMuscleChannel *pmuscle,
 void BKE_pose_where_is(Scene *scene, Object *ob)
 {
 	bArmature *arm;
-	Bone *bone;
-	Muscle *muscle;
+	ArmatureElement *bone;
+//	Muscle *muscle;
 	bPoseChannel *pchan;
-	bMuscleChannel *pmuscle;
+//	bMuscleChannel *pmuscle;
 	float imat[4][4];
 	float ctime;
 
@@ -3062,12 +3062,12 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 		}
 	}
 
-	for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-        if (pmuscle->muscle) {
-            invert_m4_m4(imat, pmuscle->muscle->arm_mat);
-            mul_m4_m4m4(pmuscle->chan_mat, pmuscle->pose_mat, imat);
-        }
-	}
+//	for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+//        if (pmuscle->muscle) {
+//            invert_m4_m4(imat, pmuscle->muscle->arm_mat);
+//            mul_m4_m4m4(pmuscle->chan_mat, pmuscle->pose_mat, imat);
+//        }
+//	}
 }
 
 /************** Bounding box ********************/
