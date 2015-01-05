@@ -94,7 +94,7 @@ struct Muscle *BKE_armature_find_muscle_name(struct bArmature *arm, const char *
 float distfactor_to_bone(const float vec[3], const float b1[3], const float b2[3], float r1, float r2, float rdist);
 
 void BKE_armature_where_is(struct bArmature *arm);
-void BKE_armature_where_is_bone(struct Bone *bone, struct Bone *prevbone);
+void BKE_armature_where_is_bone(struct ArmatureElement *bone, struct ArmatureElement *prevbone);
 void BKE_armature_where_is_muscle(struct Muscle *muscle, struct Muscle *prevmuscle);
 void BKE_pose_rebuild(struct Object *ob, struct bArmature *arm);
 void BKE_pose_where_is(struct Scene *scene, struct Object *ob);
