@@ -107,7 +107,7 @@ static EditArmatureElement *rna_Armature_edit_bone_new(bArmature *arm, ReportLis
 		BKE_reportf(reports, RPT_ERROR, "Armature '%s' not in edit mode, cannot add an editbone", arm->id.name + 2);
 		return NULL;
 	}
-	return ED_armature_edit_bone_add(arm, name);
+	return ED_armature_edit_armature_element_add(arm, name, BoneType);
 }
 
 static void rna_Armature_edit_bone_remove(bArmature *arm, ReportList *reports, PointerRNA *ebone_ptr)
