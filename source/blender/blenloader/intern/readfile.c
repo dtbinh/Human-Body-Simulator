@@ -2953,18 +2953,18 @@ static void lib_link_pose(FileData *fd, Main *bmain, Object *ob, bPose *pose)
 		}
 	}
 
-	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-        pmuscle->muscle = BKE_armature_find_muscle_name(arm, pmuscle->name);
-
-        pmuscle->custom = newlibadr_us(fd, arm->id.lib, pmuscle->custom);
-
-        if (pmuscle->muscle == NULL)
-            rebuild= 1;
-        else if (ob->id.lib == NULL && arm->id.lib) {
-            pmuscle->muscle->flag &= ~MUSCLE_SELECTED;
-            pmuscle->muscle->flag |= pmuscle->selectflag;
-        }
-	}
+//	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
+//        pmuscle->muscle = BKE_armature_find_muscle_name(arm, pmuscle->name);
+//
+//        pmuscle->custom = newlibadr_us(fd, arm->id.lib, pmuscle->custom);
+//
+//        if (pmuscle->muscle == NULL)
+//            rebuild= 1;
+//        else if (ob->id.lib == NULL && arm->id.lib) {
+//            pmuscle->muscle->flag &= ~MUSCLE_SELECTED;
+//            pmuscle->muscle->flag |= pmuscle->selectflag;
+//        }
+//	}
 
 	if (rebuild) {
 		DAG_id_tag_update_ex(bmain, &ob->id, OB_RECALC_OB | OB_RECALC_DATA | OB_RECALC_TIME);
