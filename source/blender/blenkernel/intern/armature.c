@@ -120,13 +120,29 @@ void BKE_armature_musclelist_free(ListBase *lb)
     BLI_freelistN(lb);
 }
 
+void BKE_armature_elementlist_free(ListBase *lb) {
+    ArmatureElement *elem;
+
+    for (elem = lb->first; elem; elem = elem->next) {
+        if (elem->prop) {
+            IDP_FreeProperty(elem->prop);
+            MEM_freeN(elem->prop);
+        }
+        BKE_armature_elementlist_free(&elem->childbase);
+    }
+
+    BLI_freelistN(lb);
+}
+
 void BKE_armature_free(bArmature *arm)
 {
 	if (arm) {
-		BKE_armature_bonelist_free(&arm->bonebase);
+//		BKE_armature_bonelist_free(&arm->bonebase);
 
         /* free muscle */
-        BKE_armature_musclelist_free(&arm->musclebase);
+//        BKE_armature_musclelist_free(&arm->musclebase);
+
+        BKE_armature_elementlist_free(&arm->elementbase);
 
 		/* free editmode data */
 		if (arm->edbo) {
@@ -254,7 +270,7 @@ bArmature *BKE_armature_copy(bArmature *arm)
 
 	newArm = BKE_libblock_copy(&arm->id);
 	BLI_duplicatelist(&newArm->bonebase, &arm->bonebase);
-	BLI_duplicatelist(&newArm->musclebase, &arm->musclebase);
+//	BLI_duplicatelist(&newArm->musclebase, &arm->musclebase);
 
 	/* Duplicate the childrens' lists */
 	newBone = newArm->bonebase.first;
@@ -337,21 +353,21 @@ Bone *BKE_armature_find_bone_name(bArmature *arm, const char *name)
 	return bone;
 }
 
-Muscle *BKE_armature_find_muscle_name (bArmature *arm, const char *name)
-{
-    Muscle *muscle = NULL, *curMuscle;
-
-    if (!arm)
-        return NULL;
-
-    for (curMuscle = arm->musclebase.first; curMuscle; curMuscle = curMuscle->next) {
-        muscle = get_named_muscle_musclechildren(curMuscle, name);
-        if (muscle)
-            return muscle;
-    }
-
-    return muscle;
-}
+//Muscle *BKE_armature_find_muscle_name (bArmature *arm, const char *name)
+//{
+//    Muscle *muscle = NULL, *curMuscle;
+//
+//    if (!arm)
+//        return NULL;
+//
+//    for (curMuscle = arm->musclebase.first; curMuscle; curMuscle = curMuscle->next) {
+//        muscle = get_named_muscle_musclechildren(curMuscle, name);
+//        if (muscle)
+//            return muscle;
+//    }
+//
+//    return muscle;
+//}
 
 /* Finds the best possible extension to the name on a particular axis. (For renaming, check for
  * unique names afterwards) strip_number: removes number extensions  (TODO: not used)
