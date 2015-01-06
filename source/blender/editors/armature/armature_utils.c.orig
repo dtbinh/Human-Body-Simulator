@@ -520,21 +520,12 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		switch(eElement->type)
 		{
-<<<<<<< HEAD
                 case(AE_BONE):
                     eElement->data = MEM_callocN(sizeof(EditBoneElement), "make_editbonedata");
                     ((EditBoneElement*)eElement->data)->dist = ((BoneData*)curElement->data)->dist;
                     ((EditBoneElement*)eElement->data)->weight = ((BoneData*)curElement->data)->weight;
                     ((EditBoneElement*)eElement->data)->ease1 = ((BoneData*)curElement->data)->ease1;
                     ((EditBoneElement*)eElement->data)->ease2 = ((BoneData*)curElement->data)->ease2;
-=======
-                case(BoneType):
-                    eElement->custom = MEM_callocN(sizeof(EditBoneElement), "make_editbonedata");
-                    ((EditBoneElement*)eElement->custom)->dist = ((BoneData*)curElement->custom)->dist;
-                    ((EditBoneElement*)eElement->custom)->weight = ((BoneData*)curElement->custom)->weight;
-                    ((EditBoneElement*)eElement->custom)->ease1 = ((BoneData*)curElement->custom)->ease1;
-                    ((EditBoneElement*)eElement->custom)->ease2 = ((BoneData*)curElement->custom)->ease2;
->>>>>>> Memory allocation :\
                     break;
                 case(AE_MUSCLE):
                     break;
@@ -646,6 +637,15 @@ void ED_armature_from_edit(bArmature *arm)
 	Object *obt;
 
 	/* armature bones */
+<<<<<<< HEAD
+=======
+//	BKE_armature_bonelist_free(&arm->bonebase);
+//	arm->act_bone = NULL;
+
+//	BKE_armature_musclelist_free(&arm->musclebase);
+//	arm->act_muscle = NULL;
+
+>>>>>>> Editmode yay
     BKE_armature_elementlist_free(&arm->elementbase);
     arm->act_element = NULL;
 

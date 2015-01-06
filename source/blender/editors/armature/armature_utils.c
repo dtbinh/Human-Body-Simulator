@@ -640,6 +640,9 @@ void ED_armature_from_edit(bArmature *arm)
     BKE_armature_elementlist_free(&arm->elementbase);
     arm->act_element = NULL;
 
+    BKE_armature_elementlist_free(&arm->elementbase);
+    arm->act_element = NULL;
+
 	/* remove zero sized bones, this gives unstable restposes */
 	for (eElem = arm->edbo->first; eElem; eElem = neElem) {
 		float len = len_v3v3(eElem->head, eElem->tail);
