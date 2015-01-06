@@ -266,7 +266,7 @@ static TreeElement *outliner_add_element(SpaceOops *soops, ListBase *lb, void *i
 /* -------------------------------------------------------- */
 
 /* special handling of hierarchical non-lib data */
-static void outliner_add_bone(SpaceOops *soops, ListBase *lb, ID *id, Bone *curBone, 
+static void outliner_add_bone(SpaceOops *soops, ListBase *lb, ID *id, ArmatureElement *curBone,
                               TreeElement *parent, int *a)
 {
 	TreeElement *te = outliner_add_element(soops, lb, id, parent, TSE_BONE, *a);
