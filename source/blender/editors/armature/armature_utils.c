@@ -606,11 +606,14 @@ void ED_armature_from_edit(bArmature *arm)
 	Object *obt;
 
 	/* armature bones */
-	BKE_armature_bonelist_free(&arm->bonebase);
-	arm->act_bone = NULL;
+//	BKE_armature_bonelist_free(&arm->bonebase);
+//	arm->act_bone = NULL;
 
-	BKE_armature_musclelist_free(&arm->musclebase);
-	arm->act_muscle = NULL;
+//	BKE_armature_musclelist_free(&arm->musclebase);
+//	arm->act_muscle = NULL;
+
+    BKE_armature_elementlist_free(&arm->elementbase);
+    arm->act_element = NULL;
 
 	/* remove zero sized bones, this gives unstable restposes */
 	for (eElem = arm->edbo->first; eElem; eElem = neElem) {
