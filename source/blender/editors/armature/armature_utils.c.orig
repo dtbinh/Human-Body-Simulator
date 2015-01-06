@@ -455,11 +455,7 @@ void transform_armature_mirror_update(Object *obedit)
 					}
 				}
 				if (ebo->flag & BONE_SELECTED) {
-<<<<<<< HEAD
 					((EditBoneElement*)eboflip->data)->dist = ((EditBoneElement*)ebo->data)->dist;
-=======
-					((EditBoneElement*)eboflip->custom)->dist = ((EditBoneElement*)ebo->custom)->dist;
->>>>>>> warnings as errors
 					eboflip->roll = -ebo->roll;
 					eboflip->xwidth = ebo->xwidth;
 					eboflip->zwidth = ebo->zwidth;
@@ -524,12 +520,21 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		switch(eElement->type)
 		{
+<<<<<<< HEAD
                 case(AE_BONE):
                     eElement->data = MEM_callocN(sizeof(EditBoneElement), "make_editbonedata");
                     ((EditBoneElement*)eElement->data)->dist = ((BoneData*)curElement->data)->dist;
                     ((EditBoneElement*)eElement->data)->weight = ((BoneData*)curElement->data)->weight;
                     ((EditBoneElement*)eElement->data)->ease1 = ((BoneData*)curElement->data)->ease1;
                     ((EditBoneElement*)eElement->data)->ease2 = ((BoneData*)curElement->data)->ease2;
+=======
+                case(BoneType):
+                    eElement->custom = MEM_callocN(sizeof(EditBoneElement), "make_editbonedata");
+                    ((EditBoneElement*)eElement->custom)->dist = ((BoneData*)curElement->custom)->dist;
+                    ((EditBoneElement*)eElement->custom)->weight = ((BoneData*)curElement->custom)->weight;
+                    ((EditBoneElement*)eElement->custom)->ease1 = ((BoneData*)curElement->custom)->ease1;
+                    ((EditBoneElement*)eElement->custom)->ease2 = ((BoneData*)curElement->custom)->ease2;
+>>>>>>> Memory allocation :\
                     break;
                 case(AE_MUSCLE):
                     break;
@@ -636,16 +641,8 @@ void ED_armature_from_edit(bArmature *arm)
 {
 	EditArmatureElement *eElem, *neElem;
 	ArmatureElement *newElem;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-	EditMuscle *eMuscle, *neMuscle;
-	Muscle *newMuscle;
->>>>>>> Errors on venus
-=======
 //	EditMuscle *eMuscle, *neMuscle;
 //	Muscle *newMuscle;
->>>>>>> warnings as errors
 	Object *obt;
 
 	/* armature bones */
@@ -773,21 +770,9 @@ void ED_armature_from_edit(bArmature *arm)
 	/* Fix parenting in a separate pass to ensure ebone->bone connections
 	 * are valid at this point */
 	for (eElem = arm->edbo->first; eElem; eElem = eElem->next) {
-<<<<<<< HEAD
-<<<<<<< HEAD
 		newElem = (ArmatureElement *)eElem->temp;
 		if (eElem->parent) {
 			newElem->parent = (ArmatureElement *)eElem->parent->temp;
-=======
-		newElem = (Bone *)eElem->temp;
-		if (eElem->parent) {
-			newElem->parent = (Bone *)eElem->parent->temp;
->>>>>>> Errors on venus
-=======
-		newElem = (ArmatureElement *)eElem->temp;
-		if (eElem->parent) {
-			newElem->parent = (ArmatureElement *)eElem->parent->temp;
->>>>>>> warnings as errors
 			BLI_addtail(&newElem->parent->childbase, newElem);
 
 			{
@@ -795,15 +780,7 @@ void ED_armature_from_edit(bArmature *arm)
 				float iM_parentRest[3][3];
 
 				/* Get the parent's  matrix (rotation only) */
-<<<<<<< HEAD
-<<<<<<< HEAD
 				ED_armature_eelement_to_mat3(eElem->parent, M_parentRest);
-=======
-				ED_armature_ebone_to_mat3(eElem->parent, M_parentRest);
->>>>>>> Errors on venus
-=======
-				ED_armature_eelement_to_mat3(eElem->parent, M_parentRest);
->>>>>>> warnings as errors
 
 				/* Invert the parent matrix */
 				invert_m3_m3(iM_parentRest, M_parentRest);
