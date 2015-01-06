@@ -165,6 +165,7 @@ typedef struct bArmature {
 	ListBase    bonebase;
 	ListBase    chainbase;
 	ListBase    musclebase;
+	ListBase    elementbase;
 	ListBase   *edmu;                   /* muscle listbase, we use pointer so we can check state */
 	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
 
