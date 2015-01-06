@@ -2811,7 +2811,7 @@ static void write_libraries(WriteData *wd, Main *main)
 
 static void write_bone(WriteData *wd, Bone *bone)
 {
-	Bone*	cbone;
+//	Bone*	cbone;
 
 	// PATCH for upward compatibility after 2.37+ armature recode
 	bone->size[0] = bone->size[1] = bone->size[2] = 1.0f;
@@ -2825,11 +2825,11 @@ static void write_bone(WriteData *wd, Bone *bone)
 		IDP_WriteProperty(bone->prop, wd);
 
 	// Write Children
-	cbone= bone->childbase.first;
-	while (cbone) {
-		write_bone(wd, cbone);
-		cbone= cbone->next;
-	}
+//	cbone= bone->childbase.first;
+//	while (cbone) {
+//		write_bone(wd, cbone);
+//		cbone= cbone->next;
+//	}
 }
 
 static void write_muscle(WriteData *wd, Muscle *muscle)
@@ -2854,7 +2854,9 @@ static void convert_bonedata(WriteData *wd, ArmatureElement *armelem)
 {
     // Convert ArmatureElement with BoneData to Bone struct, then write Bone struct out
     // Have to convert to maintain backwards compatibility
+    // Convert all children to bones too
     Bone writebone;
+    ArmatureElement *carmelem;
     writebone.next = armelem->next;
     writebone.prev = armelem->prev;
     writebone.prop = armelem->prop;
@@ -2887,6 +2889,12 @@ static void convert_bonedata(WriteData *wd, ArmatureElement *armelem)
     //writebone.size = armelem->custom->size;
 
     write_bone(wd, &writebone);
+
+    carmelem = armelem->childbase.first;
+    while (carmelem) {
+        convert_bonedata(wd, carmelem);
+        carmelem = carmelem->next;
+    }
 }
 
 static void convert_muscledata(WriteData *wd, ArmatureElement *armelem)
@@ -2914,7 +2922,7 @@ static void write_armatureelement(WriteData *wd, ArmatureElement *armelem)
 static void write_armatures(WriteData *wd, ListBase *idbase)
 {
 	bArmature	*arm;
-	Bone		*bone;
+	ArmatureElement		*bone;
 	Muscle      *muscle;
 
 	arm=idbase->first;
@@ -2928,7 +2936,7 @@ static void write_armatures(WriteData *wd, ListBase *idbase)
 			/* Direct data */
 			bone= arm->bonebase.first;
 			while (bone) {
-				write_bone(wd, bone);
+				convert_bonedata(wd, bone);
 				bone=bone->next;
 			}
 
