@@ -757,7 +757,7 @@ static void outliner_add_id_contents(SpaceOops *soops, TreeElement *te, TreeStor
 				outliner_add_element(soops, &te->subtree, arm, te, TSE_ANIM_DATA, 0);
 			
 			if (arm->edbo) {
-				EditBone *ebone;
+				EditArmatureElement *ebone;
 				TreeElement *ten;
 				
 				for (ebone = arm->edbo->first; ebone; ebone = ebone->next, a++) {
@@ -767,10 +767,10 @@ static void outliner_add_id_contents(SpaceOops *soops, TreeElement *te, TreeStor
 					ebone->temp = ten;
 				}
 				/* make hierarchy */
-				ten = arm->edbo->first ? ((EditBone *)arm->edbo->first)->temp : NULL;
+				ten = arm->edbo->first ? ((EditArmatureElement *)arm->edbo->first)->temp : NULL;
 				while (ten) {
 					TreeElement *nten = ten->next, *par;
-					ebone = (EditBone *)ten->directdata;
+					ebone = (EditArmatureElement *)ten->directdata;
 					if (ebone->parent) {
 						BLI_remlink(&te->subtree, ten);
 						par = ebone->parent->temp;
@@ -787,7 +787,7 @@ static void outliner_add_id_contents(SpaceOops *soops, TreeElement *te, TreeStor
 					/* pass */
 				}
 				else {
-					Bone *curBone;
+					ArmatureElement *curBone;
 					for (curBone = arm->bonebase.first; curBone; curBone = curBone->next) {
 						outliner_add_bone(soops, &te->subtree, id, curBone, te, &a);
 					}
