@@ -1374,22 +1374,19 @@ static void outliner_sort(SpaceOops *soops, ListBase *lb)
 
 /* Filtering ----------------------------------------------- */
 
-static bool outliner_filter_has_name(TreeElement *te, const char *name, int flags)
+static int outliner_filter_has_name(TreeElement *te, const char *name, int flags)
 {
 	int fn_flag = 0;
 
 	if ((flags & SO_FIND_CASE_SENSITIVE) == 0)
 		fn_flag |= FNM_CASEFOLD;
 
-	return fnmatch(name, te->name, fn_flag) == 0;
 }
 
 static int outliner_filter_tree(SpaceOops *soops, ListBase *lb)
 {
 	TreeElement *te, *ten;
 	TreeStoreElem *tselem;
-	char search_buff[sizeof(((struct SpaceOops *)NULL)->search_string) + 2];
-	char *search_string;
 
 	/* although we don't have any search string, we return true 
 	 * since the entire tree is ok then...
@@ -1397,19 +1394,9 @@ static int outliner_filter_tree(SpaceOops *soops, ListBase *lb)
 	if (soops->search_string[0] == 0)
 		return 1;
 
-	if (soops->search_flags & SO_FIND_COMPLETE) {
-		search_string = soops->search_string;
-	}
-	else {
-		/* Implicitly add heading/trailing wildcards if needed. */
-		BLI_strncpy_ensure_pad(search_buff, soops->search_string, '*', sizeof(search_buff));
-		search_string = search_buff;
-	}
-
 	for (te = lb->first; te; te = ten) {
 		ten = te->next;
 		
-		if (!outliner_filter_has_name(te, search_string, soops->search_flags)) {
 			/* item isn't something we're looking for, but...
 			 *  - if the subtree is expanded, check if there are any matches that can be easily found
 			 *		so that searching for "cu" in the default scene will still match the Cube
@@ -1539,20 +1526,10 @@ void outliner_build_tree(Main *mainvar, Scene *scene, SpaceOops *soops)
 			tselem = TREESTORE(ten);
 			lib = (Library *)tselem->id;
 			if (lib && lib->parent) {
-				par = (TreeElement *)lib->parent->id.newid;
-				if (tselem->id->flag & LIB_INDIRECT) {
-					/* Only remove from 'first level' if lib is not also directly used. */
 					BLI_remlink(&soops->tree, ten);
 					BLI_addtail(&par->subtree, ten);
 					ten->parent = par;
 				}
-				else {
-					/* Else, make a new copy of the libtree for our parent. */
-					TreeElement *dupten = outliner_add_element(soops, &par->subtree, lib, NULL, 0, 0);
-					outliner_add_library_contents(mainvar, soops, dupten, lib);
-					dupten->parent = par;
-				}
-			}
 			ten = nten;
 		}
 		/* restore newid pointers */
