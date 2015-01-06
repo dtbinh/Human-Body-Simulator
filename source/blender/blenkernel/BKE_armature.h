@@ -79,6 +79,7 @@ struct bArmature *BKE_armature_add(struct Main *bmain, const char *name);
 struct bArmature *BKE_armature_from_object(struct Object *ob);
 void BKE_armature_bonelist_free(struct ListBase *lb);
 void BKE_armature_musclelist_free(struct ListBase *lb);
+void BKE_armature_elementlist_free(struct ListBase *lb);
 void BKE_armature_free(struct bArmature *arm);
 void BKE_armature_make_local(struct bArmature *arm);
 struct bArmature *BKE_armature_copy(struct bArmature *arm);
