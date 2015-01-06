@@ -490,6 +490,7 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 		switch(eElement->type)
 		{
                 case(BoneType):
+                    eElement->custom = MEM_callocN(sizeof(EditBoneElement), "make_editbonedata");
                     ((EditBoneElement*)eElement->custom)->dist = ((BoneData*)curElement->custom)->dist;
                     ((EditBoneElement*)eElement->custom)->weight = ((BoneData*)curElement->custom)->weight;
                     ((EditBoneElement*)eElement->custom)->ease1 = ((BoneData*)curElement->custom)->ease1;
