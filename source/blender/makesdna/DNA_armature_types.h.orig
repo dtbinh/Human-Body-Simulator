@@ -166,7 +166,11 @@ typedef struct bArmature {
 
 //	ListBase    bonebase;
 	ListBase    chainbase;
+<<<<<<< HEAD
 //	ListBase    musclebase;
+=======
+	ListBase    musclebase;
+>>>>>>> More memory
 	ListBase    elementbase;
 	ListBase   *edmu;                   /* muscle listbase, we use pointer so we can check state */
 	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
@@ -178,7 +182,6 @@ typedef struct bArmature {
 	 * - from the user perspective active == last selected
 	 * - active should be ignored when not visible (hidden layer) */
 
-<<<<<<< HEAD
 //	ArmatureElement *act_bone;               /* active bone */
 //	struct EditArmatureElement *act_edbone;        /* active editbone (in editmode) */
 //
@@ -187,13 +190,6 @@ typedef struct bArmature {
 
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;
-=======
-	ArmatureElement *act_bone;               /* active bone */
-	struct EditArmatureElement *act_edbone;        /* active editbone (in editmode) */
-
-    ArmatureElement *act_muscle;
-	struct EditArmatureElement *act_edmuscle;
->>>>>>> Continuing
 
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;

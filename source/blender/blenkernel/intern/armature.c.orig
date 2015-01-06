@@ -128,7 +128,10 @@ void BKE_armature_elementlist_free(ListBase *lb) {
             IDP_FreeProperty(elem->prop);
             MEM_freeN(elem->prop);
         }
+<<<<<<< HEAD
         MEM_freeN(elem->data);
+=======
+>>>>>>> More memory
         BKE_armature_elementlist_free(&elem->childbase);
     }
 
@@ -138,6 +141,10 @@ void BKE_armature_elementlist_free(ListBase *lb) {
 void BKE_armature_free(bArmature *arm)
 {
 	if (arm) {
+<<<<<<< HEAD
+=======
+//		BKE_armature_bonelist_free(&arm->bonebase);
+>>>>>>> More memory
 
         /* free muscle */
 //        BKE_armature_musclelist_free(&arm->musclebase);
@@ -575,13 +582,8 @@ void b_bone_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BB
 		}
 	}
 
-<<<<<<< HEAD
 	hlength1 = ((BoneData*)bone->data)->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
 	hlength2 = ((BoneData*)bone->data)->ease2 * length * 0.390464f;
-=======
-	hlength1 = ((BoneData*)bone->custom)->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
-	hlength2 = ((BoneData*)bone->custom)->ease2 * length * 0.390464f;
->>>>>>> Errors and warnings
 
 	/* evaluate next and prev bones */
 	if (bone->flag & BONE_CONNECTED)
@@ -874,17 +876,10 @@ static float dist_bone_deform(bPoseChannel *pchan, bPoseChanDeform *pdef_info, f
 
 	copy_v3_v3(cop, co);
 
-<<<<<<< HEAD
 	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, ((BoneData*)bone->data)->dist);
 
 	if (fac > 0.0f) {
 		fac *= ((BoneData*)bone->data)->weight;
-=======
-	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, ((BoneData*)bone->custom)->dist);
-
-	if (fac > 0.0f) {
-		fac *= ((BoneData*)bone->custom)->weight;
->>>>>>> Errors and warnings
 		contrib = fac;
 		if (contrib > 0.0f) {
 			if (vec) {
@@ -1130,11 +1125,7 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 
 					if (bone && bone->flag & BONE_MULT_VG_ENV) {
 						weight *= distfactor_to_bone(co, bone->arm_head, bone->arm_tail,
-<<<<<<< HEAD
 						                             bone->rad_head, bone->rad_tail, ((BoneData*)bone->data)->dist);
-=======
-						                             bone->rad_head, bone->rad_tail, ((BoneData*)bone->custom)->dist);
->>>>>>> Errors and warnings
 					}
 					pchan_bone_deform(pchan, pdef_info, weight, vec, dq, smat, co, &contrib);
 				}
