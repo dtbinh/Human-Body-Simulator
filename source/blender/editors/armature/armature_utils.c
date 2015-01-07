@@ -601,17 +601,9 @@ void ED_armature_from_edit(bArmature *arm)
 {
 	EditArmatureElement *eElem, *neElem;
 	ArmatureElement *newElem;
-//	EditMuscle *eMuscle, *neMuscle;
-//	Muscle *newMuscle;
 	Object *obt;
 
 	/* armature bones */
-//	BKE_armature_bonelist_free(&arm->bonebase);
-//	arm->act_bone = NULL;
-
-//	BKE_armature_musclelist_free(&arm->musclebase);
-//	arm->act_muscle = NULL;
-
     BKE_armature_elementlist_free(&arm->elementbase);
     arm->act_element = NULL;
 
@@ -632,23 +624,6 @@ void ED_armature_from_edit(bArmature *arm)
 			bone_free(arm, eElem);
 		}
 	}
-
-//	/* remove zero sized muscles */
-//	for (eMuscle = arm->edmu->first; eMuscle; eMuscle = neMuscle) {
-//        float len = len_v3v3(eMuscle->head, eMuscle->tail);
-//        neMuscle = eMuscle->next;
-//        if (len <= 0.000001f) {
-//            EditMuscle *fMuscle;
-//
-//            for (fMuscle = arm->edmu->first; fMuscle; fMuscle = fMuscle->next) {
-//                if (fMuscle->parent == eMuscle)
-//                    fMuscle->parent = eMuscle->parent;
-//            }
-//            if (G.debug & G_DEBUG)
-//                printf("Warning: removed zero sized muscle: %s\n", eMuscle->name);
-//            muscle_free(arm, eMuscle);
-//        }
-//	}
 
 	/*	Copy the bones from the editData into the armature */
 	for (eElem = arm->edbo->first; eElem; eElem = eElem->next) {
@@ -687,32 +662,6 @@ void ED_armature_from_edit(bArmature *arm)
 			newElem->prop = IDP_CopyProperty(eElem->prop);
 	}
 
-	/* Copy the muscles from the editData into the armature */
-//	for (eMuscle = arm->edmu->first; eMuscle; eMuscle = eMuscle->next) {
-//        newMuscle = MEM_callocN(sizeof(Muscle), "muscle");
-//        eMuscle->temp = newMuscle;
-//
-//        BLI_strncpy(newMuscle->name, eMuscle->name, sizeof(newMuscle->name));
-//        copy_v3_v3(newMuscle->arm_head, eMuscle->head);
-//        copy_v3_v3(newMuscle->arm_tail, eMuscle->tail);
-//        newMuscle->arm_roll = eMuscle->roll;
-//
-//        newMuscle->flag = eMuscle->flag;
-//
-//        if (eMuscle == arm->act_edmuscle) {
-//            arm->act_muscle = newMuscle;
-//        }
-//        newMuscle->roll = 0.0f;
-//
-//        newMuscle->rad_head = eMuscle->rad_head;
-//        newMuscle->rad_tail = eMuscle->rad_tail;
-//        newMuscle->segments = eMuscle->segments;
-//        newMuscle->layer = eMuscle->layer;
-//
-//        if (eMuscle->prop)
-//            newMuscle->prop = IDP_CopyProperty(eMuscle->prop);
-//	}
-
 	/* Fix parenting in a separate pass to ensure ebone->bone connections
 	 * are valid at this point */
 	for (eElem = arm->edbo->first; eElem; eElem = eElem->next) {
@@ -743,31 +692,13 @@ void ED_armature_from_edit(bArmature *arm)
 		else {
 			copy_v3_v3(newElem->head, eElem->head);
 			copy_v3_v3(newElem->tail, eElem->tail);
-			BLI_addtail(&arm->bonebase, newElem);
+			BLI_addtail(&arm->elementbase, newElem);
 		}
 	}
 
-//	for (eMuscle = arm->edmu->first; eMuscle; eMuscle = eMuscle->next) {
-//        newMuscle = (Muscle *)eMuscle->temp;
-//        if (eMuscle->parent) {
-//            newMuscle = (Muscle *)eMuscle->parent->temp;
-//
-//            BLI_addtail(&newMuscle->parent->childbase, newMuscle);
-//            // Other stuff in here
-//        }
-//        else {
-//            copy_v3_v3(newMuscle->head, eMuscle->head);
-//            copy_v3_v3(newMuscle->tail, eMuscle->tail);
-//
-//            BLI_addtail(&arm->musclebase, newMuscle);
-//        }
-//	}
-
 	/* Make a pass through the new armature to fix rolling */
 	/* also builds restposition again (like BKE_armature_where_is) */
-	fix_bonelist_roll(&arm->bonebase, arm->edbo);
-
-//	fix_musclelist_roll(&arm->musclebase, arm->edmu);
+	fix_bonelist_roll(&arm->elementbase, arm->edbo);
 
 	/* so all users of this armature should get rebuilt */
 	for (obt = G.main->object.first; obt; obt = obt->id.next) {
