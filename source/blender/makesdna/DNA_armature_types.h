@@ -162,12 +162,12 @@ typedef struct bArmature {
 	ID          id;
 	struct AnimData *adt;
 
-	ListBase    bonebase;
+//	ListBase    bonebase;
 	ListBase    chainbase;
-	ListBase    musclebase;
+//	ListBase    musclebase;
 	ListBase    elementbase;
-	ListBase   *edmu;                   /* muscle listbase, we use pointer so we can check state */
-	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
+//	ListBase   *edmu;                   /* muscle listbase, we use pointer so we can check state */
+//	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
 	ListBase   *edel;
 
 	/* active bones should work like active object where possible
@@ -176,11 +176,11 @@ typedef struct bArmature {
 	 * - from the user perspective active == last selected
 	 * - active should be ignored when not visible (hidden layer) */
 
-	ArmatureElement *act_bone;               /* active bone */
-	struct EditArmatureElement *act_edbone;        /* active editbone (in editmode) */
-
-    ArmatureElement *act_muscle;
-	struct EditArmatureElement *act_edmuscle;
+//	ArmatureElement *act_bone;               /* active bone */
+//	struct EditArmatureElement *act_edbone;        /* active editbone (in editmode) */
+//
+//    ArmatureElement *act_muscle;
+//	struct EditArmatureElement *act_edmuscle;
 
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;
