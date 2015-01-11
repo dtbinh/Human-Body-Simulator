@@ -662,7 +662,7 @@ void ED_armature_from_edit(bArmature *arm)
 	/*	Copy the bones from the editData into the armature */
 	for (eElem = arm->edbo->first; eElem; eElem = eElem->next) {
 		newElem = MEM_callocN(sizeof(ArmatureElement), "bone");
-		newElem->custom = MEM_callocN(sizeof(BoneData), "bonedata");
+		newElem->data = MEM_callocN(sizeof(BoneData), "bonedata");
 		eElem->temp = newElem;   /* Associate the real Bones with the EditBones */
 
 		BLI_strncpy(newElem->name, eElem->name, sizeof(newElem->name));
@@ -680,13 +680,13 @@ void ED_armature_from_edit(bArmature *arm)
 		}
 		newElem->roll = 0.0f;
 
-		((BoneData*)newElem->custom)->weight = ((EditBoneElement*)eElem->custom)->weight;
-		((BoneData*)newElem->custom)->dist = ((EditBoneElement*)eElem->custom)->dist;
+		((BoneData*)newElem->data)->weight = ((EditBoneElement*)eElem->data)->weight;
+		((BoneData*)newElem->data)->dist = ((EditBoneElement*)eElem->data)->dist;
 
 		newElem->xwidth = eElem->xwidth;
 		newElem->zwidth = eElem->zwidth;
-		((BoneData*)newElem->custom)->ease1 = ((EditBoneElement*)eElem->custom)->ease1;
-		((BoneData*)newElem->custom)->ease2 = ((EditBoneElement*)eElem->custom)->ease2;
+		((BoneData*)newElem->data)->ease1 = ((EditBoneElement*)eElem->data)->ease1;
+		((BoneData*)newElem->data)->ease2 = ((EditBoneElement*)eElem->data)->ease2;
 		newElem->rad_head = eElem->rad_head;
 		newElem->rad_tail = eElem->rad_tail;
 		newElem->segments = eElem->segments;

@@ -146,6 +146,7 @@ typedef struct EditMuscle {
     char pad[2];
 } EditMuscle;
 
+<<<<<<< HEAD
 //#define BONESEL_ROOT    (1 << 28)
 //#define BONESEL_TIP     (1 << 29)
 //#define BONESEL_BONE    (1 << 30)
@@ -166,6 +167,28 @@ typedef struct EditMuscle {
 #define ELEMENTSEL_ANY      (ELEMENTSEL_TIP | ELEMENTSEL_ROOT | ELEMENTSEL_ELEMENT)
 
 #define ELEMENTSEL_NOSEL    (1u << 31u)
+=======
+#define BONESEL_ROOT    (1 << 28)
+#define BONESEL_TIP     (1 << 29)
+#define BONESEL_BONE    (1 << 30)
+#define BONESEL_ANY     (BONESEL_TIP | BONESEL_ROOT | BONESEL_BONE)
+
+#define BONESEL_NOSEL   (1u << 31u)
+
+#define MUSCLESEL_ROOT  (1 << 28)
+#define MUSCLESEL_TIP   (1 << 29)
+#define MUSCLESEL_MUSC  (1 << 30)
+#define MUSCLESEL_ANY   (MUSCLESEL_ROOT | MUSCLESEL_TIP | MUSCLESEL_MUSC)
+
+#define MUSCLESEL_NOSEL (1u << 31u)
+
+/* useful macros */
+//#define EBONE_VISIBLE(arm, ebone) ( \
+//	CHECK_TYPE_INLINE(arm, bArmature *), \
+//	CHECK_TYPE_INLINE(ebone, EditBone *), \
+//	(((arm)->layer & (ebone)->layer) && !((ebone)->flag & BONE_HIDDEN_A)) \
+//	)
+>>>>>>> Super unstable
 
 #define EELEMENT_VISIBLE(arm, eelement) ( \
     CHECK_TYPE_INLINE(arm, bArmature *), \
@@ -173,12 +196,22 @@ typedef struct EditMuscle {
     (((arm)->layer & (eelement)->layer) && !((eelement)->flag & ELEMENT_HIDDEN_A)) \
     )
 
+<<<<<<< HEAD
 #define EELEMENT_SELECTABLE(arm, eelement) (EELEMENT_VISIBLE(arm, eelement) && !(eelement->flag & ELEMENT_UNSELECTABLE))
 
 #define EELEMENT_EDITABLE(eelement) ( \
 	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
 	(((eelement)->flag & ELEMENT_SELECTED) && !((eelement)->flag & ELEMENT_EDITMODE_LOCKED)) \
 	)
+=======
+//#define EBONE_SELECTABLE(arm, ebone) (EBONE_VISIBLE(arm, ebone) && !(ebone->flag & BONE_UNSELECTABLE))
+#DEFINE EELEMENT_SELECTABLE(arm, eelement) (EELEMENT_VISIBLE(arm, eelement) && !(eelement->flag & ELEMENT_UNSELECTABLE))
+
+//#define EBONE_EDITABLE(ebone) ( \
+//	CHECK_TYPE_INLINE(ebone, EditBone *), \
+//	(((ebone)->flag & BONE_SELECTED) && !((ebone)->flag & BONE_EDITMODE_LOCKED)) \
+//	)
+>>>>>>> Super unstable
 
 #define EELEMENT_EDITABLE(eelement) ( \
 	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
@@ -209,11 +242,7 @@ struct Bone *get_indexed_bone(struct Object *ob, int index);
 struct Muscle *get_indexed_muscle(struct Object *ob, int index);
 //float ED_rollBoneToVector(EditBone *bone, const float new_up_axis[3], const bool axis_only);
 float ED_rollElementToVector(EditArmatureElement *element, const float new_up_axis[3], const bool axis_only);
-<<<<<<< HEAD
 EditArmatureElement *ED_armature_armatureelement_find_name(const ListBase *edbo, const char *name);
-=======
-EditArmatureElement *ED_armature_bone_find_name(const ListBase *edbo, const char *name);
->>>>>>> Errors
 EditArmatureElement *ED_armature_bone_get_mirrored(const struct ListBase *edbo, EditArmatureElement *eel);
 EditMuscle *ED_armature_muscle_find_name(const ListBase *edmu, const char *name);
 void ED_armature_sync_selection(struct ListBase *edbo);
