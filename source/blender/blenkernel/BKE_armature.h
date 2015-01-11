@@ -84,6 +84,9 @@ void BKE_armature_free(struct bArmature *arm);
 void BKE_armature_make_local(struct bArmature *arm);
 struct bArmature *BKE_armature_copy(struct bArmature *arm);
 
+/* Convert from muscle to bone and vice versa */
+void BKE_init_editarmatureelement(struct EditArmatureElement *eelem);
+
 /* Bounding box. */
 struct BoundBox *BKE_armature_boundbox_get(struct Object *ob);
 
@@ -152,7 +155,6 @@ typedef struct Mat4 {
 } Mat4;
 
 void b_bone_spline_setup(struct bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BBONE_SUBDIV]);
-void b_muscle_spline_setup(struct bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BMUSCLE_SUBDIV]);
 
 /* like EBONE_VISIBLE */
 #define PBONE_VISIBLE(arm, bone) ( \

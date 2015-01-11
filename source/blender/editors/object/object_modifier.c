@@ -1657,7 +1657,7 @@ static void skin_armature_bone_create(Object *skin_ob,
 
 		v = (e->v1 == parent_v ? e->v2 : e->v1);
 
-		bone = ED_armature_edit_armature_element_add(arm, "Bone", BoneType);
+		bone = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
 
 		bone->parent = parent_bone;
 		bone->flag |= BONE_CONNECTED;
@@ -1730,7 +1730,7 @@ static Object *modifier_skin_armature_create(Main *bmain, Scene *scene, Object *
 			 * a fake root bone (have it going off in the Y direction
 			 * (arbitrary) */
 			if (emap[v].count > 1) {
-				bone = ED_armature_edit_armature_element_add(arm, "Bone", BoneType);
+				bone = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
 
 				copy_v3_v3(bone->head, me->mvert[v].co);
 				copy_v3_v3(bone->tail, me->mvert[v].co);
