@@ -64,14 +64,14 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
 {
 	EditArmatureElement *bone = MEM_callocN(sizeof(EditArmatureElement), "eBone");
 
-	bone->custom = MEM_callocN(sizeof(BoneData), "eBoneData");
+	bone->data = MEM_callocN(sizeof(BoneData), "eBoneData");
 
 	BLI_strncpy(bone->name, name, sizeof(bone->name));
 	unique_editbone_name(arm->edbo, bone->name, NULL);
 
 	BLI_addtail(arm->edbo, bone);
 
-    bone->type = BoneType;
+    bone->type = AE_BONE;
 	bone->flag |= BONE_TIPSEL;
 	bone->xwidth = 0.1f;
 	bone->zwidth = 0.1f;
@@ -82,17 +82,17 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
 
     switch(type)
     {
-        case BoneType:
-            ((EditBoneElement*)bone->custom)->ease1 = 1.0f;
-            ((EditBoneElement*)bone->custom)->ease2 = 1.0f;
-            ((EditBoneElement*)bone->custom)->weight = 1.0f;
-            ((EditBoneElement*)bone->custom)->dist = 0.25f;
+        case AE_BONE:
+            ((EditBoneElement*)bone->data)->ease1 = 1.0f;
+            ((EditBoneElement*)bone->data)->ease2 = 1.0f;
+            ((EditBoneElement*)bone->data)->weight = 1.0f;
+            ((EditBoneElement*)bone->data)->dist = 0.25f;
             break;
-        case MuscleType:
+        case AE_MUSCLE:
             // TODO:
             // Muscle properties go here
             // None yet
-//            ((EditMuscleElement*)bone->custom)->
+//            ((EditMuscleElement*)bone->data)->
             break;
     }
 
@@ -109,7 +109,7 @@ EditArmatureElement *ED_armature_edit_bone_add_primitive(Object *obedit_arm, flo
 	ED_armature_deselect_all(obedit_arm, 0);
 
 	/* Create a bone */
-	bone = ED_armature_edit_armature_element_add(arm, "Bone", BoneType);
+	bone = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
 
 	arm->act_edelement = bone;
 
@@ -205,7 +205,7 @@ static int armature_click_extrude_exec(bContext *C, wmOperator *UNUSED(op))
 
 		newelement->length = len_v3v3(newelement->head, newelement->tail);
 		newelement->rad_tail = newelement->length * 0.05f;
-		((BoneData*)newelement->custom)->dist = newelement->length * 0.25f;
+		((BoneData*)newelement->data)->dist = newelement->length * 0.25f;
 
 	}
 
@@ -273,7 +273,7 @@ EditArmatureElement *add_points_bone(Object *obedit, float head[3], float tail[3
 	EditArmatureElement *eel;
 
     // TODO: Fix this up so it creates the right type
-	eel = ED_armature_edit_armature_element_add(obedit->data, "Bone", BoneType);
+	eel = ED_armature_edit_armature_element_add(obedit->data, "Bone", AE_BONE);
 
 	copy_v3_v3(eel->head, head);
 	copy_v3_v3(eel->tail, tail);
@@ -377,13 +377,13 @@ EditArmatureElement *duplicateEditBoneObjects(EditArmatureElement *curBone, cons
 
 	switch(curBone->type)
     {
-        case BoneType:
-            eBone->custom = MEM_mallocN(sizeof(EditBoneElement), "addup_editbonedata");
-            memcpy(eBone->custom, curBone->custom, sizeof(EditBoneElement));
+        case AE_BONE:
+            eBone->data = MEM_mallocN(sizeof(EditBoneElement), "addup_editbonedata");
+            memcpy(eBone->data, curBone->data, sizeof(EditBoneElement));
             break;
-        case MuscleType:
-            eBone->custom = MEM_mallocN(sizeof(EditMuscleElement), "addup_editmuscledata");
-            memcpy(eBone->custom, curBone->custom, sizeof(EditMuscleElement));
+        case AE_MUSCLE:
+            eBone->data = MEM_mallocN(sizeof(EditMuscleElement), "addup_editmuscledata");
+            memcpy(eBone->data, curBone->data, sizeof(EditMuscleElement));
             break;
     }
 
@@ -618,7 +618,7 @@ static int armature_extrude_exec(bContext *C, wmOperator *op)
 					totbone++;
 					newelem = MEM_callocN(sizeof(EditArmatureElement), "extrudebone");
 					// TODO: Switch for muscles aswell
-					newelem->custom = MEM_callocN(sizeof(EditBoneElement), "extrudebonedata");
+					newelem->data = MEM_callocN(sizeof(EditBoneElement), "extrudebonedata");
 
 					if (do_extrude == true) {
 						copy_v3_v3(newelem->head, ebone->tail);
@@ -641,12 +641,12 @@ static int armature_extrude_exec(bContext *C, wmOperator *op)
 						}
 					}
 
-					((EditBoneElement*)newelem->custom)->weight = ((EditBoneElement*)ebone->custom)->weight;
-					((EditBoneElement*)newelem->custom)->dist = ((EditBoneElement*)ebone->custom)->dist;
+					((EditBoneElement*)newelem->data)->weight = ((EditBoneElement*)ebone->data)->weight;
+					((EditBoneElement*)newelem->data)->dist = ((EditBoneElement*)ebone->data)->dist;
 					newelem->xwidth = ebone->xwidth;
 					newelem->zwidth = ebone->zwidth;
-					((EditBoneElement*)newelem->custom)->ease1 = ((EditBoneElement*)ebone->custom)->ease1;
-					((EditBoneElement*)newelem->custom)->ease2 = ((EditBoneElement*)ebone->custom)->ease2;
+					((EditBoneElement*)newelem->data)->ease1 = ((EditBoneElement*)ebone->data)->ease1;
+					((EditBoneElement*)newelem->data)->ease2 = ((EditBoneElement*)ebone->data)->ease2;
 					newelem->rad_head = ebone->rad_tail; // don't copy entire bone...
 					newelem->rad_tail = ebone->rad_tail;
 					newelem->segments = 1;
@@ -739,7 +739,7 @@ static int armature_bone_primitive_add_exec(bContext *C, wmOperator *op)
 	ED_armature_deselect_all(obedit, 0);
 
 	/*	Create a bone	*/
-	bone = ED_armature_edit_armature_element_add(obedit->data, name, BoneType);
+	bone = ED_armature_edit_armature_element_add(obedit->data, name, AE_BONE);
 
 	copy_v3_v3(bone->head, curs);
 

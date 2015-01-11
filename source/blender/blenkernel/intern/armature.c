@@ -128,7 +128,7 @@ void BKE_armature_elementlist_free(ListBase *lb) {
             IDP_FreeProperty(elem->prop);
             MEM_freeN(elem->prop);
         }
-        MEM_freeN(elem->custom);
+        MEM_freeN(elem->data);
         BKE_armature_elementlist_free(&elem->childbase);
     }
 
@@ -302,6 +302,23 @@ bArmature *BKE_armature_copy(bArmature *arm)
 	}
 
 	return newArm;
+}
+
+void BKE_init_editarmatureelement(struct EditArmatureElement *eelem)
+{
+    BoneData *bd;
+    MuscleData *md;
+
+    if (eelem->data) MEM_freeN(eelem->data);
+    eelem->data = NULL;
+
+    switch (eelem->type) {
+    case AE_BONE:
+        eelem->custom
+        break;
+    case AE_MUSCLE:
+        break;
+    }
 }
 
 static Bone *get_named_bone_bonechildren(Bone *bone, const char *name)
@@ -559,8 +576,8 @@ void b_bone_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BB
 		}
 	}
 
-	hlength1 = ((BoneData*)bone->custom)->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
-	hlength2 = ((BoneData*)bone->custom)->ease2 * length * 0.390464f;
+	hlength1 = ((BoneData*)bone->data)->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
+	hlength2 = ((BoneData*)bone->data)->ease2 * length * 0.390464f;
 
 	/* evaluate next and prev bones */
 	if (bone->flag & BONE_CONNECTED)
@@ -853,10 +870,10 @@ static float dist_bone_deform(bPoseChannel *pchan, bPoseChanDeform *pdef_info, f
 
 	copy_v3_v3(cop, co);
 
-	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, ((BoneData*)bone->custom)->dist);
+	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, ((BoneData*)bone->data)->dist);
 
 	if (fac > 0.0f) {
-		fac *= ((BoneData*)bone->custom)->weight;
+		fac *= ((BoneData*)bone->data)->weight;
 		contrib = fac;
 		if (contrib > 0.0f) {
 			if (vec) {
@@ -1102,7 +1119,7 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 
 					if (bone && bone->flag & BONE_MULT_VG_ENV) {
 						weight *= distfactor_to_bone(co, bone->arm_head, bone->arm_tail,
-						                             bone->rad_head, bone->rad_tail, ((BoneData*)bone->custom)->dist);
+						                             bone->rad_head, bone->rad_tail, ((BoneData*)bone->data)->dist);
 					}
 					pchan_bone_deform(pchan, pdef_info, weight, vec, dq, smat, co, &contrib);
 				}
@@ -2999,9 +3016,7 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 {
 	bArmature *arm;
 	ArmatureElement *bone;
-//	Muscle *muscle;
 	bPoseChannel *pchan;
-//	bMuscleChannel *pmuscle;
 	float imat[4][4];
 	float ctime;
 
@@ -3026,14 +3041,6 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 				copy_v3_v3(pchan->pose_tail, bone->arm_tail);
 			}
 		}
-//		for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-//            muscle = pmuscle->muscle;
-//            if (muscle) {
-//                copy_m4_m4(pmuscle->pose_mat, muscle->arm_mat);
-//                copy_v3_v3(pmuscle->pose_head, muscle->arm_head);
-//                copy_v3_v3(pmuscle->pose_tail, muscle->arm_tail);
-//            }
-//		}
 	}
 	else {
 		invert_m4_m4(ob->imat, ob->obmat); /* imat is needed */
@@ -3078,13 +3085,6 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 			mul_m4_m4m4(pchan->chan_mat, pchan->pose_mat, imat);
 		}
 	}
-
-//	for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-//        if (pmuscle->muscle) {
-//            invert_m4_m4(imat, pmuscle->muscle->arm_mat);
-//            mul_m4_m4m4(pmuscle->chan_mat, pmuscle->pose_mat, imat);
-//        }
-//	}
 }
 
 /************** Bounding box ********************/
