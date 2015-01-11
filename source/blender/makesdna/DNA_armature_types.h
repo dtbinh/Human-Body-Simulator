@@ -339,7 +339,7 @@ typedef enum eElement_Flag {
     ELEMENT_UNSELECTABLE            = (1 << 21), /* bone cannot be selected */
     ELEMENT_NO_LOCAL_LOCATION       = (1 << 22), /* bone location is in armature space */
     ELEMENT_RELATIVE_PARENTING      = (1 << 23)  /* object child will use relative transform (like deform) */
-};
+} eElement_Flag;
 
 #define MAXBONENAME 64
 #define MAXMUSCLENAME 64
