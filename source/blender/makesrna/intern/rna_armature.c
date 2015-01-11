@@ -871,11 +871,11 @@ static void rna_def_armatureelement_common(StructRNA *srna, int editelement)
 
     prop = RNA_def_property(srna, "use_inherit_scale", PROP_BOOLEAN, PROP_NONE);
     RNA_def_property_ui_text(prop, "Inherit Scale", "Element inherits scaling from parent element");
-    RNA_def_property_negative_sdna(prop, NULL, "flag", ELEMENT_NO_SCALE);
+    RNA_def_property_boolean_negative_sdna(prop, NULL, "flag", ELEMENT_NO_SCALE);
     RNA_def_property_update(prop, 0, "rna_Armature_update_data");
 
     prop = RNA_def_property(srna, "use_local_location", PROP_BOOLEAN, PROP_NONE);
-    RNA_def_propert_ui_text(prop, "Local Location", "Element location is set in local space");
+    RNA_def_property_ui_text(prop, "Local Location", "Element location is set in local space");
     RNA_def_property_boolean_negative_sdna(prop, NULL, "flag", ELEMENT_NO_LOCAL_LOCATION);
     RNA_def_property_update(prop, 0, "rna_Armature_update_data");
 
@@ -884,7 +884,7 @@ static void rna_def_armatureelement_common(StructRNA *srna, int editelement)
     RNA_def_property_boolean_sdna(prop, NULL, "flag", ELEMENT_RELATIVE_PARENTING);
     RNA_def_property_update(prop, 0, "rna_Armature_update_data");
 
-    prop = RNA_Def_property(srna, "show_wire", PROP_BOOLEAN, PROP_NONE);
+    prop = RNA_def_property(srna, "show_wire", PROP_BOOLEAN, PROP_NONE);
     RNA_def_property_boolean_sdna(prop, NULL, "flag", ELEMENT_DRAWWIRE);
     RNA_def_property_ui_text(prop, "Draw Wire",
                              "Element is always drawn as Wireframe regardless of viewport draw mode "
