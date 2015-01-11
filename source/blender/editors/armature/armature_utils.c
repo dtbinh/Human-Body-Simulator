@@ -424,7 +424,7 @@ void transform_armature_mirror_update(Object *obedit)
 					}
 				}
 				if (ebo->flag & BONE_SELECTED) {
-					((EditBoneElement*)eboflip->custom)->dist = ((EditBoneElement*)ebo->custom)->dist;
+					((EditBoneElement*)eboflip->data)->dist = ((EditBoneElement*)ebo->data)->dist;
 					eboflip->roll = -ebo->roll;
 					eboflip->xwidth = ebo->xwidth;
 					eboflip->zwidth = ebo->zwidth;
@@ -489,14 +489,14 @@ EditArmatureElement *make_elementList(ListBase *edList, ListBase *elements, Edit
 
 		switch(eElement->type)
 		{
-                case(BoneType):
-                    eElement->custom = MEM_callocN(sizeof(EditBoneElement), "make_editbonedata");
-                    ((EditBoneElement*)eElement->custom)->dist = ((BoneData*)curElement->custom)->dist;
-                    ((EditBoneElement*)eElement->custom)->weight = ((BoneData*)curElement->custom)->weight;
-                    ((EditBoneElement*)eElement->custom)->ease1 = ((BoneData*)curElement->custom)->ease1;
-                    ((EditBoneElement*)eElement->custom)->ease2 = ((BoneData*)curElement->custom)->ease2;
+                case(AE_BONE):
+                    eElement->data = MEM_callocN(sizeof(EditBoneElement), "make_editbonedata");
+                    ((EditBoneElement*)eElement->data)->dist = ((BoneData*)curElement->data)->dist;
+                    ((EditBoneElement*)eElement->data)->weight = ((BoneData*)curElement->data)->weight;
+                    ((EditBoneElement*)eElement->data)->ease1 = ((BoneData*)curElement->data)->ease1;
+                    ((EditBoneElement*)eElement->data)->ease2 = ((BoneData*)curElement->data)->ease2;
                     break;
-                case(MuscleType):
+                case(AE_MUSCLE):
                     break;
 		}
 
@@ -628,7 +628,7 @@ void ED_armature_from_edit(bArmature *arm)
 	/*	Copy the bones from the editData into the armature */
 	for (eElem = arm->edbo->first; eElem; eElem = eElem->next) {
 		newElem = MEM_callocN(sizeof(ArmatureElement), "bone");
-		newElem->custom = MEM_callocN(sizeof(BoneData), "bonedata");
+		newElem->data = MEM_callocN(sizeof(BoneData), "bonedata");
 		eElem->temp = newElem;   /* Associate the real Bones with the EditBones */
 
 		BLI_strncpy(newElem->name, eElem->name, sizeof(newElem->name));
@@ -646,13 +646,13 @@ void ED_armature_from_edit(bArmature *arm)
 		}
 		newElem->roll = 0.0f;
 
-		((BoneData*)newElem->custom)->weight = ((EditBoneElement*)eElem->custom)->weight;
-		((BoneData*)newElem->custom)->dist = ((EditBoneElement*)eElem->custom)->dist;
+		((BoneData*)newElem->data)->weight = ((EditBoneElement*)eElem->data)->weight;
+		((BoneData*)newElem->data)->dist = ((EditBoneElement*)eElem->data)->dist;
 
 		newElem->xwidth = eElem->xwidth;
 		newElem->zwidth = eElem->zwidth;
-		((BoneData*)newElem->custom)->ease1 = ((EditBoneElement*)eElem->custom)->ease1;
-		((BoneData*)newElem->custom)->ease2 = ((EditBoneElement*)eElem->custom)->ease2;
+		((BoneData*)newElem->data)->ease1 = ((EditBoneElement*)eElem->data)->ease1;
+		((BoneData*)newElem->data)->ease2 = ((EditBoneElement*)eElem->data)->ease2;
 		newElem->rad_head = eElem->rad_head;
 		newElem->rad_tail = eElem->rad_tail;
 		newElem->segments = eElem->segments;
@@ -721,7 +721,7 @@ void ED_armature_edit_free(struct bArmature *arm)
 					IDP_FreeProperty(eElement->prop);
 					MEM_freeN(eElement->prop);
 				}
-				MEM_freeN(eElement->custom);
+				MEM_freeN(eElement->data);
 			}
 
 			BLI_freelistN(arm->edbo);
@@ -738,7 +738,7 @@ void ED_armature_edit_free(struct bArmature *arm)
                     IDP_FreeProperty(eElement->prop);
                     MEM_freeN(eElement->prop);
                 }
-                MEM_freeN(eElement->custom);
+                MEM_freeN(eElement->data);
             }
 
             BLI_freelistN(arm->edmu);
