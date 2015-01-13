@@ -177,11 +177,6 @@ typedef struct EditMuscle {
 
 #define EELEMENT_EDITABLE(eelement) ( \
 	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
-	(((eelement)->flag & ELEMENT_SELECTED) && !((eelement)->flag & ELEMENT_EDITMODE_LOCKED)) \
-	)
-
-#define EELEMENT_EDITABLE(eelement) ( \
-	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
 	(((eelement)->flag & BONE_SELECTED) && !((eelement)->flag & BONE_EDITMODE_LOCKED)) \
 	)
 
