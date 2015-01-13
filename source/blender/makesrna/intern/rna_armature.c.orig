@@ -239,6 +239,33 @@ static IDProperty *rna_EditArmatureElement_idprops(PointerRNA *ptr, bool create)
 	}
 
 	return eelem->prop;
+<<<<<<< HEAD
+=======
+}
+
+static IDProperty *rna_ArmatureElement_idprops(PointerRNA *ptr, bool create)
+{
+    ArmatureElement *elem = ptr->data;
+
+    if (create && !elem->prop) {
+        IDPropertyTemplate val = {0};
+        elem->prop = IDP_New(IDP_GROUP, &val, "RNA_ArmatureElement ID properties");
+    }
+
+    return elem->prop;
+}
+
+static IDProperty *rna_EditArmatureElement_idprops(PointerRNA *ptr, bool create)
+{
+    EditArmatureElement *eelem = ptr->data;
+
+    if (create && !eelem->prop) {
+        IDPropertyTemplate val = {0};
+        eelem->prop = IDP_New(IDP_GROUP, &val, "RNA_EditArmatureElement ID properties");
+    }
+
+    return eelem->prop;
+>>>>>>> Bring on the errors
 }
 
 static void rna_armatureelement_layer_set(int *layer, const int *values)
@@ -262,7 +289,11 @@ static void rna_armatureelement_layer_set(int *layer, const int *values)
 static void rna_ArmatureElement_layer_set(PointerRNA *ptr, const int *values)
 {
 	ArmatureElement *elem = (ArmatureElement *)ptr->data;
+<<<<<<< HEAD
 	rna_armatureelement_layer_set(&elem->layer, values);
+=======
+	rna_bone_layer_set(&elem->layer, values);
+>>>>>>> Bring on the errors
 }
 
 /* same code as in rna_bone_layer_set, genericise function? */
@@ -312,7 +343,11 @@ static void rna_Armature_ghost_end_frame_set(PointerRNA *ptr, int value)
 static void rna_EditArmatureElement_name_set(PointerRNA *ptr, const char *value)
 {
 	bArmature *arm = (bArmature *)ptr->id.data;
+<<<<<<< HEAD
 	EditArmatureElement *eelem = (EditArmatureElement *)ptr->data;
+=======
+	EditArmatureElement *eelem = (EditBone *)ptr->data;
+>>>>>>> Bring on the errors
 	char oldname[sizeof(eelem->name)], newname[sizeof(eelem->name)];
 
 	/* need to be on the stack */
@@ -377,10 +412,17 @@ static void rna_EditArmatureElement_connected_set(PointerRNA *ptr, int value)
 {
 	EditArmatureElement *eelem = (EditArmatureElement *)(ptr->data);
 
+<<<<<<< HEAD
 	if (value) eelem->flag |= ELEMENT_CONNECTED;
 	else eelem->flag &= ~ELEMENT_CONNECTED;
 
 	rna_EditArmatureElement_connected_check(eelem);
+=======
+	if (value) ebone->flag |= ELEMENT_CONNECTED;
+	else ebone->flag &= ~ELEMENT_CONNECTED;
+
+	rna_EditArmatureElement_connected_check(ebone);
+>>>>>>> Bring on the errors
 }
 
 //static void rna_EditBone_connected_set(PointerRNA *ptr, int value)
@@ -684,7 +726,6 @@ EnumPropertyItem *rna_ArmatureElement_type_itemf(bContext *C, PointerRNA *ptr, P
 //	RNA_def_property_ui_text(prop, "B-Bone Display Z Width", "B-Bone Z size");
 //	RNA_def_property_update(prop, 0, "rna_Armature_update_data");
 //}
-<<<<<<< HEAD
 
 static void rna_def_armatureelement_common(StructRNA *srna, int editelement)
 {
@@ -824,8 +865,6 @@ static void rna_def_armatureelement_common(StructRNA *srna, int editelement)
     RNA_def_property_ui_text(prop, "B-Element Display Z Width", "B-Element Z size");
     RNA_def_property_update(prop, 0, "rna_Armature_update_data");
 }
-=======
->>>>>>> More errors
 
 static void rna_def_armatureelement_common(StructRNA *srna, int editelement)
 {
@@ -1009,11 +1048,7 @@ static void rna_def_armatureelement(BlenderRNA *brna)
     RNA_def_property_boolean_sdna(prop, NULL, "flag", ELEMENT_SELECTED);
     RNA_def_property_ui_text(prop, "Select", "");
     RNA_def_property_clear_flag(prop, PROP_ANIMATABLE);
-<<<<<<< HEAD
     RNA_def_property_update(prop, 0, "rna_ArmatureElement_select_update");
-=======
-    RNA_def_property_update(prop, 0, "rna_Element_select_update");
->>>>>>> More errors
 
     prop = RNA_def_property(srna, "select_head", PROP_BOOLEAN, PROP_NONE);
     RNA_def_property_boolean_sdna(prop, NULL, "flag", ELEMENT_ROOTSEL);
@@ -1553,11 +1588,8 @@ void RNA_def_armature(BlenderRNA *brna)
 	rna_def_armature(brna);
 //	rna_def_bone(brna);
 //	rna_def_edit_bone(brna);
-<<<<<<< HEAD
 	rna_def_armatureelement(brna);
 	rna_def_editarmatureelement(brna);
-=======
->>>>>>> More errors
 	rna_def_armatureelement(brna);
 	rna_def_editarmatureelement(brna);
 }

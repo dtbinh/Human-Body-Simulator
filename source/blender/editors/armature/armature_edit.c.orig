@@ -364,11 +364,7 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 		}
 		else if (type == CALC_ROLL_ACTIVE) {
 			float mat[3][3];
-<<<<<<< HEAD
 			eelement = (EditArmatureElement *)arm->act_edelement;
-=======
-			eelement = (EditArmatureElement *)arm->act_edbone;
->>>>>>> Warning: There are warnings
 			if (eelement == NULL) {
 				BKE_report(op->reports, RPT_ERROR, "No active bone set");
 				return OPERATOR_CANCELLED;
@@ -387,30 +383,18 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 		if (axis_flip) negate_v3(vec);
 
 		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
-<<<<<<< HEAD
 			if (EELEMENT_VISIBLE(arm, eelement) && EELEMENT_EDITABLE(eelement)) {
 				/* roll func is a callback which assumes that all is well */
 				eelement->roll = ED_rollElementToVector(eelement, vec, axis_only);
-=======
-			if (EBONE_VISIBLE(arm, eelement) && EBONE_EDITABLE(eelement)) {
-				/* roll func is a callback which assumes that all is well */
-				eelement->roll = ED_rollBoneToVector(eelement, vec, axis_only);
->>>>>>> Warning: There are warnings
 			}
 		}
 	}
 
 	if (arm->flag & ARM_MIRROR_EDIT) {
 		for (eelement = arm->edbo->first; eelement; eelement = eelement->next) {
-<<<<<<< HEAD
 			if ((EELEMENT_VISIBLE(arm, eelement) && EELEMENT_EDITABLE(eelement)) == 0) {
 				EditArmatureElement *eelement_mirr = ED_armature_bone_get_mirrored(arm->edbo, eelement);
 				if (eelement_mirr && (EELEMENT_VISIBLE(arm, eelement_mirr) && EELEMENT_EDITABLE(eelement_mirr))) {
-=======
-			if ((EBONE_VISIBLE(arm, eelement) && EBONE_EDITABLE(eelement)) == 0) {
-				EditArmatureElement *eelement_mirr = ED_armature_bone_get_mirrored(arm->edbo, eelement);
-				if (eelement_mirr && (EBONE_VISIBLE(arm, eelement_mirr) && EBONE_EDITABLE(eelement_mirr))) {
->>>>>>> Warning: There are warnings
 					eelement->roll = -eelement_mirr->roll;
 				}
 			}
@@ -1253,7 +1237,11 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 							if (ct->tar == obedit) {
 								if (ct->subtarget[0]) {
 									curBone = ED_armature_armatureelement_find_name(arm->edbo, ct->subtarget);
+<<<<<<< HEAD
 									if (curBone && (curBone->flag & ELEMENT_SELECTED) && (arm->layer & curBone->layer)) {
+=======
+									if (curBone && (curBone->flag & BONE_SELECTED) && (arm->layer & curBone->layer)) {
+>>>>>>> Bring on the errors
 										con->flag |= CONSTRAINT_DISABLE;
 										ct->subtarget[0] = 0;
 									}

@@ -302,20 +302,9 @@ void ED_armature_eelement_from_mat4(EditArmatureElement *eelement, float mat[4][
 /**
  * Return a pointer to the bone of the given name
  */
-<<<<<<< HEAD
 EditArmatureElement *ED_armature_armatureelement_find_name(const ListBase *edbo, const char *name)
 {
 	return BLI_findstring(edbo, name, offsetof(EditArmatureElement, name));
-=======
-EditArmatureElement *ED_armature_bone_find_name(const ListBase *edbo, const char *name)
-{
-	return BLI_findstring(edbo, name, offsetof(EditArmatureElement, name));
-}
-
-EditMuscle *ED_armature_muscle_find_name(const ListBase *edmu, const char *name)
-{
-    return BLI_findstring(edmu, name, offsetof(EditMuscle, name));
->>>>>>> Errors on venus
 }
 
 
