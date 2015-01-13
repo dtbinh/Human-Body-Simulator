@@ -177,7 +177,7 @@ typedef struct EditMuscle {
 
 #define EELEMENT_EDITABLE(eelement) ( \
 	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
-	(((eelement)->flag & BONE_SELECTED) && !((eelement)->flag & BONE_EDITMODE_LOCKED)) \
+	(((eelement)->flag & ELEMENT_SELECTED) && !((eelement)->flag & ELEMENT_EDITMODE_LOCKED)) \
 	)
 
 /* used in armature_select_hierarchy_exec() */
@@ -220,25 +220,17 @@ void ED_armature_edit_muscle_remove(struct bArmature *arm, EditMuscle *exMuscle)
 bool ED_armature_ebone_is_child_recursive(EditArmatureElement *ebone_parent, EditArmatureElement *ebone_child);
 EditBone *ED_armature_bone_find_shared_parent(EditBone *ebone_child[], const unsigned int ebone_child_tot);
 
-<<<<<<< HEAD
 void ED_armature_eelement_to_mat3(EditArmatureElement *eelement, float mat[3][3]);
 void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4]);
 
+<<<<<<< HEAD
 void ED_armature_eelement_from_mat3(EditArmatureElement *eelement, float mat[3][3]);
 void ED_armature_eelement_from_mat4(EditArmatureElement *eelement, float mat[4][4]);
+
 =======
-//void ED_armature_ebone_to_mat3(EditBone *ebone, float mat[3][3]);
-//void ED_armature_ebone_to_mat4(EditBone *ebone, float mat[4][4]);
-
-void ED_armature_eelement_to_mat3(EditArmatureElement *eelement, float mat[3][3]);
-void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4]);
-
-//void ED_armature_emuscle_to_mat3(EditMuscle *emuscle, float mat[3][3]);
-//void ED_armature_emuscle_to_mat4(EditMuscle *emuscle, float mat[4][4]);
-
-//void ED_armature_ebone_from_mat3(EditBone *ebone, float mat[3][3]);
-//void ED_armature_ebone_from_mat4(EditBone *ebone, float mat[4][4]);
->>>>>>> I'm out of wh40k quotes for now
+>>>>>>> Dreading the code cleanup required at the end of this
+void ED_armature_eelement_from_mat3(EditArmatureElement *eelement, float mat[3][3]);
+void ED_armature_eelement_from_mat4(EditArmatureElement *eelement, float mat[4][4]);
 
 void transform_armature_mirror_update(struct Object *obedit);
 void ED_armature_origin_set(struct Scene *scene, struct Object *ob, float cursor[3], int centermode, int around);

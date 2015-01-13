@@ -825,11 +825,7 @@ static int armature_merge_exec(bContext *C, wmOperator *op)
 			/* only consider bones that are visible and selected */
 			for (ebo = chain->data; ebo; child = ebo, ebo = ebo->parent) {
 				/* check if visible + selected */
-<<<<<<< HEAD
 				if (EELEMENT_VISIBLE(arm, ebo) &&
-=======
-				if (EBONE_VISIBLE(arm, ebo) &&
->>>>>>> Search and replace
 				    ((ebo->flag & ELEMENT_CONNECTED) || (ebo->parent == NULL)) &&
 				    (ebo->flag & ELEMENT_SELECTED) )
 				{
@@ -1203,7 +1199,10 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	bArmature *arm;
 	EditArmatureElement *curBone, *ebone_next;
+<<<<<<< HEAD
 	EditMuscle *curMuscle, *emuscle_next;
+=======
+>>>>>>> Dreading the code cleanup required at the end of this
 	bConstraint *con;
 	Object *obedit = CTX_data_edit_object(C); // XXX get from context
 	bool changed = false;
@@ -1255,6 +1254,7 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 				}
 			}
 		}
+<<<<<<< HEAD
 
 		for (pmuscle = obedit->pose->musclebase.first; pmuscle; pmuscle = pmuscle_next) {
             pmuscle_next = pmuscle->next;
@@ -1266,6 +1266,8 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
                 BLI_freelinkN(&obedit->pose->musclebase, pmuscle);
 	}
 		}
+=======
+>>>>>>> Dreading the code cleanup required at the end of this
 	}
 
 
@@ -1273,26 +1275,11 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 		ebone_next = curBone->next;
 		if (arm->layer & curBone->layer) {
 			if (curBone->flag & ELEMENT_SELECTED) {
-<<<<<<< HEAD
 				if (curBone == arm->act_edelement) arm->act_edelement = NULL;
-=======
-				if (curBone == arm->act_edbone) arm->act_edbone = NULL;
->>>>>>> Search and replace
 				ED_armature_edit_bone_remove(arm, curBone);
 				changed = true;
 			}
 		}
-	}
-
-	for (curMuscle = arm->edmu->first; curMuscle; curMuscle = emuscle_next) {
-        emuscle_next = curMuscle->next;
-        if (arm->layer & curMuscle->layer) {
-            if (curMuscle->flag & MUSCLE_SELECTED) {
-                if (curMuscle == arm->act_edmuscle) arm->act_edmuscle = NULL;
-                ED_armature_edit_muscle_remove(arm, curMuscle);
-                changed = true;
-            }
-        }
 	}
 
 	if (!changed)
@@ -1327,30 +1314,18 @@ static int armature_hide_exec(bContext *C, wmOperator *op)
 {
 	Object *obedit = CTX_data_edit_object(C);
 	bArmature *arm = obedit->data;
-<<<<<<< HEAD
 	EditArmatureElement *eelem;
-=======
-	EditBone *ebone;
->>>>>>> Search and replace
 	const int invert = RNA_boolean_get(op->ptr, "unselected") ? ELEMENT_SELECTED : 0;
 
 	/* cancel if nothing selected */
 	if (CTX_DATA_COUNT(C, selected_bones) == 0)
 		return OPERATOR_CANCELLED;
 
-<<<<<<< HEAD
 	for (eelem = arm->edbo->first; eelem; eelem = eelem->next) {
 		if (EELEMENT_VISIBLE(arm, eelem)) {
 			if ((eelem->flag & ELEMENT_SELECTED) != invert) {
 				eelem->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
 				eelem->flag |= ELEMENT_HIDDEN_A;
-=======
-	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-		if (EBONE_VISIBLE(arm, ebone)) {
-			if ((ebone->flag & ELEMENT_SELECTED) != invert) {
-				ebone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
-				ebone->flag |= ELEMENT_HIDDEN_A;
->>>>>>> Search and replace
 			}
 		}
 	}
@@ -1386,7 +1361,6 @@ static int armature_reveal_exec(bContext *C, wmOperator *UNUSED(op))
 	bArmature *arm = obedit->data;
 	EditArmatureElement *eelem;
 
-<<<<<<< HEAD
 	for (eelem = arm->edbo->first; eelem; eelem = eelem->next) {
 		if (arm->layer & eelem->layer) {
 			if (eelem->flag & ELEMENT_HIDDEN_A) {
@@ -1394,15 +1368,6 @@ static int armature_reveal_exec(bContext *C, wmOperator *UNUSED(op))
 					eelem->flag |= (ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
 				}
 				eelem->flag &= ~ELEMENT_HIDDEN_A;
-=======
-	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-		if (arm->layer & ebone->layer) {
-			if (ebone->flag & ELEMENT_HIDDEN_A) {
-				if (!(ebone->flag & ELEMENT_UNSELECTABLE)) {
-					ebone->flag |= (ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
-				}
-				ebone->flag &= ~ELEMENT_HIDDEN_A;
->>>>>>> Search and replace
 			}
 		}
 	}
