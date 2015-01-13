@@ -277,14 +277,9 @@ void ED_armature_ebone_from_mat4(EditBone *ebone, float mat[4][4])
 /**
  * Return a pointer to the bone of the given name
  */
-EditArmatureElement *ED_armature_bone_find_name(const ListBase *edbo, const char *name)
+EditArmatureElement *ED_armature_armatureelement_find_name(const ListBase *edbo, const char *name)
 {
 	return BLI_findstring(edbo, name, offsetof(EditArmatureElement, name));
-}
-
-EditMuscle *ED_armature_muscle_find_name(const ListBase *edmu, const char *name)
-{
-    return BLI_findstring(edmu, name, offsetof(EditMuscle, name));
 }
 
 
@@ -304,7 +299,7 @@ EditArmatureElement *ED_armature_bone_get_mirrored(const ListBase *edbo, EditArm
 	BKE_deform_flip_side_name(name_flip, eel->name, false);
 
 	if (!STREQ(name_flip, eel->name)) {
-		return ED_armature_bone_find_name(edbo, name_flip);
+		return ED_armature_armatureelement_find_name(edbo, name_flip);
 	}
 
 	return NULL;
