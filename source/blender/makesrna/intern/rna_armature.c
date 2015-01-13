@@ -380,7 +380,7 @@ static void rna_EditArmatureElement_connected_set(PointerRNA *ptr, int value)
 	if (value) eelem->flag |= ELEMENT_CONNECTED;
 	else eelem->flag &= ~ELEMENT_CONNECTED;
 
-	rna_EditArmatureElement_connected_check(ebone);
+	rna_EditArmatureElement_connected_check(eelem);
 }
 
 //static void rna_EditBone_connected_set(PointerRNA *ptr, int value)
@@ -432,13 +432,13 @@ static void rna_EditBone_parent_set(PointerRNA *ptr, PointerRNA value)
 static void rna_EditArmatureElement_matrix_get(PointerRNA *ptr, float *values)
 {
 	EditArmatureElement *eelem = (EditArmatureElement *)(ptr->data);
-	ED_armature_eelem_to_mat4(eelem, (float(*)[4])values);
+	ED_armature_eelement_to_mat4(eelem, (float(*)[4])values);
 }
 
 static void rna_EditBone_matrix_set(PointerRNA *ptr, const float *values)
 {
-	EditArmatureElement *eelem = (EditBone *)(ptr->data);
-	ED_armature_eelem_from_mat4(eelem, (float(*)[4])values);
+	EditArmatureElement *eelem = (EditArmatureElement *)(ptr->data);
+	ED_armature_eelement_from_mat4(eelem, (float(*)[4])values);
 }
 
 static void rna_Armature_editbone_transform_update(Main *bmain, Scene *scene, PointerRNA *ptr)

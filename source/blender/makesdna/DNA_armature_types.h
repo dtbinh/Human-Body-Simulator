@@ -228,13 +228,6 @@ typedef enum eArmature_Flag {
 	ARM_HAS_VIZ_DEPS    = (1<<14),  /* other objects are used for visualizing various states (hack for efficient updates) */
 } eArmature_Flag;
 
-typedef enum Muscle_Flag {
-    MUSC_SELECTED   = (1 << 0),
-    MUSC_ROOTSEL    = (1 << 1),
-    MUSC_TIPSEL     = (1 << 2),
-    MUSC_TRANSFORM  = (1 << 3)
-} Muscle_Flag;
-
 /* armature->drawtype */
 typedef enum eArmature_Drawtype {
 	ARM_OCTA = 0,
@@ -284,35 +277,6 @@ typedef enum eArmature_GhostType {
 	ARM_GHOST_RANGE = 1,
 	ARM_GHOST_KEYS = 2
 } eArmature_GhostType;
-
-/* bone->flag */
-//typedef enum eBone_Flag {
-//	BONE_SELECTED               = (1 << 0),
-//	BONE_ROOTSEL                = (1 << 1),
-//	BONE_TIPSEL                 = (1 << 2),
-//	BONE_TRANSFORM              = (1 << 3),   /* Used instead of BONE_SELECTED during transform */
-//	BONE_CONNECTED              = (1 << 4),   /* when bone has a parent, connect head of bone to parent's tail*/
-//	/* 32 used to be quatrot, was always set in files, do not reuse unless you clear it always */
-//	BONE_HIDDEN_P               = (1 << 6),   /* hidden Bones when drawing PoseChannels */
-//	BONE_DONE                   = (1 << 7),   /* For detecting cyclic dependencies */
-//	BONE_DRAW_ACTIVE            = (1 << 8),   /* active is on mouse clicks only - deprecated, ONLY USE FOR DRAWING */
-//	BONE_HINGE                  = (1 << 9),   /* No parent rotation or scale */
-//	BONE_HIDDEN_A               = (1 << 10),  /* hidden Bones when drawing Armature Editmode */
-//	BONE_MULT_VG_ENV            = (1 << 11),  /* multiplies vgroup with envelope */
-//	BONE_NO_DEFORM              = (1 << 12),  /* bone doesn't deform geometry */
-//	BONE_UNKEYED                = (1 << 13),  /* set to prevent destruction of its unkeyframed pose (after transform) */
-//	BONE_HINGE_CHILD_TRANSFORM  = (1 << 14),  /* set to prevent hinge child bones from influencing the transform center */
-//	BONE_NO_SCALE               = (1 << 15),  /* No parent scale */
-//	BONE_HIDDEN_PG              = (1 << 16),  /* hidden bone when drawing PoseChannels (for ghost drawing) */
-//	BONE_DRAWWIRE               = (1 << 17),  /* bone should be drawn as OB_WIRE, regardless of draw-types of view+armature */
-//	BONE_NO_CYCLICOFFSET        = (1 << 18),  /* when no parent, bone will not get cyclic offset */
-//	BONE_EDITMODE_LOCKED        = (1 << 19),  /* bone transforms are locked in EditMode */
-//	BONE_TRANSFORM_CHILD        = (1 << 20),  /* Indicates that a parent is also being transformed */
-//	BONE_UNSELECTABLE           = (1 << 21),  /* bone cannot be selected */
-//	BONE_NO_LOCAL_LOCATION      = (1 << 22),  /* bone location is in armature space */
-//	BONE_RELATIVE_PARENTING     = (1 << 23)   /* object child will use relative transform (like deform) */
-//
-//} eBone_Flag;
 
 typedef enum eElement_Flag {
     ELEMENT_SELECTED                = (1 << 0),
