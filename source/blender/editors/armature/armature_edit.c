@@ -80,36 +80,36 @@ void ED_armature_apply_transform(Object *ob, float mat[4][4])
 
 void ED_armature_transform_bones(struct bArmature *arm, float mat[4][4])
 {
-	EditBone *ebone;
+	EditArmatureElement *eelem;
 	float scale = mat4_to_scale(mat);   /* store the scale of the matrix here to use on envelopes */
 	float mat3[3][3];
 
 	copy_m3_m4(mat3, mat);
 	normalize_m3(mat3);
 	/* Do the rotations */
-	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
+	for (eelem = arm->edbo->first; eelem; eelem = eelem->next) {
 		float tmat[3][3];
 
 		/* find the current bone's roll matrix */
-		ED_armature_ebone_to_mat3(ebone, tmat);
+		ED_armature_eelement_to_mat3(eelem, tmat);
 
 		/* transform the roll matrix */
 		mul_m3_m3m3(tmat, mat3, tmat);
 
 		/* transform the bone */
-		mul_m4_v3(mat, ebone->head);
-		mul_m4_v3(mat, ebone->tail);
+		mul_m4_v3(mat, eelem->head);
+		mul_m4_v3(mat, eelem->tail);
 
 		/* apply the transformed roll back */
-		mat3_to_vec_roll(tmat, NULL, &ebone->roll);
+		mat3_to_vec_roll(tmat, NULL, &eelem->roll);
 
-		ebone->rad_head *= scale;
-		ebone->rad_tail *= scale;
-		ebone->dist     *= scale;
+		eelem->rad_head *= scale;
+		eelem->rad_tail *= scale;
+		((BoneData *)eelem->data)->dist     *= scale;
 
 		/* we could be smarter and scale by the matrix along the x & z axis */
-		ebone->xwidth   *= scale;
-		ebone->zwidth   *= scale;
+		eelem->xwidth   *= scale;
+		eelem->zwidth   *= scale;
 	}
 }
 
@@ -364,7 +364,7 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 		}
 		else if (type == CALC_ROLL_ACTIVE) {
 			float mat[3][3];
-			eelement = (EditArmatureElement *)arm->act_edbone;
+			eelement = (EditArmatureElement *)arm->act_edelement;
 			if (eelement == NULL) {
 				BKE_report(op->reports, RPT_ERROR, "No active bone set");
 				return OPERATOR_CANCELLED;
@@ -557,9 +557,9 @@ static int armature_fill_bones_exec(bContext *C, wmOperator *op)
 	/* loop over all bones, and only consider if visible */
 	CTX_DATA_BEGIN(C, EditBone *, ebone, visible_bones)
 	{
-		if (!(ebone->flag & BONE_CONNECTED) && (ebone->flag & BONE_ROOTSEL))
+		if (!(ebone->flag & ELEMENT_CONNECTED) && (ebone->flag & ELEMENT_ROOTSEL))
 			fill_add_joint(ebone, 0, &points);
-		if (ebone->flag & BONE_TIPSEL)
+		if (ebone->flag & ELEMENT_TIPSEL)
 			fill_add_joint(ebone, 1, &points);
 	}
 	CTX_DATA_END;
@@ -668,7 +668,7 @@ static int armature_fill_bones_exec(bContext *C, wmOperator *op)
 
 			/* don't set for bone connecting two head points of bones */
 			if (ebp->tail_owner || ebp2->tail_owner) {
-				newbone->flag |= BONE_CONNECTED;
+				newbone->flag |= ELEMENT_CONNECTED;
 			}
 		}
 	}
@@ -728,13 +728,13 @@ static void bones_merge(Object *obedit, EditBone *start, EditBone *end, EditBone
 	 *	- tail = head/tail of end (default tail)
 	 *	- parent = parent of start
 	 */
-	if ((start->flag & BONE_TIPSEL) && (start->flag & BONE_SELECTED) == 0) {
+	if ((start->flag & ELEMENT_TIPSEL) && (start->flag & ELEMENT_SELECTED) == 0) {
 		copy_v3_v3(head, start->tail);
 	}
 	else {
 		copy_v3_v3(head, start->head);
 	}
-	if ((end->flag & BONE_ROOTSEL) && (end->flag & BONE_SELECTED) == 0) {
+	if ((end->flag & ELEMENT_ROOTSEL) && (end->flag & ELEMENT_SELECTED) == 0) {
 		copy_v3_v3(tail, end->head);
 	}
 	else {
@@ -744,8 +744,8 @@ static void bones_merge(Object *obedit, EditBone *start, EditBone *end, EditBone
 	newbone->parent = start->parent;
 
 	/* TODO, copy more things to the new bone */
-	newbone->flag = start->flag & (BONE_HINGE | BONE_NO_DEFORM | BONE_NO_SCALE |
-	                               BONE_NO_CYCLICOFFSET | BONE_NO_LOCAL_LOCATION | BONE_DONE);
+	newbone->flag = start->flag & (ELEMENT_HINGE | ELEMENT_NO_DEFORM | ELEMENT_NO_SCALE |
+	                               ELEMENT_NO_CYCLICOFFSET | ELEMENT_NO_LOCAL_LOCATION | ELEMENT_DONE);
 
 	/* step 2a: reparent any side chains which may be parented to any bone in the chain of bones to merge
 	 *	- potentially several tips for side chains leading to some tree exist...
@@ -785,7 +785,7 @@ static void bones_merge(Object *obedit, EditBone *start, EditBone *end, EditBone
 		bone_free(arm, ebo);
 	}
 
-	newbone->flag |= (BONE_ROOTSEL | BONE_TIPSEL | BONE_SELECTED);
+	newbone->flag |= (ELEMENT_ROOTSEL | ELEMENT_TIPSEL | ELEMENT_SELECTED);
 	ED_armature_sync_selection(arm->edbo);
 }
 
@@ -826,8 +826,8 @@ static int armature_merge_exec(bContext *C, wmOperator *op)
 			for (ebo = chain->data; ebo; child = ebo, ebo = ebo->parent) {
 				/* check if visible + selected */
 				if (EBONE_VISIBLE(arm, ebo) &&
-				    ((ebo->flag & BONE_CONNECTED) || (ebo->parent == NULL)) &&
-				    (ebo->flag & BONE_SELECTED) )
+				    ((ebo->flag & ELEMENT_CONNECTED) || (ebo->parent == NULL)) &&
+				    (ebo->flag & ELEMENT_SELECTED) )
 				{
 					/* set either end or start (end gets priority, unless it is already set) */
 					if (bend == NULL) {
@@ -906,7 +906,7 @@ static void armature_clear_swap_done_flags(bArmature *arm)
 	EditBone *ebone;
 
 	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-		ebone->flag &= ~BONE_TRANSFORM;
+		ebone->flag &= ~ELEMENT_TRANSFORM;
 	}
 }
 
@@ -943,7 +943,7 @@ static int armature_switch_direction_exec(bContext *C, wmOperator *UNUSED(op))
 			parent = ebo->parent;
 
 			/* skip bone if already handled... [#34123] */
-			if ((ebo->flag & BONE_TRANSFORM) == 0) {
+			if ((ebo->flag & ELEMENT_TRANSFORM) == 0) {
 				/* only if selected and editable */
 				if (EBONE_VISIBLE(arm, ebo) && EBONE_EDITABLE(ebo)) {
 					/* swap head and tail coordinates */
@@ -957,9 +957,9 @@ static int armature_switch_direction_exec(bContext *C, wmOperator *UNUSED(op))
 					 */
 					ebo->parent = child;
 					if ((child) && equals_v3v3(ebo->head, child->tail))
-						ebo->flag |= BONE_CONNECTED;
+						ebo->flag |= ELEMENT_CONNECTED;
 					else
-						ebo->flag &= ~BONE_CONNECTED;
+						ebo->flag &= ~ELEMENT_CONNECTED;
 
 					/* get next bones
 					 *	- child will become the new parent of next bone
@@ -972,7 +972,7 @@ static int armature_switch_direction_exec(bContext *C, wmOperator *UNUSED(op))
 					 */
 					if ((parent) && (EBONE_VISIBLE(arm, parent) && EBONE_EDITABLE(parent))) {
 						ebo->parent = NULL;
-						ebo->flag &= ~BONE_CONNECTED;
+						ebo->flag &= ~ELEMENT_CONNECTED;
 					}
 
 					/* get next bones
@@ -983,7 +983,7 @@ static int armature_switch_direction_exec(bContext *C, wmOperator *UNUSED(op))
 				}
 
 				/* tag as done (to prevent double-swaps) */
-				ebo->flag |= BONE_TRANSFORM;
+				ebo->flag |= ELEMENT_TRANSFORM;
 			}
 		}
 	}
@@ -1023,7 +1023,7 @@ static void fix_connected_bone(EditBone *ebone)
 {
 	float diff[3];
 
-	if (!(ebone->parent) || !(ebone->flag & BONE_CONNECTED) || equals_v3v3(ebone->parent->tail, ebone->head))
+	if (!(ebone->parent) || !(ebone->flag & ELEMENT_CONNECTED) || equals_v3v3(ebone->parent->tail, ebone->head))
 		return;
 
 	/* if the parent has moved we translate child's head and tail accordingly */
@@ -1038,7 +1038,7 @@ static void fix_editbone_connected_children(ListBase *edbo, EditBone *ebone)
 	EditBone *selbone;
 
 	for (selbone = edbo->first; selbone; selbone = selbone->next) {
-		if ((selbone->parent) && (selbone->parent == ebone) && (selbone->flag & BONE_CONNECTED)) {
+		if ((selbone->parent) && (selbone->parent == ebone) && (selbone->flag & ELEMENT_CONNECTED)) {
 			fix_connected_bone(selbone);
 			fix_editbone_connected_children(edbo, selbone);
 		}
@@ -1121,7 +1121,7 @@ static int armature_align_bones_exec(bContext *C, wmOperator *op)
 		CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
 		{
 			if (ELEM(ebone, actbone, actmirb) == 0) {
-				if (ebone->flag & BONE_SELECTED)
+				if (ebone->flag & ELEMENT_SELECTED)
 					bone_align_to_bone(arm->edbo, ebone, actbone);
 				else
 					bone_align_to_bone(arm->edbo, ebone, actmirb);
@@ -1162,13 +1162,13 @@ static int armature_split_exec(bContext *C, wmOperator *UNUSED(op))
 	EditBone *bone;
 
 	for (bone = arm->edbo->first; bone; bone = bone->next) {
-		if (bone->parent && (bone->flag & BONE_SELECTED) != (bone->parent->flag & BONE_SELECTED)) {
+		if (bone->parent && (bone->flag & ELEMENT_SELECTED) != (bone->parent->flag & ELEMENT_SELECTED)) {
 			bone->parent = NULL;
-			bone->flag &= ~BONE_CONNECTED;
+			bone->flag &= ~ELEMENT_CONNECTED;
 		}
 	}
 	for (bone = arm->edbo->first; bone; bone = bone->next) {
-		ED_armature_ebone_select_set(bone, (bone->flag & BONE_SELECTED) != 0);
+		ED_armature_ebone_select_set(bone, (bone->flag & ELEMENT_SELECTED) != 0);
 	}
 
 	WM_event_add_notifier(C, NC_OBJECT | ND_BONE_SELECT, ob);
@@ -1219,7 +1219,7 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 			pchan_next = pchan->next;
 			curBone = ED_armature_armatureelement_find_name(arm->edbo, pchan->name);
 
-			if (curBone && (curBone->flag & BONE_SELECTED) && (arm->layer & curBone->layer)) {
+			if (curBone && (curBone->flag & ELEMENT_SELECTED) && (arm->layer & curBone->layer)) {
 				BKE_pose_channel_free(pchan);
 				BKE_pose_channels_hash_free(obedit->pose);
 				BLI_freelinkN(&obedit->pose->chanbase, pchan);
@@ -1237,7 +1237,7 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 							if (ct->tar == obedit) {
 								if (ct->subtarget[0]) {
 									curBone = ED_armature_armatureelement_find_name(arm->edbo, ct->subtarget);
-									if (curBone && (curBone->flag & BONE_SELECTED) && (arm->layer & curBone->layer)) {
+									if (curBone && (curBone->flag & ELEMENT_SELECTED) && (arm->layer & curBone->layer)) {
 										con->flag |= CONSTRAINT_DISABLE;
 										ct->subtarget[0] = 0;
 									}
@@ -1268,7 +1268,7 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 	for (curBone = arm->edbo->first; curBone; curBone = ebone_next) {
 		ebone_next = curBone->next;
 		if (arm->layer & curBone->layer) {
-			if (curBone->flag & BONE_SELECTED) {
+			if (curBone->flag & ELEMENT_SELECTED) {
 				if (curBone == arm->act_edbone) arm->act_edbone = NULL;
 				ED_armature_edit_bone_remove(arm, curBone);
 				changed = true;
@@ -1320,7 +1320,7 @@ static int armature_hide_exec(bContext *C, wmOperator *op)
 	Object *obedit = CTX_data_edit_object(C);
 	bArmature *arm = obedit->data;
 	EditBone *ebone;
-	const int invert = RNA_boolean_get(op->ptr, "unselected") ? BONE_SELECTED : 0;
+	const int invert = RNA_boolean_get(op->ptr, "unselected") ? ELEMENT_SELECTED : 0;
 
 	/* cancel if nothing selected */
 	if (CTX_DATA_COUNT(C, selected_bones) == 0)
@@ -1328,9 +1328,9 @@ static int armature_hide_exec(bContext *C, wmOperator *op)
 
 	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
 		if (EBONE_VISIBLE(arm, ebone)) {
-			if ((ebone->flag & BONE_SELECTED) != invert) {
-				ebone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
-				ebone->flag |= BONE_HIDDEN_A;
+			if ((ebone->flag & ELEMENT_SELECTED) != invert) {
+				ebone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
+				ebone->flag |= ELEMENT_HIDDEN_A;
 			}
 		}
 	}
@@ -1368,11 +1368,11 @@ static int armature_reveal_exec(bContext *C, wmOperator *UNUSED(op))
 
 	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
 		if (arm->layer & ebone->layer) {
-			if (ebone->flag & BONE_HIDDEN_A) {
-				if (!(ebone->flag & BONE_UNSELECTABLE)) {
-					ebone->flag |= (BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
+			if (ebone->flag & ELEMENT_HIDDEN_A) {
+				if (!(ebone->flag & ELEMENT_UNSELECTABLE)) {
+					ebone->flag |= (ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
 				}
-				ebone->flag &= ~BONE_HIDDEN_A;
+				ebone->flag &= ~ELEMENT_HIDDEN_A;
 			}
 		}
 	}
