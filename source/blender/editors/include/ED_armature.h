@@ -60,7 +60,7 @@ typedef struct EditArmatureElement {
 
     void                       *temp;
 
-    void                       *custom;
+    void                       *data;
 
     char                        name[64]; /* MAXBONENAME */
     int                         type;
@@ -224,6 +224,9 @@ void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4]
 
 //void ED_armature_ebone_from_mat3(EditBone *ebone, float mat[3][3]);
 //void ED_armature_ebone_from_mat4(EditBone *ebone, float mat[4][4]);
+
+void ED_armature_eelement_from_mat3(EditArmatureElement *eelement, float mat[3][3]);
+void ED_armature_eelement_from_mat4(EditArmatureElement *eelement, float mat[4][4]);
 
 void transform_armature_mirror_update(struct Object *obedit);
 void ED_armature_origin_set(struct Scene *scene, struct Object *ob, float cursor[3], int centermode, int around);
