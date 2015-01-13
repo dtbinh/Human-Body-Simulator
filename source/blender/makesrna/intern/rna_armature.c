@@ -241,30 +241,6 @@ static IDProperty *rna_EditArmatureElement_idprops(PointerRNA *ptr, bool create)
 	return eelem->prop;
 }
 
-static IDProperty *rna_ArmatureElement_idprops(PointerRNA *ptr, bool create)
-{
-    ArmatureElement *elem = ptr->data;
-
-    if (create && !elem->prop) {
-        IDPropertyTemplate val = {0};
-        elem->prop = IDP_New(IDP_GROUP, &val, "RNA_ArmatureElement ID properties");
-    }
-
-    return elem->prop;
-}
-
-static IDProperty *rna_EditArmatureElement_idprops(PointerRNA *ptr, bool create)
-{
-    EditArmatureElement *eelem = ptr->data;
-
-    if (create && !eelem->prop) {
-        IDPropertyTemplate val = {0};
-        eelem->prop = IDP_New(IDP_GROUP, &val, "RNA_EditArmatureElement ID properties");
-    }
-
-    return eelem->prop;
-}
-
 static void rna_armatureelement_layer_set(int *layer, const int *values)
 {
 	int i, tot = 0;
