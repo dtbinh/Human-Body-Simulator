@@ -153,7 +153,7 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 			EditBone *eBone = ED_armature_armatureelement_find_name(arm->edbo, oldname);
 
 			if (eBone) {
-				unique_editbone_name(arm->edbo, newname, NULL);
+				unique_editelement_name(arm->edbo, newname, NULL);
 				BLI_strncpy(eBone->name, newname, MAXBONENAME);
 			}
 			else {
