@@ -841,14 +841,14 @@ static void rna_def_armatureelement_common(StructRNA *srna, int editelement)
     prop = RNA_def_property(srna, "layers", PROP_BOOLEAN, PROP_LAYER_MEMBER);
     RNA_def_property_boolean_sdna(prop, NULL, "layer", 1);
     RNA_def_property_array(prop, 32);
-    if (editelement) RNA_def_property_boolean_funcs(prop, NULL, "rna_EditElement_layer_set");
-    else RNA_def_property_boolean_funcs(prop, NULL, "rna_Element_layer_set");
+    if (editelement) RNA_def_property_boolean_funcs(prop, NULL, "rna_EditArmatureElement_layer_set");
+    else RNA_def_property_boolean_funcs(prop, NULL, "rna_ArmatureElement_layer_set");
     RNA_def_property_ui_text(prop, "Layers", "Layers element exists in");
     RNA_def_property_update(prop, 0, "rna_Armature_redraw_data");
 
     prop = RNA_def_property(srna, "use_connect", PROP_BOOLEAN, PROP_NONE);
     RNA_def_property_boolean_sdna(prop, NULL, "flag", ELEMENT_CONNECTED);
-    if (editelement) RNA_def_property_boolean_funcs(prop, NULL, "rna_EditElement_connected_set");
+    if (editelement) RNA_def_property_boolean_funcs(prop, NULL, "rna_EditArmatureElement_connected_set");
     else RNA_def_property_clear_flag(prop, PROP_EDITABLE);
     RNA_def_property_ui_text(prop, "Connected", "When element has a parent, element's head is stuck to the parent's tail");
     RNA_def_property_update(prop, 0, "rna_Armature_update_data");
@@ -918,14 +918,14 @@ static void rna_def_armatureelement_common(StructRNA *srna, int editelement)
 //    RNA_def_property_update(prop, 0, "rna_Armature_update_data");
 
     prop = RNA_def_property(srna, "head_radius", PROP_FLOAT, PROP_UNSIGNED);
-    if (editelement) RNA_def_property_update(prop, 0, "rna_Armature_editelement_transform_update");
+    if (editelement) RNA_def_property_update(prop, 0, "rna_Armature_editarmatureelement_transform_update");
     else RNA_def_property_update(prop, 0, "rna_Armature_update_data");
     RNA_def_property_float_sdna(prop, NULL, "rad_head");
     RNA_def_property_ui_range(prop, 0.01, 100, 0.1, 3);
     RNA_def_property_ui_text(prop, "Envelope Head Radius", "Radius of head of element (for Envelope deform only)");
 
     prop = RNA_def_property(srna, "tail_radius", PROP_FLOAT, PROP_UNSIGNED);
-    if (editelement) RNA_def_property_update(prop, 0, "rna_Armature_editelement_transform_udpate");
+    if (editelement) RNA_def_property_update(prop, 0, "rna_Armature_editarmatureelement_transform_update");
     else RNA_def_property_update(prop, 0, "rna_Armature_update_data");
     RNA_def_property_float_sdna(prop, NULL, "rad_tail");
     RNA_def_property_ui_range(prop, 0.01, 100, 0.1, 3);
