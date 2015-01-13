@@ -146,31 +146,38 @@ typedef struct EditMuscle {
     char pad[2];
 } EditMuscle;
 
-#define BONESEL_ROOT    (1 << 28)
-#define BONESEL_TIP     (1 << 29)
-#define BONESEL_BONE    (1 << 30)
-#define BONESEL_ANY     (BONESEL_TIP | BONESEL_ROOT | BONESEL_BONE)
+//#define BONESEL_ROOT    (1 << 28)
+//#define BONESEL_TIP     (1 << 29)
+//#define BONESEL_BONE    (1 << 30)
+//#define BONESEL_ANY     (BONESEL_TIP | BONESEL_ROOT | BONESEL_BONE)
+//
+//#define BONESEL_NOSEL   (1u << 31u)
+//
+//#define MUSCLESEL_ROOT  (1 << 28)
+//#define MUSCLESEL_TIP   (1 << 29)
+//#define MUSCLESEL_MUSC  (1 << 30)
+//#define MUSCLESEL_ANY   (MUSCLESEL_ROOT | MUSCLESEL_TIP | MUSCLESEL_MUSC)
+//
+//#define MUSCLESEL_NOSEL (1u << 31u)
 
-#define BONESEL_NOSEL   (1u << 31u)
+#define ELEMENTSEL_ROOT     (1 << 28)
+#define ELEMENTSEL_TIP      (1 << 29)
+#define ELEMENTSEL_ELEMENT  (1 << 30)
+#define ELEMENTSEL_ANY      (ELEMENTSEL_TIP | ELEMENTSEL_ROOT | ELEMENTSEL_ELEMENT)
 
-#define MUSCLESEL_ROOT  (1 << 28)
-#define MUSCLESEL_TIP   (1 << 29)
-#define MUSCLESEL_MUSC  (1 << 30)
-#define MUSCLESEL_ANY   (MUSCLESEL_ROOT | MUSCLESEL_TIP | MUSCLESEL_MUSC)
-
-#define MUSCLESEL_NOSEL (1u << 31u)
+#define ELEMENTSEL_NOSEL    (1u << 31u)
 
 #define EELEMENT_VISIBLE(arm, eelement) ( \
     CHECK_TYPE_INLINE(arm, bArmature *), \
     CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
-    (((arm)->layer & (eelement)->layer) && !((eelement)->flag & BONE_HIDDEN_A)) \
+    (((arm)->layer & (eelement)->layer) && !((eelement)->flag & ELEMENT_HIDDEN_A)) \
     )
 
 #define EELEMENT_SELECTABLE(arm, eelement) (EELEMENT_VISIBLE(arm, eelement) && !(eelement->flag & ELEMENT_UNSELECTABLE))
 
 #define EELEMENT_EDITABLE(eelement) ( \
 	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
-	(((eelement)->flag & BONE_SELECTED) && !((eelement)->flag & BONE_EDITMODE_LOCKED)) \
+	(((eelement)->flag & ELEMENT_SELECTED) && !((eelement)->flag & ELEMENT_EDITMODE_LOCKED)) \
 	)
 
 /* used in armature_select_hierarchy_exec() */
