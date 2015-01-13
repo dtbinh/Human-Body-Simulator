@@ -61,7 +61,7 @@ typedef struct ArmatureElement {
     // Custom elements go here
     // Like the dist or weight values of a Bone struct
     // Or the Bone pointers of a Muscle struct
-    void                   *custom;
+    void                   *data;
 
     ListBase                childbase;
     char                    name[64];
