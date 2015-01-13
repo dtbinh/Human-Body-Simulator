@@ -262,7 +262,7 @@ static void rna_armatureelement_layer_set(int *layer, const int *values)
 static void rna_ArmatureElement_layer_set(PointerRNA *ptr, const int *values)
 {
 	ArmatureElement *elem = (ArmatureElement *)ptr->data;
-	rna_bone_layer_set(&elem->layer, values);
+	rna_armatureelement_layer_set(&elem->layer, values);
 }
 
 /* same code as in rna_bone_layer_set, genericise function? */
@@ -312,7 +312,7 @@ static void rna_Armature_ghost_end_frame_set(PointerRNA *ptr, int value)
 static void rna_EditArmatureElement_name_set(PointerRNA *ptr, const char *value)
 {
 	bArmature *arm = (bArmature *)ptr->id.data;
-	EditArmatureElement *eelem = (EditBone *)ptr->data;
+	EditArmatureElement *eelem = (EditArmatureElement *)ptr->data;
 	char oldname[sizeof(eelem->name)], newname[sizeof(eelem->name)];
 
 	/* need to be on the stack */
@@ -377,8 +377,8 @@ static void rna_EditArmatureElement_connected_set(PointerRNA *ptr, int value)
 {
 	EditArmatureElement *eelem = (EditArmatureElement *)(ptr->data);
 
-	if (value) ebone->flag |= ELEMENT_CONNECTED;
-	else ebone->flag &= ~ELEMENT_CONNECTED;
+	if (value) eelem->flag |= ELEMENT_CONNECTED;
+	else eelem->flag &= ~ELEMENT_CONNECTED;
 
 	rna_EditArmatureElement_connected_check(ebone);
 }
@@ -401,15 +401,15 @@ static PointerRNA rna_EditBone_parent_get(PointerRNA *ptr)
 
 static void rna_EditBone_parent_set(PointerRNA *ptr, PointerRNA value)
 {
-	EditBone *ebone = (EditBone *)(ptr->data);
-	EditBone *pbone, *parbone = (EditBone *)value.data;
+	EditArmatureElement *eelem = (EditArmatureElement *)(ptr->data);
+	EditArmatureElement *pelem, *parelem = (EditArmatureElement *)value.data;
 
-	if (parbone == NULL) {
-		if (ebone->parent && !(ebone->parent->flag & BONE_ROOTSEL))
-			ebone->parent->flag &= ~BONE_TIPSEL;
+	if (parelem == NULL) {
+		if (eelem->parent && !(eelem->parent->flag & ELEMENT_ROOTSEL))
+			eelem->parent->flag &= ~ELEMENT_TIPSEL;
 
-		ebone->parent = NULL;
-		ebone->flag &= ~BONE_CONNECTED;
+		eelem->parent = NULL;
+		eelem->flag &= ~ELEMENT_CONNECTED;
 	}
 	else {
 		/* within same armature */
@@ -417,62 +417,62 @@ static void rna_EditBone_parent_set(PointerRNA *ptr, PointerRNA value)
 			return;
 
 		/* make sure this is a valid child */
-		if (parbone == ebone)
+		if (parelem == eelem)
 			return;
 
-		for (pbone = parbone->parent; pbone; pbone = pbone->parent)
-			if (pbone == ebone)
+		for (pelem = parelem->parent; pelem; pelem = pelem->parent)
+			if (pelem == eelem)
 				return;
 
-		ebone->parent = parbone;
-		rna_EditBone_connected_check(ebone);
+		eelem->parent = parelem;
+		rna_EditArmatureElement_connected_check(eelem);
 	}
 }
 
-static void rna_EditBone_matrix_get(PointerRNA *ptr, float *values)
+static void rna_EditArmatureElement_matrix_get(PointerRNA *ptr, float *values)
 {
-	EditBone *ebone = (EditBone *)(ptr->data);
-	ED_armature_ebone_to_mat4(ebone, (float(*)[4])values);
+	EditArmatureElement *eelem = (EditArmatureElement *)(ptr->data);
+	ED_armature_eelem_to_mat4(eelem, (float(*)[4])values);
 }
 
 static void rna_EditBone_matrix_set(PointerRNA *ptr, const float *values)
 {
-	EditBone *ebone = (EditBone *)(ptr->data);
-	ED_armature_ebone_from_mat4(ebone, (float(*)[4])values);
+	EditArmatureElement *eelem = (EditBone *)(ptr->data);
+	ED_armature_eelem_from_mat4(eelem, (float(*)[4])values);
 }
 
 static void rna_Armature_editbone_transform_update(Main *bmain, Scene *scene, PointerRNA *ptr)
 {
 	bArmature *arm = (bArmature *)ptr->id.data;
-	EditArmatureElement *ebone = (EditArmatureElement *)ptr->data;
-	EditArmatureElement *child, *eboflip;
+	EditArmatureElement *eelem = (EditArmatureElement *)ptr->data;
+	EditArmatureElement *child, *eelflip;
 
 	/* update our parent */
-	if (ebone->parent && ebone->flag & BONE_CONNECTED)
-		copy_v3_v3(ebone->parent->tail, ebone->head);
+	if (eelem->parent && eelem->flag & ELEMENT_CONNECTED)
+		copy_v3_v3(eelem->parent->tail, eelem->head);
 
 	/* update our children if necessary */
 	for (child = arm->edel->first; child; child = child->next)
-		if (child->parent == ebone && (child->flag & BONE_CONNECTED))
-			copy_v3_v3(child->head, ebone->tail);
+		if (child->parent == eelem && (child->flag & ELEMENT_CONNECTED))
+			copy_v3_v3(child->head, eelem->tail);
 
 	if (arm->flag & ARM_MIRROR_EDIT) {
-		eboflip = ED_armature_bone_get_mirrored(arm->edel, ebone);
+		eelflip = ED_armature_bone_get_mirrored(arm->edel, eelem);
 
-		if (eboflip) {
-			eboflip->roll = -ebone->roll;
+		if (eelflip) {
+			eelflip->roll = -eelem->roll;
 
-			eboflip->head[0] = -ebone->head[0];
-			eboflip->tail[0] = -ebone->tail[0];
+			eelflip->head[0] = -eelem->head[0];
+			eelflip->tail[0] = -eelem->tail[0];
 
 			/* update our parent */
-			if (eboflip->parent && eboflip->flag & BONE_CONNECTED)
-				copy_v3_v3(eboflip->parent->tail, eboflip->head);
+			if (eelflip->parent && eelflip->flag & ELEMENT_CONNECTED)
+				copy_v3_v3(eelflip->parent->tail, eelflip->head);
 
 			/* update our children if necessary */
 			for (child = arm->edel->first; child; child = child->next)
-				if (child->parent == eboflip && (child->flag & BONE_CONNECTED))
-					copy_v3_v3(child->head, eboflip->tail);
+				if (child->parent == eelflip && (child->flag & ELEMENT_CONNECTED))
+					copy_v3_v3(child->head, eelflip->tail);
 		}
 	}
 
@@ -520,7 +520,7 @@ static void rna_ArmatureElement_type_set(struct PointerRNA *ptr, int value)
 
     if (value != elem->type) {
         elem->type = value;
-        init_element(elem);
+//        init_element(elem);
     }
 }
 
@@ -531,7 +531,7 @@ EnumPropertyItem *rna_ArmatureElement_type_itemf(bContext *C, PointerRNA *ptr, P
     int totitem = 0;
 
     RNA_enum_items_add_value(&item, &totitem, armature_element_type_items, AE_BONE);
-    RNA_enum_items_add_value(&item, &totitem, armature_element_type_items, AE_MUSCLE)
+    RNA_enum_items_add_value(&item, &totitem, armature_element_type_items, AE_MUSCLE);
 
     RNA_enum_item_end(&item, &totitem);
     *r_free = true;
