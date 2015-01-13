@@ -920,7 +920,7 @@ static void rna_def_armatureelement(BlenderRNA *brna)
     RNA_def_property_ui_text(prop, "Armature-Relative Head", "Location of head end of the element relative to the armature");
     RNA_def_property_ui_range(prop, -FLT_MAX, FLT_MAX, 1, RNA_TRANSLATION_PREC_DEFAULT);
 
-
+    RNA_api_armatureelement(srna);
 }
 
 static void rna_def_editarmatureelement(BlenderRNA *brna)
@@ -934,8 +934,7 @@ static void rna_def_editarmatureelement(BlenderRNA *brna)
     RNA_def_struct_ui_text(srna, "Edit Armature Element", "Editmode armature element in an Armature datablock");
     RNA_def_struct_ui_icon(srna, ICON_BONE_DATA);
 
-    RNA_api_armature_edit_bone(srna);
-
+    RNA_api_armature_edit_armatureelement(srna);
 }
 
 /* err... bones should not be directly edited (only editbones should be...) */
