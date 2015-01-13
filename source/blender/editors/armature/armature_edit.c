@@ -489,7 +489,7 @@ static void chains_find_tips(ListBase *edbo, ListBase *list)
 
 /* --------------------- */
 
-static void fill_add_joint(EditBone *ebo, short eb_tail, ListBase *points)
+static void fill_add_joint(EditArmatureElement *ebo, short eb_tail, ListBase *points)
 {
 	EditBonePoint *ebp;
 	float vec[3];
@@ -1019,7 +1019,7 @@ void ARMATURE_OT_switch_direction(wmOperatorType *ot)
 /* ********************************* Align ******************************* */
 
 /* helper to fix a ebone position if its parent has moved due to alignment*/
-static void fix_connected_bone(EditBone *ebone)
+static void fix_connected_bone(EditArmatureElement *ebone)
 {
 	float diff[3];
 
@@ -1033,9 +1033,9 @@ static void fix_connected_bone(EditBone *ebone)
 }
 
 /* helper to recursively find chains of connected bones starting at ebone and fix their position */
-static void fix_editbone_connected_children(ListBase *edbo, EditBone *ebone)
+static void fix_editbone_connected_children(ListBase *edbo, EditArmatureElement *ebone)
 {
-	EditBone *selbone;
+	EditArmatureElement *selbone;
 
 	for (selbone = edbo->first; selbone; selbone = selbone->next) {
 		if ((selbone->parent) && (selbone->parent == ebone) && (selbone->flag & ELEMENT_CONNECTED)) {
