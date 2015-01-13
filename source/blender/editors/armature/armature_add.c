@@ -67,7 +67,7 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
 	elem->data = MEM_callocN(sizeof(BoneData), "eBoneData");
 
 	BLI_strncpy(elem->name, name, sizeof(elem->name));
-	unique_editelem_name(arm->edbo, elem->name, NULL);
+	unique_editelement_name(arm->edbo, elem->name, NULL);
 
 	BLI_addtail(arm->edbo, elem);
 
@@ -284,12 +284,12 @@ EditArmatureElement *add_points_bone(Object *obedit, float head[3], float tail[3
 
 static EditArmatureElement *get_named_editarmatureelement(ListBase *edbo, const char *name)
 {
-	EditArmatureElement  *eBone;
+	EditArmatureElement  *eElem;
 
 	if (name) {
-		for (eBone = edbo->first; eBone; eBone = eBone->next) {
-			if (!strcmp(name, eBone->name))
-				return eBone;
+		for (eElem = edbo->first; eElem; eElem = eElem->next) {
+			if (!strcmp(name, eElem->name))
+				return eElem;
 		}
 	}
 
@@ -300,11 +300,11 @@ static EditArmatureElement *get_named_editarmatureelement(ListBase *edbo, const 
  * */
 void preEditBoneDuplicate(ListBase *editbones)
 {
-	EditBone *eBone;
+	EditArmatureElement *eElem;
 
 	/* clear temp */
-	for (eBone = editbones->first; eBone; eBone = eBone->next) {
-		eBone->temp = NULL;
+	for (eElem = editbones->first; eElem; eElem = eElem->next) {
+		eElem->temp = NULL;
 	}
 }
 
@@ -370,36 +370,36 @@ void updateDuplicateSubtarget(EditArmatureElement *dupBone, ListBase *editbones,
 EditArmatureElement *duplicateEditBoneObjects(EditArmatureElement *curBone, const char *name, ListBase *editbones,
                                    Object *src_ob, Object *dst_ob)
 {
-	EditArmatureElement *eBone = MEM_mallocN(sizeof(EditArmatureElement), "addup_editbone");
+	EditArmatureElement *eElem = MEM_mallocN(sizeof(EditArmatureElement), "addup_editbone");
 
 	/*	Copy data from old bone to new bone */
-	memcpy(eBone, curBone, sizeof(EditArmatureElement));
+	memcpy(eElem, curBone, sizeof(EditArmatureElement));
 
 	switch(curBone->type)
     {
         case AE_BONE:
-            eBone->data = MEM_mallocN(sizeof(EditBoneElement), "addup_editbonedata");
-            memcpy(eBone->data, curBone->data, sizeof(EditBoneElement));
+            eElem->data = MEM_mallocN(sizeof(EditBoneElement), "addup_editbonedata");
+            memcpy(eElem->data, curBone->data, sizeof(EditBoneElement));
             break;
         case AE_MUSCLE:
-            eBone->data = MEM_mallocN(sizeof(EditMuscleElement), "addup_editmuscledata");
-            memcpy(eBone->data, curBone->data, sizeof(EditMuscleElement));
+            eElem->data = MEM_mallocN(sizeof(EditMuscleElement), "addup_editmuscledata");
+            memcpy(eElem->data, curBone->data, sizeof(EditMuscleElement));
             break;
     }
 
-	curBone->temp = eBone;
-	eBone->temp = curBone;
+	curBone->temp = eElem;
+	eElem->temp = curBone;
 
 	if (name != NULL) {
-		BLI_strncpy(eBone->name, name, sizeof(eBone->name));
+		BLI_strncpy(eElem->name, name, sizeof(eElem->name));
 	}
 
-	unique_editbone_name(editbones, eBone->name, NULL);
-	BLI_addtail(editbones, eBone);
+	unique_editelement_name(editbones, eElem->name, NULL);
+	BLI_addtail(editbones, eElem);
 
 	/* copy the ID property */
 	if (curBone->prop)
-		eBone->prop = IDP_CopyProperty(curBone->prop);
+		eElem->prop = IDP_CopyProperty(curBone->prop);
 
 	/* Lets duplicate the list of constraints that the
 	 * current bone has.
@@ -412,7 +412,7 @@ EditArmatureElement *duplicateEditBoneObjects(EditArmatureElement *curBone, cons
 			/* WARNING: this creates a new posechannel, but there will not be an attached bone
 			 *		yet as the new bones created here are still 'EditBones' not 'Bones'.
 			 */
-			channew = BKE_pose_channel_verify(dst_ob->pose, eBone->name);
+			channew = BKE_pose_channel_verify(dst_ob->pose, eElem->name);
 
 			if (channew) {
 				BKE_pose_channel_copy_data(channew, chanold);
@@ -420,7 +420,7 @@ EditArmatureElement *duplicateEditBoneObjects(EditArmatureElement *curBone, cons
 		}
 	}
 
-	return eBone;
+	return eElem;
 }
 
 EditArmatureElement *duplicateEditBone(EditArmatureElement *curElem, const char *name, ListBase *editbones, Object *ob)
@@ -660,7 +660,7 @@ static int armature_extrude_exec(bContext *C, wmOperator *op)
 							else strcat(newelem->name, "_R");
 						}
 					}
-					unique_editbone_name(arm->edbo, newelem->name, NULL);
+					unique_editelement_name(arm->edbo, newelem->name, NULL);
 
 					/* Add the new bone to the list */
 					BLI_addtail(arm->edbo, newelem);
@@ -827,7 +827,7 @@ static int armature_subdivide_exec(bContext *C, wmOperator *op)
 
 			newbone->prop = NULL;
 
-			unique_editbone_name(arm->edbo, newbone->name, NULL);
+			unique_editelement_name(arm->edbo, newbone->name, NULL);
 
 			/* correct parent bones */
 			for (tbone = arm->edbo->first; tbone; tbone = tbone->next) {

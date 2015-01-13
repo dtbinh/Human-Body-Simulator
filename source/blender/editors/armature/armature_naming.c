@@ -70,18 +70,18 @@
 /* note: there's a unique_bone_name() too! */
 static bool editbone_unique_check(void *arg, const char *name)
 {
-	struct {ListBase *lb; void *bone; } *data = arg;
+	struct {ListBase *lb; void *elem; } *data = arg;
 	EditBone *dupli = ED_armature_armatureelement_find_name(data->lb, name);
-	return dupli && dupli != data->bone;
+	return dupli && dupli != data->elem;
 }
 
-void unique_editbone_name(ListBase *edbo, char *name, EditBone *bone)
+void unique_editelement_name(ListBase *edbo, char *name, EditArmatureElement *elem)
 {
-	struct {ListBase *lb; void *bone; } data;
+	struct {ListBase *lb; void *elem; } data;
 	data.lb = edbo;
-	data.bone = bone;
+	data.elem = elem;
 
-	BLI_uniquename_cb(editbone_unique_check, &data, DATA_("Bone"), '.', name, sizeof(bone->name));
+	BLI_uniquename_cb(editbone_unique_check, &data, DATA_("Bone"), '.', name, sizeof(elem->name));
 }
 
 /* ************************************************** */

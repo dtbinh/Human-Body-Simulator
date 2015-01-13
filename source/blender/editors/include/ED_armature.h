@@ -250,7 +250,7 @@ void create_vgroups_from_armature(struct ReportList *reports, struct Scene *scen
                                   struct Object *par, const int mode, const bool mirror);
 
 /* if bone is already in list, pass it as param to ignore it */
-void unique_editbone_name(struct ListBase *ebones, char *name, EditBone *bone);
+void unique_editelement_name(struct ListBase *ebones, char *name, EditArmatureElement *bone);
 void ED_armature_bone_rename(struct bArmature *arm, const char *oldnamep, const char *newnamep);
 void ED_armature_armaturelement_rename(struct bArmature *arm, const char *oldnamep, const char *newnamep);
 
