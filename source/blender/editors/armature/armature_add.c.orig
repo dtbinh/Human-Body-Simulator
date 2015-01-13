@@ -64,18 +64,17 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
 {
 	EditArmatureElement *elem = MEM_callocN(sizeof(EditArmatureElement), "eElement");
 
-<<<<<<< HEAD
 	elem->data = MEM_callocN(sizeof(BoneData), "eBoneData");
-=======
-	bone->data = MEM_callocN(sizeof(BoneData), "eBoneData");
->>>>>>> Super unstable
 
 	BLI_strncpy(elem->name, name, sizeof(elem->name));
+<<<<<<< HEAD
 	unique_editelement_name(arm->edbo, elem->name, NULL);
+=======
+	unique_editelem_name(arm->edbo, elem->name, NULL);
+>>>>>>> Regex's are pretty neat
 
 	BLI_addtail(arm->edbo, elem);
 
-<<<<<<< HEAD
     elem->type = AE_BONE;
 	elem->flag |= ELEMENT_TIPSEL;
 	elem->xwidth = 0.1f;
@@ -84,41 +83,20 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
 	elem->rad_tail = 0.05f;
 	elem->segments = 1;
 	elem->layer = arm->layer;
-=======
-    bone->type = AE_BONE;
-	bone->flag |= BONE_TIPSEL;
-	bone->xwidth = 0.1f;
-	bone->zwidth = 0.1f;
-	bone->rad_head = 0.10f;
-	bone->rad_tail = 0.05f;
-	bone->segments = 1;
-	bone->layer = arm->layer;
->>>>>>> Super unstable
 
     switch(type)
     {
         case AE_BONE:
-<<<<<<< HEAD
             ((EditBoneElement*)elem->data)->ease1 = 1.0f;
             ((EditBoneElement*)elem->data)->ease2 = 1.0f;
             ((EditBoneElement*)elem->data)->weight = 1.0f;
             ((EditBoneElement*)elem->data)->dist = 0.25f;
-=======
-            ((EditBoneElement*)bone->data)->ease1 = 1.0f;
-            ((EditBoneElement*)bone->data)->ease2 = 1.0f;
-            ((EditBoneElement*)bone->data)->weight = 1.0f;
-            ((EditBoneElement*)bone->data)->dist = 0.25f;
->>>>>>> Super unstable
             break;
         case AE_MUSCLE:
             // TODO:
             // Muscle properties go here
             // None yet
-<<<<<<< HEAD
 //            ((EditMuscleElement*)elem->data)->
-=======
-//            ((EditMuscleElement*)bone->data)->
->>>>>>> Super unstable
             break;
     }
 
@@ -310,7 +288,11 @@ EditArmatureElement *add_points_bone(Object *obedit, float head[3], float tail[3
 
 static EditArmatureElement *get_named_editarmatureelement(ListBase *edbo, const char *name)
 {
+<<<<<<< HEAD
 	EditArmatureElement  *eElem;
+=======
+	EditArmatureElement  *eBone;
+>>>>>>> Regex's are pretty neat
 
 	if (name) {
 		for (eElem = edbo->first; eElem; eElem = eElem->next) {
@@ -404,21 +386,12 @@ EditArmatureElement *duplicateEditBoneObjects(EditArmatureElement *curBone, cons
 	switch(curBone->type)
     {
         case AE_BONE:
-<<<<<<< HEAD
             eElem->data = MEM_mallocN(sizeof(EditBoneElement), "addup_editbonedata");
             memcpy(eElem->data, curBone->data, sizeof(EditBoneElement));
             break;
         case AE_MUSCLE:
             eElem->data = MEM_mallocN(sizeof(EditMuscleElement), "addup_editmuscledata");
             memcpy(eElem->data, curBone->data, sizeof(EditMuscleElement));
-=======
-            eBone->data = MEM_mallocN(sizeof(EditBoneElement), "addup_editbonedata");
-            memcpy(eBone->data, curBone->data, sizeof(EditBoneElement));
-            break;
-        case AE_MUSCLE:
-            eBone->data = MEM_mallocN(sizeof(EditMuscleElement), "addup_editmuscledata");
-            memcpy(eBone->data, curBone->data, sizeof(EditMuscleElement));
->>>>>>> Super unstable
             break;
     }
 
