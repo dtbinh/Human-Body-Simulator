@@ -117,7 +117,7 @@ void RNA_api_armatureelement(StructRNA *srna)
     PropertyRNA *parm;
     FunctionRNA *func;
 
-    func = RNA_def_function(srna, "evaluate_envelope", "rna_Element_do_envelope");
+    func = RNA_def_function(srna, "evaluate_envelope", "rna_ArmatureElement_do_envelope");
     RNA_def_function_ui_description(func, "Calculate element envelope at given point");
     parm = RNA_def_float_vector_xyz(func, "point", 3, NULL, -FLT_MAX, FLT_MAX, "Point",
                                     "Position in 3d space to evaluate", -FLT_MAX, FLT_MAX);
