@@ -117,21 +117,21 @@ static EditArmatureElement *rna_Armature_edit_bone_new(bArmature *arm, ReportLis
 	return ED_armature_edit_armature_element_add(arm, name, AE_BONE);
 }
 
-static void rna_Armature_edit_bone_remove(bArmature *arm, ReportList *reports, PointerRNA *ebone_ptr)
+static void rna_Armature_edit_armatureelement_remove(bArmature *arm, ReportList *reports, PointerRNA *eelem_ptr)
 {
-	EditArmatureElement *ebone = ebone_ptr->data;
+	EditArmatureElement *eelem = eelem_ptr->data;
 	if (arm->edel == NULL) {
 		BKE_reportf(reports, RPT_ERROR, "Armature '%s' not in edit mode, cannot remove an editbone", arm->id.name + 2);
 		return;
 	}
 
-	if (BLI_findindex(arm->edel, ebone) == -1) {
-		BKE_reportf(reports, RPT_ERROR, "Armature '%s' does not contain bone '%s'", arm->id.name + 2, ebone->name);
+	if (BLI_findindex(arm->edel, eelem) == -1) {
+		BKE_reportf(reports, RPT_ERROR, "Armature '%s' does not contain bone '%s'", arm->id.name + 2, eelem->name);
 		return;
 	}
 
-	ED_armature_edit_bone_remove(arm, ebone);
-	RNA_POINTER_INVALIDATE(ebone_ptr);
+	ED_armature_edit_bone_remove(arm, eelem);
+	RNA_POINTER_INVALIDATE(eelem_ptr);
 }
 
 static void rna_Armature_update_layers(Main *bmain, Scene *UNUSED(scene), PointerRNA *ptr)
@@ -156,8 +156,8 @@ static void rna_Armature_redraw_data(Main *UNUSED(bmain), Scene *UNUSED(scene), 
 	WM_main_add_notifier(NC_GEOM | ND_DATA, id);
 }
 
-/* called whenever a bone is renamed */
-static void rna_Bone_update_renamed(Main *UNUSED(bmain), Scene *UNUSED(scene), PointerRNA *ptr)
+/* called whenever an element is renamed */
+static void rna_ArmatureElement_update_renamed(Main *UNUSED(bmain), Scene *UNUSED(scene), PointerRNA *ptr)
 {
 	ID *id = ptr->id.data;
 
@@ -168,7 +168,7 @@ static void rna_Bone_update_renamed(Main *UNUSED(bmain), Scene *UNUSED(scene), P
 	WM_main_add_notifier(NC_ANIMATION | ND_ANIMCHAN, id);
 }
 
-static void rna_Bone_select_update(Main *UNUSED(bmain), Scene *UNUSED(scene), PointerRNA *ptr)
+static void rna_ArmatureElement_select_update(Main *UNUSED(bmain), Scene *UNUSED(scene), PointerRNA *ptr)
 {
 	ID *id = ptr->id.data;
 
@@ -196,13 +196,13 @@ static void rna_Bone_select_update(Main *UNUSED(bmain), Scene *UNUSED(scene), Po
 	WM_main_add_notifier(NC_GEOM | ND_DATA, id);
 }
 
-static char *rna_Bone_path(PointerRNA *ptr)
+static char *rna_ArmatureElement_path(PointerRNA *ptr)
 {
 	ID *id = ptr->id.data;
-	Bone *bone = (Bone *)ptr->data;
-	char name_esc[sizeof(bone->name) * 2];
+	ArmatureElement *elem = (ArmatureElement *)ptr->data;
+	char name_esc[sizeof(elem->name) * 2];
 
-	BLI_strescape(name_esc, bone->name, sizeof(name_esc));
+	BLI_strescape(name_esc, elem->name, sizeof(name_esc));
 
 	/* special exception for trying to get the path where ID-block is Object
 	 * - this will be assumed to be from a Pose  ...
@@ -217,28 +217,28 @@ static char *rna_Bone_path(PointerRNA *ptr)
 	return BLI_sprintfN("bones[\"%s\"]", name_esc);
 }
 
-static IDProperty *rna_Bone_idprops(PointerRNA *ptr, bool create)
+static IDProperty *rna_ArmatureElement_idprops(PointerRNA *ptr, bool create)
 {
-	Bone *bone = ptr->data;
+	ArmatureElement *elem = ptr->data;
 
-	if (create && !bone->prop) {
+	if (create && !elem->prop) {
 		IDPropertyTemplate val = {0};
-		bone->prop = IDP_New(IDP_GROUP, &val, "RNA_Bone ID properties");
+		elem->prop = IDP_New(IDP_GROUP, &val, "RNA_Bone ID properties");
 	}
 
-	return bone->prop;
+	return elem->prop;
 }
 
-static IDProperty *rna_EditBone_idprops(PointerRNA *ptr, bool create)
+static IDProperty *rna_EditArmatureElement_idprops(PointerRNA *ptr, bool create)
 {
-	EditBone *ebone = ptr->data;
+	EditArmatureElement *eelem = ptr->data;
 
-	if (create && !ebone->prop) {
+	if (create && !eelem->prop) {
 		IDPropertyTemplate val = {0};
-		ebone->prop = IDP_New(IDP_GROUP, &val, "RNA_EditBone ID properties");
+		eelem->prop = IDP_New(IDP_GROUP, &val, "RNA_EditBone ID properties");
 	}
 
-	return ebone->prop;
+	return eelem->prop;
 }
 
 static IDProperty *rna_ArmatureElement_idprops(PointerRNA *ptr, bool create)
@@ -265,7 +265,7 @@ static IDProperty *rna_EditArmatureElement_idprops(PointerRNA *ptr, bool create)
     return eelem->prop;
 }
 
-static void rna_bone_layer_set(int *layer, const int *values)
+static void rna_armatureelement_layer_set(int *layer, const int *values)
 {
 	int i, tot = 0;
 
@@ -283,12 +283,13 @@ static void rna_bone_layer_set(int *layer, const int *values)
 	}
 }
 
-static void rna_Bone_layer_set(PointerRNA *ptr, const int *values)
+static void rna_ArmatureElement_layer_set(PointerRNA *ptr, const int *values)
 {
-	Bone *bone = (Bone *)ptr->data;
-	rna_bone_layer_set(&bone->layer, values);
+	ArmatureElement *elem = (ArmatureElement *)ptr->data;
+	rna_bone_layer_set(&elem->layer, values);
 }
 
+/* same code as in rna_bone_layer_set, genericise function? */
 static void rna_Armature_layer_set(PointerRNA *ptr, const int *values)
 {
 	bArmature *arm = (bArmature *)ptr->data;
@@ -332,15 +333,15 @@ static void rna_Armature_ghost_end_frame_set(PointerRNA *ptr, int value)
 }
 /* XXX deprecated... old armature only animviz */
 
-static void rna_EditBone_name_set(PointerRNA *ptr, const char *value)
+static void rna_EditArmatureElement_name_set(PointerRNA *ptr, const char *value)
 {
 	bArmature *arm = (bArmature *)ptr->id.data;
-	EditBone *ebone = (EditBone *)ptr->data;
-	char oldname[sizeof(ebone->name)], newname[sizeof(ebone->name)];
+	EditArmatureElement *eelem = (EditBone *)ptr->data;
+	char oldname[sizeof(eelem->name)], newname[sizeof(eelem->name)];
 
 	/* need to be on the stack */
-	BLI_strncpy_utf8(newname, value, sizeof(ebone->name));
-	BLI_strncpy(oldname, ebone->name, sizeof(ebone->name));
+	BLI_strncpy_utf8(newname, value, sizeof(eelem->name));
+	BLI_strncpy(oldname, eelem->name, sizeof(eelem->name));
 
 	ED_armature_bone_rename(arm, oldname, newname);
 }
@@ -364,31 +365,57 @@ static void rna_EditBone_layer_set(PointerRNA *ptr, const int values[])
 	rna_bone_layer_set(&data->layer, values);
 }
 
-static void rna_EditBone_connected_check(EditBone *ebone)
+static void rna_EditArmatureElement_connected_check(EditArmatureElement *eelem)
 {
-	if (ebone->parent) {
-		if (ebone->flag & BONE_CONNECTED) {
-			/* Attach this bone to its parent */
-			copy_v3_v3(ebone->head, ebone->parent->tail);
+    if (eelem->parent) {
+        if (eelem->flag & ELEMENT_CONNECTED) {
+            /* Attach this element to its parent */
+            copy_v3_v3(eelem->head, eelem->parent->tail);
 
-			if (ebone->flag & BONE_ROOTSEL)
-				ebone->parent->flag |= BONE_TIPSEL;
-		}
-		else if (!(ebone->parent->flag & BONE_ROOTSEL)) {
-			ebone->parent->flag &= ~BONE_TIPSEL;
-		}
-	}
+            if (eelem->flag & ELEMENT_ROOTSEL)
+                eelem->parent->flag |= ELEMENT_TIPSEL;
+        }
+        else if (!(eelem->parent->flag & ELEMENT_ROOTSEL)) {
+            eelem->parent->flag &= ~ELEMENT_TIPSEL;
+        }
+    }
 }
 
-static void rna_EditBone_connected_set(PointerRNA *ptr, int value)
+//static void rna_EditBone_connected_check(EditBone *ebone)
+//{
+//	if (ebone->parent) {
+//		if (ebone->flag & BONE_CONNECTED) {
+//			/* Attach this bone to its parent */
+//			copy_v3_v3(ebone->head, ebone->parent->tail);
+//
+//			if (ebone->flag & BONE_ROOTSEL)
+//				ebone->parent->flag |= BONE_TIPSEL;
+//		}
+//		else if (!(ebone->parent->flag & BONE_ROOTSEL)) {
+//			ebone->parent->flag &= ~BONE_TIPSEL;
+//		}
+//	}
+//}
+
+static void rna_EditArmatureElement_connected_set(PointerRNA *ptr, int value)
 {
-	EditBone *ebone = (EditBone *)(ptr->data);
+	EditArmatureElement *eelem = (EditArmatureElement *)(ptr->data);
 
-	if (value) ebone->flag |= BONE_CONNECTED;
-	else ebone->flag &= ~BONE_CONNECTED;
+	if (value) ebone->flag |= ELEMENT_CONNECTED;
+	else ebone->flag &= ~ELEMENT_CONNECTED;
 
-	rna_EditBone_connected_check(ebone);
+	rna_EditArmatureElement_connected_check(ebone);
 }
+
+//static void rna_EditBone_connected_set(PointerRNA *ptr, int value)
+//{
+//	EditBone *ebone = (EditBone *)(ptr->data);
+//
+//	if (value) ebone->flag |= BONE_CONNECTED;
+//	else ebone->flag &= ~BONE_CONNECTED;
+//
+//	rna_EditBone_connected_check(ebone);
+//}
 
 static PointerRNA rna_EditBone_parent_get(PointerRNA *ptr)
 {

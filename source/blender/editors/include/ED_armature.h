@@ -210,7 +210,7 @@ struct Bone *get_indexed_bone(struct Object *ob, int index);
 struct Muscle *get_indexed_muscle(struct Object *ob, int index);
 //float ED_rollBoneToVector(EditBone *bone, const float new_up_axis[3], const bool axis_only);
 float ED_rollElementToVector(EditArmatureElement *element, const float new_up_axis[3], const bool axis_only);
-EditArmatureElement *ED_armature_bone_find_name(const ListBase *edbo, const char *name);
+EditArmatureElement *ED_armature_armatureelement_find_name(const ListBase *edbo, const char *name);
 EditArmatureElement *ED_armature_bone_get_mirrored(const struct ListBase *edbo, EditArmatureElement *eel);
 EditMuscle *ED_armature_muscle_find_name(const ListBase *edmu, const char *name);
 void ED_armature_sync_selection(struct ListBase *edbo);
@@ -255,6 +255,7 @@ void create_vgroups_from_armature(struct ReportList *reports, struct Scene *scen
 /* if bone is already in list, pass it as param to ignore it */
 void unique_editbone_name(struct ListBase *ebones, char *name, EditBone *bone);
 void ED_armature_bone_rename(struct bArmature *arm, const char *oldnamep, const char *newnamep);
+void ED_armature_armaturelement_rename(struct bArmature *arm, const char *oldnamep, const char *newnamep);
 
 void undo_push_armature(struct bContext *C, const char *name);
 
