@@ -434,8 +434,8 @@ void ARMATURE_OT_calculate_roll(wmOperatorType *ot)
 typedef struct EditBonePoint {
 	struct EditBonePoint *next, *prev;
 
-	EditBone *head_owner;       /* EditBone which uses this point as a 'head' point */
-	EditBone *tail_owner;       /* EditBone which uses this point as a 'tail' point */
+	EditArmatureElement *head_owner;       /* EditBone which uses this point as a 'head' point */
+	EditArmatureElement *tail_owner;       /* EditBone which uses this point as a 'tail' point */
 
 	float vec[3];               /* the actual location of the point in local/EditMode space */
 } EditBonePoint;
@@ -443,7 +443,7 @@ typedef struct EditBonePoint {
 /* find chain-tips (i.e. bones without children) */
 static void chains_find_tips(ListBase *edbo, ListBase *list)
 {
-	EditBone *curBone, *ebo;
+	EditArmatureElement *curBone, *ebo;
 	LinkData *ld;
 
 	/* note: this is potentially very slow ... there's got to be a better way */
@@ -805,7 +805,7 @@ static int armature_merge_exec(bContext *C, wmOperator *op)
 		/* go down chains, merging bones */
 		ListBase chains = {NULL, NULL};
 		LinkData *chain, *nchain;
-		EditBone *ebo;
+		EditArmatureElement *ebo;
 
 		armature_tag_select_mirrored(arm);
 
@@ -815,8 +815,8 @@ static int armature_merge_exec(bContext *C, wmOperator *op)
 
 		/* each 'chain' is the last bone in the chain (with no children) */
 		for (chain = chains.first; chain; chain = nchain) {
-			EditBone *bstart = NULL, *bend = NULL;
-			EditBone *bchild = NULL, *child = NULL;
+			EditArmatureElement *bstart = NULL, *bend = NULL;
+			EditArmatureElement *bchild = NULL, *child = NULL;
 
 			/* temporarily remove chain from list of chains */
 			nchain = chain->next;
@@ -903,7 +903,7 @@ void ARMATURE_OT_merge(wmOperatorType *ot)
 /* helper to clear BONE_TRANSFORM flags */
 static void armature_clear_swap_done_flags(bArmature *arm)
 {
-	EditBone *ebone;
+	EditArmatureElement *ebone;
 
 	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
 		ebone->flag &= ~ELEMENT_TRANSFORM;
@@ -932,7 +932,7 @@ static int armature_switch_direction_exec(bContext *C, wmOperator *UNUSED(op))
 
 	/* loop over chains, only considering selected and visible bones */
 	for (chain = chains.first; chain; chain = chain->next) {
-		EditBone *ebo, *child = NULL, *parent = NULL;
+		EditArmatureElement *ebo, *child = NULL, *parent = NULL;
 
 		/* loop over bones in chain */
 		for (ebo = chain->data; ebo; ebo = parent) {
@@ -970,7 +970,7 @@ static int armature_switch_direction_exec(bContext *C, wmOperator *UNUSED(op))
 					/* not swapping this bone, however, if its 'parent' got swapped, unparent us from it
 					 * as it will be facing in opposite direction
 					 */
-					if ((parent) && (EBONE_VISIBLE(arm, parent) && EBONE_EDITABLE(parent))) {
+					if ((parent) && (EELEMENT_VISIBLE(arm, parent) && EELEMENT_EDITABLE(parent))) {
 						ebo->parent = NULL;
 						ebo->flag &= ~ELEMENT_CONNECTED;
 					}
@@ -1045,7 +1045,7 @@ static void fix_editbone_connected_children(ListBase *edbo, EditBone *ebone)
 	}
 }
 
-static void bone_align_to_bone(ListBase *edbo, EditBone *selbone, EditBone *actbone)
+static void bone_align_to_bone(ListBase *edbo, EditArmatureElement *selbone, EditArmatureElement *actbone)
 {
 	float selboneaxis[3], actboneaxis[3], length;
 
@@ -1118,7 +1118,7 @@ static int armature_align_bones_exec(bContext *C, wmOperator *op)
 		 */
 
 		/* align selected bones to the active one */
-		CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
+		CTX_DATA_BEGIN(C, EditArmatureElement *, ebone, selected_editable_bones)
 		{
 			if (ELEM(ebone, actbone, actmirb) == 0) {
 				if (ebone->flag & ELEMENT_SELECTED)
@@ -1213,7 +1213,6 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 	/*  First erase any associated pose channel */
 	if (obedit->pose) {
 		bPoseChannel *pchan, *pchan_next;
-		bMuscleChannel *pmuscle, *pmuscle_next;
 		for (pchan = obedit->pose->chanbase.first; pchan; pchan = pchan_next) {
 			pchan_next = pchan->next;
 			curBone = ED_armature_armatureelement_find_name(arm->edbo, pchan->name);
