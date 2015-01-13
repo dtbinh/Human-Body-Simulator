@@ -648,7 +648,7 @@ static int armature_fill_bones_exec(bContext *C, wmOperator *op)
 
 		/* add new bone and parent it to the appropriate end */
 		if (headtail) {
-			EditBone *newbone = add_points_bone(obedit, head, tail);
+			EditArmatureElement *newbone = add_points_bone(obedit, head, tail);
 
 			/* do parenting (will need to set connected flag too) */
 			if (headtail == 2) {
@@ -708,10 +708,10 @@ void ARMATURE_OT_fill(wmOperatorType *ot)
 /* this function merges between two bones, removes them and those in-between,
  * and adjusts the parent relationships for those in-between
  */
-static void bones_merge(Object *obedit, EditBone *start, EditBone *end, EditBone *endchild, ListBase *chains)
+static void bones_merge(Object *obedit, EditArmatureElement *start, EditArmatureElement *end, EditArmatureElement *endchild, ListBase *chains)
 {
 	bArmature *arm = obedit->data;
-	EditBone *ebo, *ebone, *newbone;
+	EditArmatureElement *ebo, *ebone, *newbone;
 	LinkData *chain;
 	float head[3], tail[3];
 
@@ -825,7 +825,7 @@ static int armature_merge_exec(bContext *C, wmOperator *op)
 			/* only consider bones that are visible and selected */
 			for (ebo = chain->data; ebo; child = ebo, ebo = ebo->parent) {
 				/* check if visible + selected */
-				if (EBONE_VISIBLE(arm, ebo) &&
+				if (EELEMENT_VISIBLE(arm, ebo) &&
 				    ((ebo->flag & ELEMENT_CONNECTED) || (ebo->parent == NULL)) &&
 				    (ebo->flag & ELEMENT_SELECTED) )
 				{
@@ -945,7 +945,7 @@ static int armature_switch_direction_exec(bContext *C, wmOperator *UNUSED(op))
 			/* skip bone if already handled... [#34123] */
 			if ((ebo->flag & ELEMENT_TRANSFORM) == 0) {
 				/* only if selected and editable */
-				if (EBONE_VISIBLE(arm, ebo) && EBONE_EDITABLE(ebo)) {
+				if (EELEMENT_VISIBLE(arm, ebo) && EELEMENT_EDITABLE(ebo)) {
 					/* swap head and tail coordinates */
 					SWAP(float, ebo->head[0], ebo->tail[0]);
 					SWAP(float, ebo->head[1], ebo->tail[1]);
@@ -1069,8 +1069,8 @@ static int armature_align_bones_exec(bContext *C, wmOperator *op)
 {
 	Object *ob = CTX_data_edit_object(C);
 	bArmature *arm = (bArmature *)ob->data;
-	EditBone *actbone = CTX_data_active_bone(C);
-	EditBone *actmirb = NULL;
+	EditArmatureElement *actbone = CTX_data_active_bone(C);
+	EditArmatureElement *actmirb = NULL;
 	int num_selected_bones;
 
 	/* there must be an active bone */
@@ -1198,8 +1198,7 @@ void ARMATURE_OT_split(wmOperatorType *ot)
 static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	bArmature *arm;
-	EditBone *curBone, *ebone_next;
-	EditMuscle *curMuscle, *emuscle_next;
+	EditArmatureElement *curBone, *ebone_next;
 	bConstraint *con;
 	Object *obedit = CTX_data_edit_object(C); // XXX get from context
 	bool changed = false;
@@ -1251,17 +1250,6 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 				}
 			}
 		}
-
-		for (pmuscle = obedit->pose->musclebase.first; pmuscle; pmuscle = pmuscle_next) {
-            pmuscle_next = pmuscle->next;
-            curMuscle = ED_armature_muscle_find_name(arm->edmu, pmuscle->name);
-
-            if (curMuscle && (curMuscle->flag & MUSCLE_SELECTED) && (arm->layer & curMuscle->layer)) {
-                BKE_pose_muscle_free(pmuscle);
-                BKE_pose_muscles_hash_free(obedit->pose);
-                BLI_freelinkN(&obedit->pose->musclebase, pmuscle);
-            }
-		}
 	}
 
 
@@ -1269,22 +1257,11 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 		ebone_next = curBone->next;
 		if (arm->layer & curBone->layer) {
 			if (curBone->flag & ELEMENT_SELECTED) {
-				if (curBone == arm->act_edbone) arm->act_edbone = NULL;
+				if (curBone == arm->act_edelement) arm->act_edelement = NULL;
 				ED_armature_edit_bone_remove(arm, curBone);
 				changed = true;
 			}
 		}
-	}
-
-	for (curMuscle = arm->edmu->first; curMuscle; curMuscle = emuscle_next) {
-        emuscle_next = curMuscle->next;
-        if (arm->layer & curMuscle->layer) {
-            if (curMuscle->flag & MUSCLE_SELECTED) {
-                if (curMuscle == arm->act_edmuscle) arm->act_edmuscle = NULL;
-                ED_armature_edit_muscle_remove(arm, curMuscle);
-                changed = true;
-            }
-        }
 	}
 
 	if (!changed)
@@ -1319,18 +1296,18 @@ static int armature_hide_exec(bContext *C, wmOperator *op)
 {
 	Object *obedit = CTX_data_edit_object(C);
 	bArmature *arm = obedit->data;
-	EditBone *ebone;
+	EditArmatureElement *eelem;
 	const int invert = RNA_boolean_get(op->ptr, "unselected") ? ELEMENT_SELECTED : 0;
 
 	/* cancel if nothing selected */
 	if (CTX_DATA_COUNT(C, selected_bones) == 0)
 		return OPERATOR_CANCELLED;
 
-	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-		if (EBONE_VISIBLE(arm, ebone)) {
-			if ((ebone->flag & ELEMENT_SELECTED) != invert) {
-				ebone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
-				ebone->flag |= ELEMENT_HIDDEN_A;
+	for (eelem = arm->edbo->first; eelem; eelem = eelem->next) {
+		if (EELEMENT_VISIBLE(arm, eelem)) {
+			if ((eelem->flag & ELEMENT_SELECTED) != invert) {
+				eelem->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
+				eelem->flag |= ELEMENT_HIDDEN_A;
 			}
 		}
 	}
@@ -1364,15 +1341,15 @@ static int armature_reveal_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	Object *obedit = CTX_data_edit_object(C);
 	bArmature *arm = obedit->data;
-	EditBone *ebone;
+	EditArmatureElement *eelem;
 
-	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-		if (arm->layer & ebone->layer) {
-			if (ebone->flag & ELEMENT_HIDDEN_A) {
-				if (!(ebone->flag & ELEMENT_UNSELECTABLE)) {
-					ebone->flag |= (ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
+	for (eelem = arm->edbo->first; eelem; eelem = eelem->next) {
+		if (arm->layer & eelem->layer) {
+			if (eelem->flag & ELEMENT_HIDDEN_A) {
+				if (!(eelem->flag & ELEMENT_UNSELECTABLE)) {
+					eelem->flag |= (ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
 				}
-				ebone->flag &= ~ELEMENT_HIDDEN_A;
+				eelem->flag &= ~ELEMENT_HIDDEN_A;
 			}
 		}
 	}

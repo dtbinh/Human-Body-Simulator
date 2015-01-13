@@ -220,17 +220,8 @@ void ED_armature_edit_muscle_remove(struct bArmature *arm, EditMuscle *exMuscle)
 bool ED_armature_ebone_is_child_recursive(EditArmatureElement *ebone_parent, EditArmatureElement *ebone_child);
 EditBone *ED_armature_bone_find_shared_parent(EditBone *ebone_child[], const unsigned int ebone_child_tot);
 
-//void ED_armature_ebone_to_mat3(EditBone *ebone, float mat[3][3]);
-//void ED_armature_ebone_to_mat4(EditBone *ebone, float mat[4][4]);
-
 void ED_armature_eelement_to_mat3(EditArmatureElement *eelement, float mat[3][3]);
 void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4]);
-
-//void ED_armature_emuscle_to_mat3(EditMuscle *emuscle, float mat[3][3]);
-//void ED_armature_emuscle_to_mat4(EditMuscle *emuscle, float mat[4][4]);
-
-//void ED_armature_ebone_from_mat3(EditBone *ebone, float mat[3][3]);
-//void ED_armature_ebone_from_mat4(EditBone *ebone, float mat[4][4]);
 
 void ED_armature_eelement_from_mat3(EditArmatureElement *eelement, float mat[3][3]);
 void ED_armature_eelement_from_mat4(EditArmatureElement *eelement, float mat[4][4]);
