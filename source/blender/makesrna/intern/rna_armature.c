@@ -335,10 +335,10 @@ static void rna_Bone_name_set(PointerRNA *ptr, const char *value)
 	ED_armature_bone_rename(arm, oldname, newname);
 }
 
-static void rna_EditBone_layer_set(PointerRNA *ptr, const int values[])
+static void rna_EditArmatureElement_layer_set(PointerRNA *ptr, const int values[])
 {
-	EditBone *data = (EditBone *)(ptr->data);
-	rna_bone_layer_set(&data->layer, values);
+	EditArmatureElement *data = (EditArmatureElement *)(ptr->data);
+	rna_armatureelement_layer_set(&data->layer, values);
 }
 
 static void rna_EditArmatureElement_connected_check(EditArmatureElement *eelem)
