@@ -72,7 +72,7 @@ struct bContext {
 		struct bContextStore *store;
 		const char *operator_poll_msg; /* reason for poll failing */
 	} wm;
-	
+
 	/* data context */
 	struct {
 		struct Main *main;
@@ -82,7 +82,7 @@ struct bContext {
 		int py_init; /* true if python is initialized */
 		void *py_context;
 	} data;
-	
+
 	/* data evaluation */
 #if 0
 	struct {
@@ -96,7 +96,7 @@ struct bContext {
 bContext *CTX_create(void)
 {
 	bContext *C;
-	
+
 	C = MEM_callocN(sizeof(bContext), "bContext");
 
 	return C;
@@ -412,7 +412,7 @@ PointerRNA CTX_data_pointer_get_type(const bContext *C, const char *member, Stru
 			       __func__, member, RNA_struct_identifier(ptr.type), RNA_struct_identifier(type));
 		}
 	}
-	
+
 	return PointerRNA_NULL;
 }
 
@@ -453,13 +453,13 @@ int CTX_data_get(const bContext *C, const char *member, PointerRNA *r_ptr, ListB
 static void data_dir_add(ListBase *lb, const char *member, const bool use_all)
 {
 	LinkData *link;
-	
+
 	if ((use_all == false) && strcmp(member, "scene") == 0) /* exception */
 		return;
 
 	if (BLI_findstring(lb, member, offsetof(LinkData, data)))
 		return;
-	
+
 	link = MEM_callocN(sizeof(LinkData), "LinkData");
 	link->data = (void *)member;
 	BLI_addtail(lb, link);
@@ -1052,7 +1052,7 @@ struct Mask *CTX_data_edit_mask(const bContext *C)
 	return ctx_data_pointer_get(C, "edit_mask");
 }
 
-struct EditBone *CTX_data_active_bone(const bContext *C)
+struct EditArmatureElement *CTX_data_active_bone(const bContext *C)
 {
 	return ctx_data_pointer_get(C, "active_bone");
 }
