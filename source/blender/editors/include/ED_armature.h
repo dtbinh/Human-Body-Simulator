@@ -174,7 +174,7 @@ typedef struct EditMuscle {
     )
 
 //#define EBONE_SELECTABLE(arm, ebone) (EBONE_VISIBLE(arm, ebone) && !(ebone->flag & BONE_UNSELECTABLE))
-#DEFINE EELEMENT_SELECTABLE(arm, eelement) (EELEMENT_VISIBLE(arm, eelement) && !(eelement->flag & ELEMENT_UNSELECTABLE))
+#define EELEMENT_SELECTABLE(arm, eelement) (EELEMENT_VISIBLE(arm, eelement) && !(eelement->flag & ELEMENT_UNSELECTABLE))
 
 //#define EBONE_EDITABLE(ebone) ( \
 //	CHECK_TYPE_INLINE(ebone, EditBone *), \
