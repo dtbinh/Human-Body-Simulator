@@ -256,7 +256,7 @@ char *rna_Node_ImageUser_path(struct PointerRNA *ptr);
 
 void RNA_api_action(StructRNA *srna);
 //void RNA_api_armature_edit_bone(StructRNA *srna);
-void RNA_api_armature_edit_armatureelement(StructRNA *srna)
+void RNA_api_armature_edit_armatureelement(StructRNA *srna);
 void RNA_api_armatureelement(StructRNA *srna);
 //void RNA_api_bone(StructRNA *srna);
 void RNA_api_camera(StructRNA *srna);
