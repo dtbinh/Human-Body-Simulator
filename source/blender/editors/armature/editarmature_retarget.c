@@ -424,7 +424,7 @@ static void renameTemplateBone(char *name, char *template_name, ListBase *editbo
 
 	name[j] = '\0';
 
-	unique_editbone_name(editbones, name, NULL);
+	unique_editelement_name(editbones, name, NULL);
 }
 
 static RigControl *cloneControl(RigGraph *rg, RigGraph *src_rg, RigControl *src_ctrl, GHash *ptr_hash, char *side_string, char *num_string)
@@ -1435,7 +1435,7 @@ static EditBone *add_editbonetolist(char *name, ListBase *list)
 	EditBone *bone = MEM_callocN(sizeof(EditBone), "eBone");
 
 	BLI_strncpy(bone->name, name, sizeof(bone->name));
-	unique_editbone_name(list, bone->name, NULL);
+	unique_editelement_name(list, bone->name, NULL);
 
 	BLI_addtail(list, bone);
 

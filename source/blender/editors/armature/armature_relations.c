@@ -322,7 +322,7 @@ int join_armature_exec(bContext *C, wmOperator *op)
 				curbone = ED_armature_armatureelement_find_name(curarm->edbo, pchan->name);
 				
 				/* Get new name */
-				unique_editbone_name(arm->edbo, curbone->name, NULL);
+				unique_editelement_name(arm->edbo, curbone->name, NULL);
 				BLI_ghash_insert(afd.names_map, BLI_strdup(pchan->name), curbone->name);
 				
 				/* Transform the bone */
