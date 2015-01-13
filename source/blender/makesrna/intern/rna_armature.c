@@ -867,7 +867,7 @@ static void rna_def_armatureelement(BlenderRNA *brna)
     RNA_def_property_boolean_sdna(prop, NULL, "flag", ELEMENT_SELECTED);
     RNA_def_property_ui_text(prop, "Select", "");
     RNA_def_property_clear_flag(prop, PROP_ANIMATABLE);
-    RNA_def_property_update(prop, 0, "rna_Element_select_update");
+    RNA_def_property_update(prop, 0, "rna_ArmatureElement_select_update");
 
     prop = RNA_def_property(srna, "select_head", PROP_BOOLEAN, PROP_NONE);
     RNA_def_property_boolean_sdna(prop, NULL, "flag", ELEMENT_ROOTSEL);
