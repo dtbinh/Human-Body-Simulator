@@ -160,26 +160,13 @@ typedef struct EditMuscle {
 
 #define MUSCLESEL_NOSEL (1u << 31u)
 
-/* useful macros */
-//#define EBONE_VISIBLE(arm, ebone) ( \
-//	CHECK_TYPE_INLINE(arm, bArmature *), \
-//	CHECK_TYPE_INLINE(ebone, EditBone *), \
-//	(((arm)->layer & (ebone)->layer) && !((ebone)->flag & BONE_HIDDEN_A)) \
-//	)
-
 #define EELEMENT_VISIBLE(arm, eelement) ( \
     CHECK_TYPE_INLINE(arm, bArmature *), \
     CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
     (((arm)->layer & (eelement)->layer) && !((eelement)->flag & BONE_HIDDEN_A)) \
     )
 
-//#define EBONE_SELECTABLE(arm, ebone) (EBONE_VISIBLE(arm, ebone) && !(ebone->flag & BONE_UNSELECTABLE))
 #define EELEMENT_SELECTABLE(arm, eelement) (EELEMENT_VISIBLE(arm, eelement) && !(eelement->flag & ELEMENT_UNSELECTABLE))
-
-//#define EBONE_EDITABLE(ebone) ( \
-//	CHECK_TYPE_INLINE(ebone, EditBone *), \
-//	(((ebone)->flag & BONE_SELECTED) && !((ebone)->flag & BONE_EDITMODE_LOCKED)) \
-//	)
 
 #define EELEMENT_EDITABLE(eelement) ( \
 	CHECK_TYPE_INLINE(eelement, EditArmatureElement *), \
