@@ -1213,7 +1213,6 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 	/*  First erase any associated pose channel */
 	if (obedit->pose) {
 		bPoseChannel *pchan, *pchan_next;
-		bMuscleChannel *pmuscle, *pmuscle_next;
 		for (pchan = obedit->pose->chanbase.first; pchan; pchan = pchan_next) {
 			pchan_next = pchan->next;
 			curBone = ED_armature_armatureelement_find_name(arm->edbo, pchan->name);
