@@ -36,7 +36,6 @@ class BPyOps:
 
      bpy.ops
     """
-    __slots__ = ()
 
     def __getattr__(self, module):
         """

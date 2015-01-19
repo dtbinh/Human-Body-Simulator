@@ -297,10 +297,10 @@ static PyObject *BPy_IDGroup_Map_GetItem(BPy_IDProperty *self, PyObject *item)
 }
 
 /* returns NULL on success, error string on failure */
-static char idp_sequence_type(PyObject *seq_fast)
+static int idp_sequence_type(PyObject *seq_fast)
 {
 	PyObject *item;
-	char type = IDP_INT;
+	int type = IDP_INT;
 
 	Py_ssize_t i, len = PySequence_Fast_GET_SIZE(seq_fast);
 	for (i = 0; i < len; i++) {
@@ -404,7 +404,7 @@ bool BPy_IDProperty_Map_ValidateAndCreate(PyObject *name_obj, IDProperty *group,
 			return false;
 		}
 
-		if ((val.array.type = idp_sequence_type(ob_seq_fast)) == (char)-1) {
+		if ((val.array.type = idp_sequence_type(ob_seq_fast)) == -1) {
 			Py_DECREF(ob_seq_fast);
 			PyErr_SetString(PyExc_TypeError, "only floats, ints and dicts are allowed in ID property arrays");
 			return false;

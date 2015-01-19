@@ -306,7 +306,7 @@ static PyObject *Quaternion_slerp(QuaternionObject *self, PyObject *args)
 PyDoc_STRVAR(Quaternion_rotate_doc,
 ".. method:: rotate(other)\n"
 "\n"
-"   Rotates the quaternion by another mathutils value.\n"
+"   Rotates the quaternion a by another mathutils value.\n"
 "\n"
 "   :arg other: rotation component of mathutils value\n"
 "   :type other: :class:`Euler`, :class:`Quaternion` or :class:`Matrix`\n"
@@ -396,6 +396,7 @@ PyDoc_STRVAR(Quaternion_identity_doc,
 "\n"
 "   Set the quaternion to an identity quaternion.\n"
 "\n"
+"   :return: an instance of itself.\n"
 "   :rtype: :class:`Quaternion`\n"
 );
 static PyObject *Quaternion_identity(QuaternionObject *self)
@@ -414,6 +415,7 @@ PyDoc_STRVAR(Quaternion_negate_doc,
 "\n"
 "   Set the quaternion to its negative.\n"
 "\n"
+"   :return: an instance of itself.\n"
 "   :rtype: :class:`Quaternion`\n"
 );
 static PyObject *Quaternion_negate(QuaternionObject *self)

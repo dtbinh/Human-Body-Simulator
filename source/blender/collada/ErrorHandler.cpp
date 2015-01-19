@@ -47,7 +47,7 @@ ErrorHandler::~ErrorHandler()
 //--------------------------------------------------------------------
 bool ErrorHandler::handleError(const COLLADASaxFWL::IError *error)
 {
-	bool isError = true;
+	bool pass = false;
 	
 	if (error->getErrorClass() == COLLADASaxFWL::IError::ERROR_SAXPARSER) {
 		COLLADASaxFWL::SaxParserError *saxParserError = (COLLADASaxFWL::SaxParserError *) error;
@@ -56,14 +56,14 @@ bool ErrorHandler::handleError(const COLLADASaxFWL::IError *error)
 		// Workaround to avoid wrong error
 		if (parserError.getErrorType() == GeneratedSaxParser::ParserError::ERROR_VALIDATION_MIN_OCCURS_UNMATCHED) {
 			if (strcmp(parserError.getElement(), "effect") == 0) {
-				isError = false;
+				pass = true;
 			}
 		}
 		if (parserError.getErrorType() == GeneratedSaxParser::ParserError::ERROR_VALIDATION_SEQUENCE_PREVIOUS_SIBLING_NOT_PRESENT) {
 			if (!((strcmp(parserError.getElement(), "extra") == 0) &&
 			      (strcmp(parserError.getAdditionalText().c_str(), "sibling: fx_profile_abstract") == 0)))
 			{
-				isError = false;
+				pass = true;
 			}
 		}
 
@@ -80,7 +80,7 @@ bool ErrorHandler::handleError(const COLLADASaxFWL::IError *error)
 		 * This makes the importer more gracefull, so it now imports what makes sense.
 		 */
 		if (saxFWLError->getSeverity() == COLLADASaxFWL::IError::SEVERITY_ERROR_NONCRITICAL) {
-			isError = false;
+			pass = true;
 		}
 
 		std::cout << "Sax FWL Error: " << saxFWLError->getErrorMessage() << std::endl;
@@ -89,7 +89,8 @@ bool ErrorHandler::handleError(const COLLADASaxFWL::IError *error)
 		std::cout << "opencollada error: " << error->getFullErrorMessage() << std::endl;
 	}
 
-	mError |= isError;
+	if (!pass)
+		mError = true;
 
-	return false; // let OpenCollada decide when to abort
+	return pass;
 }
