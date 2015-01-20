@@ -136,7 +136,7 @@ void ED_armature_transform(struct bArmature *arm, float mat[4][4])
 void ED_armature_origin_set(Scene *scene, Object *ob, float cursor[3], int centermode, int around)
 {
 	Object *obedit = scene->obedit; // XXX get from context
-	EditBone *ebone;
+	EditArmatureElement *ebone;
 	bArmature *arm = ob->data;
 	float cent[3];
 
@@ -1159,7 +1159,7 @@ static int armature_split_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	Object *ob = CTX_data_edit_object(C);
 	bArmature *arm = (bArmature *)ob->data;
-	EditBone *bone;
+	EditArmatureElement *bone;
 
 	for (bone = arm->edbo->first; bone; bone = bone->next) {
 		if (bone->parent && (bone->flag & ELEMENT_SELECTED) != (bone->parent->flag & ELEMENT_SELECTED)) {
