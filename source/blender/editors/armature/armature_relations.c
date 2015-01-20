@@ -66,7 +66,7 @@
 /* NOTE: no operator define here as this is exported to the Object-level operator */
 
 static void joined_armature_fix_links_constraints(
-        Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditBone *curbone,
+        Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditArmatureElement *curbone,
         ListBase *lb)
 {
 	bConstraint *con;
@@ -117,7 +117,7 @@ static void joined_armature_fix_links_constraints(
 }
 
 /* Helper function for armature joining - link fixing */
-static void joined_armature_fix_links(Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditBone *curbone)
+static void joined_armature_fix_links(Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditArmatureElement *curbone)
 {
 	Object *ob;
 	bPose *pose;
@@ -229,7 +229,7 @@ int join_armature_exec(bContext *C, wmOperator *op)
 					float temp[3][3];
 
 					/* Get the premat */
-					ED_armature_ebone_to_mat3(curbone, temp);
+					ED_armature_eelement_to_mat3(curbone, temp);
 
 					unit_m4(premat); /* mul_m4_m3m4 only sets 3x3 part */
 					mul_m4_m3m4(premat, temp, mat);
@@ -651,7 +651,7 @@ static int armature_parent_set_exec(bContext *C, wmOperator *op)
 		 */
 
 		/* parent selected bones to the active one */
-		CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
+		CTX_DATA_BEGIN(C, EditArmatureElement *, ebone, selected_editable_bones)
 		{
 			if (ELEM(ebone, actbone, actmirb) == 0) {
 				if (ebone->flag & ELEMENT_SELECTED)
