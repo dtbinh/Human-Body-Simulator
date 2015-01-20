@@ -71,7 +71,7 @@
 static bool editbone_unique_check(void *arg, const char *name)
 {
 	struct {ListBase *lb; void *elem; } *data = arg;
-	EditBone *dupli = ED_armature_armatureelement_find_name(data->lb, name);
+	EditArmatureElement *dupli = ED_armature_armatureelement_find_name(data->lb, name);
 	return dupli && dupli != data->elem;
 }
 
@@ -150,7 +150,7 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 
 		/* now check if we're in editmode, we need to find the unique name */
 		if (arm->edbo) {
-			EditBone *eBone = ED_armature_armatureelement_find_name(arm->edbo, oldname);
+			EditArmatureElement *eBone = ED_armature_armatureelement_find_name(arm->edbo, oldname);
 
 			if (eBone) {
 				unique_editelement_name(arm->edbo, newname, NULL);
