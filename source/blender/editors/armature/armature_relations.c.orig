@@ -72,7 +72,7 @@
 /* NOTE: no operator define here as this is exported to the Object-level operator */
 
 static void joined_armature_fix_links_constraints(
-        Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditBone *curbone,
+        Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditArmatureElement *curbone,
         ListBase *lb)
 {
 	bConstraint *con;
@@ -212,7 +212,11 @@ static void joined_armature_fix_animdata_cb(ID *id, AnimData *adt, void *user_da
 }
 
 /* Helper function for armature joining - link fixing */
+<<<<<<< HEAD
 static void joined_armature_fix_links(Main *bmain, Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditBone *curbone)
+=======
+static void joined_armature_fix_links(Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditArmatureElement *curbone)
+>>>>>>> Macros
 {
 	Object *ob;
 	bPose *pose;
@@ -334,8 +338,13 @@ int join_armature_exec(bContext *C, wmOperator *op)
 					float temp[3][3];
 					
 					/* Get the premat */
+<<<<<<< HEAD
 					ED_armature_ebone_to_mat3(curbone, temp);
 					
+=======
+					ED_armature_eelement_to_mat3(curbone, temp);
+
+>>>>>>> Macros
 					unit_m4(premat); /* mul_m4_m3m4 only sets 3x3 part */
 					mul_m4_m3m4(premat, temp, mat);
 					
@@ -527,13 +536,8 @@ static void separate_armature_bones(Object *ob, short sel)
 {
 	bArmature *arm = (bArmature *)ob->data;
 	bPoseChannel *pchan, *pchann;
-<<<<<<< HEAD
-	EditBone *curbone;
-	
-=======
 	EditArmatureElement *curbone;
-
->>>>>>> I like regexes
+	
 	/* make local set of editbones to manipulate here */
 	ED_armature_to_edit(arm);
 	
@@ -691,17 +695,10 @@ static void bone_connect_to_new_parent(ListBase *edbo, EditArmatureElement *selb
 {
 	EditArmatureElement *ebone;
 	float offset[3];
-<<<<<<< HEAD
 	
-	if ((selbone->parent) && (selbone->flag & BONE_CONNECTED))
-		selbone->parent->flag &= ~(BONE_TIPSEL);
-	
-=======
-
 	if ((selbone->parent) && (selbone->flag & ELEMENT_CONNECTED))
 		selbone->parent->flag &= ~(ELEMENT_TIPSEL);
-
->>>>>>> I like regexes
+	
 	/* make actbone the parent of selbone */
 	selbone->parent = actbone;
 	
@@ -725,13 +722,8 @@ static void bone_connect_to_new_parent(ListBase *edbo, EditArmatureElement *selb
 		
 		/* offset for all its children */
 		for (ebone = edbo->first; ebone; ebone = ebone->next) {
-<<<<<<< HEAD
-			EditBone *par;
-			
-=======
 			EditArmatureElement *par;
-
->>>>>>> I like regexes
+			
 			for (par = ebone->parent; par; par = par->parent) {
 				if (par == selbone) {
 					add_v3_v3(ebone->head, offset);
@@ -804,14 +796,10 @@ static int armature_parent_set_exec(bContext *C, wmOperator *op)
 		 */
 		
 		/* parent selected bones to the active one */
-		CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
+		CTX_DATA_BEGIN(C, EditArmatureElement *, ebone, selected_editable_bones)
 		{
 			if (ELEM(ebone, actbone, actmirb) == 0) {
-<<<<<<< HEAD
-				if (ebone->flag & BONE_SELECTED) 
-=======
 				if (ebone->flag & ELEMENT_SELECTED)
->>>>>>> I like regexes
 					bone_connect_to_new_parent(arm->edbo, ebone, actbone, val);
 				else
 					bone_connect_to_new_parent(arm->edbo, ebone, actmirb, val);
@@ -833,13 +821,8 @@ static int armature_parent_set_invoke(bContext *C, wmOperator *UNUSED(op), const
 	uiPopupMenu *pup = UI_popup_menu_begin(C, CTX_IFACE_(BLF_I18NCONTEXT_OPERATOR_DEFAULT, "Make Parent"), ICON_NONE);
 	uiLayout *layout = UI_popup_menu_layout(pup);
 	int allchildbones = 0;
-<<<<<<< HEAD
 	
-	CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
-=======
-
 	CTX_DATA_BEGIN(C, EditArmatureElement *, ebone, selected_editable_bones)
->>>>>>> I like regexes
 	{
 		if (ebone != actbone) {
 			if (ebone->parent != actbone) allchildbones = 1;
