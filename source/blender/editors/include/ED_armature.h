@@ -202,7 +202,7 @@ bool mouse_armature(struct bContext *C, const int mval[2], bool extend, bool des
 int join_armature_exec(struct bContext *C, struct wmOperator *op);
 struct Bone *get_indexed_bone(struct Object *ob, int index);
 struct Muscle *get_indexed_muscle(struct Object *ob, int index);
-//float ED_rollBoneToVector(EditBone *bone, const float new_up_axis[3], const bool axis_only);
+//float ED_rollBoneToVector(EditArmatureElement *bone, const float new_up_axis[3], const bool axis_only);
 float ED_rollElementToVector(EditArmatureElement *element, const float new_up_axis[3], const bool axis_only);
 EditArmatureElement *ED_armature_armatureelement_find_name(const ListBase *edbo, const char *name);
 EditArmatureElement *ED_armature_bone_get_mirrored(const struct ListBase *edbo, EditArmatureElement *eel);
@@ -218,7 +218,7 @@ void ED_armature_edit_bone_remove(struct bArmature *arm, EditArmatureElement *ex
 void ED_armature_edit_muscle_remove(struct bArmature *arm, EditMuscle *exMuscle);
 
 bool ED_armature_ebone_is_child_recursive(EditArmatureElement *ebone_parent, EditArmatureElement *ebone_child);
-EditBone *ED_armature_bone_find_shared_parent(EditBone *ebone_child[], const unsigned int ebone_child_tot);
+EditArmatureElement *ED_armature_bone_find_shared_parent(EditArmatureElement *ebone_child[], const unsigned int ebone_child_tot);
 
 void ED_armature_eelement_to_mat3(EditArmatureElement *eelement, float mat[3][3]);
 void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4]);
@@ -248,11 +248,11 @@ void ED_armature_armaturelement_rename(struct bArmature *arm, const char *oldnam
 void undo_push_armature(struct bContext *C, const char *name);
 
 /* low level selection functions which handle */
-int  ED_armature_ebone_selectflag_get(const EditBone *ebone);
-void ED_armature_ebone_selectflag_set(EditBone *ebone, int flag);
-void ED_armature_ebone_select_set(EditBone *ebone, bool select);
-void ED_armature_ebone_selectflag_enable(EditBone *ebone, int flag);
-void ED_armature_ebone_selectflag_disable(EditBone *ebone, int flag);
+int  ED_armature_ebone_selectflag_get(const EditArmatureElement *ebone);
+void ED_armature_ebone_selectflag_set(EditArmatureElement *ebone, int flag);
+void ED_armature_ebone_select_set(EditArmatureElement *ebone, bool select);
+void ED_armature_ebone_selectflag_enable(EditArmatureElement *ebone, int flag);
+void ED_armature_ebone_selectflag_disable(EditArmatureElement *ebone, int flag);
 
 int  ED_armature_emuscle_selectflag_get(const EditMuscle *emuscle);
 void ED_armature_emuscle_selectflag_set(EditMuscle *emuscle, int flag);
