@@ -200,7 +200,7 @@ int ED_do_pose_selectbuffer(struct Scene *scene, struct Base *base, unsigned int
                             short hits, bool extend, bool deselect, bool toggle, bool do_nearest);
 bool mouse_armature(struct bContext *C, const int mval[2], bool extend, bool deselect, bool toggle);
 int join_armature_exec(struct bContext *C, struct wmOperator *op);
-struct Bone *get_indexed_bone(struct Object *ob, int index);
+struct ArmatureElement *get_indexed_bone(struct Object *ob, int index);
 struct Muscle *get_indexed_muscle(struct Object *ob, int index);
 //float ED_rollBoneToVector(EditArmatureElement *bone, const float new_up_axis[3], const bool axis_only);
 float ED_rollElementToVector(EditArmatureElement *element, const float new_up_axis[3], const bool axis_only);

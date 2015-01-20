@@ -76,7 +76,7 @@ ArmatureElement *get_indexed_bone(Object *ob, int index)
 void *get_bone_from_selectbuffer(Scene *scene, Base *base, unsigned int *buffer, short hits, short findunsel, bool do_nearest)
 {
 	Object *obedit = scene->obedit; // XXX get from context
-	Bone *bone;
+	ArmatureElement *bone;
 	EditArmatureElement *ebone;
 	void *firstunSel = NULL, *firstSel = NULL, *data;
 	unsigned int hitresult;
@@ -1069,7 +1069,7 @@ void ARMATURE_OT_select_hierarchy(wmOperatorType *ot)
 
 	/* props */
 	RNA_def_enum(ot->srna, "direction", direction_items,
-	             ELEMENT_SELECT_PARENT "Direction", "");
+	             ELEMENT_SELECT_PARENT, "Direction", "");
 	RNA_def_boolean(ot->srna, "extend", false, "Extend", "Extend the selection");
 }
 
