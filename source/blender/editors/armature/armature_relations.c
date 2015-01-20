@@ -258,7 +258,7 @@ int join_armature_exec(bContext *C, wmOperator *op)
 	bArmature *arm = (ob) ? ob->data : NULL;
 	bPose *pose, *opose;
 	bPoseChannel *pchan, *pchann;
-	EditBone *curbone;
+	EditArmatureElement *curbone;
 	float mat[4][4], oimat[4][4];
 	bool ok = false;
 	
@@ -343,7 +343,7 @@ int join_armature_exec(bContext *C, wmOperator *op)
 					mul_m4_v3(mat, curbone->tail);
 					
 					/* Get the postmat */
-					ED_armature_ebone_to_mat3(curbone, temp);
+					ED_armature_eelement_to_mat3(curbone, temp);
 					copy_m4_m3(postmat, temp);
 					
 					/* Find the roll */
@@ -527,7 +527,7 @@ static void separate_armature_bones(Object *ob, short sel)
 {
 	bArmature *arm = (bArmature *)ob->data;
 	bPoseChannel *pchan, *pchann;
-	EditBone *curbone;
+	EditArmatureElement *curbone;
 	
 	/* make local set of editbones to manipulate here */
 	ED_armature_to_edit(arm);
@@ -538,10 +538,10 @@ static void separate_armature_bones(Object *ob, short sel)
 		curbone = ED_armature_armatureelement_find_name(arm->edbo, pchan->name);
 		
 		/* check if bone needs to be removed */
-		if ( (sel && (curbone->flag & BONE_SELECTED)) ||
-		     (!sel && !(curbone->flag & BONE_SELECTED)) )
+		if ( (sel && (curbone->flag & ELEMENT_SELECTED)) ||
+		     (!sel && !(curbone->flag & ELEMENT_SELECTED)) )
 		{
-			EditBone *ebo;
+			EditArmatureElement *ebo;
 			bPoseChannel *pchn;
 			
 			/* clear the bone->parent var of any bone that had this as its parent  */
@@ -549,7 +549,7 @@ static void separate_armature_bones(Object *ob, short sel)
 				if (ebo->parent == curbone) {
 					ebo->parent = NULL;
 					ebo->temp = NULL; /* this is needed to prevent random crashes with in ED_armature_from_edit */
-					ebo->flag &= ~BONE_CONNECTED;
+					ebo->flag &= ~ELEMENT_CONNECTED;
 				}
 			}
 			
@@ -675,20 +675,20 @@ void ARMATURE_OT_separate(wmOperatorType *ot)
 
 
 /* check for null, before calling! */
-static void bone_connect_to_existing_parent(EditBone *bone)
+static void bone_connect_to_existing_parent(EditArmatureElement *bone)
 {
-	bone->flag |= BONE_CONNECTED;
+	bone->flag |= ELEMENT_CONNECTED;
 	copy_v3_v3(bone->head, bone->parent->tail);
 	bone->rad_head = bone->parent->rad_tail;
 }
 
-static void bone_connect_to_new_parent(ListBase *edbo, EditBone *selbone, EditBone *actbone, short mode)
+static void bone_connect_to_new_parent(ListBase *edbo, EditArmatureElement *selbone, EditArmatureElement *actbone, short mode)
 {
-	EditBone *ebone;
+	EditArmatureElement *ebone;
 	float offset[3];
 	
-	if ((selbone->parent) && (selbone->flag & BONE_CONNECTED))
-		selbone->parent->flag &= ~(BONE_TIPSEL);
+	if ((selbone->parent) && (selbone->flag & ELEMENT_CONNECTED))
+		selbone->parent->flag &= ~(ELEMENT_TIPSEL);
 	
 	/* make actbone the parent of selbone */
 	selbone->parent = actbone;
@@ -697,13 +697,13 @@ static void bone_connect_to_new_parent(ListBase *edbo, EditBone *selbone, EditBo
 	for (ebone = actbone->parent; ebone; ebone = ebone->parent) {
 		if (ebone->parent == selbone) {
 			ebone->parent = NULL;
-			ebone->flag &= ~BONE_CONNECTED;
+			ebone->flag &= ~ELEMENT_CONNECTED;
 		}
 	}
 	
 	if (mode == ARM_PAR_CONNECT) {
 		/* Connected: Child bones will be moved to the parent tip */
-		selbone->flag |= BONE_CONNECTED;
+		selbone->flag |= ELEMENT_CONNECTED;
 		sub_v3_v3v3(offset, actbone->tail, selbone->head);
 		
 		copy_v3_v3(selbone->head, actbone->tail);
@@ -713,7 +713,7 @@ static void bone_connect_to_new_parent(ListBase *edbo, EditBone *selbone, EditBo
 		
 		/* offset for all its children */
 		for (ebone = edbo->first; ebone; ebone = ebone->next) {
-			EditBone *par;
+			EditArmatureElement *par;
 			
 			for (par = ebone->parent; par; par = par->parent) {
 				if (par == selbone) {
@@ -726,7 +726,7 @@ static void bone_connect_to_new_parent(ListBase *edbo, EditBone *selbone, EditBo
 	}
 	else {
 		/* Offset: Child bones will retain their distance from the parent tip */
-		selbone->flag &= ~BONE_CONNECTED;
+		selbone->flag &= ~ELEMENT_CONNECTED;
 	}
 }
 
@@ -741,8 +741,8 @@ static int armature_parent_set_exec(bContext *C, wmOperator *op)
 {
 	Object *ob = CTX_data_edit_object(C);
 	bArmature *arm = (bArmature *)ob->data;
-	EditBone *actbone = CTX_data_active_bone(C);
-	EditBone *actmirb = NULL;
+	EditArmatureElement *actbone = CTX_data_active_bone(C);
+	EditArmatureElement *actmirb = NULL;
 	short val = RNA_enum_get(op->ptr, "type");
 	
 	/* there must be an active bone */
@@ -790,7 +790,7 @@ static int armature_parent_set_exec(bContext *C, wmOperator *op)
 		CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
 		{
 			if (ELEM(ebone, actbone, actmirb) == 0) {
-				if (ebone->flag & BONE_SELECTED) 
+				if (ebone->flag & ELEMENT_SELECTED)
 					bone_connect_to_new_parent(arm->edbo, ebone, actbone, val);
 				else
 					bone_connect_to_new_parent(arm->edbo, ebone, actmirb, val);
@@ -808,12 +808,12 @@ static int armature_parent_set_exec(bContext *C, wmOperator *op)
 
 static int armature_parent_set_invoke(bContext *C, wmOperator *UNUSED(op), const wmEvent *UNUSED(event))
 {
-	EditBone *actbone = CTX_data_active_bone(C);
+	EditArmatureElement *actbone = CTX_data_active_bone(C);
 	uiPopupMenu *pup = UI_popup_menu_begin(C, CTX_IFACE_(BLF_I18NCONTEXT_OPERATOR_DEFAULT, "Make Parent"), ICON_NONE);
 	uiLayout *layout = UI_popup_menu_layout(pup);
 	int allchildbones = 0;
 	
-	CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
+	CTX_DATA_BEGIN(C, EditArmatureElement *, ebone, selected_editable_bones)
 	{
 		if (ebone != actbone) {
 			if (ebone->parent != actbone) allchildbones = 1;
@@ -862,11 +862,11 @@ static void editbone_clear_parent(EditBone *ebone, int mode)
 {
 	if (ebone->parent) {
 		/* for nice selection */
-		ebone->parent->flag &= ~(BONE_TIPSEL);
+		ebone->parent->flag &= ~(ELEMENT_TIPSEL);
 	}
 	
 	if (mode == 1) ebone->parent = NULL;
-	ebone->flag &= ~BONE_CONNECTED;
+	ebone->flag &= ~ELEMENT_CONNECTED;
 }
 
 static int armature_parent_clear_exec(bContext *C, wmOperator *op) 
