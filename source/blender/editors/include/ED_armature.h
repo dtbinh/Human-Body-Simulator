@@ -181,8 +181,8 @@ typedef struct EditMuscle {
 	)
 
 /* used in armature_select_hierarchy_exec() */
-#define BONE_SELECT_PARENT  0
-#define BONE_SELECT_CHILD   1
+#define ELEMENT_SELECT_PARENT  0
+#define ELEMENT_SELECT_CHILD   1
 
 /* armature_ops.c */
 void ED_operatortypes_armature(void);
