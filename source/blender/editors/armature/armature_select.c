@@ -382,7 +382,7 @@ static EditArmatureElement *get_nearest_editbonepoint(ViewContext *vc, const int
 				*selmask |= ELEMENT_ROOTSEL;
 			if (besthitresult & ELEMENTSEL_TIP)
 				*selmask |= ELEMENT_TIPSEL;
-			if (besthitresult & ELEMENTSEL_BONE)
+			if (besthitresult & ELEMENTSEL_ELEMENT)
 				*selmask |= ELEMENT_SELECTED;
 			return ebone;
 		}
@@ -401,7 +401,7 @@ void ED_armature_deselect_all(Object *obedit, int toggle)
 {
 	bArmature *arm = obedit->data;
 	EditArmatureElement    *eBone;
-	EditMuscle  *eMuscle;
+//	EditMuscle  *eMuscle;
 	int sel = 1;
 
 	if (toggle == 1) {
