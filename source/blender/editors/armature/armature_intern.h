@@ -234,13 +234,13 @@ EditArmatureElement *make_elementList(struct ListBase *edList, struct ListBase *
 void BIF_sk_selectStroke(struct bContext *C, const int mval[2], short extend);
 
 /* duplicate method */
-void preEditBoneDuplicate(struct ListBase *editbones);
+void preEditArmatureElementDuplicate(struct ListBase *editbones);
 struct EditArmatureElement *duplicateEditBone(struct EditArmatureElement *curBone, const char *name, struct ListBase *editbones, struct Object *ob);
 void updateDuplicateSubtarget(struct EditArmatureElement *dupBone, struct ListBase *editbones, struct Object *ob);
 
 /* duplicate method (cross objects) */
 /* editbones is the target list */
-struct EditArmatureElement *duplicateEditBoneObjects(struct EditArmatureElement *curBone, const char *name, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
+struct EditArmatureElement *duplicateEditArmatureElementObjects(struct EditArmatureElement *curBone, const char *name, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
 
 /* editbones is the source list */
 void updateDuplicateSubtargetObjects(struct EditArmatureElement *dupBone, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
