@@ -782,7 +782,7 @@ static void bones_merge(Object *obedit, EditArmatureElement *start, EditArmature
 	/* step 3: delete all bones between and including start and end */
 	for (ebo = end; ebo; ebo = ebone) {
 		ebone = (ebo == start) ? (NULL) : (ebo->parent);
-		bone_free(arm, ebo);
+		element_free(arm, ebo);
 	}
 
 	newbone->flag |= (ELEMENT_ROOTSEL | ELEMENT_TIPSEL | ELEMENT_SELECTED);
