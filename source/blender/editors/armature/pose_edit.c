@@ -931,7 +931,7 @@ static int armature_bone_layers_invoke(bContext *C, wmOperator *op, const wmEven
 	int layers[32] = {0}; /* hardcoded for now - we can only have 32 armature layers, so this should be fine... */
 
 	/* get layers that are active already */
-	CTX_DATA_BEGIN (C, EditBone *, ebone, selected_editable_bones)
+	CTX_DATA_BEGIN (C, EditArmatureElement *, ebone, selected_editable_bones)
 	{
 		short bit;
 
@@ -962,7 +962,7 @@ static int armature_bone_layers_exec(bContext *C, wmOperator *op)
 	RNA_boolean_get_array(op->ptr, "layers", layers);
 
 	/* set layers of pchans based on the values set in the operator props */
-	CTX_DATA_BEGIN (C, EditBone *, ebone, selected_editable_bones)
+	CTX_DATA_BEGIN (C, EditArmatureElement *, ebone, selected_editable_bones)
 	{
 		/* get pointer for pchan, and write flags this way */
 		RNA_pointer_create((ID *)arm, &RNA_EditBone, ebone, &ptr);
@@ -998,7 +998,7 @@ void ARMATURE_OT_bone_layers(wmOperatorType *ot)
 /* ********************************************** */
 /* Show/Hide Bones */
 
-static int hide_selected_pose_bone_cb(Object *ob, Bone *bone, void *UNUSED(ptr))
+static int hide_selected_pose_bone_cb(Object *ob, ArmatureElement *bone, void *UNUSED(ptr))
 {
 	bArmature *arm = ob->data;
 
@@ -1006,14 +1006,14 @@ static int hide_selected_pose_bone_cb(Object *ob, Bone *bone, void *UNUSED(ptr))
 		if (bone->flag & ELEMENT_SELECTED) {
 			bone->flag |= ELEMENT_HIDDEN_P;
 			bone->flag &= ~ELEMENT_SELECTED;
-			if (arm->act_bone == bone)
-				arm->act_bone = NULL;
+			if (arm->act_element == bone)
+				arm->act_element = NULL;
 		}
 	}
 	return 0;
 }
 
-static int hide_unselected_pose_bone_cb(Object *ob, Bone *bone, void *UNUSED(ptr))
+static int hide_unselected_pose_bone_cb(Object *ob, ArmatureElement *bone, void *UNUSED(ptr))
 {
 	bArmature *arm = ob->data;
 
@@ -1067,7 +1067,7 @@ void POSE_OT_hide(wmOperatorType *ot)
 	RNA_def_boolean(ot->srna, "unselected", 0, "Unselected", "");
 }
 
-static int show_pose_bone_cb(Object *ob, Bone *bone, void *UNUSED(ptr))
+static int show_pose_bone_cb(Object *ob, ArmatureElement *bone, void *UNUSED(ptr))
 {
 	bArmature *arm = ob->data;
 
