@@ -554,7 +554,7 @@ void ED_armature_from_edit(bArmature *arm)
 			}
 			if (G.debug & G_DEBUG)
 				printf("Warning: removed zero sized bone: %s\n", eElem->name);
-			bone_free(arm, eElem);
+			element_free(arm, eElem);
 		}
 	}
 
@@ -687,10 +687,10 @@ void ED_armature_to_edit(bArmature *arm)
 {
 	ED_armature_edit_free(arm);
 	arm->edbo = MEM_callocN(sizeof(ListBase), "edbo armature");
-	arm->act_edelement = make_elementList(arm->edbo, &arm->bonebase, NULL, arm->act_bone);
+	arm->act_edelement = make_elementList(arm->edbo, &arm->bonebase, NULL, arm->act_edelement);
 
 	arm->edmu = MEM_callocN(sizeof(ListBase), "edmu armature");
-	arm->act_edelement = make_elementList(arm->edmu, &arm->musclebase, NULL, arm->act_muscle);
+	arm->act_edelement = make_elementList(arm->edmu, &arm->musclebase, NULL, arm->act_edelement);
 
 //	BIF_freeTemplates(); /* force template update when entering editmode */
 }
