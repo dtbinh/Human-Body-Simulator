@@ -152,13 +152,6 @@ typedef struct EditMuscle {
 //#define BONESEL_ANY     (BONESEL_TIP | BONESEL_ROOT | BONESEL_BONE)
 //
 //#define BONESEL_NOSEL   (1u << 31u)
-//
-//#define MUSCLESEL_ROOT  (1 << 28)
-//#define MUSCLESEL_TIP   (1 << 29)
-//#define MUSCLESEL_MUSC  (1 << 30)
-//#define MUSCLESEL_ANY   (MUSCLESEL_ROOT | MUSCLESEL_TIP | MUSCLESEL_MUSC)
-//
-//#define MUSCLESEL_NOSEL (1u << 31u)
 
 #define ELEMENTSEL_ROOT     (1 << 28)
 #define ELEMENTSEL_TIP      (1 << 29)
@@ -214,8 +207,7 @@ void ED_muscle_sync_selection(struct ListBase *edmu);
 
 EditArmatureElement *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned);
 EditArmatureElement *ED_armature_edit_armature_element_add(struct bArmature *arm, const char *name, int type);
-void ED_armature_edit_bone_remove(struct bArmature *arm, EditArmatureElement *exBone);
-void ED_armature_edit_muscle_remove(struct bArmature *arm, EditMuscle *exMuscle);
+void ED_armature_edit_element_remove(struct bArmature *arm, EditArmatureElement *exBone);
 
 bool ED_armature_ebone_is_child_recursive(EditArmatureElement *ebone_parent, EditArmatureElement *ebone_child);
 EditArmatureElement *ED_armature_bone_find_shared_parent(EditArmatureElement *ebone_child[], const unsigned int ebone_child_tot);

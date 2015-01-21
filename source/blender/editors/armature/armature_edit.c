@@ -1257,7 +1257,7 @@ static int armature_delete_selected_exec(bContext *C, wmOperator *UNUSED(op))
 		if (arm->layer & curBone->layer) {
 			if (curBone->flag & ELEMENT_SELECTED) {
 				if (curBone == arm->act_edelement) arm->act_edelement = NULL;
-				ED_armature_edit_bone_remove(arm, curBone);
+				ED_armature_edit_element_remove(arm, curBone);
 				changed = true;
 			}
 		}
