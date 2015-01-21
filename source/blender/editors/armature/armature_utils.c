@@ -197,25 +197,6 @@ EditArmatureElement *ED_armature_bone_find_shared_parent(EditArmatureElement *eb
 	return NULL;
 }
 
-//void ED_armature_ebone_to_mat3(EditBone *ebone, float mat[3][3])
-//{
-//	float delta[3];
-//
-//	/* Find the current bone matrix */
-//	sub_v3_v3v3(delta, ebone->tail, ebone->head);
-//	vec_roll_to_mat3(delta, ebone->roll, mat);
-//}
-
-//void ED_armature_ebone_to_mat4(EditBone *ebone, float mat[4][4])
-//{
-//	float m3[3][3];
-//
-//	ED_armature_ebone_to_mat3(ebone, m3);
-//
-//	copy_m4_m3(mat, m3);
-//	copy_v3_v3(mat[3], ebone->head);
-//}
-
 void ED_armature_eelement_to_mat3(EditArmatureElement *eelement, float mat[3][3])
 {
     float delta[3];
@@ -233,31 +214,6 @@ void ED_armature_eelement_to_mat4(EditArmatureElement *eelement, float mat[4][4]
     copy_m4_m3(mat, m3);
     copy_v3_v3(mat[3], eelement->head);
 }
-
-//void ED_armature_ebone_from_mat3(EditBone *ebone, float mat[3][3])
-//{
-//	float vec[3], roll;
-//	const float len = len_v3v3(ebone->head, ebone->tail);
-//
-//	mat3_to_vec_roll(mat, vec, &roll);
-//
-//	madd_v3_v3v3fl(ebone->tail, ebone->head, vec, len);
-//	ebone->roll = roll;
-//}
-
-//void ED_armature_ebone_from_mat4(EditBone *ebone, float mat[4][4])
-//{
-//	float mat3[3][3];
-//
-//	copy_m3_m4(mat3, mat);
-//	/* We want normalized matrix here, to be consistent with ebone_to_mat. */
-//	BLI_ASSERT_UNIT_M3(mat3);
-//
-//	sub_v3_v3(ebone->tail, ebone->head);
-//	copy_v3_v3(ebone->head, mat[3]);
-//	add_v3_v3(ebone->tail, mat[3]);
-//	ED_armature_ebone_from_mat3(ebone, mat3);
-//}
 
 void ED_armature_eelement_from_mat3(EditArmatureElement *eelement, float mat[3][3])
 {
