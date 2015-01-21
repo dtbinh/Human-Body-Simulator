@@ -426,7 +426,7 @@ EditArmatureElement *duplicateEditArmatureElementObjects(EditArmatureElement *cu
 
 EditArmatureElement *duplicateEditBone(EditArmatureElement *curElem, const char *name, ListBase *editbones, Object *ob)
 {
-	return duplicateEditBoneObjects(curElem, name, editbones, ob, ob);
+	return duplicateEditArmatureElementObjects(curElem, name, editbones, ob, ob);
 }
 
 /* previously adduplicate_armature */
@@ -446,7 +446,7 @@ static int armature_duplicate_selected_exec(bContext *C, wmOperator *UNUSED(op))
 
 	ED_armature_sync_selection(arm->edbo); // XXX why is this needed?
 
-	preEditBoneDuplicate(arm->edbo);
+	preEditArmatureElementDuplicate(arm->edbo);
 
 	/* Select mirrored bones */
 	if (arm->flag & ARM_MIRROR_EDIT) {
