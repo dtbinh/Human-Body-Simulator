@@ -85,16 +85,16 @@ static RigGraph *GLOBAL_RIGG = NULL;
 void exec_retargetArctoArc(TaskPool *pool, void *taskdata, int threadid);
 
 static void RIG_calculateEdgeAngles(RigEdge *edge_first, RigEdge *edge_second);
-float rollBoneByQuat(EditBone *bone, float old_up_axis[3], float qrot[4]);
+float rollBoneByQuat(EditArmatureElement *bone, float old_up_axis[3], float qrot[4]);
 
 /* two levels */
 #define SHAPE_LEVELS (SHAPE_RADIX * SHAPE_RADIX)
 
 /*********************************** EDITBONE UTILS ****************************************************/
 
-static int countEditBoneChildren(ListBase *list, EditArmatureElement *parent)
+static int countEditArmatureElementChildren(ListBase *list, EditArmatureElement *parent)
 {
-	EditBone *eelement;
+	EditArmatureElement *eelement;
 	int count = 0;
 
 	for (eelement = list->first; eelement; eelement = eelement->next) {
@@ -106,7 +106,7 @@ static int countEditBoneChildren(ListBase *list, EditArmatureElement *parent)
 	return count;
 }
 
-static EditArmatureElement *nextEditBoneChild(ListBase *list, EditArmatureElement *parent, int n)
+static EditArmatureElement *nextEditArmatureElementChild(ListBase *list, EditArmatureElement *parent, int n)
 {
 	EditArmatureElement *eelement;
 
@@ -122,7 +122,7 @@ static EditArmatureElement *nextEditBoneChild(ListBase *list, EditArmatureElemen
 	return NULL;
 }
 
-static void getEditBoneRollUpAxis(EditArmatureElement *element, float roll, float up_axis[3])
+static void getEditArmatureElementRollUpAxis(EditArmatureElement *element, float roll, float up_axis[3])
 {
 	float mat[3][3], nor[3];
 
@@ -211,7 +211,7 @@ static float rollBoneByQuatJoint(RigEdge *edge, RigEdge *previous, float qrot[4]
 	}
 }
 
-float rollBoneByQuat(EditBone *bone, float old_up_axis[3], float qrot[4])
+float rollBoneByQuat(EditArmatureElement *bone, float old_up_axis[3], float qrot[4])
 {
 	float new_up_axis[3];
 
@@ -380,7 +380,7 @@ static void RIG_appendEdgeToArc(RigArc *arc, RigEdge *edge)
 	arc->count += 1;
 }
 
-static void RIG_addEdgeToArc(RigArc *arc, float tail[3], EditBone *bone)
+static void RIG_addEdgeToArc(RigArc *arc, float tail[3], EditArmatureElement *bone)
 {
 	RigEdge *edge;
 
@@ -390,7 +390,7 @@ static void RIG_addEdgeToArc(RigArc *arc, float tail[3], EditBone *bone)
 	edge->bone = bone;
 
 	if (bone) {
-		getEditBoneRollUpAxis(bone, bone->roll, edge->up_axis);
+		getEditArmatureElementRollUpAxis(bone, bone->roll, edge->up_axis);
 	}
 
 	RIG_appendEdgeToArc(arc, edge);
@@ -443,8 +443,8 @@ static RigControl *cloneControl(RigGraph *rg, RigGraph *src_rg, RigControl *src_
 	ctrl->flag = src_ctrl->flag;
 
 	renameTemplateBone(name, src_ctrl->bone->name, rg->editbones, side_string, num_string);
-	ctrl->bone = duplicateEditBoneObjects(src_ctrl->bone, name, rg->editbones, src_rg->ob, rg->ob);
-	ctrl->bone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
+	ctrl->bone = duplicateEditArmatureElementObjects(src_ctrl->bone, name, rg->editbones, src_rg->ob, rg->ob);
+	ctrl->bone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
 	BLI_ghash_insert(ptr_hash, src_ctrl->bone, ctrl->bone);
 
 	ctrl->link = src_ctrl->link;
@@ -486,8 +486,8 @@ static RigArc *cloneArc(RigGraph *rg, RigGraph *src_rg, RigArc *src_arc, GHash *
 		if (src_edge->bone != NULL) {
 			char name[MAXBONENAME];
 			renameTemplateBone(name, src_edge->bone->name, rg->editbones, side_string, num_string);
-			edge->bone = duplicateEditBoneObjects(src_edge->bone, name, rg->editbones, src_rg->ob, rg->ob);
-			edge->bone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
+			edge->bone = duplicateEditArmatureElementObjects(src_edge->bone, name, rg->editbones, src_rg->ob, rg->ob);
+			edge->bone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
 			BLI_ghash_insert(ptr_hash, src_edge->bone, edge->bone);
 		}
 
@@ -512,8 +512,8 @@ static RigGraph *cloneRigGraph(RigGraph *src, ListBase *editbones, Object *ob, c
 	rg->ob = ob;
 	rg->editbones = editbones;
 
-	preEditBoneDuplicate(rg->editbones); /* prime bones for duplication */
-	preEditBoneDuplicate(src->editbones); /* prime bones for duplication */
+	preEditArmatureElementDuplicate(rg->editbones); /* prime bones for duplication */
+	preEditArmatureElementDuplicate(src->editbones); /* prime bones for duplication */
 
 	/* Clone nodes */
 	for (node = src->nodes.first; node; node = node->next) {
@@ -539,7 +539,7 @@ static RigGraph *cloneRigGraph(RigGraph *src, ListBase *editbones, Object *ob, c
 
 		for (edge = arc->edges.first; edge; edge = edge->next) {
 			if (edge->bone != NULL) {
-				EditBone *bone;
+				EditArmatureElement *bone;
 
 				updateDuplicateSubtargetObjects(edge->bone, src->editbones, src->ob, rg->ob);
 
@@ -553,7 +553,7 @@ static RigGraph *cloneRigGraph(RigGraph *src, ListBase *editbones, Object *ob, c
 						/* disconnect since parent isn't cloned
 						 * this will only happen when cloning from selected bones
 						 * */
-						edge->bone->flag &= ~BONE_CONNECTED;
+						edge->bone->flag &= ~ELEMENT_CONNECTED;
 					}
 				}
 			}
@@ -561,7 +561,7 @@ static RigGraph *cloneRigGraph(RigGraph *src, ListBase *editbones, Object *ob, c
 	}
 
 	for (ctrl = rg->controls.first; ctrl; ctrl = ctrl->next) {
-		EditBone *bone;
+		EditArmatureElement *bone;
 
 		updateDuplicateSubtargetObjects(ctrl->bone, src->editbones, src->ob, rg->ob);
 
@@ -575,7 +575,7 @@ static RigGraph *cloneRigGraph(RigGraph *src, ListBase *editbones, Object *ob, c
 				/* disconnect since parent isn't cloned
 				 * this will only happen when cloning from selected bones
 				 * */
-				ctrl->bone->flag &= ~BONE_CONNECTED;
+				ctrl->bone->flag &= ~ELEMENT_CONNECTED;
 			}
 		}
 
@@ -615,19 +615,19 @@ static void RIG_calculateEdgeAngles(RigEdge *edge_first, RigEdge *edge_second)
 
 /************************************ CONTROL BONES ****************************************************/
 
-static void RIG_addControlBone(RigGraph *rg, EditBone *bone)
+static void RIG_addControlBone(RigGraph *rg, EditArmatureElement *bone)
 {
 	RigControl *ctrl = newRigControl(rg);
 	ctrl->bone = bone;
 	copy_v3_v3(ctrl->head, bone->head);
 	copy_v3_v3(ctrl->tail, bone->tail);
-	getEditBoneRollUpAxis(bone, bone->roll, ctrl->up_axis);
+	getEditArmatureElementRollUpAxis(bone, bone->roll, ctrl->up_axis);
 	ctrl->tail_mode = TL_NONE;
 
 	BLI_ghash_insert(rg->controls_map, bone->name, ctrl);
 }
 
-static int RIG_parentControl(RigControl *ctrl, EditBone *link)
+static int RIG_parentControl(RigControl *ctrl, EditArmatureElement *link)
 {
 	if (link) {
 		float offset[3];
@@ -666,7 +666,7 @@ static int RIG_parentControl(RigControl *ctrl, EditBone *link)
 		/* if there's already a link
 		 *  overwrite only if new link is higher in the chain */
 		if (ctrl->link && flag == ctrl->flag) {
-			EditBone *bone = NULL;
+			EditArmatureElement *bone = NULL;
 
 			for (bone = ctrl->link; bone; bone = bone->parent) {
 				/* if link is in the chain, break and use that one */
@@ -720,7 +720,7 @@ static void RIG_reconnectControlBones(RigGraph *rg)
 					for (target_index = 0, ct = targets.first; ct; target_index++, ct = ct->next) {
 						if ((ct->tar == rg->ob) && strcmp(ct->subtarget, ctrl->bone->name) == 0) {
 							/* SET bone link to bone corresponding to pchan */
-							EditBone *link = BLI_ghash_lookup(rg->bones_map, pchan->name);
+							EditArmatureElement *link = BLI_ghash_lookup(rg->bones_map, pchan->name);
 
 							/* Making sure bone is in this armature */
 							if (link != NULL) {
@@ -748,7 +748,7 @@ static void RIG_reconnectControlBones(RigGraph *rg)
 				/* make sure parent is a deforming bone
 				 * NULL if not
 				 *  */
-				EditBone *link = BLI_ghash_lookup(rg->bones_map, ctrl->bone->parent->name);
+				EditArmatureElement *link = BLI_ghash_lookup(rg->bones_map, ctrl->bone->parent->name);
 
 				found = RIG_parentControl(ctrl, link);
 			}
@@ -757,7 +757,7 @@ static void RIG_reconnectControlBones(RigGraph *rg)
 			{
 				RigArc *arc;
 				RigArc *best_arc = NULL;
-				EditBone *link = NULL;
+				EditArmatureElement *link = NULL;
 
 				for (arc = rg->arcs.first; arc; arc = arc->next) {
 					RigEdge *edge;
@@ -788,7 +788,7 @@ static void RIG_reconnectControlBones(RigGraph *rg)
 		if (found == 0) {
 			RigArc *arc;
 			RigArc *best_arc = NULL;
-			EditBone *link = NULL;
+			EditArmatureElement *link = NULL;
 
 			for (arc = rg->arcs.first; arc; arc = arc->next) {
 				RigEdge *edge;
@@ -892,7 +892,7 @@ static void RIG_reconnectControlBones(RigGraph *rg)
 			BLI_ghashIterator_init(&ghi, rg->bones_map);
 
 			for (; !BLI_ghashIterator_done(&ghi); BLI_ghashIterator_step(&ghi)) {
-				EditBone *bone = (EditBone *)BLI_ghashIterator_getValue(&ghi);
+				EditArmatureElement *bone = (EditArmatureElement *)BLI_ghashIterator_getValue(&ghi);
 
 				/* don't link with parent */
 				if (bone->parent != ctrl->bone) {
@@ -1134,11 +1134,11 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureEleme
 	RigArc *arc = NULL;
 	int contain_head = 0;
 
-	for (element = root_element; element; element = nextEditBoneChild(list, element, 0)) {
+	for (element = root_element; element; element = nextEditArmatureElementChild(list, element, 0)) {
 		int nb_children;
 
-		if (selected == 0 || (element->flag & BONE_SELECTED)) {
-			if ((element->flag & BONE_NO_DEFORM) == 0) {
+		if (selected == 0 || (element->flag & ELEMENT_SELECTED)) {
+			if ((element->flag & ELEMENT_NO_DEFORM) == 0) {
 				BLI_ghash_insert(rg->bones_map, element->name, element);
 
 				if (arc == NULL) {
@@ -1152,7 +1152,7 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureEleme
 					}
 				}
 
-				if (element->parent && (element->flag & BONE_CONNECTED) == 0) {
+				if (element->parent && (element->flag & ELEMENT_CONNECTED) == 0) {
 					RIG_addEdgeToArc(arc, element->head, NULL);
 				}
 
@@ -1164,12 +1164,12 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureEleme
 					contain_head = 1;
 				}
 			}
-			else if ((element->flag & BONE_EDITMODE_LOCKED) == 0) { /* ignore locked bones */
+			else if ((element->flag & ELEMENT_EDITMODE_LOCKED) == 0) { /* ignore locked bones */
 				RIG_addControlBone(rg, element);
 			}
 		}
 
-		nb_children = countEditBoneChildren(list, element);
+		nb_children = countEditArmatureElementChildren(list, element);
 		if (nb_children > 1) {
 			RigNode *end_node = NULL;
 			int i;
@@ -1182,7 +1182,7 @@ static void RIG_arcFromBoneChain(RigGraph *rg, ListBase *list, EditArmatureEleme
 			}
 
 			for (i = 0; i < nb_children; i++) {
-				root_element = nextEditBoneChild(list, element, i);
+				root_element = nextEditArmatureElementChild(list, element, i);
 				RIG_arcFromBoneChain(rg, list, root_element, end_node, selected);
 			}
 
@@ -1216,7 +1216,7 @@ static void RIG_findHead(RigGraph *rg)
 			for (arc = rg->arcs.first; arc; arc = arc->next) {
 				RigEdge *edge = arc->edges.last;
 
-				if (edge->bone->flag & (BONE_TIPSEL | BONE_SELECTED)) {
+				if (edge->bone->flag & (ELEMENT_TIPSEL | ELEMENT_SELECTED)) {
 					rg->head = arc->tail;
 					break;
 				}
@@ -1271,7 +1271,7 @@ static void RIG_printCtrl(RigControl *ctrl, char *indent)
 	printf("%sFlag: %i\n", indent, ctrl->flag);
 }
 
-static void RIG_printLinkedCtrl(RigGraph *rg, EditBone *bone, int tabs)
+static void RIG_printLinkedCtrl(RigGraph *rg, EditArmatureElement *bone, int tabs)
 {
 	RigControl *ctrl;
 	char indent[64];
@@ -1606,7 +1606,7 @@ static void repositionControl(RigGraph *rigg, RigControl *ctrl, float head[3], f
 static void repositionBone(bContext *C, RigGraph *rigg, RigEdge *edge, float vec0[3], float vec1[3], float up_axis[3])
 {
 	Scene *scene = CTX_data_scene(C);
-	EditBone *bone;
+	EditArmatureElement *bone;
 	RigControl *ctrl;
 	float qrot[4], resize;
 	float v1[3], v2[3];
