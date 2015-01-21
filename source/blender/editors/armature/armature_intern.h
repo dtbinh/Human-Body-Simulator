@@ -258,8 +258,8 @@ void *get_bone_from_selectbuffer(struct Scene *scene, struct Base *base, unsigne
 void *get_nearest_muscle(struct bContext *C, short findunsel, int x, int y);
 void *get_muscle_from_selectbuffer(struct Scene *scene, struct Base *base, unsigned int *buffer, short hits, short findunsel);
 
-int bone_looper(struct Object *ob, struct Bone *bone, void *data,
-                int (*bone_func)(struct Object *, struct Bone *, void *));
+int bone_looper(struct Object *ob, struct ArmatureElement *bone, void *data,
+                int (*bone_func)(struct Object *, struct ArmatureElement *, void *));
 
 
 #endif /* __ARMATURE_INTERN_H__ */
