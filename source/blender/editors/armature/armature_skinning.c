@@ -64,7 +64,7 @@
 
 /* ********************************** Bone Skinning *********************************************** */
 
-static int bone_skinnable_cb(Object *ob, Bone *bone, void *datap)
+static int bone_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 {
 	/* Bones that are deforming
 	 * are regarded to be "skinnable" and are eligible for
@@ -88,7 +88,7 @@ static int bone_skinnable_cb(Object *ob, Bone *bone, void *datap)
 	 *      pointers to bones that point to all
 	 *      skinnable bones.
 	 */
-	Bone ***hbone;
+	ArmatureElement ***hbone;
 	int a, segments;
 	struct { Object *armob; void *list; int heat; } *data = datap;
 
@@ -100,7 +100,7 @@ static int bone_skinnable_cb(Object *ob, Bone *bone, void *datap)
 				segments = 1;
 
 			if (data->list != NULL) {
-				hbone = (Bone ***) &data->list;
+				hbone = (ArmatureElement ***) &data->list;
 
 				for (a = 0; a < segments; a++) {
 					**hbone = bone;
@@ -113,7 +113,7 @@ static int bone_skinnable_cb(Object *ob, Bone *bone, void *datap)
 	return 0;
 }
 
-static int vgroup_add_unique_bone_cb(Object *ob, Bone *bone, void *UNUSED(ptr))
+static int vgroup_add_unique_bone_cb(Object *ob, ArmatureElement *bone, void *UNUSED(ptr))
 {
 	/* This group creates a vertex group to ob that has the
 	 * same name as bone (provided the bone is skinnable).
@@ -128,7 +128,7 @@ static int vgroup_add_unique_bone_cb(Object *ob, Bone *bone, void *UNUSED(ptr))
 	return 0;
 }
 
-static int dgroup_skinnable_cb(Object *ob, Bone *bone, void *datap)
+static int dgroup_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 {
 	/* Bones that are deforming
 	 * are regarded to be "skinnable" and are eligible for
