@@ -64,14 +64,14 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
 {
 	EditArmatureElement *elem = MEM_callocN(sizeof(EditArmatureElement), "eElement");
 
-	elem->data = MEM_callocN(sizeof(BoneData), "eBoneData");
-
 	BLI_strncpy(elem->name, name, sizeof(elem->name));
 	unique_editelement_name(arm->edbo, elem->name, NULL);
+	// Feels so wrong to be calling this function twice
+	// Maybe a better way to do all of this will come up
+	// Like a single list but that doesn't help the python side
+	unique_editelement_name(arm->edmu, elem->name, NULL);
 
-	BLI_addtail(arm->edbo, elem);
-
-    elem->type = AE_BONE;
+    elem->type = type;
 	elem->flag |= ELEMENT_TIPSEL;
 	elem->xwidth = 0.1f;
 	elem->zwidth = 0.1f;
@@ -83,20 +83,21 @@ EditArmatureElement *ED_armature_edit_armature_element_add(bArmature *arm, const
     switch(type)
     {
         case AE_BONE:
+            BLI_addtail(arm->edbo, elem);
+            elem->data = MEM_callocN(sizeof(BoneData), "eBoneData");
             ((EditBoneElement*)elem->data)->ease1 = 1.0f;
             ((EditBoneElement*)elem->data)->ease2 = 1.0f;
             ((EditBoneElement*)elem->data)->weight = 1.0f;
             ((EditBoneElement*)elem->data)->dist = 0.25f;
             break;
         case AE_MUSCLE:
+            BLI_addtail(arm->edmu, elem);
+            elem->data = MEM_callocN(sizeof(MuscleData), "eMuscleData");
             // TODO:
             // Muscle properties go here
             // None yet
-//            ((EditMuscleElement*)elem->data)->
             break;
     }
-
-
 
 	return elem;
 }

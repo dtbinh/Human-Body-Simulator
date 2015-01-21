@@ -119,7 +119,7 @@ int bone_looper(Object *ob, Bone *bone, void *data,
 /* *************************************************************** */
 /* Bone Removal */
 
-void bone_free(bArmature *arm, EditArmatureElement *bone)
+void element_free(bArmature *arm, EditArmatureElement *bone)
 {
 	if (arm->act_edbone == bone)
 		arm->act_edbone = NULL;
@@ -132,7 +132,7 @@ void bone_free(bArmature *arm, EditArmatureElement *bone)
 	BLI_freelinkN(arm->edbo, bone);
 }
 
-void ED_armature_edit_bone_remove(bArmature *arm, EditArmatureElement *exBone)
+void ED_armature_edit_element_remove(bArmature *arm, EditArmatureElement *exBone)
 {
 	EditArmatureElement *curBone;
 
@@ -145,21 +145,6 @@ void ED_armature_edit_bone_remove(bArmature *arm, EditArmatureElement *exBone)
 	}
 
 	bone_free(arm, exBone);
-}
-
-void ED_armature_edit_muscle_remove(bArmature *arm, EditMuscle *exMuscle)
-{
-    EditMuscle *curMuscle;
-
-    for (curMuscle = arm->edmu->first; curMuscle; curMuscle = curMuscle->next)
-    {
-        if (curMuscle->parent == exMuscle) {
-            curMuscle->parent = exMuscle->parent;
-            curMuscle->flag &= ~MUSCLE_CONNECTED;
-        }
-    }
-
-    muscle_free(arm, exMuscle);
 }
 
 bool ED_armature_ebone_is_child_recursive(EditArmatureElement *ebone_parent, EditArmatureElement *ebone_child)
@@ -583,38 +568,6 @@ static void fix_bonelist_roll(ListBase *bonelist, ListBase *editbonelist)
 		fix_bonelist_roll(&curBone->childbase, editbonelist);
 	}
 }
-
-//static void fix_musclelist_roll(ListBase *musclelist, ListBase *editmusclelist)
-//{
-//    Muscle *curMuscle;
-//    EditMuscle *emuscle;
-//    float premat[3][3];
-//    float postmat[3][3];
-//    float difmat[3][3];
-//    float imat[3][3];
-//
-//    for (curMuscle = musclelist->first; curMuscle; curMuscle = curMuscle->next) {
-//        BKE_armature_where_is_muscle(curMuscle, curMuscle->parent);
-//
-//        for (emuscle = editmusclelist->first; emuscle; emuscle = emuscle->next)
-//            if ((Muscle *)emuscle->temp == curMuscle)
-//                break;
-//
-//        if (emuscle) {
-//            ED_armature_emuscle_to_mat3(emuscle, premat);
-//
-//            copy_m3_m4(postmat, curMuscle->arm_mat);
-//
-//            invert_m3_m3(imat, premat);
-//            mul_m3_m3m3(difmat, imat, postmat);
-//
-//            curMuscle->roll = -atan2f(difmat[2][0], difmat[2][2]);
-//
-//            BKE_armature_where_is_muscle(curMuscle, curMuscle->parent);
-//        }
-//        fix_musclelist_roll(&curMuscle->childbase, editmusclelist);
-//    }
-//}
 
 /* put EditMode back in Object */
 void ED_armature_from_edit(bArmature *arm)

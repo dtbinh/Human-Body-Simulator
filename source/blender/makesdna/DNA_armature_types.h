@@ -164,13 +164,13 @@ typedef struct bArmature {
 	ID          id;
 	struct AnimData *adt;
 
-//	ListBase    bonebase;
+	ListBase    bonebase;
+	ListBase    musclebase;
 	ListBase    chainbase;
-//	ListBase    musclebase;
-	ListBase    elementbase;
-	ListBase   *edmu;                   /* muscle listbase, we use pointer so we can check state */
+//	ListBase    elementbase;
 	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
-	ListBase   *edel;                   /* List of all EditArmatureElements */
+	ListBase   *edmu;                   /* editmuscle listbase, we use pointer so we can check state */
+//	ListBase   *edel;                   /* List of all EditArmatureElements */
 
 	/* active bones should work like active object where possible
 	 * - active and selection are unrelated

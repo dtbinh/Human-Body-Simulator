@@ -110,7 +110,7 @@ static void rna_Armature_act_edit_element_set(PointerRNA *ptr, PointerRNA value)
 
 static EditArmatureElement *rna_Armature_edit_bone_new(bArmature *arm, ReportList *reports, const char *name)
 {
-	if (arm->edel == NULL) {
+	if (arm->edbo == NULL) {
 		BKE_reportf(reports, RPT_ERROR, "Armature '%s' not in edit mode, cannot add an editbone", arm->id.name + 2);
 		return NULL;
 	}
@@ -120,13 +120,13 @@ static EditArmatureElement *rna_Armature_edit_bone_new(bArmature *arm, ReportLis
 static void rna_Armature_edit_armatureelement_remove(bArmature *arm, ReportList *reports, PointerRNA *eelem_ptr)
 {
 	EditArmatureElement *eelem = eelem_ptr->data;
-	if (arm->edel == NULL) {
+	if (arm->edbo == NULL) {
 		BKE_reportf(reports, RPT_ERROR, "Armature '%s' not in edit mode, cannot remove an editbone", arm->id.name + 2);
 		return;
 	}
 
-	if (BLI_findindex(arm->edel, eelem) == -1) {
-		BKE_reportf(reports, RPT_ERROR, "Armature '%s' does not contain bone '%s'", arm->id.name + 2, eelem->name);
+	if ((BLI_findindex(arm->edbo, eelem) == -1) && (BLI_findindex(arm->edmu, eelem) == -1)) {
+		BKE_reportf(reports, RPT_ERROR, "Armature '%s' does not contain element '%s'", arm->id.name + 2, eelem->name);
 		return;
 	}
 
