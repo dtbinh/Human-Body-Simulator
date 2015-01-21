@@ -76,11 +76,11 @@ void ED_armature_sync_selection(ListBase *edbo)
 
 void ED_armature_validate_active(struct bArmature *arm)
 {
-	EditArmatureElement *ebone = arm->act_edbone;
+	EditArmatureElement *ebone = arm->act_edelement;
 
 	if (ebone) {
 		if (ebone->flag & ELEMENT_HIDDEN_A)
-			arm->act_edbone = NULL;
+			arm->act_edelement = NULL;
 	}
 }
 
@@ -121,8 +121,8 @@ int bone_looper(Object *ob, Bone *bone, void *data,
 
 void element_free(bArmature *arm, EditArmatureElement *bone)
 {
-	if (arm->act_edbone == bone)
-		arm->act_edbone = NULL;
+	if (arm->act_edelement == bone)
+		arm->act_edelement = NULL;
 
 	if (bone->prop) {
 		IDP_FreeProperty(bone->prop);
@@ -611,7 +611,7 @@ void ED_armature_from_edit(bArmature *arm)
 
 		newElem->flag = eElem->flag;
 
-		if (eElem == arm->act_edbone) {
+		if (eElem == arm->act_edelement) {
 			/* don't change active selection, this messes up separate which uses
 			 * editmode toggle and can separate active bone which is de-selected originally */
 			/* newElem->flag |= ELEMENT_SELECTED; */ /* important, editbones can be active with only 1 point selected */
@@ -701,7 +701,7 @@ void ED_armature_edit_free(struct bArmature *arm)
 		}
 		MEM_freeN(arm->edbo);
 		arm->edbo = NULL;
-		arm->act_edbone = NULL;
+		arm->act_edelement = NULL;
 	}
 
 	if (arm->edmu) {
@@ -727,7 +727,7 @@ void ED_armature_to_edit(bArmature *arm)
 {
 	ED_armature_edit_free(arm);
 	arm->edbo = MEM_callocN(sizeof(ListBase), "edbo armature");
-	arm->act_edbone = make_elementList(arm->edbo, &arm->bonebase, NULL, arm->act_bone);
+	arm->act_edelement = make_elementList(arm->edbo, &arm->bonebase, NULL, arm->act_bone);
 
 	arm->edmu = MEM_callocN(sizeof(ListBase), "edmu armature");
 	arm->act_edmuscle = make_elementList(arm->edmu, &arm->musclebase, NULL, arm->act_muscle);
@@ -792,7 +792,7 @@ static void ED_armature_ebone_listbase_temp_clear(ListBase *lb)
 }
 
 typedef struct UndoArmature {
-	EditArmatureElement *act_edbone;
+	EditArmatureElement *act_edelement;
 	ListBase lb;
 } UndoArmature;
 
@@ -806,12 +806,12 @@ static void undoBones_to_editBones(void *uarmv, void *armv, void *UNUSED(data))
 	ED_armature_ebone_listbase_copy(arm->edbo, &uarm->lb);
 
 	/* active bone */
-	if (uarm->act_edbone) {
-		ebone = uarm->act_edbone;
-		arm->act_edbone = ebone->temp;
+	if (uarm->act_edelement) {
+		ebone = uarm->act_edelement;
+		arm->act_edelement = ebone->temp;
 	}
 	else {
-		arm->act_edbone = NULL;
+		arm->act_edelement = NULL;
 	}
 
 	ED_armature_ebone_listbase_temp_clear(arm->edbo);
@@ -828,9 +828,9 @@ static void *editBones_to_undoBones(void *armv, void *UNUSED(obdata))
 	ED_armature_ebone_listbase_copy(&uarm->lb, arm->edbo);
 
 	/* active bone */
-	if (arm->act_edbone) {
-		ebone = arm->act_edbone;
-		uarm->act_edbone = ebone->temp;
+	if (arm->act_edelement) {
+		ebone = arm->act_edelement;
+		uarm->act_edelement = ebone->temp;
 	}
 
 	ED_armature_ebone_listbase_temp_clear(&uarm->lb);
