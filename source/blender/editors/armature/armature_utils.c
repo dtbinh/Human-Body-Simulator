@@ -163,10 +163,10 @@ bool ED_armature_ebone_is_child_recursive(EditArmatureElement *ebone_parent, Edi
  * \param ebone_child_tot  Size of the ebone_child array
  * \return The shared parent or NULL.
  */
-EditBone *ED_armature_bone_find_shared_parent(EditBone *ebone_child[], const unsigned int ebone_child_tot)
+EditArmatureElement *ED_armature_bone_find_shared_parent(EditArmatureElement *ebone_child[], const unsigned int ebone_child_tot)
 {
 	unsigned int i;
-	EditBone *ebone_iter;
+	EditArmatureElement *ebone_iter;
 
 #define EELEMENT_TEMP_UINT(ebone) (*((unsigned int *)(&((ebone)->temp))))
 
