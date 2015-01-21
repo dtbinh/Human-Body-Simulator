@@ -31,7 +31,7 @@
 #include "ED_armature.h"
 #include "BIF_generate.h"
 
-void setBoneRollFromNormal(EditBone *bone, const float no[3], float UNUSED(invmat[4][4]), float tmat[3][3])
+void setBoneRollFromNormal(EditArmatureElement *bone, const float no[3], float UNUSED(invmat[4][4]), float tmat[3][3])
 {
 	if (no != NULL && !is_zero_v3(no)) {
 		float normal[3];
@@ -238,12 +238,12 @@ int nextLengthSubdivision(ToolSettings *toolsettings, BArcIterator *iter, int st
 	return -1;
 }
 
-EditBone *subdivideArcBy(ToolSettings *toolsettings, bArmature *arm, ListBase *UNUSED(editbones), BArcIterator *iter,
+EditArmatureElement *subdivideArcBy(ToolSettings *toolsettings, bArmature *arm, ListBase *UNUSED(editbones), BArcIterator *iter,
                          float invmat[4][4], float tmat[3][3], NextSubdivisionFunc next_subdividion)
 {
-	EditBone *lastBone = NULL;
-	EditBone *child = NULL;
-	EditBone *parent = NULL;
+	EditArmatureElement *lastBone = NULL;
+	EditArmatureElement *child = NULL;
+	EditArmatureElement *parent = NULL;
 	float *normal = NULL;
 	float size_buffer = 1.2;
 	int bone_start = 0;
@@ -268,7 +268,7 @@ EditBone *subdivideArcBy(ToolSettings *toolsettings, bArmature *arm, ListBase *U
 		child = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
 		copy_v3_v3(child->head, parent->tail);
 		child->parent = parent;
-		child->flag |= BONE_CONNECTED;
+		child->flag |= ELEMENT_CONNECTED;
 
 		if (iter->size > FLT_EPSILON) {
 			child->rad_head = iter->size * size_buffer;
