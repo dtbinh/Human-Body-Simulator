@@ -89,8 +89,8 @@ void ED_armature_validate_active(struct bArmature *arm)
 
 /* XXX bone_looper is only to be used when we want to access settings
  * (i.e. editability/visibility/selected) that context doesn't offer */
-int bone_looper(Object *ob, Bone *bone, void *data,
-                int (*bone_func)(Object *, Bone *, void *))
+int bone_looper(Object *ob, ArmatureElement *bone, void *data,
+                int (*bone_func)(Object *, ArmatureElement *, void *))
 {
 	/* We want to apply the function bone_func to every bone
 	 * in an armature -- feed bone_looper the first bone and
