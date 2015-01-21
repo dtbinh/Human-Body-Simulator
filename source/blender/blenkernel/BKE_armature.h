@@ -155,20 +155,23 @@ typedef struct Mat4 {
 void b_bone_spline_setup(struct bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BBONE_SUBDIV]);
 
 /* like EBONE_VISIBLE */
-#define PBONE_VISIBLE(arm, bone) ( \
-	CHECK_TYPE_INLINE(arm, bArmature *), \
-	CHECK_TYPE_INLINE(bone, Bone *), \
-	(((bone)->layer & (arm)->layer) && !((bone)->flag & BONE_HIDDEN_P)) \
-	)
+//#define PBONE_VISIBLE(arm, bone) ( \
+//	CHECK_TYPE_INLINE(arm, bArmature *), \
+//	CHECK_TYPE_INLINE(bone, Bone *), \
+//	(((bone)->layer & (arm)->layer) && !((bone)->flag & BONE_HIDDEN_P)) \
+//	)
 
-#define PBONE_SELECTABLE(arm, bone) \
-	(PBONE_VISIBLE(arm, bone) && !((bone)->flag & BONE_UNSELECTABLE))
+//#define PBONE_SELECTABLE(arm, bone) \
+//	(PBONE_VISIBLE(arm, bone) && !((bone)->flag & BONE_UNSELECTABLE))
 
 #define PELEMENT_VISIBLE(arm, element) ( \
 	CHECK_TYPE_INLINE(arm, bArmature *), \
 	CHECK_TYPE_INLINE(element, ArmatureElement *), \
 	(((element)->layer & (arm)->layer) && !((element)->flag & BONE_HIDDEN_P)) \
 	)
+
+#define PELEMENT_SELECTABLE(arm, element) \
+    (PELEMENT_VISIBLE(arm, element) && !((element)->flag & ELEMENT_UNSELECTABLE))
 
 #ifdef __cplusplus
 }
