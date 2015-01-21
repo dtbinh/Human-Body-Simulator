@@ -428,7 +428,7 @@ static void separate_armature_bones(Object *ob, short sel)
 			BKE_pose_channels_hash_free(ob->pose);
 
 			/* get rid of unneeded bone */
-			bone_free(arm, curbone);
+			element_free(arm, curbone);
 			BLI_freelinkN(&ob->pose->chanbase, pchan);
 		}
 	}
