@@ -1345,7 +1345,7 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 	ToolSettings *ts = CTX_data_tool_settings(C);
 	bArmature *arm = obedit->data;
 	SK_Point *head;
-	EditBone *parent = NULL;
+	EditArmatureElement *parent = NULL;
 	float invmat[4][4]; /* move in caller function */
 	float tmat[3][3];
 	int head_index = 0;
@@ -1365,8 +1365,8 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 				head = pt;
 			}
 			else {
-				EditBone *bone = NULL;
-				EditBone *new_parent;
+				EditArmatureElement *bone = NULL;
+				EditArmatureElement *new_parent;
 
 				if (i - head_index > 1) {
 					SK_StrokeIterator sk_iter;
@@ -1397,17 +1397,17 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 				}
 
 				new_parent = bone;
-				bone->flag |= BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL;
+				bone->flag |= ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL;
 
 				/* move to end of chain */
 				while (bone->parent != NULL) {
 					bone = bone->parent;
-					bone->flag |= BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL;
+					bone->flag |= ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL;
 				}
 
 				if (parent != NULL) {
 					bone->parent = parent;
-					bone->flag |= BONE_CONNECTED;
+					bone->flag |= ELEMENT_CONNECTED;
 				}
 
 				parent = new_parent;
