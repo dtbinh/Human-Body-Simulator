@@ -54,7 +54,7 @@
 /* Sync selection to parent for connected children */
 void ED_armature_sync_selection(ListBase *edbo)
 {
-	EditBone *ebo;
+	EditArmatureElement *ebo;
 
 	for (ebo = edbo->first; ebo; ebo = ebo->next) {
 		/* if bone is not selectable, we shouldn't alter this setting... */
@@ -144,7 +144,7 @@ void ED_armature_edit_element_remove(bArmature *arm, EditArmatureElement *exBone
 		}
 	}
 
-	bone_free(arm, exBone);
+	element_free(arm, exBone);
 }
 
 bool ED_armature_ebone_is_child_recursive(EditArmatureElement *ebone_parent, EditArmatureElement *ebone_child)
@@ -237,7 +237,7 @@ void ED_armature_eelement_from_mat4(EditArmatureElement *eelement, float mat[4][
 	sub_v3_v3(eelement->tail, eelement->head);
 	copy_v3_v3(eelement->head, mat[3]);
 	add_v3_v3(eelement->tail, mat[3]);
-	ED_armature_ebone_from_mat3(eelement, mat3);
+	ED_armature_eelement_from_mat3(eelement, mat3);
 }
 
 /**
@@ -328,7 +328,7 @@ void armature_tag_select_mirrored(bArmature *arm)
 /* only works when tagged */
 void armature_tag_unselect(bArmature *arm)
 {
-	EditBone *curBone;
+	EditArmatureElement *curBone;
 
 	for (curBone = arm->edbo->first; curBone; curBone = curBone->next) {
 		if (curBone->flag & ELEMENT_DONE) {
@@ -497,12 +497,12 @@ static void fix_bonelist_roll(ListBase *bonelist, ListBase *editbonelist)
 
 		/* Find the associated editbone */
 		for (ebone = editbonelist->first; ebone; ebone = ebone->next)
-			if ((Bone *)ebone->temp == curBone)
+			if ((ArmatureElement *)ebone->temp == curBone)
 				break;
 
 		if (ebone) {
 			/* Get the ebone premat */
-			ED_armature_ebone_to_mat3(ebone, premat);
+			ED_armature_eelement_to_mat3(ebone, premat);
 
 			/* Get the bone postmat */
 			copy_m3_m4(postmat, curBone->arm_mat);
@@ -533,7 +533,8 @@ void ED_armature_from_edit(bArmature *arm)
 	Object *obt;
 
 	/* armature bones */
-    BKE_armature_elementlist_free(&arm->elementbase);
+    BKE_armature_elementlist_free(&arm->bonebase);
+    BKE_armature_elementlist_free(&arm->musclebase);
     arm->act_element = NULL;
 
 	/* remove zero sized bones, this gives unstable restposes */
@@ -571,7 +572,7 @@ void ED_armature_from_edit(bArmature *arm)
 			/* don't change active selection, this messes up separate which uses
 			 * editmode toggle and can separate active bone which is de-selected originally */
 			/* newElem->flag |= ELEMENT_SELECTED; */ /* important, editbones can be active with only 1 point selected */
-			arm->act_bone = newElem;
+			arm->act_element = newElem;
 		}
 		newElem->roll = 0.0f;
 
@@ -621,13 +622,13 @@ void ED_armature_from_edit(bArmature *arm)
 		else {
 			copy_v3_v3(newElem->head, eElem->head);
 			copy_v3_v3(newElem->tail, eElem->tail);
-			BLI_addtail(&arm->elementbase, newElem);
+			BLI_addtail(&arm->bonebase, newElem);
 		}
 	}
 
 	/* Make a pass through the new armature to fix rolling */
 	/* also builds restposition again (like BKE_armature_where_is) */
-	fix_bonelist_roll(&arm->elementbase, arm->edbo);
+	fix_bonelist_roll(&arm->bonebase, arm->edbo);
 
 	/* so all users of this armature should get rebuilt */
 	for (obt = G.main->object.first; obt; obt = obt->id.next) {
@@ -660,22 +661,22 @@ void ED_armature_edit_free(struct bArmature *arm)
 		arm->act_edelement = NULL;
 	}
 
-	if (arm->edmu) {
-        if (arm->edmu->first) {
-            for (eElement = arm->edmu->first; eElement; eElement = eElement->next) {
-                if (eElement->prop) {
-                    IDP_FreeProperty(eElement->prop);
-                    MEM_freeN(eElement->prop);
-                }
-                MEM_freeN(eElement->data);
-            }
-
-            BLI_freelistN(arm->edmu);
-        }
-        MEM_freeN(arm->edmu);
-        arm->edmu = NULL;
-        arm->act_edmuscle = NULL;
-	}
+//	if (arm->edmu) {
+//        if (arm->edmu->first) {
+//            for (eElement = arm->edmu->first; eElement; eElement = eElement->next) {
+//                if (eElement->prop) {
+//                    IDP_FreeProperty(eElement->prop);
+//                    MEM_freeN(eElement->prop);
+//                }
+//                MEM_freeN(eElement->data);
+//            }
+//
+//            BLI_freelistN(arm->edmu);
+//        }
+//        MEM_freeN(arm->edmu);
+//        arm->edmu = NULL;
+//        arm->act_edmuscle = NULL;
+//	}
 }
 
 /* Put armature in EditMode */
@@ -686,7 +687,7 @@ void ED_armature_to_edit(bArmature *arm)
 	arm->act_edelement = make_elementList(arm->edbo, &arm->bonebase, NULL, arm->act_bone);
 
 	arm->edmu = MEM_callocN(sizeof(ListBase), "edmu armature");
-	arm->act_edmuscle = make_elementList(arm->edmu, &arm->musclebase, NULL, arm->act_muscle);
+	arm->act_edelement = make_elementList(arm->edmu, &arm->musclebase, NULL, arm->act_muscle);
 
 //	BIF_freeTemplates(); /* force template update when entering editmode */
 }
@@ -696,9 +697,9 @@ void ED_armature_to_edit(bArmature *arm)
 
 /* free's bones and their properties */
 
-static void ED_armature_ebone_listbase_free(ListBase *lb)
+static void ED_armature_eelement_listbase_free(ListBase *lb)
 {
-	EditBone *ebone, *ebone_next;
+	EditArmatureElement *ebone, *ebone_next;
 
 	for (ebone = lb->first; ebone; ebone = ebone_next) {
 		ebone_next = ebone->next;
@@ -716,8 +717,8 @@ static void ED_armature_ebone_listbase_free(ListBase *lb)
 
 static void ED_armature_ebone_listbase_copy(ListBase *lb_dst, ListBase *lb_src)
 {
-	EditBone *ebone_src;
-	EditBone *ebone_dst;
+	EditArmatureElement *ebone_src;
+	EditArmatureElement *ebone_dst;
 
 	BLI_assert(BLI_listbase_is_empty(lb_dst));
 
@@ -758,7 +759,7 @@ static void undoBones_to_editBones(void *uarmv, void *armv, void *UNUSED(data))
 	bArmature *arm = armv;
 	EditArmatureElement *ebone;
 
-	ED_armature_ebone_listbase_free(arm->edbo);
+	ED_armature_eelement_listbase_free(arm->edbo);
 	ED_armature_ebone_listbase_copy(arm->edbo, &uarm->lb);
 
 	/* active bone */
@@ -798,7 +799,7 @@ static void free_undoBones(void *uarmv)
 {
 	UndoArmature *uarm = uarmv;
 
-	ED_armature_ebone_listbase_free(&uarm->lb);
+	ED_armature_eelement_listbase_free(&uarm->lb);
 
 	MEM_freeN(uarm);
 }
@@ -824,7 +825,7 @@ void undo_push_armature(bContext *C, const char *name)
  * flag behavior which gets tricky to handle in selection operators.
  * (no flushing in ED_armature_ebone_select.*, that should be explicit) */
 
-int ED_armature_ebone_selectflag_get(const EditBone *ebone)
+int ED_armature_ebone_selectflag_get(const EditArmatureElement *ebone)
 {
 	if (ebone->parent && (ebone->flag & ELEMENT_CONNECTED)) {
 		return ((ebone->flag & (ELEMENT_SELECTED | ELEMENT_TIPSEL)) |
@@ -835,7 +836,7 @@ int ED_armature_ebone_selectflag_get(const EditBone *ebone)
 	}
 }
 
-void ED_armature_ebone_selectflag_set(EditBone *ebone, int flag)
+void ED_armature_ebone_selectflag_set(EditArmatureElement *ebone, int flag)
 {
 	flag = flag & (ELEMENT_SELECTED | ELEMENT_ROOTSEL | ELEMENT_TIPSEL);
 
@@ -852,20 +853,20 @@ void ED_armature_ebone_selectflag_set(EditBone *ebone, int flag)
 	}
 }
 
-void ED_armature_ebone_selectflag_enable(EditBone *ebone, int flag)
+void ED_armature_ebone_selectflag_enable(EditArmatureElement *ebone, int flag)
 {
 	BLI_assert((flag & (ELEMENT_SELECTED | ELEMENT_ROOTSEL | ELEMENT_TIPSEL)) != 0);
 	ED_armature_ebone_selectflag_set(ebone, ebone->flag | flag);
 }
 
-void ED_armature_ebone_selectflag_disable(EditBone *ebone, int flag)
+void ED_armature_ebone_selectflag_disable(EditArmatureElement *ebone, int flag)
 {
 	BLI_assert((flag & (ELEMENT_SELECTED | ELEMENT_ROOTSEL | ELEMENT_TIPSEL)) != 0);
 	ED_armature_ebone_selectflag_set(ebone, ebone->flag & ~flag);
 }
 
 /* could be used in more places */
-void ED_armature_ebone_select_set(EditBone *ebone, bool select)
+void ED_armature_ebone_select_set(EditArmatureElement *ebone, bool select)
 {
 	int flag;
 	if (select) {
