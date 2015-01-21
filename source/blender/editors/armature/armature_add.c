@@ -299,7 +299,7 @@ static EditArmatureElement *get_named_editarmatureelement(ListBase *edbo, const 
 
 /* Call this before doing any duplications
  * */
-void preEditBoneDuplicate(ListBase *editbones)
+void preEditArmatureElementDuplicate(ListBase *editbones)
 {
 	EditArmatureElement *eElem;
 
@@ -368,7 +368,7 @@ void updateDuplicateSubtarget(EditArmatureElement *dupBone, ListBase *editbones,
 }
 
 
-EditArmatureElement *duplicateEditBoneObjects(EditArmatureElement *curBone, const char *name, ListBase *editbones,
+EditArmatureElement *duplicateEditArmatureElementObjects(EditArmatureElement *curBone, const char *name, ListBase *editbones,
                                    Object *src_ob, Object *dst_ob)
 {
 	EditArmatureElement *eElem = MEM_mallocN(sizeof(EditArmatureElement), "addup_editbone");
