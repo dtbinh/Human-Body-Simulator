@@ -239,38 +239,14 @@ static void copy_armaturelementchildren(ArmatureElement *newBone, ArmatureElemen
 	}
 }
 
-//static void copy_musclechildren(Muscle *newMuscle, Muscle *oldMuscle, Muscle *actMuscle, Muscle **newActMuscle)
-//{
-//    Muscle *curMuscle, *newChildMuscle;
-//
-//    if (oldMuscle == actMuscle)
-//        *newActMuscle = newMuscle;
-//
-//    if (oldMuscle->prop)
-//        newMuscle->prop = IDP_CopyProperty(oldMuscle->prop);
-//
-//    BLI_duplicatelist(&newMuscle->childbase, &oldMuscle->childbase);
-//
-//    newChildMuscle = newMuscle->childbase.first;
-//    for (curMuscle = oldMuscle->childbase.first; curMuscle; curMuscle = curMuscle->next) {
-//        newChildMuscle->parent = newMuscle;
-//        copy_musclechildren(newChildMuscle, curMuscle, actMuscle, newActMuscle);
-//        newChildMuscle = newChildMuscle->next;
-//    }
-//}
-
 bArmature *BKE_armature_copy(bArmature *arm)
 {
 	bArmature *newArm;
 	ArmatureElement *oldBone, *newBone;
 	ArmatureElement *newActBone = NULL;
 
-//	Muscle *oldMuscle, *newMuscle;
-//	Muscle *newActMuscle = NULL;
-
 	newArm = BKE_libblock_copy(&arm->id);
 	BLI_duplicatelist(&newArm->bonebase, &arm->bonebase);
-//	BLI_duplicatelist(&newArm->musclebase, &arm->musclebase);
 
 	/* Duplicate the childrens' lists */
 	newBone = newArm->bonebase.first;
@@ -280,20 +256,11 @@ bArmature *BKE_armature_copy(bArmature *arm)
 		newBone = newBone->next;
 	}
 
-//    newMuscle = newArm->musclebase.first;
-//	for (oldMuscle = arm->musclebase.first; oldMuscle; oldMuscle = oldMuscle->next) {
-//        newMuscle->parent = NULL;
-//        copy_musclechildren(newMuscle, oldMuscle, arm->act_muscle, &newActMuscle);
-//        newMuscle = newMuscle->next;
-//	}
-
 	newArm->act_bone = newActBone;
-//	newArm->act_muscle = newActMuscle;
 
 	newArm->edbo = NULL;
 	newArm->edmu = NULL;
-	newArm->act_edbone = NULL;
-	newArm->act_edmuscle = NULL;
+	newArm->act_edelement = NULL;
 	newArm->sketch = NULL;
 
 	if (arm->id.lib) {
@@ -1695,18 +1662,18 @@ void mat3_to_vec_roll(float mat[3][3], float r_vec[3], float *r_roll)
  *   -> w = (-v.x, v.y, -v.z)
  *
  * Solving this, we get (x, y and z being the components of v):
- *     ‚îå (x^2 * y + z^2) / (x^2 + z^2),   x,   x * z * (y - 1) / (x^2 + z^2) ‚îê
- * M = ‚îÇ  x * (y^2 - 1)  / (x^2 + z^2),   y,    z * (y^2 - 1)  / (x^2 + z^2) ‚îÇ
- *     ‚îî x * z * (y - 1) / (x^2 + z^2),   z,   (x^2 + z^2 * y) / (x^2 + z^2) ‚îò
+ *     Ñ° (x^2 * y + z^2) / (x^2 + z^2),   x,   x * z * (y - 1) / (x^2 + z^2) Ñ¢
+ * M = Ñ†  x * (y^2 - 1)  / (x^2 + z^2),   y,    z * (y^2 - 1)  / (x^2 + z^2) Ñ†
+ *     Ñ§ x * z * (y - 1) / (x^2 + z^2),   z,   (x^2 + z^2 * y) / (x^2 + z^2) Ñ£
  *
  * This is stable as long as v (the bone) is not too much aligned with +/-Y (i.e. x and z components
  * are not too close to 0).
  *
  * Since v is normalized, we have x^2 + y^2 + z^2 = 1, hence x^2 + z^2 = 1 - y^2 = (1 - y)(1 + y).
  * This allows to simplifies M like this:
- *     ‚îå 1 - x^2 / (1 + y),   x,     -x * z / (1 + y) ‚îê
- * M = ‚îÇ                -x,   y,                   -z ‚îÇ
- *     ‚îî  -x * z / (1 + y),   z,    1 - z^2 / (1 + y) ‚îò
+ *     Ñ° 1 - x^2 / (1 + y),   x,     -x * z / (1 + y) Ñ¢
+ * M = Ñ†                -x,   y,                   -z Ñ†
+ *     Ñ§  -x * z / (1 + y),   z,    1 - z^2 / (1 + y) Ñ£
  *
  * Written this way, we see the case v = +Y is no more a singularity. The only one remaining is the bone being
  * aligned with -Y.
@@ -1718,17 +1685,17 @@ void mat3_to_vec_roll(float mat[3][3], float r_vec[3], float *r_roll)
  * will degenerate. So let's now focus on these corner elements.
  *
  * We rewrite M so that it only contains its four corner elements, and combine the 1 / (1 + y) factor:
- *                    ‚îå 1 + y - x^2,        -x * z ‚îê
- * M* = 1 / (1 + y) * ‚îÇ                            ‚îÇ
- *                    ‚îî      -x * z,   1 + y - z^2 ‚îò
+ *                    Ñ° 1 + y - x^2,        -x * z Ñ¢
+ * M* = 1 / (1 + y) * Ñ†                            Ñ†
+ *                    Ñ§      -x * z,   1 + y - z^2 Ñ£
  *
  * When y is close to -1, computing 1 / (1 + y) will cause severe numerical instability, so we ignore it and
  * normalize M instead. We know y^2 = 1 - (x^2 + z^2), and y < 0, hence y = -sqrt(1 - (x^2 + z^2)).
  * Since x and z are both close to 0, we apply the binomial expansion to the first order:
  * y = -sqrt(1 - (x^2 + z^2)) = -1 + (x^2 + z^2) / 2. Which gives:
- *                        ‚îå  z^2 - x^2,  -2 * x * z ‚îê
- * M* = 1 / (x^2 + z^2) * ‚îÇ                         ‚îÇ
- *                        ‚îî -2 * x * z,   x^2 - z^2 ‚îò
+ *                        Ñ°  z^2 - x^2,  -2 * x * z Ñ¢
+ * M* = 1 / (x^2 + z^2) * Ñ†                         Ñ†
+ *                        Ñ§ -2 * x * z,   x^2 - z^2 Ñ£
  */
 void vec_roll_to_mat3_normalized(const float nor[3], const float roll, float mat[3][3])
 {
@@ -3031,7 +2998,7 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 	ctime = BKE_scene_frame_get(scene); /* not accurate... */
 
 	/* In editmode or restposition we read the data from the bones */
-	if (arm->edbo || arm->edmu || (arm->flag & ARM_RESTPOS)) {
+	if (arm->edbo/* || arm->edmu*/ || (arm->flag & ARM_RESTPOS)) {
 		for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 			bone = pchan->bone;
 			if (bone) {

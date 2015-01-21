@@ -164,14 +164,20 @@ typedef struct bArmature {
 	ID          id;
 	struct AnimData *adt;
 
-//	ListBase    bonebase;
+	ListBase    bonebase;
+	ListBase    musclebase;
 	ListBase    chainbase;
+<<<<<<< HEAD
 //	ListBase    musclebase;
 	ListBase    elementbase;
 	ListBase    elementbase;
 	ListBase   *edmu;                   /* muscle listbase, we use pointer so we can check state */
+=======
+//	ListBase    elementbase;
+>>>>>>> why i do stupid shit
 	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
-	ListBase   *edel;                   /* List of all EditArmatureElements */
+	ListBase   *edmu;                   /* editmuscle listbase, we use pointer so we can check state */
+//	ListBase   *edel;                   /* List of all EditArmatureElements */
 
 	/* active bones should work like active object where possible
 	 * - active and selection are unrelated
@@ -307,11 +313,7 @@ typedef enum eElement_Flag {
     ELEMENT_UNSELECTABLE            = (1 << 21), /* bone cannot be selected */
     ELEMENT_NO_LOCAL_LOCATION       = (1 << 22), /* bone location is in armature space */
     ELEMENT_RELATIVE_PARENTING      = (1 << 23)  /* object child will use relative transform (like deform) */
-<<<<<<< HEAD
 } eElement_Flag;
-=======
-};
->>>>>>> Missing ;
 
 #define MAXBONENAME 64
 #define MAXMUSCLENAME 64
