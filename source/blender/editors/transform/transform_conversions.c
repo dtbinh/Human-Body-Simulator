@@ -1259,7 +1259,7 @@ static void createTransArmatureVerts(TransInfo *t)
 					copy_m3_m3(td->smtx, smtx);
 					copy_m3_m3(td->mtx, mtx);
 
-					ED_armature_eelementto_mat3(ebo, td->axismtx);
+					ED_armature_eelement_to_mat3(ebo, td->axismtx);
 
 					if ((ebo->flag & ELEMENT_ROOTSEL) == 0) {
 						td->extra = ebo;
@@ -1302,7 +1302,7 @@ static void createTransArmatureVerts(TransInfo *t)
 			if (eboflip) {
 				bid[i].bone = eboflip;
 				bid[i].dist = ((BoneData*)eboflip->data)->dist;
-				bid[i].rad_tail = ((BoneData*)eboflip->data)->rad_tail;
+				bid[i].rad_tail = eboflip->rad_tail;
 				bid[i].roll = eboflip->roll;
 				bid[i].xwidth = eboflip->xwidth;
 				bid[i].zwidth = eboflip->zwidth;
