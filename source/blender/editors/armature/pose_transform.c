@@ -156,7 +156,7 @@ static int apply_armature_pose2bones_exec(bContext *C, wmOperator *op)
 		pchan->size[0] = pchan->size[1] = pchan->size[2] = 1.0f;
 
 		/* set anim lock */
-		curbone->flag |= BONE_UNKEYED;
+		curbone->flag |= ELEMENT_UNKEYED;
 	}
 
 	/* convert editbones back to bones, and then free the edit-data */
@@ -281,8 +281,8 @@ static void set_pose_keys(Object *ob)
 
 	if (ob->pose) {
 		for (chan = ob->pose->chanbase.first; chan; chan = chan->next) {
-			Bone *bone = chan->bone;
-			if ((bone) && (bone->flag & BONE_SELECTED) && (arm->layer & bone->layer))
+			ArmatureElement *bone = chan->bone;
+			if ((bone) && (bone->flag & ELEMENT_SELECTED) && (arm->layer & bone->layer))
 				chan->flag |= POSE_KEY;
 			else
 				chan->flag &= ~POSE_KEY;
@@ -318,7 +318,7 @@ static bPoseChannel *pose_bone_do_paste(Object *ob, bPoseChannel *chan, const bo
 	pchan = BKE_pose_channel_find_name(ob->pose, name);
 
 	if (selOnly)
-		paste_ok = ((pchan) && (pchan->bone->flag & BONE_SELECTED));
+		paste_ok = ((pchan) && (pchan->bone->flag & ELEMENT_SELECTED));
 	else
 		paste_ok = ((pchan != NULL));
 
@@ -686,7 +686,7 @@ static int pose_clear_transform_generic_exec(bContext *C, wmOperator *op,
 		if (autokeyframe_cfra_can_key(scene, &ob->id)) {
 			/* clear any unkeyed tags */
 			if (pchan->bone)
-				pchan->bone->flag &= ~BONE_UNKEYED;
+				pchan->bone->flag &= ~ELEMENT_UNKEYED;
 
 			/* tag for autokeying later */
 			autokey = 1;
@@ -694,7 +694,7 @@ static int pose_clear_transform_generic_exec(bContext *C, wmOperator *op,
 		else {
 			/* add unkeyed tags */
 			if (pchan->bone)
-				pchan->bone->flag |= BONE_UNKEYED;
+				pchan->bone->flag |= ELEMENT_UNKEYED;
 		}
 	}
 	CTX_DATA_END;
