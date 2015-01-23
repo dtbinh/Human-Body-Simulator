@@ -94,7 +94,7 @@ static int apply_armature_pose2bones_exec(bContext *C, wmOperator *op)
 	bArmature *arm = BKE_armature_from_object(ob);
 	bPose *pose;
 	bPoseChannel *pchan;
-	EditBone *curbone;
+	EditArmatureElement *curbone;
 
 	/* don't check if editmode (should be done by caller) */
 	if (ob->type != OB_ARMATURE)
