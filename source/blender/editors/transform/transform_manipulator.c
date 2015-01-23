@@ -150,9 +150,9 @@ static void stats_pose(Scene *scene, RegionView3D *rv3d, bPoseChannel *pchan)
 }
 
 /* for editmode*/
-static void stats_editbone(RegionView3D *rv3d, EditBone *ebo)
+static void stats_editbone(RegionView3D *rv3d, EditArmatureElement *ebo)
 {
-	if (ebo->flag & BONE_EDITMODE_LOCKED)
+	if (ebo->flag & ELEMENT_EDITMODE_LOCKED)
 		protectflag_to_drawflags(OB_LOCK_LOC | OB_LOCK_ROT | OB_LOCK_SCALE, &rv3d->twdrawflag);
 }
 
@@ -354,16 +354,16 @@ static int calc_manipulator_stats(const bContext *C)
 		} /* end editmesh */
 		else if (obedit->type == OB_ARMATURE) {
 			bArmature *arm = obedit->data;
-			ArmatureElement *ebo;
+			EditArmatureElement *ebo;
 
-			if ((v3d->around == V3D_ACTIVE) && (ebo = arm->act_edbone)) {
+			if ((v3d->around == V3D_ACTIVE) && (ebo = arm->act_edelement)) {
 				/* doesn't check selection or visibility intentionally */
-				if (ebo->flag & BONE_TIPSEL) {
+				if (ebo->flag & ELEMENT_TIPSEL) {
 					calc_tw_center(scene, ebo->tail);
 					totsel++;
 				}
-				if ((ebo->flag & BONE_ROOTSEL) ||
-				    ((ebo->flag & BONE_TIPSEL) == false))  /* ensure we get at least one point */
+				if ((ebo->flag & ELEMENT_ROOTSEL) ||
+				    ((ebo->flag & ELEMENT_TIPSEL) == false))  /* ensure we get at least one point */
 				{
 					calc_tw_center(scene, ebo->head);
 					totsel++;
@@ -372,16 +372,16 @@ static int calc_manipulator_stats(const bContext *C)
 			}
 			else {
 				for (ebo = arm->edbo->first; ebo; ebo = ebo->next) {
-					if (EBONE_VISIBLE(arm, ebo)) {
-						if (ebo->flag & BONE_TIPSEL) {
+					if (EELEMENT_VISIBLE(arm, ebo)) {
+						if (ebo->flag & ELEMENT_TIPSEL) {
 							calc_tw_center(scene, ebo->tail);
 							totsel++;
 						}
-						if (ebo->flag & BONE_ROOTSEL) {
+						if (ebo->flag & ELEMENT_ROOTSEL) {
 							calc_tw_center(scene, ebo->head);
 							totsel++;
 						}
-						if (ebo->flag & BONE_SELECTED) {
+						if (ebo->flag & ELEMENT_SELECTED) {
 							stats_editbone(rv3d, ebo);
 						}
 					}
@@ -519,7 +519,7 @@ static int calc_manipulator_stats(const bContext *C)
 				/* use channels to get stats */
 				for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 					ArmatureElement *element = pchan->bone;
-					if (element && (element->flag & BONE_TRANSFORM)) {
+					if (element && (element->flag & ELEMENT_TRANSFORM)) {
 						stats_pose(scene, rv3d, pchan);
 					}
 				}
