@@ -1976,7 +1976,7 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 
 static int do_object_pose_box_select(bContext *C, ViewContext *vc, rcti *rect, bool select, bool extend)
 {
-	Bone *bone;
+	ArmatureElement *bone;
 	Object *ob = vc->obact;
 	unsigned int *vbuffer = NULL; /* selection buffer	*/
 	unsigned int *col;          /* color in buffer	*/
