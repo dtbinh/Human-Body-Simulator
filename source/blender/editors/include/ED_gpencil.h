@@ -105,7 +105,7 @@ void ED_gpencil_strokes_copybuf_free(void);
 void ED_gpencil_draw_2dimage(const struct bContext *C);
 void ED_gpencil_draw_view2d(const struct bContext *C, bool onlyv2d);
 void ED_gpencil_draw_view3d(struct Scene *scene, struct View3D *v3d, struct ARegion *ar, bool only3d);
-void ED_gpencil_draw_ex(struct Scene *scene, bGPdata *gpd, int winx, int winy, const int cfra, const char spacetype);
+void ED_gpencil_draw_ex(struct Scene *scene, struct bGPdata *gpd, int winx, int winy, const int cfra, const char spacetype);
 
 /* ----------- Grease-Pencil AnimEdit API ------------------ */
 bool  ED_gplayer_frames_looper(struct bGPDlayer *gpl, struct Scene *scene,
