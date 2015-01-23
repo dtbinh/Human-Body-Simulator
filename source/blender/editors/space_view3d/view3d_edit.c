@@ -2956,7 +2956,7 @@ static int viewselected_exec(bContext *C, wmOperator *op)
 			float vec[3];
 
 			for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-				if (pchan->bone->flag & BONE_SELECTED) {
+				if (pchan->bone->flag & ELEMENT_SELECTED) {
 					if (pchan->bone->layer & arm->layer) {
 						bPoseChannel *pchan_tx = pchan->custom_tx ? pchan->custom_tx : pchan;
 						ok = 1;
@@ -3087,7 +3087,7 @@ static int view_lock_to_active_exec(bContext *C, wmOperator *UNUSED(op))
 				}
 			}
 			else {
-				EditBone *ebone_act = ((bArmature *)obact->data)->act_edbone;
+				EditArmatureElement *ebone_act = ((bArmature *)obact->data)->act_edelement;
 				if (ebone_act) {
 					BLI_strncpy(v3d->ob_centre_bone, ebone_act->name, sizeof(v3d->ob_centre_bone));
 				}
