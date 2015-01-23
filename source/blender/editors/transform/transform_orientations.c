@@ -421,12 +421,12 @@ static int count_bone_select(bArmature *arm, ListBase *lb, const bool do_it)
 	int total = 0;
 	
 	for (bone = lb->first; bone; bone = bone->next) {
-		bone->flag &= ~BONE_TRANSFORM;
+		bone->flag &= ~ELEMENT_TRANSFORM;
 		do_next = do_it;
 		if (do_it) {
 			if (bone->layer & arm->layer) {
-				if (bone->flag & BONE_SELECTED) {
-					bone->flag |= BONE_TRANSFORM;
+				if (bone->flag & ELEMENT_SELECTED) {
+					bone->flag |= ELEMENT_TRANSFORM;
 					total++;
 
 					/* no transform on children if one parent bone is selected */
@@ -927,8 +927,8 @@ int getTransformOrientation(const bContext *C, float normal[3], float plane[3], 
 			bool ok = false;
 			float tmat[3][3];
 
-			if (activeOnly && (ebone = arm->act_edbone)) {
-				ED_armature_ebone_to_mat3(ebone, tmat);
+			if (activeOnly && (ebone = arm->act_edelement)) {
+				ED_armature_eelement_to_mat3(ebone, tmat);
 				add_v3_v3(normal, tmat[2]);
 				add_v3_v3(plane, tmat[1]);
 				ok = true;
@@ -936,8 +936,8 @@ int getTransformOrientation(const bContext *C, float normal[3], float plane[3], 
 			else {
 				for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
 					if (arm->layer & ebone->layer) {
-						if (ebone->flag & BONE_SELECTED) {
-							ED_armature_ebone_to_mat3(ebone, tmat);
+						if (ebone->flag & ELEMENT_SELECTED) {
+							ED_armature_eelement_to_mat3(ebone, tmat);
 							add_v3_v3(normal, tmat[2]);
 							add_v3_v3(plane, tmat[1]);
 							ok = true;
@@ -981,7 +981,7 @@ int getTransformOrientation(const bContext *C, float normal[3], float plane[3], 
 			if (totsel) {
 				/* use channels to get stats */
 				for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-					if (pchan->bone && pchan->bone->flag & BONE_TRANSFORM) {
+					if (pchan->bone && pchan->bone->flag & ELEMENT_TRANSFORM) {
 						add_v3_v3(normal, pchan->pose_mat[2]);
 						add_v3_v3(plane, pchan->pose_mat[1]);
 					}
