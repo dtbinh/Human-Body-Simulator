@@ -167,10 +167,7 @@ typedef struct bArmature {
 	ListBase    bonebase;
 	ListBase    musclebase;
 	ListBase    chainbase;
-//	ListBase    musclebase;
-	ListBase    elementbase;
-	ListBase    elementbase;
-	ListBase   *edmu;                   /* muscle listbase, we use pointer so we can check state */
+//	ListBase    elementbase;
 	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
 	ListBase   *edmu;                   /* editmuscle listbase, we use pointer so we can check state */
 //	ListBase   *edel;                   /* List of all EditArmatureElements */
@@ -186,9 +183,6 @@ typedef struct bArmature {
 //
 //    ArmatureElement *act_muscle;
 //	struct EditArmatureElement *act_edmuscle;
-
-	ArmatureElement *act_element;
-	struct EditArmatureElement *act_edelement;
 
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;

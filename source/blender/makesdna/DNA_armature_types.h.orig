@@ -174,7 +174,7 @@ typedef struct bArmature {
 	ListBase   *edmu;                   /* muscle listbase, we use pointer so we can check state */
 =======
 //	ListBase    elementbase;
->>>>>>> why i do stupid shit
+>>>>>>> bc8412d6476afb38cb165740e5bf7979e0d60f57
 	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
 	ListBase   *edmu;                   /* editmuscle listbase, we use pointer so we can check state */
 //	ListBase   *edel;                   /* List of all EditArmatureElements */
@@ -193,9 +193,12 @@ typedef struct bArmature {
 
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;
+<<<<<<< HEAD
 
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;
+=======
+>>>>>>> bc8412d6476afb38cb165740e5bf7979e0d60f57
 
 	void       *sketch;                 /* sketch struct for etch-a-ton */
 

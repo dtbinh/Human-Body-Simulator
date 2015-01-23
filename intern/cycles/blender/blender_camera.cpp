@@ -20,8 +20,6 @@
 #include "blender_sync.h"
 #include "blender_util.h"
 
-#include "util_logging.h"
-
 CCL_NAMESPACE_BEGIN
 
 /* Blender Camera Intermediate: we first convert both the offline and 3d view
@@ -415,7 +413,6 @@ void BlenderSync::sync_camera_motion(BL::Object b_ob, float motion_time)
 	tfm = blender_camera_matrix(tfm, cam->type);
 
 	if(tfm != cam->matrix) {
-		VLOG(1) << "Camera " << b_ob.name() << " motion detected.";
 		if(motion_time == -1.0f) {
 			cam->motion.pre = tfm;
 			cam->use_motion = true;

@@ -138,6 +138,7 @@ void BKE_armature_elementlist_free(ListBase *lb) {
 void BKE_armature_free(bArmature *arm)
 {
 	if (arm) {
+        BKE_armature_elementlist_free(&arm->elementbase);
 
         /* free muscle */
 //        BKE_armature_musclelist_free(&arm->musclebase);
@@ -1662,18 +1663,18 @@ void mat3_to_vec_roll(float mat[3][3], float r_vec[3], float *r_roll)
  *   -> w = (-v.x, v.y, -v.z)
  *
  * Solving this, we get (x, y and z being the components of v):
- *     „¡ (x^2 * y + z^2) / (x^2 + z^2),   x,   x * z * (y - 1) / (x^2 + z^2) „¢
- * M = „   x * (y^2 - 1)  / (x^2 + z^2),   y,    z * (y^2 - 1)  / (x^2 + z^2) „ 
- *     „¤ x * z * (y - 1) / (x^2 + z^2),   z,   (x^2 + z^2 * y) / (x^2 + z^2) „£
+ *     â€žÂ¡ (x^2 * y + z^2) / (x^2 + z^2),   x,   x * z * (y - 1) / (x^2 + z^2) â€žÂ¢
+ * M = â€žÂ   x * (y^2 - 1)  / (x^2 + z^2),   y,    z * (y^2 - 1)  / (x^2 + z^2) â€žÂ 
+ *     â€žÂ¤ x * z * (y - 1) / (x^2 + z^2),   z,   (x^2 + z^2 * y) / (x^2 + z^2) â€žÂ£
  *
  * This is stable as long as v (the bone) is not too much aligned with +/-Y (i.e. x and z components
  * are not too close to 0).
  *
  * Since v is normalized, we have x^2 + y^2 + z^2 = 1, hence x^2 + z^2 = 1 - y^2 = (1 - y)(1 + y).
  * This allows to simplifies M like this:
- *     „¡ 1 - x^2 / (1 + y),   x,     -x * z / (1 + y) „¢
- * M = „                 -x,   y,                   -z „ 
- *     „¤  -x * z / (1 + y),   z,    1 - z^2 / (1 + y) „£
+ *     â€žÂ¡ 1 - x^2 / (1 + y),   x,     -x * z / (1 + y) â€žÂ¢
+ * M = â€žÂ                 -x,   y,                   -z â€žÂ 
+ *     â€žÂ¤  -x * z / (1 + y),   z,    1 - z^2 / (1 + y) â€žÂ£
  *
  * Written this way, we see the case v = +Y is no more a singularity. The only one remaining is the bone being
  * aligned with -Y.
@@ -1685,17 +1686,17 @@ void mat3_to_vec_roll(float mat[3][3], float r_vec[3], float *r_roll)
  * will degenerate. So let's now focus on these corner elements.
  *
  * We rewrite M so that it only contains its four corner elements, and combine the 1 / (1 + y) factor:
- *                    „¡ 1 + y - x^2,        -x * z „¢
- * M* = 1 / (1 + y) * „                             „ 
- *                    „¤      -x * z,   1 + y - z^2 „£
+ *                    â€žÂ¡ 1 + y - x^2,        -x * z â€žÂ¢
+ * M* = 1 / (1 + y) * â€žÂ                             â€žÂ 
+ *                    â€žÂ¤      -x * z,   1 + y - z^2 â€žÂ£
  *
  * When y is close to -1, computing 1 / (1 + y) will cause severe numerical instability, so we ignore it and
  * normalize M instead. We know y^2 = 1 - (x^2 + z^2), and y < 0, hence y = -sqrt(1 - (x^2 + z^2)).
  * Since x and z are both close to 0, we apply the binomial expansion to the first order:
  * y = -sqrt(1 - (x^2 + z^2)) = -1 + (x^2 + z^2) / 2. Which gives:
- *                        „¡  z^2 - x^2,  -2 * x * z „¢
- * M* = 1 / (x^2 + z^2) * „                          „ 
- *                        „¤ -2 * x * z,   x^2 - z^2 „£
+ *                        â€žÂ¡  z^2 - x^2,  -2 * x * z â€žÂ¢
+ * M* = 1 / (x^2 + z^2) * â€žÂ                          â€žÂ 
+ *                        â€žÂ¤ -2 * x * z,   x^2 - z^2 â€žÂ£
  */
 void vec_roll_to_mat3_normalized(const float nor[3], const float roll, float mat[3][3])
 {

@@ -2662,7 +2662,10 @@ static void view3d_draw_objects(
 
 	if (!draw_offscreen) {
 		/* needs to be done always, gridview is adjusted in drawgrid() now, but only for ortho views. */
-		rv3d->gridview = ED_view3d_grid_scale(scene, v3d, grid_unit);
+		rv3d->gridview = v3d->grid;
+		if (scene->unit.system) {
+			rv3d->gridview /= scene->unit.scale_length;
+		}
 
 		if ((rv3d->view == RV3D_VIEW_USER) || (rv3d->persp != RV3D_ORTHO)) {
 			if ((v3d->flag2 & V3D_RENDER_OVERRIDE) == 0) {
@@ -2672,7 +2675,6 @@ static void view3d_draw_objects(
 		else {
 			if ((v3d->flag2 & V3D_RENDER_OVERRIDE) == 0) {
 				ED_region_pixelspace(ar);
-				*grid_unit = NULL;  /* drawgrid need this to detect/affect smallest valid unit... */
 				drawgrid(&scene->unit, ar, v3d, grid_unit);
 				/* XXX make function? replaces persp(1) */
 				glMatrixMode(GL_PROJECTION);

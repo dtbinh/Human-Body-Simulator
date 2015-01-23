@@ -212,7 +212,7 @@ static void joined_armature_fix_animdata_cb(ID *id, AnimData *adt, void *user_da
 }
 
 /* Helper function for armature joining - link fixing */
-static void joined_armature_fix_links(Main *bmain, Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditBone *curbone)
+static void joined_armature_fix_links(Main *bmain, Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditArmatureElement *curbone)
 {
 	Object *ob;
 	bPose *pose;

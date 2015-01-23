@@ -73,6 +73,7 @@ class SEQUENCER_HT_header(Header):
         row.prop(scene, "lock_frame_selection_to_range", text="", toggle=True)
 
         layout.prop(st, "view_type", expand=True, text="")
+        layout.prop(st, "waveform_draw_type", text="")
 
         if st.view_type in {'PREVIEW', 'SEQUENCER_PREVIEW'}:
             layout.prop(st, "display_mode", expand=True, text="")
@@ -163,10 +164,8 @@ class SEQUENCER_MT_view(Menu):
         layout = self.layout
 
         st = context.space_data
-        is_preview = st.view_type in {'PREVIEW', 'SEQUENCER_PREVIEW'}
-        is_sequencer_view = st.view_type in {'SEQUENCER', 'SEQUENCER_PREVIEW'}
 
-        if st.view_type == 'PREVIEW':
+        if st.view_type in {'PREVIEW'}:
             # Specifying the REGION_PREVIEW context is needed in preview-only
             # mode, else the lookup for the shortcut will fail in
             # wm_keymap_item_find_props() (see #32595).
@@ -176,10 +175,10 @@ class SEQUENCER_MT_view(Menu):
 
         layout.separator()
 
-        if is_sequencer_view:
+        if st.view_type in {'SEQUENCER', 'SEQUENCER_PREVIEW'}:
             layout.operator("sequencer.view_all", text="View all Sequences")
             layout.operator("sequencer.view_selected")
-        if is_preview:
+        if st.view_type in {'PREVIEW', 'SEQUENCER_PREVIEW'}:
             layout.operator_context = 'INVOKE_REGION_PREVIEW'
             layout.operator("sequencer.view_all_preview", text="Fit preview in window")
 
@@ -197,14 +196,12 @@ class SEQUENCER_MT_view(Menu):
             # # XXX, invokes in the header view
             # layout.operator("sequencer.view_ghost_border", text="Overlay Border")
 
-        if is_sequencer_view:
+        if st.view_type in {'SEQUENCER', 'SEQUENCER_PREVIEW'}:
             layout.prop(st, "show_seconds")
             layout.prop(st, "show_frame_indicator")
             layout.prop(st, "show_strip_offset")
 
-            layout.prop_menu_enum(st, "waveform_draw_type")
-
-        if is_preview:
+        if st.view_type in {'PREVIEW', 'SEQUENCER_PREVIEW'}:
             if st.display_mode == 'IMAGE':
                 layout.prop(st, "show_safe_areas")
             elif st.display_mode == 'WAVEFORM':
@@ -212,7 +209,7 @@ class SEQUENCER_MT_view(Menu):
 
         layout.separator()
 
-        if is_sequencer_view:
+        if st.view_type in {'SEQUENCER', 'SEQUENCER_PREVIEW'}:
             layout.prop(st, "use_marker_sync")
             layout.separator()
 

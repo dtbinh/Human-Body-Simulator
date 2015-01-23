@@ -96,24 +96,22 @@ void RNA_api_armature_edit_armatureelement(StructRNA *srna)
 //	parm = RNA_def_float(func, "factor", 0, -FLT_MAX, FLT_MAX, "Factor", "Envelope factor", -FLT_MAX, FLT_MAX);
 //	RNA_def_function_return(func, parm);
 //}
+
+void RNA_api_armatureelement(StructRNA *srna)
+{
+    PropertyRNA *parm;
+    FunctionRNA *func;
+
+    func = RNA_def_function(srna, "evaluate_envelope", "rna_ArmatureElement_do_envelope");
+    RNA_def_function_ui_description(func, "Calculate element envelope at given point");
+    parm = RNA_def_float_vector_xyz(func, "point", 3, NULL, -FLT_MAX, FLT_MAX, "Point",
+                                    "Position in 3d space to evaluate", -FLT_MAX, FLT_MAX);
+    RNA_def_property_flag(parm, PROP_REQUIRED);
+    /* return value */
+    parm = RNA_def_float(func, "factor", 0, -FLT_MAX, FLT_MAX, "Factor", "Envelope factor", -FLT_MAX, FLT_MAX);
+    RNA_def_function_return(func, parm);
 <<<<<<< HEAD
-
-void RNA_api_armatureelement(StructRNA *srna)
-{
-    PropertyRNA *parm;
-    FunctionRNA *func;
-
-    func = RNA_def_function(srna, "evaluate_envelope", "rna_ArmatureElement_do_envelope");
-    RNA_def_function_ui_description(func, "Calculate element envelope at given point");
-    parm = RNA_def_float_vector_xyz(func, "point", 3, NULL, -FLT_MAX, FLT_MAX, "Point",
-                                    "Position in 3d space to evaluate", -FLT_MAX, FLT_MAX);
-    RNA_def_property_flag(parm, PROP_REQUIRED);
-    /* return value */
-    parm = RNA_def_float(func, "factor", 0, -FLT_MAX, FLT_MAX, "Factor", "Envelope factor", -FLT_MAX, FLT_MAX);
-    RNA_def_function_return(func, parm);
 }
-=======
->>>>>>> Stuff
 
 void RNA_api_armatureelement(StructRNA *srna)
 {
@@ -128,6 +126,8 @@ void RNA_api_armatureelement(StructRNA *srna)
     /* return value */
     parm = RNA_def_float(func, "factor", 0, -FLT_MAX, FLT_MAX, "Factor", "Envelope factor", -FLT_MAX, FLT_MAX);
     RNA_def_function_return(func, parm);
+=======
+>>>>>>> bc8412d6476afb38cb165740e5bf7979e0d60f57
 }
 
 #endif

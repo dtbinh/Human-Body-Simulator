@@ -28,8 +28,7 @@
 /** \file blender/blenlib/intern/BLI_ghash.c
  *  \ingroup bli
  *
- * A general (pointer -> pointer) chaining hash table
- * for 'Abstract Data Types' (known as an ADT Hash Table).
+ * A general (pointer -> pointer) hash table ADT
  *
  * \note edgehash.c is based on this, make sure they stay in sync.
  */

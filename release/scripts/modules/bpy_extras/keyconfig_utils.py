@@ -59,7 +59,6 @@ KM_HIERARCHY = [
 
         ('Knife Tool Modal Map', 'EMPTY', 'WINDOW', []),
         ('Paint Stroke Modal', 'EMPTY', 'WINDOW', []),
-        ('Paint Curve', 'EMPTY', 'WINDOW', []),
 
         ('Object Non-modal', 'EMPTY', 'WINDOW', []),  # mode change
 

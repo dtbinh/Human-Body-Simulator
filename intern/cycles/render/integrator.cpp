@@ -59,10 +59,6 @@ Integrator::Integrator()
 	mesh_light_samples = 1;
 	subsurface_samples = 1;
 	volume_samples = 1;
-
-	sample_all_lights_direct = true;
-	sample_all_lights_indirect = true;
-
 	method = PATH;
 
 	sampling_pattern = SAMPLING_PATTERN_SOBOL;
