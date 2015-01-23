@@ -325,7 +325,7 @@ static void do_lasso_select_pose__doSelectBone(void *userData, struct bPoseChann
 	LassoSelectUserData *data = userData;
 	bArmature *arm = data->vc->obact->data;
 
-	if (PBONE_SELECTABLE(arm, pchan->bone)) {
+	if (PELEMENT_SELECTABLE(arm, pchan->bone)) {
 		bool is_point_done = false;
 		int points_proj_tot = 0;
 
@@ -359,8 +359,8 @@ static void do_lasso_select_pose__doSelectBone(void *userData, struct bPoseChann
 		    ((is_point_done == false) && (points_proj_tot == 2) &&
 		     BLI_lasso_is_edge_inside(data->mcords, data->moves, x0, y0, x1, y1, INT_MAX)))
 		{
-			if (data->select) pchan->bone->flag |=  BONE_SELECTED;
-			else              pchan->bone->flag &= ~BONE_SELECTED;
+			if (data->select) pchan->bone->flag |=  ELEMENT_SELECTED;
+			else              pchan->bone->flag &= ~ELEMENT_SELECTED;
 			data->is_changed = true;
 		}
 		data->is_changed |= is_point_done;
@@ -607,12 +607,12 @@ static void do_lasso_select_lattice(ViewContext *vc, const int mcords[][2], shor
 	lattice_foreachScreenVert(vc, do_lasso_select_lattice__doSelect, &data, V3D_PROJ_TEST_CLIP_DEFAULT);
 }
 
-static void do_lasso_select_armature__doSelectBone(void *userData, struct EditBone *ebone, const float screen_co_a[2], const float screen_co_b[2])
+static void do_lasso_select_armature__doSelectBone(void *userData, struct EditArmatureElement *ebone, const float screen_co_a[2], const float screen_co_b[2])
 {
 	LassoSelectUserData *data = userData;
 	bArmature *arm = data->vc->obedit->data;
 
-	if (data->select ? EBONE_SELECTABLE(arm, ebone) : EBONE_VISIBLE(arm, ebone)) {
+	if (data->select ? EELEMENT_SELECTABLE(arm, ebone) : EELEMENT_VISIBLE(arm, ebone)) {
 		bool is_point_done = false;
 		int points_proj_tot = 0;
 
@@ -628,8 +628,8 @@ static void do_lasso_select_armature__doSelectBone(void *userData, struct EditBo
 			    BLI_lasso_is_point_inside(data->mcords, data->moves, x0, y0, INT_MAX))
 			{
 				is_point_done = true;
-				if (data->select) ebone->flag |=  BONE_ROOTSEL;
-				else              ebone->flag &= ~BONE_ROOTSEL;
+				if (data->select) ebone->flag |=  ELEMENT_ROOTSEL;
+				else              ebone->flag &= ~ELEMENT_ROOTSEL;
 			}
 		}
 
@@ -640,8 +640,8 @@ static void do_lasso_select_armature__doSelectBone(void *userData, struct EditBo
 			    BLI_lasso_is_point_inside(data->mcords, data->moves, x1, y1, INT_MAX))
 			{
 				is_point_done = true;
-				if (data->select) ebone->flag |=  BONE_TIPSEL;
-				else              ebone->flag &= ~BONE_TIPSEL;
+				if (data->select) ebone->flag |=  ELEMENT_TIPSEL;
+				else              ebone->flag &= ~ELEMENT_TIPSEL;
 			}
 		}
 
@@ -649,8 +649,8 @@ static void do_lasso_select_armature__doSelectBone(void *userData, struct EditBo
 		if ((is_point_done == false) && (points_proj_tot == 2) &&
 		    BLI_lasso_is_edge_inside(data->mcords, data->moves, x0, y0, x1, y1, INT_MAX))
 		{
-			if (data->select) ebone->flag |=  (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
-			else              ebone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
+			if (data->select) ebone->flag |=  (ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
+			else              ebone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
 			data->is_changed = true;
 		}
 
@@ -1907,7 +1907,7 @@ static int do_meta_box_select(ViewContext *vc, rcti *rect, bool select, bool ext
 static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool extend)
 {
 	bArmature *arm = vc->obedit->data;
-	EditBone *ebone;
+	EditArmatureElement *ebone;
 	int a;
 
 	unsigned int buffer[4 * MAXPICKBUF];
@@ -1917,7 +1917,7 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 	
 	/* clear flag we use to detect point was affected */
 	for (ebone = arm->edbo->first; ebone; ebone = ebone->next)
-		ebone->flag &= ~BONE_DONE;
+		ebone->flag &= ~ELEMENT_DONE;
 	
 	if (extend == false && select)
 		ED_armature_deselect_all_visible(vc->obedit);
@@ -1927,17 +1927,17 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 		int index = buffer[(4 * a) + 3];
 		if (index != -1) {
 			ebone = BLI_findlink(arm->edbo, index & ~(BONESEL_ANY));
-			if ((select == false) || ((ebone->flag & BONE_UNSELECTABLE) == 0)) {
+			if ((select == false) || ((ebone->flag & ELEMENT_UNSELECTABLE) == 0)) {
 				if (index & BONESEL_TIP) {
-					ebone->flag |= BONE_DONE;
-					if (select) ebone->flag |= BONE_TIPSEL;
-					else ebone->flag &= ~BONE_TIPSEL;
+					ebone->flag |= ELEMENT_DONE;
+					if (select) ebone->flag |= ELEMENT_TIPSEL;
+					else ebone->flag &= ~ELEMENT_TIPSEL;
 				}
 				
 				if (index & BONESEL_ROOT) {
-					ebone->flag |= BONE_DONE;
-					if (select) ebone->flag |= BONE_ROOTSEL;
-					else ebone->flag &= ~BONE_ROOTSEL;
+					ebone->flag |= ELEMENT_DONE;
+					if (select) ebone->flag |= ELEMENT_ROOTSEL;
+					else ebone->flag &= ~ELEMENT_ROOTSEL;
 				}
 			}
 		}
@@ -1945,9 +1945,9 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 	
 	/* now we have to flush tag from parents... */
 	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-		if (ebone->parent && (ebone->flag & BONE_CONNECTED)) {
-			if (ebone->parent->flag & BONE_DONE)
-				ebone->flag |= BONE_DONE;
+		if (ebone->parent && (ebone->flag & ELEMENT_CONNECTED)) {
+			if (ebone->parent->flag & ELEMENT_DONE)
+				ebone->flag |= ELEMENT_DONE;
 		}
 	}
 	
@@ -1957,12 +1957,12 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 		if (index != -1) {
 			ebone = BLI_findlink(arm->edbo, index & ~(BONESEL_ANY));
 			if (index & BONESEL_BONE) {
-				if ((select == false) || ((ebone->flag & BONE_UNSELECTABLE) == 0)) {
-					if (!(ebone->flag & BONE_DONE)) {
+				if ((select == false) || ((ebone->flag & ELEMENT_UNSELECTABLE) == 0)) {
+					if (!(ebone->flag & ELEMENT_DONE)) {
 						if (select)
-							ebone->flag |= (BONE_ROOTSEL | BONE_TIPSEL | BONE_SELECTED);
+							ebone->flag |= (ELEMENT_ROOTSEL | ELEMENT_TIPSEL | ELEMENT_SELECTED);
 						else
-							ebone->flag &= ~(BONE_ROOTSEL | BONE_TIPSEL | BONE_SELECTED);
+							ebone->flag &= ~(ELEMENT_ROOTSEL | ELEMENT_TIPSEL | ELEMENT_SELECTED);
 					}
 				}
 			}
@@ -1994,8 +1994,8 @@ static int do_object_pose_box_select(bContext *C, ViewContext *vc, rcti *rect, b
 		if (bone_only) {
 			CTX_DATA_BEGIN (C, bPoseChannel *, pchan, visible_pose_bones)
 			{
-				if ((select == false) || ((pchan->bone->flag & BONE_UNSELECTABLE) == 0)) {
-					pchan->bone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
+				if ((select == false) || ((pchan->bone->flag & ELEMENT_UNSELECTABLE) == 0)) {
+					pchan->bone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
 				}
 			}
 			CTX_DATA_END;
@@ -2031,14 +2031,14 @@ static int do_object_pose_box_select(bContext *C, ViewContext *vc, rcti *rect, b
 						bone = get_indexed_bone(base->object, *col & ~(BONESEL_ANY));
 						if (bone) {
 							if (select) {
-								if ((bone->flag & BONE_UNSELECTABLE) == 0) {
-									bone->flag |= BONE_SELECTED;
+								if ((bone->flag & ELEMENT_UNSELECTABLE) == 0) {
+									bone->flag |= ELEMENT_SELECTED;
 									bone_selected = 1;
 								}
 							}
 							else {
 								bArmature *arm = base->object->data;
-								bone->flag &= ~BONE_SELECTED;
+								bone->flag &= ~ELEMENT_SELECTED;
 								if (arm->act_bone == bone)
 									arm->act_bone = NULL;
 							}
@@ -2551,9 +2551,9 @@ static short pchan_circle_doSelectJoint(void *userData, bPoseChannel *pchan, con
 
 	if (len_squared_v2v2(data->mval_fl, screen_co) <= data->radius_squared) {
 		if (data->select)
-			pchan->bone->flag |= BONE_SELECTED;
+			pchan->bone->flag |= ELEMENT_SELECTED;
 		else
-			pchan->bone->flag &= ~BONE_SELECTED;
+			pchan->bone->flag &= ~ELEMENT_SELECTED;
 		return 1;
 	}
 	return 0;
@@ -2563,7 +2563,7 @@ static void do_circle_select_pose__doSelectBone(void *userData, struct bPoseChan
 	CircleSelectUserData *data = userData;
 	bArmature *arm = data->vc->obact->data;
 
-	if (PBONE_SELECTABLE(arm, pchan->bone)) {
+	if (PELEMENT_SELECTABLE(arm, pchan->bone)) {
 		bool is_point_done = false;
 		int points_proj_tot = 0;
 
@@ -2593,8 +2593,8 @@ static void do_circle_select_pose__doSelectBone(void *userData, struct bPoseChan
 		if ((is_point_done == false) && (points_proj_tot == 2) &&
 		    edge_inside_circle(data->mval_fl, data->radius, screen_co_a, screen_co_b))
 		{
-			if (data->select) pchan->bone->flag |= BONE_SELECTED;
-			else              pchan->bone->flag &= ~BONE_SELECTED;
+			if (data->select) pchan->bone->flag |= ELEMENT_SELECTED;
+			else              pchan->bone->flag &= ~ELEMENT_SELECTED;
 			data->is_changed = true;
 		}
 
@@ -2623,33 +2623,33 @@ static void pose_circle_select(ViewContext *vc, const bool select, const int mva
 	}
 }
 
-static short armature_circle_doSelectJoint(void *userData, EditBone *ebone, const float screen_co[2], short head)
+static short armature_circle_doSelectJoint(void *userData, EditArmatureElement *ebone, const float screen_co[2], short head)
 {
 	CircleSelectUserData *data = userData;
 
 	if (len_squared_v2v2(data->mval_fl, screen_co) <= data->radius_squared) {
 		if (head) {
 			if (data->select)
-				ebone->flag |= BONE_ROOTSEL;
+				ebone->flag |= ELEMENT_ROOTSEL;
 			else 
-				ebone->flag &= ~BONE_ROOTSEL;
+				ebone->flag &= ~ELEMENT_ROOTSEL;
 		}
 		else {
 			if (data->select)
-				ebone->flag |= BONE_TIPSEL;
+				ebone->flag |= ELEMENT_TIPSEL;
 			else 
-				ebone->flag &= ~BONE_TIPSEL;
+				ebone->flag &= ~ELEMENT_TIPSEL;
 		}
 		return 1;
 	}
 	return 0;
 }
-static void do_circle_select_armature__doSelectBone(void *userData, struct EditBone *ebone, const float screen_co_a[2], const float screen_co_b[2])
+static void do_circle_select_armature__doSelectBone(void *userData, struct EditArmatureElement *ebone, const float screen_co_a[2], const float screen_co_b[2])
 {
 	CircleSelectUserData *data = userData;
 	bArmature *arm = data->vc->obedit->data;
 
-	if (data->select ? EBONE_SELECTABLE(arm, ebone) : EBONE_VISIBLE(arm, ebone)) {
+	if (data->select ? EELEMENT_SELECTABLE(arm, ebone) : EELEMENT_VISIBLE(arm, ebone)) {
 		bool is_point_done = false;
 		int points_proj_tot = 0;
 
@@ -2679,8 +2679,8 @@ static void do_circle_select_armature__doSelectBone(void *userData, struct EditB
 		if ((is_point_done == false) && (points_proj_tot == 2) &&
 		    edge_inside_circle(data->mval_fl, data->radius, screen_co_a, screen_co_b))
 		{
-			if (data->select) ebone->flag |=  (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
-			else              ebone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
+			if (data->select) ebone->flag |=  (ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
+			else              ebone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
 			data->is_changed = true;
 		}
 
