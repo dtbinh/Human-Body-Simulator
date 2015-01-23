@@ -285,16 +285,16 @@ static int buttons_context_path_bone(ButsContextPath *path)
 		arm = path->ptr[path->len - 1].data;
 
 		if (arm->edbo) {
-			if (arm->act_edbone) {
-				edbo = arm->act_edbone;
+			if (arm->act_edelement) {
+				edbo = arm->act_edelement;
 				RNA_pointer_create(&arm->id, &RNA_EditBone, edbo, &path->ptr[path->len]);
 				path->len++;
 				return 1;
 			}
 		}
 		else {
-			if (arm->act_bone) {
-				RNA_pointer_create(&arm->id, &RNA_Bone, arm->act_bone, &path->ptr[path->len]);
+			if (arm->act_element) {
+				RNA_pointer_create(&arm->id, &RNA_Bone, arm->act_element, &path->ptr[path->len]);
 				path->len++;
 				return 1;
 			}
@@ -323,8 +323,8 @@ static int buttons_context_path_pose_bone(ButsContextPath *path)
 			return 0;
 		}
 		else {
-			if (arm->act_bone) {
-				bPoseChannel *pchan = BKE_pose_channel_find_name(ob->pose, arm->act_bone->name);
+			if (arm->act_element) {
+				bPoseChannel *pchan = BKE_pose_channel_find_name(ob->pose, arm->act_element->name);
 				if (pchan) {
 					RNA_pointer_create(&ob->id, &RNA_PoseBone, pchan, &path->ptr[path->len]);
 					path->len++;
