@@ -765,7 +765,7 @@ static void recalcData_objects(TransInfo *t)
 		else if (t->obedit->type == OB_ARMATURE) { /* no recalc flag, does pose */
 			bArmature *arm = t->obedit->data;
 			ListBase *edbo = arm->edbo;
-			EditBone *ebo, *ebo_parent;
+			EditArmatureElement *ebo, *ebo_parent;
 			TransData *td = t->data;
 			int i;
 
@@ -775,11 +775,11 @@ static void recalcData_objects(TransInfo *t)
 
 			/* Ensure all bones are correctly adjusted */
 			for (ebo = edbo->first; ebo; ebo = ebo->next) {
-				ebo_parent = (ebo->flag & BONE_CONNECTED) ? ebo->parent : NULL;
+				ebo_parent = (ebo->flag & ELEMENT_CONNECTED) ? ebo->parent : NULL;
 
 				if (ebo_parent) {
 					/* If this bone has a parent tip that has been moved */
-					if (ebo_parent->flag & BONE_TIPSEL) {
+					if (ebo_parent->flag & ELEMENT_TIPSEL) {
 						copy_v3_v3(ebo->head, ebo_parent->tail);
 						if (t->mode == TFM_BONE_ENVELOPE) ebo->rad_head = ebo_parent->rad_tail;
 					}
@@ -1697,9 +1697,9 @@ bool calculateCenterActive(TransInfo *t, bool select_only, float r_center[3])
 			case OB_ARMATURE:
 			{
 				bArmature *arm = t->obedit->data;
-				EditBone *ebo = arm->act_edbone;
+				EditArmatureElement *ebo = arm->act_edelement;
 
-				if (ebo && (!select_only || (ebo->flag & (BONE_SELECTED | BONE_ROOTSEL)))) {
+				if (ebo && (!select_only || (ebo->flag & (ELEMENT_SELECTED | ELEMENT_ROOTSEL)))) {
 					copy_v3_v3(r_center, ebo->head);
 					ok = true;
 				}
@@ -1746,7 +1746,7 @@ bool calculateCenterActive(TransInfo *t, bool select_only, float r_center[3])
 		Object *ob = OBACT;
 		if (ob) {
 			bPoseChannel *pchan = BKE_pose_channel_active(ob);
-			if (pchan && (!select_only || (pchan->bone->flag & BONE_SELECTED))) {
+			if (pchan && (!select_only || (pchan->bone->flag & ELEMENT_SELECTED))) {
 				copy_v3_v3(r_center, pchan->pose_head);
 				ok = true;
 			}
