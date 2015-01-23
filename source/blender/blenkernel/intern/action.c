@@ -531,7 +531,7 @@ bPoseChannel *BKE_pose_channel_active(Object *ob)
 
 	/* find active */
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-		if ((pchan->bone) && (pchan->bone == arm->act_bone) && (pchan->bone->layer & arm->layer))
+		if ((pchan->bone) && (pchan->bone == arm->act_element) && (pchan->bone->layer & arm->layer))
 			return pchan;
 	}
 	
@@ -900,7 +900,7 @@ void BKE_pose_update_constraint_flags(bPose *pose)
 					
 					while (parchan) {
 						data->rootbone++;
-						if ((parchan->bone->flag & BONE_CONNECTED) == 0)
+						if ((parchan->bone->flag & ELEMENT_CONNECTED) == 0)
 							break;
 						parchan = parchan->parent;
 					}
@@ -943,7 +943,7 @@ void framechange_poses_clear_unkeyed(void)
 		if ((pose = ob->pose)) {
 			for (pchan = pose->chanbase.first; pchan; pchan = pchan->next) {
 				if (pchan->bone) 
-					pchan->bone->flag &= ~BONE_UNKEYED;
+					pchan->bone->flag &= ~ELEMENT_UNKEYED;
 			}
 		}
 	}
