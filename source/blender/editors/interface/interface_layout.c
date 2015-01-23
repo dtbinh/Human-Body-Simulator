@@ -286,7 +286,7 @@ static void ui_item_position(uiItem *item, int x, int y, int w, int h)
 		bitem->but->rect.ymin = y;
 		bitem->but->rect.xmax = x + w;
 		bitem->but->rect.ymax = y + h;
-		
+
 		ui_but_update(bitem->but); /* for strlen */
 	}
 	else {
@@ -326,7 +326,7 @@ static uiLayout *ui_item_local_sublayout(uiLayout *test, uiLayout *layout, int a
 		sub = uiLayoutRow(layout, align);
 	else
 		sub = uiLayoutColumn(layout, align);
-	
+
 	sub->space = 0;
 	return sub;
 }
@@ -395,17 +395,17 @@ static void ui_item_array(uiLayout *layout, uiBlock *block, const char *name, in
 
 		if (ptr->type == &RNA_Armature) {
 			bArmature *arm = (bArmature *)ptr->data;
-			
+
 			layer_used = arm->layer_used;
-			
+
 			if (arm->edbo) {
-				if (arm->act_edbone) {
-					layer_active |= arm->act_edbone->layer;
+				if (arm->act_edelement) {
+					layer_active |= arm->act_edelement->layer;
 				}
 			}
 			else {
-				if (arm->act_bone) {
-					layer_active |= arm->act_bone->layer;
+				if (arm->act_element) {
+					layer_active |= arm->act_element->layer;
 				}
 			}
 		}
@@ -416,7 +416,7 @@ static void ui_item_array(uiLayout *layout, uiBlock *block, const char *name, in
 			for (a = 0; a < colbuts; a++) {
 				const int layer_num  = a + b * colbuts;
 				const unsigned int layer_flag = (1u << layer_num);
-				
+
 				if (layer_used & layer_flag) {
 					if (layer_active & layer_flag)
 						icon = ICON_LAYER_ACTIVE;
@@ -434,7 +434,7 @@ static void ui_item_array(uiLayout *layout, uiBlock *block, const char *name, in
 			for (a = 0; a < colbuts; a++) {
 				const int layer_num  = a + len / 2 + b * colbuts;
 				const unsigned int layer_flag = (1u << layer_num);
-				
+
 				if (layer_used & layer_flag) {
 					if (layer_active & layer_flag)
 						icon = ICON_LAYER_ACTIVE;
@@ -462,7 +462,7 @@ static void ui_item_array(uiLayout *layout, uiBlock *block, const char *name, in
 
 		totdim = RNA_property_array_dimension(ptr, prop, dim_size);
 		if (totdim != 2) return;    /* only 2D matrices supported in UI so far */
-		
+
 		w /= dim_size[0];
 		/* h /= dim_size[1]; */ /* UNUSED */
 
@@ -1222,7 +1222,7 @@ void uiItemFullR(uiLayout *layout, PointerRNA *ptr, PropertyRNA *prop, int index
 
 	if (icon == ICON_NONE)
 		icon = RNA_property_ui_icon(prop);
-	
+
 	if (flag & UI_ITEM_R_ICON_ONLY) {
 		/* pass */
 	}
@@ -1263,7 +1263,7 @@ void uiItemFullR(uiLayout *layout, PointerRNA *ptr, PropertyRNA *prop, int index
 
 	if (no_bg)
 		UI_block_emboss_set(block, UI_EMBOSS_NONE);
-	
+
 	/* array property */
 	if (index == RNA_NO_INDEX && is_array)
 		ui_item_array(layout, block, name, icon, ptr, prop, len, 0, 0, w, h, expand, slider, toggle, icon_only);
@@ -1283,7 +1283,7 @@ void uiItemFullR(uiLayout *layout, PointerRNA *ptr, PropertyRNA *prop, int index
 	else if (type == PROP_ENUM || type == PROP_STRING || type == PROP_POINTER) {
 		but = ui_item_with_label(layout, block, name, icon, ptr, prop, index, 0, 0, w, h, flag);
 		ui_but_add_search(but, ptr, prop, NULL, NULL);
-		
+
 		if (layout->redalert)
 			UI_but_flag_enable(but, UI_BUT_REDALERT);
 	}
@@ -1296,7 +1296,7 @@ void uiItemFullR(uiLayout *layout, PointerRNA *ptr, PropertyRNA *prop, int index
 
 		if (toggle && but->type == UI_BTYPE_CHECKBOX)
 			but->type = UI_BTYPE_TOGGLE;
-		
+
 		if (layout->redalert)
 			UI_but_flag_enable(but, UI_BUT_REDALERT);
 	}
@@ -1453,7 +1453,7 @@ static int sort_search_items_list(const void *a, const void *b)
 {
 	const CollItemSearch *cis1 = (CollItemSearch *)a;
 	const CollItemSearch *cis2 = (CollItemSearch *)b;
-	
+
 	if (BLI_strcasecmp(cis1->name, cis2->name) > 0)
 		return 1;
 	else
@@ -1514,9 +1514,9 @@ static void rna_search_cb(const struct bContext *C, void *arg_but, const char *s
 		i++;
 	}
 	RNA_PROP_END;
-	
+
 	BLI_listbase_sort(items_list, sort_search_items_list);
-	
+
 	/* add search items from temporary list */
 	for (cis = items_list->first; cis; cis = cis->next) {
 		if (false == UI_search_item_add(items, cis->name, SET_INT_IN_POINTER(cis->index), cis->iconid)) {
@@ -1596,7 +1596,7 @@ void uiItemPointerR(uiLayout *layout, struct PointerRNA *ptr, const char *propna
 	StructRNA *icontype;
 	int w, h;
 	char namestr[UI_MAX_NAME_STR];
-	
+
 	/* validate arguments */
 	prop = RNA_struct_find_property(ptr, propname);
 
@@ -1605,7 +1605,7 @@ void uiItemPointerR(uiLayout *layout, struct PointerRNA *ptr, const char *propna
 		            RNA_struct_identifier(ptr->type), propname);
 		return;
 	}
-	
+
 	type = RNA_property_type(prop);
 	if (!ELEM(type, PROP_POINTER, PROP_STRING, PROP_ENUM)) {
 		RNA_warning("Property %s must be a pointer, string or enum", propname);
@@ -2001,7 +2001,7 @@ static void ui_litem_layout_row(uiLayout *litem)
 
 	if (totw == 0)
 		return;
-	
+
 	if (w != 0)
 		w -= (tot - 1) * litem->space;
 	fixedw = 0;
@@ -2402,7 +2402,7 @@ static void ui_litem_layout_column_flow(uiLayout *litem)
 	for (item = litem->items.first; item; item = item->next) {
 		ui_item_size(item, NULL, &itemh);
 		itemw = ui_item_fit(1, x - litem->x, flow->totcol, w, col == flow->totcol - 1, litem->alignment, &offset);
-	
+
 		y -= itemh;
 		emy -= itemh;
 		ui_item_position(item, x + offset, y, itemw, itemh);
@@ -2478,7 +2478,7 @@ static void ui_litem_layout_absolute(uiLayout *litem)
 		scalex = (float)litem->w / (float)totw;
 	if (litem->h && toth > 0)
 		scaley = (float)litem->h / (float)toth;
-	
+
 	x = litem->x;
 	y = litem->y - scaley * toth;
 
@@ -2528,7 +2528,7 @@ static void ui_litem_layout_split(uiLayout *litem)
 	y = litem->y;
 
 	percentage = (split->percentage == 0.0f) ? 1.0f / (float)tot : split->percentage;
-	
+
 	w = (litem->w - (tot - 1) * litem->space);
 	colw = w * percentage;
 	colw = MAX2(colw, 0);
@@ -3149,7 +3149,7 @@ uiLayout *UI_block_layout(uiBlock *block, int dir, int type, int x, int y, int s
 	BLI_addtail(&block->layouts, root);
 
 	ui_layout_add_padding_button(root);
-	
+
 	return layout;
 }
 
@@ -3172,7 +3172,7 @@ void UI_block_layout_set_current(uiBlock *block, uiLayout *layout)
 void ui_layout_add_but(uiLayout *layout, uiBut *but)
 {
 	uiButtonItem *bitem;
-	
+
 	bitem = MEM_callocN(sizeof(uiButtonItem), "uiButtonItem");
 	bitem->item.type = ITEM_BUTTON;
 	bitem->but = but;
@@ -3419,11 +3419,11 @@ void uiLayoutOperatorButs(const bContext *C, uiLayout *layout, wmOperator *op,
 		const bool is_popup = (block->flag & UI_BLOCK_KEEP_OPEN) != 0;
 		uiBut *but;
 
-		
+
 		for (but = block->buttons.first; but; but = but->next) {
 			/* no undo for buttons for operator redo panels */
 			UI_but_flag_disable(but, UI_BUT_UNDO);
-			
+
 			/* only for popups, see [#36109] */
 
 			/* if button is operator's default property, and a text-field, enable focus for it
