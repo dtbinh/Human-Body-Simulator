@@ -288,9 +288,9 @@ void BKE_init_editarmatureelement(struct EditArmatureElement *eelem)
     }
 }
 
-static Bone *get_named_bone_bonechildren(Bone *bone, const char *name)
+static ArmatureElement *get_named_bone_bonechildren(ArmatureElement *bone, const char *name)
 {
-	Bone *curBone, *rbone;
+	ArmatureElement *curBone, *rbone;
 
 	if (!strcmp(bone->name, name))
 		return bone;
@@ -304,27 +304,10 @@ static Bone *get_named_bone_bonechildren(Bone *bone, const char *name)
 	return NULL;
 }
 
-static Muscle *get_named_muscle_musclechildren(Muscle *muscle, const char *name)
-{
-    Muscle *curMuscle, *rmuscle;
-
-    if (!strcmp(muscle->name, name))
-        return muscle;
-
-    for (curMuscle = muscle->childbase.first; curMuscle; curMuscle = curMuscle->next) {
-        rmuscle = get_named_muscle_musclechildren(curMuscle, name);
-        if (rmuscle)
-            return rmuscle;
-    }
-
-    return NULL;
-}
-
-
 /* Walk the list until the bone is found */
-Bone *BKE_armature_find_bone_name(bArmature *arm, const char *name)
+ArmatureElement *BKE_armature_find_bone_name(bArmature *arm, const char *name)
 {
-	Bone *bone = NULL, *curBone;
+	ArmatureElement *bone = NULL, *curBone;
 
 	if (!arm)
 		return NULL;
@@ -337,22 +320,6 @@ Bone *BKE_armature_find_bone_name(bArmature *arm, const char *name)
 
 	return bone;
 }
-
-//Muscle *BKE_armature_find_muscle_name (bArmature *arm, const char *name)
-//{
-//    Muscle *muscle = NULL, *curMuscle;
-//
-//    if (!arm)
-//        return NULL;
-//
-//    for (curMuscle = arm->musclebase.first; curMuscle; curMuscle = curMuscle->next) {
-//        muscle = get_named_muscle_musclechildren(curMuscle, name);
-//        if (muscle)
-//            return muscle;
-//    }
-//
-//    return muscle;
-//}
 
 /* Finds the best possible extension to the name on a particular axis. (For renaming, check for
  * unique names afterwards) strip_number: removes number extensions  (TODO: not used)
@@ -2546,21 +2513,21 @@ static void splineik_evaluate_bone(tSplineIK_Tree *tree, Scene *scene, Object *o
 			{
 				/* improved volume preservation based on the Stretch To constraint */
 				float final_scale;
-				
+
 				/* as the basis for volume preservation, we use the inverse scale factor... */
 				if (fabsf(scaleFac) != 0.0f) {
 					/* NOTE: The method here is taken wholesale from the Stretch To constraint */
 					float bulge = powf(1.0f / fabsf(scaleFac), ikData->bulge);
-					
+
 					if (bulge > 1.0f) {
 						if (ikData->flag & CONSTRAINT_SPLINEIK_USE_BULGE_MAX) {
 							float bulge_max = max_ff(ikData->bulge_max, 1.0f);
 							float hard = min_ff(bulge, bulge_max);
-							
+
 							float range = bulge_max - 1.0f;
 							float scale = (range > 0.0f) ? 1.0f / range : 0.0f;
 							float soft = 1.0f + range * atanf((bulge - 1.0f) * scale) / (0.5f * M_PI);
-							
+
 							bulge = interpf(soft, hard, ikData->bulge_smooth);
 						}
 					}
@@ -2568,15 +2535,15 @@ static void splineik_evaluate_bone(tSplineIK_Tree *tree, Scene *scene, Object *o
 						if (ikData->flag & CONSTRAINT_SPLINEIK_USE_BULGE_MIN) {
 							float bulge_min = CLAMPIS(ikData->bulge_min, 0.0f, 1.0f);
 							float hard = max_ff(bulge, bulge_min);
-							
+
 							float range = 1.0f - bulge_min;
 							float scale = (range > 0.0f) ? 1.0f / range : 0.0f;
 							float soft = 1.0f - range * atanf((1.0f - bulge) * scale) / (0.5f * M_PI);
-							
+
 							bulge = interpf(soft, hard, ikData->bulge_smooth);
 						}
 					}
-					
+
 					/* compute scale factor for xz axes from this value */
 					final_scale = sqrt(bulge);
 				}
@@ -2584,7 +2551,7 @@ static void splineik_evaluate_bone(tSplineIK_Tree *tree, Scene *scene, Object *o
 					/* no scaling, so scale factor is simple */
 					final_scale = 1.0f;
 				}
-				
+
 				/* apply the scaling (assuming normalised scale) */
 				mul_v3_fl(poseMat[0], final_scale);
 				mul_v3_fl(poseMat[2], final_scale);
