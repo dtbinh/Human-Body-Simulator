@@ -513,47 +513,47 @@ static void pchan_cb(int event, TreeElement *te, TreeStoreElem *UNUSED(tselem), 
 	bPoseChannel *pchan = (bPoseChannel *)te->directdata;
 	
 	if (event == OL_DOP_SELECT)
-		pchan->bone->flag |= BONE_SELECTED;
+		pchan->bone->flag |= ELEMENT_SELECTED;
 	else if (event == OL_DOP_DESELECT)
-		pchan->bone->flag &= ~BONE_SELECTED;
+		pchan->bone->flag &= ~ELEMENT_SELECTED;
 	else if (event == OL_DOP_HIDE) {
-		pchan->bone->flag |= BONE_HIDDEN_P;
-		pchan->bone->flag &= ~BONE_SELECTED;
+		pchan->bone->flag |= ELEMENT_HIDDEN_P;
+		pchan->bone->flag &= ~ELEMENT_SELECTED;
 	}
 	else if (event == OL_DOP_UNHIDE)
-		pchan->bone->flag &= ~BONE_HIDDEN_P;
+		pchan->bone->flag &= ~ELEMENT_HIDDEN_P;
 }
 
 static void bone_cb(int event, TreeElement *te, TreeStoreElem *UNUSED(tselem), void *UNUSED(arg))
 {
-	Bone *bone = (Bone *)te->directdata;
+	ArmatureElement *bone = (ArmatureElement *)te->directdata;
 	
 	if (event == OL_DOP_SELECT)
-		bone->flag |= BONE_SELECTED;
+		bone->flag |= ELEMENT_SELECTED;
 	else if (event == OL_DOP_DESELECT)
-		bone->flag &= ~BONE_SELECTED;
+		bone->flag &= ~ELEMENT_SELECTED;
 	else if (event == OL_DOP_HIDE) {
-		bone->flag |= BONE_HIDDEN_P;
-		bone->flag &= ~BONE_SELECTED;
+		bone->flag |= ELEMENT_HIDDEN_P;
+		bone->flag &= ~ELEMENT_SELECTED;
 	}
 	else if (event == OL_DOP_UNHIDE)
-		bone->flag &= ~BONE_HIDDEN_P;
+		bone->flag &= ~ELEMENT_HIDDEN_P;
 }
 
 static void ebone_cb(int event, TreeElement *te, TreeStoreElem *UNUSED(tselem), void *UNUSED(arg))
 {
-	EditBone *ebone = (EditBone *)te->directdata;
+	EditArmatureElement *ebone = (EditArmatureElement *)te->directdata;
 	
 	if (event == OL_DOP_SELECT)
-		ebone->flag |= BONE_SELECTED;
+		ebone->flag |= ELEMENT_SELECTED;
 	else if (event == OL_DOP_DESELECT)
-		ebone->flag &= ~BONE_SELECTED;
+		ebone->flag &= ~ELEMENT_SELECTED;
 	else if (event == OL_DOP_HIDE) {
-		ebone->flag |= BONE_HIDDEN_A;
-		ebone->flag &= ~BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL;
+		ebone->flag |= ELEMENT_HIDDEN_A;
+		ebone->flag &= ~ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL;
 	}
 	else if (event == OL_DOP_UNHIDE)
-		ebone->flag &= ~BONE_HIDDEN_A;
+		ebone->flag &= ~ELEMENT_HIDDEN_A;
 }
 
 static void sequence_cb(int event, TreeElement *te, TreeStoreElem *tselem, void *scene_ptr)

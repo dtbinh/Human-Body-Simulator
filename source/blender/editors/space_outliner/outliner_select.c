@@ -158,9 +158,9 @@ static void do_outliner_object_select_recursive(Scene *scene, Object *ob_parent,
 	}
 }
 
-static void do_outliner_bone_select_recursive(bArmature *arm, Bone *bone_parent, bool select)
+static void do_outliner_bone_select_recursive(bArmature *arm, ArmatureElement *bone_parent, bool select)
 {
-	Bone *bone;
+	ArmatureElement *bone;
 	for (bone = bone_parent->childbase.first; bone; bone = bone->next) {
 		if (select && PELEMENT_SELECTABLE(arm, bone))
 			bone->flag |= ELEMENT_SELECTED;
@@ -543,7 +543,7 @@ static eOLDrawState tree_element_active_bone(
         bContext *C, Scene *scene, TreeElement *te, TreeStoreElem *tselem, const eOLSetState set, bool recursive)
 {
 	bArmature *arm = (bArmature *)tselem->id;
-	Bone *bone = te->directdata;
+	ArmatureElement *bone = te->directdata;
 	
 	if (set != OL_SETSEL_NONE) {
 		if (!(bone->flag & ELEMENT_HIDDEN_P)) {
