@@ -319,7 +319,7 @@ static void restrictbutton_bone_select_cb(bContext *C, void *poin, void *poin2)
 
 static void restrictbutton_ebone_select_cb(bContext *C, void *UNUSED(poin), void *poin2)
 {
-	EditBone *ebone = (EditBone *)poin2;
+	EditArmatureElement *ebone = (EditArmatureElement *)poin2;
 
 	if (ebone->flag & ELEMENT_UNSELECTABLE) {
 		ebone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
@@ -334,7 +334,7 @@ static void restrictbutton_ebone_select_cb(bContext *C, void *UNUSED(poin), void
 
 static void restrictbutton_ebone_visibility_cb(bContext *C, void *UNUSED(poin), void *poin2)
 {
-	EditBone *ebone = (EditBone *)poin2;
+	EditArmatureElement *ebone = (EditArmatureElement *)poin2;
 	if (ebone->flag & ELEMENT_HIDDEN_A) {
 		ebone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
 	}
@@ -491,7 +491,7 @@ static void namebutton_cb(bContext *C, void *tsep, char *oldname)
 				{
 					bArmature *arm = (bArmature *)tselem->id;
 					if (arm->edbo) {
-						EditBone *ebone = te->directdata;
+						EditArmatureElement *ebone = te->directdata;
 						char newname[sizeof(ebone->name)];
 
 						/* restore bone name */
@@ -723,7 +723,7 @@ static void outliner_draw_restrictbuts(uiBlock *block, Scene *scene, ARegion *ar
 				UI_block_emboss_set(block, UI_EMBOSS);
 			}
 			else if (tselem->type == TSE_EBONE) {
-				EditBone *ebone = (EditBone *)te->directdata;
+				EditArmatureElement *ebone = (EditArmatureElement *)te->directdata;
 				
 				UI_block_emboss_set(block, UI_EMBOSS_NONE);
 				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, ELEMENT_HIDDEN_A, 0, ICON_RESTRICT_VIEW_OFF,
@@ -827,7 +827,7 @@ static void outliner_buttons(const bContext *C, uiBlock *block, ARegion *ar, Tre
 	 * need change this.
 	 */
 
-	if (tselem->type == TSE_EBONE) len = sizeof(((EditBone *) 0)->name);
+	if (tselem->type == TSE_EBONE) len = sizeof(((EditArmatureElement *) 0)->name);
 	else if (tselem->type == TSE_MODIFIER) len = sizeof(((ModifierData *) 0)->name);
 	else if (tselem->id && GS(tselem->id->name) == ID_LI) len = sizeof(((Library *) 0)->name);
 	else len = MAX_ID_NAME - 2;
