@@ -879,17 +879,17 @@ static void draw_selected_name(Scene *scene, Object *ob, rcti *rect)
 			
 			/* show name of active bone too (if possible) */
 			if (arm->edbo) {
-				if (arm->act_edbone) {
+				if (arm->act_edelement) {
 					s += BLI_strcpy_rlen(s, msg_sep);
-					s += BLI_strcpy_rlen(s, arm->act_edbone->name);
+					s += BLI_strcpy_rlen(s, arm->act_edelement->name);
 				}
 			}
 			else if (ob->mode & OB_MODE_POSE) {
-				if (arm->act_bone) {
+				if (arm->act_element) {
 
-					if (arm->act_bone->layer & arm->layer) {
+					if (arm->act_element->layer & arm->layer) {
 						s += BLI_strcpy_rlen(s, msg_sep);
-						s += BLI_strcpy_rlen(s, arm->act_bone->name);
+						s += BLI_strcpy_rlen(s, arm->act_element->name);
 					}
 				}
 			}
@@ -904,10 +904,10 @@ static void draw_selected_name(Scene *scene, Object *ob, rcti *rect)
 				Object *armobj = BKE_object_pose_armature_get(ob);
 				if (armobj  && armobj->mode & OB_MODE_POSE) {
 					bArmature *arm = armobj->data;
-					if (arm->act_bone) {
-						if (arm->act_bone->layer & arm->layer) {
+					if (arm->act_element) {
+						if (arm->act_element->layer & arm->layer) {
 							s += BLI_strcpy_rlen(s, msg_sep);
-							s += BLI_strcpy_rlen(s, arm->act_bone->name);
+							s += BLI_strcpy_rlen(s, arm->act_element->name);
 						}
 					}
 				}

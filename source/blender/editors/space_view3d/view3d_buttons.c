@@ -1027,7 +1027,7 @@ static void v3d_posearmature_buts(uiLayout *layout, Object *ob)
 static void v3d_editarmature_buts(uiLayout *layout, Object *ob)
 {
 	bArmature *arm = ob->data;
-	EditBone *ebone;
+	EditArmatureElement *ebone;
 	uiLayout *col;
 	PointerRNA eboneptr;
 
