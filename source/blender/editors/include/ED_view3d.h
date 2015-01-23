@@ -40,7 +40,7 @@ struct BPoint;
 struct Base;
 struct BezTriple;
 struct BoundBox;
-struct EditBone;
+struct EditArmatureElement;
 struct ImBuf;
 struct MVert;
 struct Main;
@@ -166,7 +166,7 @@ void lattice_foreachScreenVert(
         void *userData, const eV3DProjTest clip_flag);
 void armature_foreachScreenBone(
         struct ViewContext *vc,
-        void (*func)(void *userData, struct EditBone *ebone,
+        void (*func)(void *userData, struct EditArmatureElement *ebone,
                      const float screen_co_a[2], const float screen_co_b[2]),
         void *userData, const eV3DProjTest clip_flag);
 void pose_foreachScreenBone(
