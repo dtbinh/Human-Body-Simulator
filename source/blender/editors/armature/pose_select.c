@@ -177,7 +177,7 @@ int ED_do_pose_selectbuffer(Scene *scene, Base *base, unsigned int *buffer, shor
 			else if (toggle) {
 				if (nearBone->flag & ELEMENT_SELECTED) {
 					/* if not active, we make it active */
-					if (nearBone != arm->act_bone) {
+					if (nearBone != arm->act_element) {
 						arm->act_element = nearBone;
 					}
 					else {
