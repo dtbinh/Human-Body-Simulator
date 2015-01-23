@@ -1074,7 +1074,7 @@ void restoreBones(TransInfo *t)
 	while (bid->bone) {
 		ebo = bid->bone;
 		
-		ebo->dist = bid->dist;
+		((BoneData*)ebo->data)->dist = bid->dist;
 		ebo->rad_tail = bid->rad_tail;
 		ebo->roll = bid->roll;
 		ebo->xwidth = bid->xwidth;
@@ -1206,8 +1206,8 @@ static void createTransArmatureVerts(TransInfo *t)
 				if (ebo->flag & ELEMENT_SELECTED) {
 					if (arm->drawtype == ARM_ENVELOPE) {
 						td->loc = NULL;
-						td->val = &ebo->dist;
-						td->ival = ebo->dist;
+						td->val = &((BoneData*)ebo->data)->dist;
+						td->ival = ((BoneData*)ebo->data)->dist;
 					}
 					else {
 						// abusive storage of scale in the loc pointer :)
@@ -1219,7 +1219,7 @@ static void createTransArmatureVerts(TransInfo *t)
 					td->flag = TD_SELECTED;
 
 					/* use local bone matrix */
-					ED_armature_eelementto_mat3(ebo, bonemat);
+					ED_armature_eelement_to_mat3(ebo, bonemat);
 					mul_m3_m3m3(td->mtx, mtx, bonemat);
 					invert_m3_m3(td->smtx, td->mtx);
 
@@ -1301,8 +1301,8 @@ static void createTransArmatureVerts(TransInfo *t)
 			eboflip = ED_armature_bone_get_mirrored(arm->edbo, ebo);
 			if (eboflip) {
 				bid[i].bone = eboflip;
-				bid[i].dist = eboflip->dist;
-				bid[i].rad_tail = eboflip->rad_tail;
+				bid[i].dist = ((BoneData*)eboflip->data)->dist;
+				bid[i].rad_tail = ((BoneData*)eboflip->data)->rad_tail;
 				bid[i].roll = eboflip->roll;
 				bid[i].xwidth = eboflip->xwidth;
 				bid[i].zwidth = eboflip->zwidth;
