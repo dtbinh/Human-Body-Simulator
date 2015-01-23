@@ -119,14 +119,14 @@ void ED_transverts_update_obedit(TransVertStore *tvs, Object *obedit)
 	}
 	else if (obedit->type == OB_ARMATURE) {
 		bArmature *arm = obedit->data;
-		EditBone *ebo;
+		EditArmatureElement *ebo;
 		TransVert *tv = tvs->transverts;
 		int a = 0;
 
 		/* Ensure all bone tails are correctly adjusted */
 		for (ebo = arm->edbo->first; ebo; ebo = ebo->next) {
 			/* adjust tip if both ends selected */
-			if ((ebo->flag & BONE_ROOTSEL) && (ebo->flag & BONE_TIPSEL)) {
+			if ((ebo->flag & ELEMENT_ROOTSEL) && (ebo->flag & ELEMENT_TIPSEL)) {
 				if (tv) {
 					float diffvec[3];
 
@@ -141,9 +141,9 @@ void ED_transverts_update_obedit(TransVertStore *tvs, Object *obedit)
 
 		/* Ensure all bones are correctly adjusted */
 		for (ebo = arm->edbo->first; ebo; ebo = ebo->next) {
-			if ((ebo->flag & BONE_CONNECTED) && ebo->parent) {
+			if ((ebo->flag & ELEMENT_CONNECTED) && ebo->parent) {
 				/* If this bone has a parent tip that has been moved */
-				if (ebo->parent->flag & BONE_TIPSEL) {
+				if (ebo->parent->flag & ELEMENT_TIPSEL) {
 					copy_v3_v3(ebo->head, ebo->parent->tail);
 				}
 				/* If this bone has a parent tip that has NOT been moved */
@@ -203,7 +203,7 @@ void ED_transverts_create_from_obedit(TransVertStore *tvs, Object *obedit, const
 	TransVert *tv = NULL;
 	MetaElem *ml;
 	BMVert *eve;
-	EditBone *ebo;
+	EditArmatureElement *ebo;
 	int a;
 
 	tvs->transverts_tot = 0;
@@ -318,9 +318,9 @@ void ED_transverts_create_from_obedit(TransVertStore *tvs, Object *obedit, const
 
 		for (ebo = arm->edbo->first; ebo; ebo = ebo->next) {
 			if (ebo->layer & arm->layer) {
-				short tipsel = (ebo->flag & BONE_TIPSEL);
-				short rootsel = (ebo->flag & BONE_ROOTSEL);
-				short rootok = (!(ebo->parent && (ebo->flag & BONE_CONNECTED) && (ebo->parent->flag & BONE_TIPSEL)));
+				short tipsel = (ebo->flag & ELEMENT_TIPSEL);
+				short rootsel = (ebo->flag & ELEMENT_ROOTSEL);
+				short rootok = (!(ebo->parent && (ebo->flag & ELEMENT_CONNECTED) && (ebo->parent->flag & ELEMENT_TIPSEL)));
 
 				if ((tipsel && rootsel) || (rootsel)) {
 					/* Don't add the tip (unless mode & TM_ALL_JOINTS, for getting all joints),
