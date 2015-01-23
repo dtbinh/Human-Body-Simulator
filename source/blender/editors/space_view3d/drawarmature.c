@@ -417,37 +417,6 @@ static void draw_bonevert(void)
 	glCallList(displist);
 }
 
-static void draw_musclevert(void)
-{
-    static GLuint displist = 0;
-
-	if (displist == 0) {
-		GLUquadricObj   *qobj;
-
-		displist = glGenLists(1);
-		glNewList(displist, GL_COMPILE);
-
-		glPushMatrix();
-
-		qobj    = gluNewQuadric();
-		gluQuadricDrawStyle(qobj, GLU_SILHOUETTE);
-		gluDisk(qobj, 0.0,  0.05, 16, 1);
-
-		glRotatef(90, 0, 1, 0);
-		gluDisk(qobj, 0.0,  0.05, 16, 1);
-
-		glRotatef(90, 1, 0, 0);
-		gluDisk(qobj, 0.0,  0.05, 16, 1);
-
-		gluDeleteQuadric(qobj);
-
-		glPopMatrix();
-		glEndList();
-	}
-
-	glCallList(displist);
-}
-
 static void draw_bonevert_solid(void)
 {
 	static GLuint displist = 0;
@@ -469,29 +438,6 @@ static void draw_bonevert_solid(void)
 	}
 
 	glCallList(displist);
-}
-
-static void draw_musclevert_solid(void)
-{
-    static GLuint displist = 0;
-
-    if (displist == 0) {
-        GLUquadricObj *qobj;
-
-        displist = glGenLists(1);
-        glNewList(displist, GL_COMPILE);
-
-        qobj = gluNewQuadric();
-        gluQuadricDrawStyle(qobj, GLU_FILL);
-        glShadeModel(GL_SMOOTH);
-        gluSphere(qobj, 0.05, 8, 5);
-        glShadeModel(GL_FLAT);
-        gluDeleteQuadric(qobj);
-
-        glEndList();
-    }
-
-    glCallList(displist);
 }
 
 static const float bone_octahedral_verts[6][3] = {
@@ -692,7 +638,7 @@ static void draw_sphere_element_dist(float smat[4][4], float imat[4][4], bPoseCh
 
 		/*length = eelement->length;*/ /*UNUSED*/
 		tail = eelement->rad_tail;
-		dist = ((BoneData*)eelement->custom)->dist;
+		dist = ((BoneData*)eelement->data)->dist;
 		if (eelement->parent && (eelement->flag & ELEMENT_CONNECTED))
 			head = eelement->parent->rad_tail;
 		else
@@ -703,7 +649,7 @@ static void draw_sphere_element_dist(float smat[4][4], float imat[4][4], bPoseCh
 	else {
 		/*length = pchan->bone->length;*/ /*UNUSED*/
 		tail = pchan->bone->rad_tail;
-		dist = ((BoneData*)pchan->bone->custom)->dist;
+		dist = ((BoneData*)pchan->bone->data)->dist;
 		if (pchan->parent && (pchan->bone->flag & ELEMENT_CONNECTED))
 			head = pchan->parent->bone->rad_tail;
 		else
@@ -883,7 +829,7 @@ static void draw_sphere_element_wire(float smat[4][4], float imat[4][4],
 		cross_v3_v3v3(norvect, vec, imat[2]);
 
 		if (id != -1)
-			GPU_select_load_id(id | ELEMENTSEL_BONE);
+			GPU_select_load_id(id | ELEMENTSEL_ELEMENT);
 
 		glBegin(GL_LINES);
 
@@ -992,7 +938,7 @@ static void draw_sphere_element(const short dt, int armflag, int boneflag, short
 
 	if (length > (head + tail)) {
 		if (id != -1)
-			GPU_select_load_id(id | ELEMENTSEL_BONE);
+			GPU_select_load_id(id | ELEMENTSEL_ELEMENT);
 
 		glEnable(GL_POLYGON_OFFSET_FILL);
 		glPolygonOffset(-1.0f, -1.0f);
@@ -1036,7 +982,7 @@ static GLubyte bm_dot7[] = {0x0, 0x38, 0x7C, 0xFE, 0xFE, 0xFE, 0x7C, 0x38};
 
 
 static void draw_line_bone(int armflag, int boneflag, short constflag, unsigned int id,
-                           bPoseChannel *pchan, EditBone *ebone)
+                           bPoseChannel *pchan, EditArmatureElement *ebone)
 {
 	float length;
 
@@ -1074,7 +1020,7 @@ static void draw_line_bone(int armflag, int boneflag, short constflag, unsigned 
 		}
 
 		if (id != -1)
-			GPU_select_load_id((GLuint) id | ELEMENTSEL_BONE);
+			GPU_select_load_id((GLuint) id | ELEMENTSEL_ELEMENT);
 
 		glBegin(GL_LINES);
 		glVertex3f(0.0f, 0.0f, 0.0f);
@@ -1181,7 +1127,7 @@ static void draw_line_element(int armflag, int boneflag, short constflag, unsign
 		}
 
 		if (id != -1)
-			GPU_select_load_id((GLuint) id | ELEMENTSEL_BONE);
+			GPU_select_load_id((GLuint) id | ELEMENTSEL_ELEMENT);
 
 		glBegin(GL_LINES);
 		glVertex3f(0.0f, 0.0f, 0.0f);
@@ -1321,7 +1267,7 @@ static void draw_b_element(const short dt, int armflag, int boneflag, short cons
 	}
 
 	if (id != -1) {
-		GPU_select_load_id((GLuint) id | ELEMENTSEL_BONE);
+		GPU_select_load_id((GLuint) id | ELEMENTSEL_ELEMENT);
 	}
 
 	/* set up solid drawing */
@@ -1426,7 +1372,7 @@ static void draw_wire_element(const short dt, int armflag, int boneflag, short c
 	/* this chunk not in object mode */
 	if (armflag & (ARM_EDITMODE | ARM_POSEMODE)) {
 		if (id != -1)
-			GPU_select_load_id((GLuint) id | ELEMENTSEL_BONE);
+			GPU_select_load_id((GLuint) id | ELEMENTSEL_ELEMENT);
 
 		draw_wire_bone_segments(pchan, bbones, length, segments);
 
@@ -1445,37 +1391,6 @@ static void draw_wire_element(const short dt, int armflag, int boneflag, short c
 
 	/* draw normal */
 	draw_wire_bone_segments(pchan, bbones, length, segments);
-}
-
-static void draw_wire_muscle_segments(bMuscleChannel *pmuscle, Mat4 *bmuscles, float length, int segments)
-{
-    if ((segments > 1) && (pmuscle)) {
-        float dlen = length / (float)segments;
-        Mat4 *bmuscle = bmuscles;
-        int a;
-
-        for (a = 0; a < segments; a++, bmuscle++) {
-            glPushMatrix();
-            glMultMatrixf(bmuscle->mat);
-
-            glBegin(GL_LINES);
-            glVertex3f(0.0f, 0.0f, 0.0f);
-            glVertex3f(0.0f, dlen, 0.0f);
-            glEnd();
-
-            glPopMatrix();
-        }
-    }
-    else {
-        glPushMatrix();
-
-        glBegin(GL_LINES);
-        glVertex3f(0.0f, 0.0f, 0.0f);
-        glVertex3f(0.0f, length, 0.0f);
-        glEnd();
-
-        glPopMatrix();
-    }
 }
 
 static void draw_element(const short dt, int armflag, int boneflag, short constflag, unsigned int id, float length)
@@ -1506,7 +1421,7 @@ static void draw_element(const short dt, int armflag, int boneflag, short constf
 
 	/* now draw the bone itself */
 	if (id != -1) {
-		GPU_select_load_id((GLuint) id | ELEMENTSEL_BONE);
+		GPU_select_load_id((GLuint) id | ELEMENTSEL_ELEMENT);
 	}
 
 	/* wire? */
@@ -1561,7 +1476,7 @@ static void draw_custom_bone(Scene *scene, View3D *v3d, RegionView3D *rv3d, Obje
 	}
 
 	if (id != -1) {
-		GPU_select_load_id((GLuint) id | ELEMENTSEL_BONE);
+		GPU_select_load_id((GLuint) id | ELEMENTSEL_ELEMENT);
 	}
 
 	draw_object_instance(scene, v3d, rv3d, ob, dt, armflag & ARM_POSEMODE);
@@ -1946,7 +1861,7 @@ static void draw_pose_bones(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 					}
 
 					/* set temporary flag for drawing bone as active, but only if selected */
-					if (element == arm->act_bone)
+					if (element == arm->act_element)
 						flag |= ELEMENT_DRAW_ACTIVE;
 
 					if (do_const_color) {
@@ -2056,7 +1971,7 @@ static void draw_pose_bones(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 								flag &= ~ELEMENT_CONNECTED;
 
 							/* set temporary flag for drawing bone as active, but only if selected */
-							if (element == arm->act_bone)
+							if (element == arm->act_element)
 								flag |= ELEMENT_DRAW_ACTIVE;
 
 							draw_custom_bone(scene, v3d, rv3d, pchan->custom,
@@ -2162,7 +2077,7 @@ static void draw_pose_bones(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 						flag &= ~ELEMENT_CONNECTED;
 
 					/* set temporary flag for drawing bone as active, but only if selected */
-					if (element == arm->act_bone)
+					if (element == arm->act_element)
 						flag |= ELEMENT_DRAW_ACTIVE;
 
 					/* extra draw service for pose mode */
@@ -2284,81 +2199,11 @@ static void draw_pose_bones(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 	}
 }
 
-static void draw_pose_muscles(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
-                              const short dt, const unsigned char ob_wire_col[4],
-                              const bool do_const_color, const bool is_outline)
-{
-    RegionView3D *rv3d = ar->regiondata;
-    Object *ob = base->object;
-    bArmature *arm = ob->data;
-    bMuscleChannel *pmuscle;
-    Muscle *muscle;
-    GLfloat tmp;
-//    float smat[4][4], imat[4][4], bmat[4][4];
-    int index = -1;
-    short do_dashed = 3;
-//    bool draw_wire = false;
-    int flag;
-    bool is_cull_enabled;
-
-    /* being set below */
-    arm->layer_used = 0;
-
-
-    glGetFloatv(GL_LINE_WIDTH, &tmp);
-    if (tmp > 1.1f) do_dashed &= ~1;
-    if (v3d->flag & V3D_HIDE_HELPLINES) do_dashed &= ~2;
-
-    glCullFace(GL_BACK);
-    if (v3d->flag2 & V3D_BACKFACE_CULLING) {
-        glEnable(GL_CULL_FACE);
-        is_cull_enabled = true;
-    }
-    else {
-        is_cull_enabled = false;
-    }
-
-    if ((dt <= OB_WIRE) || (arm->flag & ARM_POSEMODE) || ELEM(arm->drawtype, ARM_LINE, ARM_WIRE)) {
-
-        if (ELEM(arm->drawtype, ARM_LINE, ARM_WIRE)) {
-            if (arm->flag & ARM_POSEMODE)
-                index = base->selcol;
-        }
-
-        else if ((dt > OB_WIRE) && (arm->flag & ARM_POSEMODE)) {
-            ED_view3d_polygon_offset(rv3d, 1.0);
-        }
-        else {
-
-            if (arm->flag & ARM_POSEMODE)
-                index = base->selcol;
-        }
-
-        if (is_cull_enabled == false) {
-            is_cull_enabled = true;
-            glEnable(GL_CULL_FACE);
-        }
-        
-        if (!ELEM(arm->drawtype, ARM_WIRE, ARM_LINE) && (dt > OB_WIRE) && (arm->flag & ARM_POSEMODE))
-            ED_view3d_polygon_offset(rv3d, 0.0);
-    }
-
-    if (is_cull_enabled) {
-        glDisable(GL_CULL_FACE);
-    }
-}
-
 /* in editmode, we don't store the bone matrix... */
-static void get_matrix_editbone(EditBone *ebone, float bmat[4][4])
+static void get_matrix_editbone(EditArmatureElement *ebone, float bmat[4][4])
 {
 	ebone->length = len_v3v3(ebone->tail, ebone->head);
 	ED_armature_ebone_to_mat4(ebone, bmat);
-}
-
-static void get_matrix_editmuscle(EditMuscle *emuscle, float bmat[4][4])
-{
-    emuscle->length = len_v3v3(emuscle->tail, emuscle->head);
-    ED_armature_emuscle_to_mat4(emuscle, bmat);
 }
 
 static void get_matrix_editarmatureelement(EditArmatureElement *eelement, float bmat[4][4])
@@ -3086,10 +2931,6 @@ bool draw_armature(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 		arm->flag |= ARM_EDITMODE;
 		//draw_ebones(v3d, ar, ob, dt);
 		draw_earmature_elements(v3d, ar, ob, dt);
-		// TODO: Fix this so that edmu is made at the same time as edbo
-		if (arm->edmu) {
-            draw_emuscles(v3d, ar, ob, dt);
-        }
 		arm->flag &= ~ARM_EDITMODE;
 	}
 	else {
@@ -3140,10 +2981,6 @@ bool draw_armature(Scene *scene, View3D *v3d, ARegion *ar, Base *base,
 		}
 		else {
 			retval = true;
-		}
-
-		if (ob->pose && ob->pose->musclebase.first) {
-            draw_pose_muscles(scene, v3d, ar, base, dt, ob_wire_col, (dflag & DRAW_CONSTCOLOR), is_outline);
 		}
 	}
 	/* restore */
