@@ -91,35 +91,6 @@ bArmature *BKE_armature_from_object(Object *ob)
 	return NULL;
 }
 
-void BKE_armature_bonelist_free(ListBase *lb)
-{
-	Bone *bone;
-
-	for (bone = lb->first; bone; bone = bone->next) {
-		if (bone->prop) {
-			IDP_FreeProperty(bone->prop);
-			MEM_freeN(bone->prop);
-		}
-		BKE_armature_bonelist_free(&bone->childbase);
-	}
-
-	BLI_freelistN(lb);
-}
-
-void BKE_armature_musclelist_free(ListBase *lb)
-{
-    Muscle *musc;
-
-    for (musc = lb->first; musc; musc = musc->next) {
-        if (musc->prop) {
-            IDP_FreeProperty(musc->prop);
-            MEM_freeN(musc->prop);
-        }
-    }
-
-    BLI_freelistN(lb);
-}
-
 void BKE_armature_elementlist_free(ListBase *lb) {
     ArmatureElement *elem;
 
@@ -141,8 +112,6 @@ void BKE_armature_free(bArmature *arm)
         BKE_armature_elementlist_free(&arm->elementbase);
 
         /* free muscle */
-//        BKE_armature_musclelist_free(&arm->musclebase);
-
         BKE_armature_elementlist_free(&arm->elementbase);
 
 		/* free editmode data */
@@ -270,23 +239,6 @@ bArmature *BKE_armature_copy(bArmature *arm)
 
 	return newArm;
 }
-
-//void BKE_init_editarmatureelement(struct EditArmatureElement *eelem)
-//{
-//    BoneData *bd;
-//    MuscleData *md;
-//
-//    if (eelem->data) MEM_freeN(eelem->data);
-//    eelem->data = NULL;
-//
-//    switch (eelem->type) {
-//    case AE_BONE:
-//        eelem->custom
-//        break;
-//    case AE_MUSCLE:
-//        break;
-//    }
-//}
 
 static ArmatureElement *get_named_bone_bonechildren(ArmatureElement *bone, const char *name)
 {
@@ -640,11 +592,6 @@ void b_bone_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BB
 		}
 	}
 }
-
-//void b_muscle_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BBONE_SUBDIV])
-//{
-//
-//}
 
 /* ************ Armature Deform ******************* */
 
@@ -1204,18 +1151,6 @@ static void get_offset_bone_mat(ArmatureElement *bone, float offs_bone[4][4])
 	offs_bone[3][1] += bone->parent->length;
 }
 
-static void get_offset_muscle_mat(Muscle *muscle, float offs_muscle[4][4])
-{
-    if (!muscle->parent)
-        return;
-
-    copy_m4_m3(offs_muscle, muscle->muscle_mat);
-
-    copy_v3_v3(offs_muscle[3], muscle->head);
-
-    offs_muscle[3][1] += muscle->parent->length;
-}
-
 /* Construct the matrices (rot/scale and loc) to apply the PoseChannels into the armature (object) space.
  * I.e. (roughly) the "pose_mat(b-1) * yoffs(b-1) * d_root(b) * bone_mat(b)" in the
  *     pose_mat(b)= pose_mat(b-1) * yoffs(b-1) * d_root(b) * bone_mat(b) * chan_mat(b)
@@ -1319,36 +1254,6 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 	}
 }
 
-void BKE_pmuscle_to_pose_mat(bMuscleChannel *pchan, float rotscale_mat[4][4], float loc_mat[4][4])
-{
-    Muscle *muscle, *parmuscle;
-    bMuscleChannel *parchan;
-
-    muscle = pchan->muscle;
-    parmuscle = muscle->parent;
-    parchan = pchan->parent;
-
-    if (parchan) {
-        float offs_muscle[4][4];
-
-        get_offset_muscle_mat(muscle, offs_muscle);
-
-        mul_m4_m4m4(rotscale_mat, parchan->pose_mat, offs_muscle);
-
-        copy_m4_m4(loc_mat, rotscale_mat);
-    }
-    else {
-        copy_m4_m4(rotscale_mat, pchan->muscle->arm_mat);
-
-        if (pchan->muscle->flag & MUSCLE_NO_LOCAL_LOCATION) {
-            unit_m4(loc_mat);
-            copy_v3_v3(loc_mat[3], pchan->muscle->arm_mat[3]);
-        }
-        else
-            copy_m4_m4(loc_mat, rotscale_mat);
-    }
-}
-
 /* Convert Pose-Space Matrix to Bone-Space Matrix.
  * NOTE: this cannot be used to convert to pose-space transforms of the supplied
  *       pose-channel into its local space (i.e. 'visual'-keyframing) */
@@ -1367,20 +1272,6 @@ void BKE_armature_mat_pose_to_bone(bPoseChannel *pchan, float inmat[4][4], float
 	mul_v3_m4v3(outmat[3], loc_mat, inmat_[3]);
 }
 
-void BKE_armature_mat_pose_to_muscle(bMuscleChannel *pmuscle, float inmat[4][4], float outmat[4][4])
-{
-    float rotscale_mat[4][4], loc_mat[4][4], inmat_[4][4];
-
-    copy_m4_m4(inmat_, inmat);
-
-    BKE_pmuscle_to_pose_mat(pmuscle, rotscale_mat, loc_mat);
-    invert_m4(rotscale_mat);
-    invert_m4(loc_mat);
-
-    mul_m4_m4m4(outmat, rotscale_mat, inmat_);
-    mul_v3_m4v3(outmat[3], loc_mat, inmat_[3]);
-}
-
 /* Convert Bone-Space Matrix to Pose-Space Matrix. */
 void BKE_armature_mat_bone_to_pose(bPoseChannel *pchan, float inmat[4][4], float outmat[4][4])
 {
@@ -1393,18 +1284,6 @@ void BKE_armature_mat_bone_to_pose(bPoseChannel *pchan, float inmat[4][4], float
 
 	mul_m4_m4m4(outmat, rotscale_mat, inmat_);
 	mul_v3_m4v3(outmat[3], loc_mat, inmat_[3]);
-}
-
-void BKE_armature_mat_muscle_to_pose(bMuscleChannel *pmuscle, float inmat[4][4], float outmat[4][4])
-{
-    float rotscale_mat[4][4], loc_mat[4][4], inmat_[4][4];
-
-    copy_m4_m4(inmat_, inmat);
-
-    BKE_pmuscle_to_pose_mat(pmuscle, rotscale_mat, loc_mat);
-
-    mul_m4_m4m4(outmat, rotscale_mat, inmat_);
-    mul_v3_m4v3(outmat[3], loc_mat, inmat_[3]);
 }
 
 /* Convert Pose-Space Location to Bone-Space Location
@@ -1424,18 +1303,6 @@ void BKE_armature_loc_pose_to_bone(bPoseChannel *pchan, const float inloc[3], fl
 	copy_v3_v3(outloc, nLocMat[3]);
 }
 
-void BKE_armature_loc_pose_to_muscle(bMuscleChannel *pmuscle, const float inloc[3], float outloc[3])
-{
-    float xLocMat[4][4];
-    float nLocMat[4][4];
-
-    unit_m4(xLocMat);
-    copy_v3_v3(xLocMat[3], inloc);
-
-    BKE_armature_mat_pose_to_muscle(pmuscle, xLocMat, nLocMat);
-    copy_v3_v3(outloc, nLocMat[3]);
-}
-
 void BKE_armature_mat_pose_to_bone_ex(Object *ob, bPoseChannel *pchan, float inmat[4][4], float outmat[4][4])
 {
 	bPoseChannel work_pchan = *pchan;
@@ -1451,18 +1318,6 @@ void BKE_armature_mat_pose_to_bone_ex(Object *ob, bPoseChannel *pchan, float inm
 	BKE_pchan_apply_mat4(&work_pchan, outmat, false);
 
 	BKE_armature_mat_pose_to_bone(&work_pchan, inmat, outmat);
-}
-
-void BKE_armature_mat_pose_to_muscle_ex(Object *ob, bMuscleChannel *pmuscle, float inmat[4][4], float outmat[4][4])
-{
-    bMuscleChannel work_pmuscle = *pmuscle;
-
-    BKE_pose_where_is_muscle(NULL, ob, &work_pmuscle, 0.0f, false);
-
-    unit_m4(outmat);
-    BKE_pmuscle_apply_mat4(&work_pmuscle, outmat, false);
-
-    BKE_armature_mat_pose_to_muscle(&work_pmuscle, inmat, outmat);
 }
 
 /* same as BKE_object_mat3_to_rot() */
@@ -1484,24 +1339,6 @@ void BKE_pchan_mat3_to_rot(bPoseChannel *pchan, float mat[3][3], bool use_compat
 	}
 }
 
-void BKE_pmuscle_mat3_to_rot(bMuscleChannel *pmuscle, float mat[3][3], bool use_compat)
-{
-    switch (pmuscle->rotmode) {
-        case ROT_MODE_QUAT:
-            mat3_to_quat(pmuscle->quat, mat);
-            break;
-        case ROT_MODE_AXISANGLE:
-            mat3_to_axis_angle(pmuscle->rotAxis, &pmuscle->rotAngle, mat);
-            break;
-        default:
-            if (use_compat)
-                mat3_to_compatible_eulO(pmuscle->eul, pmuscle->eul, pmuscle->rotmode, mat);
-            else
-                mat3_to_eulO(pmuscle->eul, pmuscle->rotmode, mat);
-            break;
-    }
-}
-
 /* Apply a 4x4 matrix to the pose bone,
  * similar to BKE_object_apply_mat4() */
 void BKE_pchan_apply_mat4(bPoseChannel *pchan, float mat[4][4], bool use_compat)
@@ -1509,13 +1346,6 @@ void BKE_pchan_apply_mat4(bPoseChannel *pchan, float mat[4][4], bool use_compat)
 	float rot[3][3];
 	mat4_to_loc_rot_size(pchan->loc, rot, pchan->size, mat);
 	BKE_pchan_mat3_to_rot(pchan, rot, use_compat);
-}
-
-void BKE_pmuscle_apply_mat4(bMuscleChannel *pmuscle, float mat[4][4], bool use_compat)
-{
-    float rot[3][3];
-    mat4_to_loc_rot_size(pmuscle->loc, rot, pmuscle->size, mat);
-    BKE_pmuscle_mat3_to_rot(pmuscle, rot, use_compat);
 }
 
 /* Remove rest-position effects from pose-transform for obtaining
@@ -1770,47 +1600,16 @@ void BKE_armature_where_is_bone(ArmatureElement *bone, ArmatureElement *prevbone
 	}
 }
 
-void BKE_armature_where_is_muscle(Muscle *muscle, Muscle *prevmuscle)
-{
-    float vec[3];
-
-    sub_v3_v3v3(vec, muscle->tail, muscle->head);
-    vec_roll_to_mat3(vec, muscle->roll, muscle->muscle_mat);
-
-    muscle->length = len_v3v3(muscle->head, muscle->tail);
-
-    if (prevmuscle) {
-        float offs_muscle[4][4];
-        get_offset_muscle_mat(muscle, offs_muscle);
-
-        mul_m4_m4m4(muscle->arm_mat, prevmuscle->arm_mat, offs_muscle);
-    }
-    else {
-        copy_m4_m3(muscle->arm_mat, muscle->muscle_mat);
-        copy_v3_v3(muscle->arm_mat[3], muscle->head);
-    }
-
-    prevmuscle = muscle;
-    for (muscle = muscle->childbase.first; muscle; muscle = muscle->next) {
-        BKE_armature_where_is_muscle(muscle, prevmuscle);
-    }
-}
-
 /* updates vectors and matrices on rest-position level, only needed
  * after editing armature itself, now only on reading file */
 void BKE_armature_where_is(bArmature *arm)
 {
 	ArmatureElement *bone;
-//	Muscle *muscle;
 
 	/* hierarchical from root to children */
 	for (bone = arm->bonebase.first; bone; bone = bone->next) {
 		BKE_armature_where_is_bone(bone, NULL);
 	}
-
-//	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
-//        BKE_armature_where_is_muscle(muscle, NULL);
-//	}
 }
 
 /* if bone layer is protected, copy the data from from->pose
@@ -1819,7 +1618,6 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 {
 	bPose *pose = ob->pose, *frompose = from->pose;
 	bPoseChannel *pchan, *pchanp;
-	bMuscleChannel *pmuscle, *pmusclep;
 	bConstraint *con;
 	int error = 0;
 
@@ -1840,16 +1638,6 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 
 	if (error)
 		return;
-
-    for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-        if (pmuscle->muscle->layer & layer_protected) {
-            if (BKE_pose_muscle_find_name(frompose, pmuscle->name) == NULL) {
-                printf("failed to sync proxy armature because '%s' is missing pose muscle '%s'\n",
-                       from->id.name, pmuscle->name);
-                error = 1;
-            }
-        }
-    }
 
     if (error)
         return;
@@ -1967,61 +1755,6 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 			}
 		}
 	}
-
-	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-        pmusclep = BKE_pose_muscle_find_name(frompose, pmuscle->name);
-
-        if (UNLIKELY(pmusclep == NULL)) {
-
-        }
-        else if (pmuscle->muscle->layer & layer_protected) {
-            bMuscleChannel pmusclew;
-
-            pmusclew = *pmusclep;
-            pmusclew.prev = pmuscle->prev;
-            pmusclew.next = pmuscle->next;
-            pmusclew.parent = pmuscle->parent;
-            pmusclew.child = pmuscle->child;
-
-            if (pmusclew.prop) {
-                pmusclew.prop = IDP_CopyProperty(pmusclew.prop);
-
-                if (pmuscle->prop) {
-                    IDP_SyncGroupValues(pmusclew.prop, pmuscle->prop);
-                }
-            }
-
-            BKE_pose_muscle_free(pmuscle);
-
-            *pmuscle = pmusclew;
-            if (pmuscle->custom) {
-                id_us_plus(&pmuscle->custom->id);
-            }
-        }
-        else {
-            pmuscle->custom = pmusclep->custom;
-            if (pmuscle->custom) {
-                id_us_plus(&pmuscle->custom->id);
-            }
-
-            {
-                IDProperty *prop_orig = pmuscle->prop;
-                if (pmusclep->prop) {
-                    pmuscle->prop = IDP_CopyProperty(pmusclep->prop);
-                    if (prop_orig) {
-                        IDP_SyncGroupValues(pmuscle->prop, prop_orig);
-                    }
-                }
-                else {
-                    pmuscle->prop = NULL;
-                }
-                if (prop_orig) {
-                    IDP_FreeProperty(prop_orig);
-                    MEM_freeN(prop_orig);
-                }
-            }
-        }
-	}
 }
 
 static int rebuild_pose_bone(bPose *pose, ArmatureElement *bone, bPoseChannel *parchan, int counter)
@@ -2043,34 +1776,13 @@ static int rebuild_pose_bone(bPose *pose, ArmatureElement *bone, bPoseChannel *p
 	return counter;
 }
 
-static int rebuild_pose_muscle(bPose *pose, Muscle *muscle, bMuscleChannel *parmuscle, int counter)
-{
-    bMuscleChannel *pmuscle = BKE_pose_muscle_verify(pose, muscle->name);
-
-    pmuscle->muscle = muscle;
-    pmuscle->parent = parmuscle;
-
-    // counter++;
-
-    for (muscle = muscle->childbase.first; muscle; muscle = muscle->next) {
-        rebuild_pose_muscle(pose, muscle, pmuscle, 0);
-
-        if (muscle->flag & MUSCLE_CONNECTED)
-            pmuscle->child = BKE_pose_muscle_find_name(pose, muscle->name);
-    }
-
-    return counter;
-}
-
 /* only after leave editmode, duplicating, validating older files, library syncing */
 /* NOTE: pose->flag is set for it */
 void BKE_pose_rebuild(Object *ob, bArmature *arm)
 {
 	ArmatureElement *bone;
-//	Muscle *muscle;
 	bPose *pose;
 	bPoseChannel *pchan, *next;
-//	bMuscleChannel *pmuscle, *mnext;
 	int counter = 0;
 
 	/* only done here */
@@ -2089,19 +1801,10 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 		pchan->child = NULL;
 	}
 
-//	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-//        pmuscle->muscle = NULL;
-//        pmuscle->child = NULL;
-//	}
-
 	/* first step, check if all channels are there */
 	for (bone = arm->bonebase.first; bone; bone = bone->next) {
 		counter = rebuild_pose_bone(pose, bone, NULL, counter);
 	}
-
-//	for (muscle = arm->musclebase.first; muscle; muscle = muscle->next) {
-//        rebuild_pose_muscle(pose, muscle, NULL, 0);
-//	}
 
 	/* and a check for garbage */
 	for (pchan = pose->chanbase.first; pchan; pchan = next) {
@@ -2113,14 +1816,6 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 		}
 	}
 
-//	for (pmuscle = pose->musclebase.first; pmuscle; pmuscle = mnext) {
-//        mnext = pmuscle->next;
-//        if (pmuscle->muscle == NULL) {
-//            BKE_pose_muscle_free(pmuscle);
-//            BKE_pose_muscles_hash_free(pose);
-//            BLI_freelinkN(&pose->musclebase, pmuscle);
-//        }
-//	}
 	/* printf("rebuild pose %s, %d bones\n", ob->id.name, counter); */
 
 	/* synchronize protected layers with proxy */
@@ -2139,7 +1834,6 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 	ob->pose->flag |= POSE_WAS_REBUILT;
 
 	BKE_pose_channels_hash_make(ob->pose);
-//    BKE_pose_muscles_hash_make(ob->pose);
 }
 
 
@@ -2674,35 +2368,6 @@ void BKE_pchan_to_mat4(bPoseChannel *pchan, float chan_mat[4][4])
 	}
 }
 
-void BKE_pmuscle_to_mat4(bMuscleChannel *pmuscle, float chan_mat[4][4])
-{
-    float smat[3][3];
-    float rmat[3][3];
-    float tmat[3][3];
-
-    size_to_mat3(smat, pmuscle->size);
-
-    if (pmuscle->rotmode > 0) {
-        eulO_to_mat3(rmat, pmuscle->eul, pmuscle->rotmode);
-    }
-    else if (pmuscle->rotmode == ROT_MODE_AXISANGLE) {
-        axis_angle_to_mat3(rmat, pmuscle->rotAxis, pmuscle->rotAngle);
-    }
-    else {
-        float quat[4];
-
-        normalize_qt_qt(quat, pmuscle->quat);
-        quat_to_mat3(rmat, quat);
-    }
-
-    mul_m3_m3m3(tmat, rmat, smat);
-    copy_m4_m3(chan_mat, tmat);
-
-    if ((pmuscle->muscle == NULL) || !(pmuscle->muscle->flag & MUSCLE_CONNECTED)) {
-        copy_v3_v3(chan_mat[3], pmuscle->loc);
-    }
-}
-
 /* loc/rot/size to mat4 */
 /* used in constraint.c too */
 void BKE_pchan_calc_mat(bPoseChannel *pchan)
@@ -2711,11 +2376,6 @@ void BKE_pchan_calc_mat(bPoseChannel *pchan)
 	 * and stores the result in any given channel
 	 */
 	BKE_pchan_to_mat4(pchan, pchan->chan_mat);
-}
-
-void BKE_pmuscle_calc_mat(bMuscleChannel *pmuscle)
-{
-    BKE_pmuscle_to_mat4(pmuscle, pmuscle->chan_mat);
 }
 
 #if 0 /* XXX OLD ANIMSYS, NLASTRIPS ARE NO LONGER USED */
@@ -2854,15 +2514,6 @@ void BKE_pose_where_is_bone_tail(bPoseChannel *pchan)
 	add_v3_v3v3(pchan->pose_tail, pchan->pose_head, vec);
 }
 
-void BKE_pose_where_is_muscle_tail(bMuscleChannel *pmuscle)
-{
-    float vec[3];
-
-    copy_v3_v3(vec, pmuscle->pose_mat[1]);
-    mul_v3_fl(vec, pmuscle->muscle->length);
-    add_v3_v3v3(pmuscle->pose_tail, pmuscle->pose_head, vec);
-}
-
 /* The main armature solver, does all constraints excluding IK */
 /* pchan is validated, as having bone and parent pointer
  * 'do_extra': when zero skips loc/size/rot, constraints and strip modifiers.
@@ -2924,24 +2575,6 @@ void BKE_pose_where_is_bone(Scene *scene, Object *ob, bPoseChannel *pchan, float
 	copy_v3_v3(pchan->pose_head, pchan->pose_mat[3]);
 	/* calculate tail */
 	BKE_pose_where_is_bone_tail(pchan);
-}
-
-void BKE_pose_where_is_muscle(Scene *scene, Object *ob, bMuscleChannel *pmuscle, float ctime, bool do_extra)
-{
-    if (do_extra)
-        BKE_pmuscle_calc_mat(pmuscle);
-    else
-        unit_m4(pmuscle->chan_mat);
-
-    BKE_armature_mat_muscle_to_pose(pmuscle, pmuscle->chan_mat, pmuscle->pose_mat);
-
-//    if (!pmuscle->parent) {
-//        if (pmuscle->muscle && (pmuscle->muscle->flag & MUSCLE_NO))
-//    }
-
-    copy_v3_v3(pmuscle->pose_head, pmuscle->pose_mat[3]);
-
-    BKE_pose_where_is_muscle_tail(pmuscle);
 }
 
 /* This only reads anim data from channels, and writes to channels */
