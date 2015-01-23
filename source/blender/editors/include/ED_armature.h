@@ -205,7 +205,7 @@ void ED_armature_validate_active(struct bArmature *arm);
 
 void ED_muscle_sync_selection(struct ListBase *edmu);
 
-EditArmatureElement *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned);
+EditArmatureElement *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned, int type);
 EditArmatureElement *ED_armature_edit_armature_element_add(struct bArmature *arm, const char *name, int type);
 void ED_armature_edit_element_remove(struct bArmature *arm, EditArmatureElement *exBone);
 
@@ -246,11 +246,11 @@ void ED_armature_ebone_select_set(EditArmatureElement *ebone, bool select);
 void ED_armature_ebone_selectflag_enable(EditArmatureElement *ebone, int flag);
 void ED_armature_ebone_selectflag_disable(EditArmatureElement *ebone, int flag);
 
-int  ED_armature_emuscle_selectflag_get(const EditMuscle *emuscle);
-void ED_armature_emuscle_selectflag_set(EditMuscle *emuscle, int flag);
-void ED_armature_emuscle_select_set(EditMuscle *emuscle, bool select);
-void ED_armature_emuscle_selectflag_enable(EditMuscle *emuscle, int flag);
-void ED_armature_emuscle_selectflag_disable(EditMuscle *emuscle, int flag);
+//int  ED_armature_emuscle_selectflag_get(const EditMuscle *emuscle);
+//void ED_armature_emuscle_selectflag_set(EditMuscle *emuscle, int flag);
+//void ED_armature_emuscle_select_set(EditMuscle *emuscle, bool select);
+//void ED_armature_emuscle_selectflag_enable(EditMuscle *emuscle, int flag);
+//void ED_armature_emuscle_selectflag_disable(EditMuscle *emuscle, int flag);
 
 /* poseobject.c */
 void ED_armature_exit_posemode(struct bContext *C, struct Base *base);

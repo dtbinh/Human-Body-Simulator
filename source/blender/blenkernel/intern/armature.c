@@ -271,22 +271,22 @@ bArmature *BKE_armature_copy(bArmature *arm)
 	return newArm;
 }
 
-void BKE_init_editarmatureelement(struct EditArmatureElement *eelem)
-{
-    BoneData *bd;
-    MuscleData *md;
-
-    if (eelem->data) MEM_freeN(eelem->data);
-    eelem->data = NULL;
-
-    switch (eelem->type) {
-    case AE_BONE:
-        eelem->custom
-        break;
-    case AE_MUSCLE:
-        break;
-    }
-}
+//void BKE_init_editarmatureelement(struct EditArmatureElement *eelem)
+//{
+//    BoneData *bd;
+//    MuscleData *md;
+//
+//    if (eelem->data) MEM_freeN(eelem->data);
+//    eelem->data = NULL;
+//
+//    switch (eelem->type) {
+//    case AE_BONE:
+//        eelem->custom
+//        break;
+//    case AE_MUSCLE:
+//        break;
+//    }
+//}
 
 static ArmatureElement *get_named_bone_bonechildren(ArmatureElement *bone, const char *name)
 {

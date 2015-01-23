@@ -33,8 +33,8 @@
  *  \author nzc
  */
 
+struct ArmatureElement;
 struct Bone;
-struct Muscle;
 struct Main;
 struct bArmature;
 struct bPose;
@@ -83,7 +83,7 @@ void BKE_armature_make_local(struct bArmature *arm);
 struct bArmature *BKE_armature_copy(struct bArmature *arm);
 
 /* Convert from muscle to bone and vice versa */
-void BKE_init_editarmatureelement(struct EditArmatureElement *eelem);
+//void BKE_init_editarmatureelement(struct EditArmatureElement *eelem);
 
 /* Bounding box. */
 struct BoundBox *BKE_armature_boundbox_get(struct Object *ob);
@@ -95,7 +95,7 @@ struct ArmatureElement *BKE_armature_find_bone_name(struct bArmature *arm, const
 float distfactor_to_bone(const float vec[3], const float b1[3], const float b2[3], float r1, float r2, float rdist);
 
 void BKE_armature_where_is(struct bArmature *arm);
-void BKE_armature_where_is_bone(ArmatureElement *bone, ArmatureElement *prevbone);
+void BKE_armature_where_is_bone(struct ArmatureElement *bone, struct ArmatureElement *prevbone);
 void BKE_pose_rebuild(struct Object *ob, struct bArmature *arm);
 void BKE_pose_where_is(struct Scene *scene, struct Object *ob);
 void BKE_pose_where_is_bone(struct Scene *scene, struct Object *ob, struct bPoseChannel *pchan, float ctime, bool do_extra);
