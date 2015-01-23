@@ -109,11 +109,11 @@ void ED_pose_bone_select(Object *ob, bPoseChannel *pchan, bool select)
 		/* change selection state - activate too if selected */
 		if (select) {
 			pchan->bone->flag |= ELEMENT_SELECTED;
-			arm->act_bone = pchan->bone;
+			arm->act_element = pchan->bone;
 		}
 		else {
 			pchan->bone->flag &= ~ELEMENT_SELECTED;
-			arm->act_bone = NULL;
+			arm->act_element = NULL;
 		}
 
 		// TODO: select and activate corresponding vgroup?
@@ -136,7 +136,7 @@ int ED_do_pose_selectbuffer(Scene *scene, Base *base, unsigned int *buffer, shor
                             bool extend, bool deselect, bool toggle, bool do_nearest)
 {
 	Object *ob = base->object;
-	Bone *nearBone;
+	ArmatureElement *nearBone;
 
 	if (!ob || !ob->pose) return 0;
 
@@ -164,12 +164,12 @@ int ED_do_pose_selectbuffer(Scene *scene, Base *base, unsigned int *buffer, shor
 		if (!extend && !deselect && !toggle) {
 			ED_pose_de_selectall(ob, SEL_DESELECT, true);
 			nearBone->flag |= (ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
-			arm->act_bone = nearBone;
+			arm->act_element = nearBone;
 		}
 		else {
 			if (extend) {
 				nearBone->flag |= (ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
-				arm->act_bone = nearBone;
+				arm->act_element = nearBone;
 			}
 			else if (deselect) {
 				nearBone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
@@ -178,7 +178,7 @@ int ED_do_pose_selectbuffer(Scene *scene, Base *base, unsigned int *buffer, shor
 				if (nearBone->flag & ELEMENT_SELECTED) {
 					/* if not active, we make it active */
 					if (nearBone != arm->act_bone) {
-						arm->act_bone = nearBone;
+						arm->act_element = nearBone;
 					}
 					else {
 						nearBone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
@@ -186,7 +186,7 @@ int ED_do_pose_selectbuffer(Scene *scene, Base *base, unsigned int *buffer, shor
 				}
 				else {
 					nearBone->flag |= (ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
-					arm->act_bone = nearBone;
+					arm->act_element = nearBone;
 				}
 			}
 		}
@@ -194,7 +194,7 @@ int ED_do_pose_selectbuffer(Scene *scene, Base *base, unsigned int *buffer, shor
 		if (ob_act) {
 			/* in weightpaint we select the associated vertex group too */
 			if (ob_act->mode & OB_MODE_WEIGHT_PAINT) {
-				if (nearBone == arm->act_bone) {
+				if (nearBone == arm->act_element) {
 					ED_vgroup_select_by_name(ob_act, nearBone->name);
 					DAG_id_tag_update(&ob_act->id, OB_RECALC_DATA);
 				}
@@ -409,7 +409,7 @@ static int pose_select_parent_exec(bContext *C, wmOperator *UNUSED(op))
 		parent = pchan->parent;
 		if ((parent) && !(parent->bone->flag & (ELEMENT_HIDDEN_P | ELEMENT_UNSELECTABLE))) {
 			parent->bone->flag |= ELEMENT_SELECTED;
-			arm->act_bone = parent->bone;
+			arm->act_element = parent->bone;
 		}
 		else {
 			return OPERATOR_CANCELLED;
@@ -518,7 +518,7 @@ static int pose_select_hierarchy_exec(bContext *C, wmOperator *op)
 {
 	Object *ob = BKE_object_pose_armature_get(CTX_data_active_object(C));
 	bArmature *arm = ob->data;
-	Bone *curbone, *pabone, *chbone;
+	ArmatureElement *curbone, *pabone, *chbone;
 	int direction = RNA_enum_get(op->ptr, "direction");
 	const bool add_to_sel = RNA_boolean_get(op->ptr, "extend");
 	bool found = false;
@@ -528,7 +528,7 @@ static int pose_select_hierarchy_exec(bContext *C, wmOperator *op)
 		curbone = pchan->bone;
 
 		if ((curbone->flag & ELEMENT_UNSELECTABLE) == 0) {
-			if (curbone == arm->act_bone) {
+			if (curbone == arm->act_element) {
 				if (direction == ELEMENT_SELECT_PARENT) {
 					if (pchan->parent == NULL) continue;
 					else pabone = pchan->parent->bone;
@@ -536,7 +536,7 @@ static int pose_select_hierarchy_exec(bContext *C, wmOperator *op)
 					if (PELEMENT_SELECTABLE(arm, pabone)) {
 						if (!add_to_sel) curbone->flag &= ~ELEMENT_SELECTED;
 						pabone->flag |= ELEMENT_SELECTED;
-						arm->act_bone = pabone;
+						arm->act_element = pabone;
 
 						found = 1;
 						break;
@@ -570,7 +570,7 @@ static int pose_select_hierarchy_exec(bContext *C, wmOperator *op)
 					if (PELEMENT_SELECTABLE(arm, chbone)) {
 						if (!add_to_sel) curbone->flag &= ~ELEMENT_SELECTED;
 						chbone->flag |= ELEMENT_SELECTED;
-						arm->act_bone = chbone;
+						arm->act_element = chbone;
 
 						found = 1;
 						break;
@@ -907,12 +907,12 @@ static int pose_select_mirror_exec(bContext *C, wmOperator *op)
 				const int flag_mirror = PELEMENT_PREV_FLAG_GET(pchan_mirror);
 				flag_new |= flag_mirror;
 
-				if (pchan->bone == arm->act_bone) {
+				if (pchan->bone == arm->act_element) {
 					pchan_mirror_act = pchan_mirror;
 				}
 
 				/* skip all but the active or its mirror */
-				if (active_only && !ELEM(arm->act_bone, pchan->bone, pchan_mirror->bone)) {
+				if (active_only && !ELEM(arm->act_element, pchan->bone, pchan_mirror->bone)) {
 					continue;
 				}
 			}
@@ -922,7 +922,7 @@ static int pose_select_mirror_exec(bContext *C, wmOperator *op)
 	}
 
 	if (pchan_mirror_act) {
-		arm->act_bone = pchan_mirror_act->bone;
+		arm->act_element = pchan_mirror_act->bone;
 
 		/* in weightpaint we select the associated vertex group too */
 		if (ob_act->mode & OB_MODE_WEIGHT_PAINT) {
