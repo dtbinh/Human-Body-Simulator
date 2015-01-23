@@ -1926,15 +1926,15 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 	for (a = 0; a < hits; a++) {
 		int index = buffer[(4 * a) + 3];
 		if (index != -1) {
-			ebone = BLI_findlink(arm->edbo, index & ~(BONESEL_ANY));
+			ebone = BLI_findlink(arm->edbo, index & ~(ELEMENTSEL_ANY));
 			if ((select == false) || ((ebone->flag & ELEMENT_UNSELECTABLE) == 0)) {
-				if (index & BONESEL_TIP) {
+				if (index & ELEMENTSEL_TIP) {
 					ebone->flag |= ELEMENT_DONE;
 					if (select) ebone->flag |= ELEMENT_TIPSEL;
 					else ebone->flag &= ~ELEMENT_TIPSEL;
 				}
 				
-				if (index & BONESEL_ROOT) {
+				if (index & ELEMENTSEL_ROOT) {
 					ebone->flag |= ELEMENT_DONE;
 					if (select) ebone->flag |= ELEMENT_ROOTSEL;
 					else ebone->flag &= ~ELEMENT_ROOTSEL;
@@ -1955,8 +1955,8 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 	for (a = 0; a < hits; a++) {
 		int index = buffer[(4 * a) + 3];
 		if (index != -1) {
-			ebone = BLI_findlink(arm->edbo, index & ~(BONESEL_ANY));
-			if (index & BONESEL_BONE) {
+			ebone = BLI_findlink(arm->edbo, index & ~(ELEMENTSEL_ANY));
+			if (index & ELEMENTSEL_ELEMENT) {
 				if ((select == false) || ((ebone->flag & ELEMENT_UNSELECTABLE) == 0)) {
 					if (!(ebone->flag & ELEMENT_DONE)) {
 						if (select)
@@ -2028,7 +2028,7 @@ static int do_object_pose_box_select(bContext *C, ViewContext *vc, rcti *rect, b
 			if (BASE_SELECTABLE(vc->v3d, base)) {
 				while (base->selcol == (*col & 0xFFFF)) {   /* we got an object */
 					if (*col & 0xFFFF0000) {                    /* we got a bone */
-						bone = get_indexed_bone(base->object, *col & ~(BONESEL_ANY));
+						bone = get_indexed_bone(base->object, *col & ~(ELEMENTSEL_ANY));
 						if (bone) {
 							if (select) {
 								if ((bone->flag & ELEMENT_UNSELECTABLE) == 0) {
@@ -2039,8 +2039,8 @@ static int do_object_pose_box_select(bContext *C, ViewContext *vc, rcti *rect, b
 							else {
 								bArmature *arm = base->object->data;
 								bone->flag &= ~ELEMENT_SELECTED;
-								if (arm->act_bone == bone)
-									arm->act_bone = NULL;
+								if (arm->act_element == bone)
+									arm->act_element = NULL;
 							}
 						}
 					}
