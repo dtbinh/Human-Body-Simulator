@@ -1283,7 +1283,7 @@ static void createTransArmatureVerts(TransInfo *t)
 					copy_m3_m3(td->smtx, smtx);
 					copy_m3_m3(td->mtx, mtx);
 
-					ED_armature_eelementto_mat3(ebo, td->axismtx);
+					ED_armature_eelement_to_mat3(ebo, td->axismtx);
 
 					td->extra = ebo; /* to fix roll */
 					td->ival = ebo->roll;
