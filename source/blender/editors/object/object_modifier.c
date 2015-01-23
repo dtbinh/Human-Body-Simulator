@@ -1638,7 +1638,7 @@ static void skin_armature_bone_create(Object *skin_ob,
                                       bArmature *arm,
                                       BLI_bitmap *edges_visited,
                                       const MeshElemMap *emap,
-                                      EditBone *parent_bone,
+                                      EditArmatureElement *parent_bone,
                                       int parent_v)
 {
 	int i;
@@ -1646,7 +1646,7 @@ static void skin_armature_bone_create(Object *skin_ob,
 	for (i = 0; i < emap[parent_v].count; i++) {
 		int endx = emap[parent_v].indices[i];
 		const MEdge *e = &medge[endx];
-		EditBone *bone;
+		EditArmatureElement *bone;
 		bDeformGroup *dg;
 		int v;
 
@@ -1660,7 +1660,7 @@ static void skin_armature_bone_create(Object *skin_ob,
 		bone = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
 
 		bone->parent = parent_bone;
-		bone->flag |= BONE_CONNECTED;
+		bone->flag |= ELEMENT_CONNECTED;
 
 		copy_v3_v3(bone->head, mvert[parent_v].co);
 		copy_v3_v3(bone->tail, mvert[v].co);
@@ -1724,7 +1724,7 @@ static Object *modifier_skin_armature_create(Main *bmain, Scene *scene, Object *
 	 * edit-armature functions to convert back to regular bones */
 	for (v = 0; v < me->totvert; v++) {
 		if (mvert_skin[v].flag & MVERT_SKIN_ROOT) {
-			EditBone *bone = NULL;
+			EditArmatureElement *bone = NULL;
 
 			/* Unless the skin root has just one adjacent edge, create
 			 * a fake root bone (have it going off in the Y direction
