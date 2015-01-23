@@ -923,7 +923,7 @@ int getTransformOrientation(const bContext *C, float normal[3], float plane[3], 
 		}
 		else if (obedit->type == OB_ARMATURE) {
 			bArmature *arm = obedit->data;
-			EditBone *ebone;
+			EditArmatureElement *ebone;
 			bool ok = false;
 			float tmat[3][3];
 
