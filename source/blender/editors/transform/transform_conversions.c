@@ -464,7 +464,7 @@ static short apply_targetless_ik(Object *ob)
 
 				parchan = chanlist[segcount - 1];
 				element = parchan->bone;
-				element->flag |= BONE_TRANSFORM;   /* ensures it gets an auto key inserted */
+				element->flag |= ELEMENT_TRANSFORM;   /* ensures it gets an auto key inserted */
 
 				BKE_armature_mat_pose_to_bone(parchan, parchan->pose_mat, rmat);
 
@@ -529,11 +529,11 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 
 	td->ob = ob;
 	td->flag = TD_SELECTED;
-	if (element->flag & BONE_HINGE_CHILD_TRANSFORM) {
+	if (element->flag & ELEMENT_HINGE_CHILD_TRANSFORM) {
 		td->flag |= TD_NOCENTER;
 	}
 
-	if (element->flag & BONE_TRANSFORM_CHILD) {
+	if (element->flag & ELEMENT_TRANSFORM_CHILD) {
 		td->flag |= TD_NOCENTER;
 		td->flag |= TD_NO_LOC;
 	}
@@ -611,7 +611,7 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 
 	/* exceptional case: rotate the pose bone which also applies transformation
 	 * when a parentless bone has BONE_NO_LOCAL_LOCATION [] */
-	if (!ELEM(t->mode, TFM_TRANSLATION, TFM_RESIZE) && (pchan->bone->flag & BONE_NO_LOCAL_LOCATION)) {
+	if (!ELEM(t->mode, TFM_TRANSLATION, TFM_RESIZE) && (pchan->bone->flag & ELEMENT_NO_LOCAL_LOCATION)) {
 		if (pchan->parent) {
 			/* same as td->smtx but without pchan->bone->bone_mat */
 			td->flag |= TD_PBONE_LOCAL_MTX_C;
@@ -632,8 +632,8 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 
 		if (arm->drawtype == ARM_ENVELOPE) {
 			td->loc = NULL;
-			td->val = &((BoneData*)element->custom)->dist;
-			td->ival = ((BoneData*)element->custom)->dist;
+			td->val = &((BoneData*)element->data)->dist;
+			td->ival = ((BoneData*)element->data)->dist;
 		}
 		else {
 			// abusive storage of scale in the loc pointer :)
@@ -669,20 +669,20 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 
 static void bone_children_clear_transflag(int mode, short around, ListBase *lb)
 {
-	Bone *bone = lb->first;
+	ArmatureElement *bone = lb->first;
 
 	for (; bone; bone = bone->next) {
-		if ((bone->flag & BONE_HINGE) && (bone->flag & BONE_CONNECTED)) {
-			bone->flag |= BONE_HINGE_CHILD_TRANSFORM;
+		if ((bone->flag & ELEMENT_HINGE) && (bone->flag & ELEMENT_CONNECTED)) {
+			bone->flag |= ELEMENT_HINGE_CHILD_TRANSFORM;
 		}
-		else if ((bone->flag & BONE_TRANSFORM) &&
+		else if ((bone->flag & ELEMENT_TRANSFORM) &&
 		         (mode == TFM_ROTATION || mode == TFM_TRACKBALL) &&
 		         (around == V3D_LOCAL))
 		{
-			bone->flag |= BONE_TRANSFORM_CHILD;
+			bone->flag |= ELEMENT_TRANSFORM_CHILD;
 		}
 		else {
-			bone->flag &= ~BONE_TRANSFORM;
+			bone->flag &= ~ELEMENT_TRANSFORM;
 		}
 
 		bone_children_clear_transflag(mode, around, &bone->childbase);
@@ -703,16 +703,16 @@ int count_set_pose_transflags(int *out_mode, short around, Object *ob)
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 		element = pchan->bone;
 		if (PELEMENT_VISIBLE(arm, element)) {
-			if ((element->flag & BONE_SELECTED))
-				element->flag |= BONE_TRANSFORM;
+			if ((element->flag & ELEMENT_SELECTED))
+				element->flag |= ELEMENT_TRANSFORM;
 			else
-				element->flag &= ~BONE_TRANSFORM;
+				element->flag &= ~ELEMENT_TRANSFORM;
 			
-			element->flag &= ~BONE_HINGE_CHILD_TRANSFORM;
-			element->flag &= ~BONE_TRANSFORM_CHILD;
+			element->flag &= ~ELEMENT_HINGE_CHILD_TRANSFORM;
+			element->flag &= ~ELEMENT_TRANSFORM_CHILD;
 		}
 		else
-			element->flag &= ~BONE_TRANSFORM;
+			element->flag &= ~ELEMENT_TRANSFORM;
 	}
 
 	/* make sure no bone can be transformed when a parent is transformed */
@@ -720,7 +720,7 @@ int count_set_pose_transflags(int *out_mode, short around, Object *ob)
 	if (mode != TFM_BONESIZE) {
 		for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 			element = pchan->bone;
-			if (element->flag & BONE_TRANSFORM)
+			if (element->flag & ELEMENT_TRANSFORM)
 				bone_children_clear_transflag(mode, around, &element->childbase);
 		}
 	}
@@ -729,13 +729,13 @@ int count_set_pose_transflags(int *out_mode, short around, Object *ob)
 
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 		element = pchan->bone;
-		if (element->flag & BONE_TRANSFORM) {
+		if (element->flag & ELEMENT_TRANSFORM) {
 			total++;
 			
 			if (mode == TFM_TRANSLATION) {
 				if (has_targetless_ik(pchan) == NULL) {
-					if (pchan->parent && (pchan->bone->flag & BONE_CONNECTED)) {
-						if (pchan->bone->flag & BONE_HINGE_CHILD_TRANSFORM)
+					if (pchan->parent && (pchan->bone->flag & ELEMENT_CONNECTED)) {
+						if (pchan->bone->flag & ELEMENT_HINGE_CHILD_TRANSFORM)
 							hastranslation = 1;
 					}
 					else if ((pchan->protectflag & OB_LOCK_LOC) != OB_LOCK_LOC)
@@ -914,7 +914,7 @@ static short pose_grab_with_ik_add(bPoseChannel *pchan)
 		data->rootbone++;
 		
 		/* continue to parent, but only if we're connected to it */
-		if (pchan->bone->flag & BONE_CONNECTED)
+		if (pchan->bone->flag & ELEMENT_CONNECTED)
 			pchan = pchan->parent;
 		else
 			pchan = NULL;
@@ -934,7 +934,7 @@ static short pose_grab_with_ik_children(bPose *pose, ArmatureElement *element)
 
 	/* go deeper if children & children are connected */
 	for (elementc = element->childbase.first; elementc; elementc = elementc->next) {
-		if (elementc->flag & BONE_CONNECTED) {
+		if (elementc->flag & ELEMENT_CONNECTED) {
 			wentdeeper = 1;
 			added += pose_grab_with_ik_children(pose, elementc);
 		}
@@ -964,21 +964,21 @@ static short pose_grab_with_ik(Object *ob)
 	/* Rule: allow multiple Bones (but they must be selected, and only one ik-solver per chain should get added) */
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 		if (pchan->bone->layer & arm->layer) {
-			if (pchan->bone->flag & BONE_SELECTED) {
+			if (pchan->bone->flag & ELEMENT_SELECTED) {
 				/* Rule: no IK for solitatry (unconnected) bones */
 				for (elementc = pchan->bone->childbase.first; elementc; elementc = elementc->next) {
-					if (elementc->flag & BONE_CONNECTED) {
+					if (elementc->flag & ELEMENT_CONNECTED) {
 						break;
 					}
 				}
-				if ((pchan->bone->flag & BONE_CONNECTED) == 0 && (elementc == NULL))
+				if ((pchan->bone->flag & ELEMENT_CONNECTED) == 0 && (elementc == NULL))
 					continue;
 
 				/* rule: if selected Bone is not a root bone, it gets a temporal IK */
 				if (pchan->parent) {
 					/* only adds if there's no IK yet (and no parent bone was selected) */
 					for (parent = pchan->parent; parent; parent = parent->parent) {
-						if (parent->bone->flag & BONE_SELECTED)
+						if (parent->bone->flag & ELEMENT_SELECTED)
 							break;
 					}
 					if (parent == NULL)
@@ -1051,7 +1051,7 @@ static void createTransPose(TransInfo *t, Object *ob)
 	/* use pose channels to fill trans data */
 	td = t->data;
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-		if (pchan->bone->flag & BONE_TRANSFORM) {
+		if (pchan->bone->flag & ELEMENT_TRANSFORM) {
 			add_pose_transdata(t, pchan, ob, td);
 			td++;
 		}
@@ -1069,7 +1069,7 @@ void restoreBones(TransInfo *t)
 {
 	bArmature *arm = t->obedit->data;
 	BoneInitData *bid = t->customData;
-	EditBone *ebo;
+	EditArmatureElement *ebo;
 
 	while (bid->bone) {
 		ebo = bid->bone;
@@ -1083,19 +1083,19 @@ void restoreBones(TransInfo *t)
 		copy_v3_v3(ebo->tail, bid->tail);
 		
 		if (arm->flag & ARM_MIRROR_EDIT) {
-			EditBone *ebo_child;
+			EditArmatureElement *ebo_child;
 
 			/* Also move connected ebo_child, in case ebo_child's name aren't mirrored properly */
 			for (ebo_child = arm->edbo->first; ebo_child; ebo_child = ebo_child->next) {
-				if ((ebo_child->flag & BONE_CONNECTED) && (ebo_child->parent == ebo)) {
+				if ((ebo_child->flag & ELEMENT_CONNECTED) && (ebo_child->parent == ebo)) {
 					copy_v3_v3(ebo_child->head, ebo->tail);
 					ebo_child->rad_head = ebo->rad_tail;
 				}
 			}
 
 			/* Also move connected parent, in case parent's name isn't mirrored properly */
-			if ((ebo->flag & BONE_CONNECTED) && ebo->parent) {
-				EditBone *parent = ebo->parent;
+			if ((ebo->flag & ELEMENT_CONNECTED) && ebo->parent) {
+				EditArmatureElement *parent = ebo->parent;
 				copy_v3_v3(parent->tail, ebo->head);
 				parent->rad_tail = ebo->rad_head;
 			}
@@ -1109,7 +1109,7 @@ void restoreBones(TransInfo *t)
 /* ********************* armature ************** */
 static void createTransArmatureVerts(TransInfo *t)
 {
-	EditBone *ebo, *eboflip;
+	EditArmatureElement *ebo, *eboflip;
 	bArmature *arm = t->obedit->data;
 	ListBase *edbo = arm->edbo;
 	TransData *td, *td_old;
@@ -1123,19 +1123,19 @@ static void createTransArmatureVerts(TransInfo *t)
 	for (ebo = edbo->first; ebo; ebo = ebo->next) {
 		oldtot = t->total;
 
-		if (EBONE_VISIBLE(arm, ebo) && !(ebo->flag & BONE_EDITMODE_LOCKED)) {
+		if (EELEMENT_VISIBLE(arm, ebo) && !(ebo->flag & ELEMENT_EDITMODE_LOCKED)) {
 			if (t->mode == TFM_BONESIZE) {
-				if (ebo->flag & BONE_SELECTED)
+				if (ebo->flag & ELEMENT_SELECTED)
 					t->total++;
 			}
 			else if (t->mode == TFM_BONE_ROLL) {
-				if (ebo->flag & BONE_SELECTED)
+				if (ebo->flag & ELEMENT_SELECTED)
 					t->total++;
 			}
 			else {
-				if (ebo->flag & BONE_TIPSEL)
+				if (ebo->flag & ELEMENT_TIPSEL)
 					t->total++;
-				if (ebo->flag & BONE_ROOTSEL)
+				if (ebo->flag & ELEMENT_ROOTSEL)
 					t->total++;
 			}
 		}
@@ -1167,9 +1167,9 @@ static void createTransArmatureVerts(TransInfo *t)
 		td_old = td;
 		ebo->oldlength = ebo->length;   // length==0.0 on extrude, used for scaling radius of bone points
 
-		if (EBONE_VISIBLE(arm, ebo) && !(ebo->flag & BONE_EDITMODE_LOCKED)) {
+		if (EELEMENT_VISIBLE(arm, ebo) && !(ebo->flag & ELEMENT_EDITMODE_LOCKED)) {
 			if (t->mode == TFM_BONE_ENVELOPE) {
-				if (ebo->flag & BONE_ROOTSEL) {
+				if (ebo->flag & ELEMENT_ROOTSEL) {
 					td->val = &ebo->rad_head;
 					td->ival = *td->val;
 
@@ -1185,7 +1185,7 @@ static void createTransArmatureVerts(TransInfo *t)
 
 					td++;
 				}
-				if (ebo->flag & BONE_TIPSEL) {
+				if (ebo->flag & ELEMENT_TIPSEL) {
 					td->val = &ebo->rad_tail;
 					td->ival = *td->val;
 					copy_v3_v3(td->center, ebo->tail);
@@ -1203,7 +1203,7 @@ static void createTransArmatureVerts(TransInfo *t)
 
 			}
 			else if (t->mode == TFM_BONESIZE) {
-				if (ebo->flag & BONE_SELECTED) {
+				if (ebo->flag & ELEMENT_SELECTED) {
 					if (arm->drawtype == ARM_ENVELOPE) {
 						td->loc = NULL;
 						td->val = &ebo->dist;
@@ -1219,7 +1219,7 @@ static void createTransArmatureVerts(TransInfo *t)
 					td->flag = TD_SELECTED;
 
 					/* use local bone matrix */
-					ED_armature_ebone_to_mat3(ebo, bonemat);
+					ED_armature_eelementto_mat3(ebo, bonemat);
 					mul_m3_m3m3(td->mtx, mtx, bonemat);
 					invert_m3_m3(td->smtx, td->mtx);
 
@@ -1233,7 +1233,7 @@ static void createTransArmatureVerts(TransInfo *t)
 				}
 			}
 			else if (t->mode == TFM_BONE_ROLL) {
-				if (ebo->flag & BONE_SELECTED) {
+				if (ebo->flag & ELEMENT_SELECTED) {
 					td->loc = NULL;
 					td->val = &(ebo->roll);
 					td->ival = ebo->roll;
@@ -1248,20 +1248,20 @@ static void createTransArmatureVerts(TransInfo *t)
 				}
 			}
 			else {
-				if (ebo->flag & BONE_TIPSEL) {
+				if (ebo->flag & ELEMENT_TIPSEL) {
 					copy_v3_v3(td->iloc, ebo->tail);
 					copy_v3_v3(td->center, (t->around == V3D_LOCAL) ? ebo->head : td->iloc);
 					td->loc = ebo->tail;
 					td->flag = TD_SELECTED;
-					if (ebo->flag & BONE_EDITMODE_LOCKED)
+					if (ebo->flag & ELEMENT_EDITMODE_LOCKED)
 						td->protectflag = OB_LOCK_LOC | OB_LOCK_ROT | OB_LOCK_SCALE;
 
 					copy_m3_m3(td->smtx, smtx);
 					copy_m3_m3(td->mtx, mtx);
 
-					ED_armature_ebone_to_mat3(ebo, td->axismtx);
+					ED_armature_eelementto_mat3(ebo, td->axismtx);
 
-					if ((ebo->flag & BONE_ROOTSEL) == 0) {
+					if ((ebo->flag & ELEMENT_ROOTSEL) == 0) {
 						td->extra = ebo;
 						td->ival = ebo->roll;
 					}
@@ -1272,18 +1272,18 @@ static void createTransArmatureVerts(TransInfo *t)
 
 					td++;
 				}
-				if (ebo->flag & BONE_ROOTSEL) {
+				if (ebo->flag & ELEMENT_ROOTSEL) {
 					copy_v3_v3(td->iloc, ebo->head);
 					copy_v3_v3(td->center, td->iloc);
 					td->loc = ebo->head;
 					td->flag = TD_SELECTED;
-					if (ebo->flag & BONE_EDITMODE_LOCKED)
+					if (ebo->flag & ELEMENT_EDITMODE_LOCKED)
 						td->protectflag = OB_LOCK_LOC | OB_LOCK_ROT | OB_LOCK_SCALE;
 
 					copy_m3_m3(td->smtx, smtx);
 					copy_m3_m3(td->mtx, mtx);
 
-					ED_armature_ebone_to_mat3(ebo, td->axismtx);
+					ED_armature_eelementto_mat3(ebo, td->axismtx);
 
 					td->extra = ebo; /* to fix roll */
 					td->ival = ebo->roll;
@@ -5329,11 +5329,11 @@ void autokeyframe_pose_cb_func(bContext *C, Scene *scene, View3D *v3d, Object *o
 			flag |= INSERTKEY_MATRIX;
 		
 		for (pchan = pose->chanbase.first; pchan; pchan = pchan->next) {
-			if (pchan->bone->flag & BONE_TRANSFORM) {
+			if (pchan->bone->flag & ELEMENT_TRANSFORM) {
 				ListBase dsources = {NULL, NULL};
 				
 				/* clear any 'unkeyed' flag it may have */
-				pchan->bone->flag &= ~BONE_UNKEYED;
+				pchan->bone->flag &= ~ELEMENT_UNKEYED;
 				
 				/* add datasource override for the camera object */
 				ANIM_relative_keyingset_add_source(&dsources, id, &RNA_PoseBone, pchan); 
@@ -5425,9 +5425,9 @@ void autokeyframe_pose_cb_func(bContext *C, Scene *scene, View3D *v3d, Object *o
 	else {
 		/* tag channels that should have unkeyed data */
 		for (pchan = pose->chanbase.first; pchan; pchan = pchan->next) {
-			if (pchan->bone->flag & BONE_TRANSFORM) {
+			if (pchan->bone->flag & ELEMENT_TRANSFORM) {
 				/* tag this channel */
-				pchan->bone->flag |= BONE_UNKEYED;
+				pchan->bone->flag |= ELEMENT_UNKEYED;
 			}
 		}
 	}
