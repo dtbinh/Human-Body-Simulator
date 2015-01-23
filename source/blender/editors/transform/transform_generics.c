@@ -795,7 +795,7 @@ static void recalcData_objects(TransInfo *t)
 				if (ebo->oldlength == 0.0f) {
 					ebo->rad_head = 0.25f * ebo->length;
 					ebo->rad_tail = 0.10f * ebo->length;
-					ebo->dist = 0.25f * ebo->length;
+					((BoneData*)ebo->data)->dist = 0.25f * ebo->length;
 					if (ebo->parent) {
 						if (ebo->rad_head > ebo->parent->rad_tail)
 							ebo->rad_head = ebo->parent->rad_tail;
@@ -803,7 +803,7 @@ static void recalcData_objects(TransInfo *t)
 				}
 				else if (t->mode != TFM_BONE_ENVELOPE) {
 					/* if bones change length, lets do that for the deform distance as well */
-					ebo->dist *= ebo->length / ebo->oldlength;
+					((BoneData*)ebo->data)->dist *= ebo->length / ebo->oldlength;
 					ebo->rad_head *= ebo->length / ebo->oldlength;
 					ebo->rad_tail *= ebo->length / ebo->oldlength;
 					ebo->oldlength = ebo->length;
