@@ -109,10 +109,8 @@ void BKE_armature_elementlist_free(ListBase *lb) {
 void BKE_armature_free(bArmature *arm)
 {
 	if (arm) {
-        BKE_armature_elementlist_free(&arm->elementbase);
-
-        /* free muscle */
-        BKE_armature_elementlist_free(&arm->elementbase);
+        BKE_armature_elementlist_free(&arm->bonebase);
+        BKE_armature_elementlist_free(&arm->musclebase);
 
 		/* free editmode data */
 		if (arm->edbo) {
@@ -222,11 +220,11 @@ bArmature *BKE_armature_copy(bArmature *arm)
 	newBone = newArm->bonebase.first;
 	for (oldBone = arm->bonebase.first; oldBone; oldBone = oldBone->next) {
 		newBone->parent = NULL;
-		copy_armaturelementchildren(newBone, oldBone, arm->act_bone, &newActBone);
+		copy_armaturelementchildren(newBone, oldBone, arm->act_element, &newActBone);
 		newBone = newBone->next;
 	}
 
-	newArm->act_bone = newActBone;
+	newArm->act_element = newActBone;
 
 	newArm->edbo = NULL;
 	newArm->edmu = NULL;
@@ -466,7 +464,7 @@ void b_bone_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BB
 	hlength2 = ((BoneData*)bone->data)->ease2 * length * 0.390464f;
 
 	/* evaluate next and prev bones */
-	if (bone->flag & BONE_CONNECTED)
+	if (bone->flag & ELEMENT_CONNECTED)
 		prev = pchan->parent;
 	else
 		prev = NULL;
@@ -865,7 +863,7 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 	totchan = 0;
 	pdef_info = pdef_info_array;
 	for (pchan = armOb->pose->chanbase.first; pchan; pchan = pchan->next, pdef_info++) {
-		if (!(pchan->bone->flag & BONE_NO_DEFORM)) {
+		if (!(pchan->bone->flag & ELEMENT_NO_DEFORM)) {
 			if (pchan->bone->segments > 1)
 				pchan_b_bone_defmats(pchan, pdef_info, use_quaternion);
 
@@ -914,7 +912,7 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 					defnrToPC[i] = BKE_pose_channel_find_name(armOb->pose, dg->name);
 					/* exclude non-deforming bones */
 					if (defnrToPC[i]) {
-						if (defnrToPC[i]->bone->flag & BONE_NO_DEFORM) {
+						if (defnrToPC[i]->bone->flag & ELEMENT_NO_DEFORM) {
 							defnrToPC[i] = NULL;
 						}
 						else {
@@ -998,7 +996,7 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 
 					deformed = 1;
 
-					if (bone && bone->flag & BONE_MULT_VG_ENV) {
+					if (bone && bone->flag & ELEMENT_MULT_VG_ENV) {
 						weight *= distfactor_to_bone(co, bone->arm_head, bone->arm_tail,
 						                             bone->rad_head, bone->rad_tail, ((BoneData*)bone->data)->dist);
 					}
@@ -1010,7 +1008,7 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 			if (deformed == 0 && use_envelope) {
 				pdef_info = pdef_info_array;
 				for (pchan = armOb->pose->chanbase.first; pchan; pchan = pchan->next, pdef_info++) {
-					if (!(pchan->bone->flag & BONE_NO_DEFORM))
+					if (!(pchan->bone->flag & ELEMENT_NO_DEFORM))
 						contrib += dist_bone_deform(pchan, pdef_info, vec, dq, smat, co);
 				}
 			}
@@ -1018,7 +1016,7 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 		else if (use_envelope) {
 			pdef_info = pdef_info_array;
 			for (pchan = armOb->pose->chanbase.first; pchan; pchan = pchan->next, pdef_info++) {
-				if (!(pchan->bone->flag & BONE_NO_DEFORM))
+				if (!(pchan->bone->flag & ELEMENT_NO_DEFORM))
 					contrib += dist_bone_deform(pchan, pdef_info, vec, dq, smat, co);
 			}
 		}
@@ -1184,11 +1182,11 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 		get_offset_bone_mat(bone, offs_bone);
 
 		/* Compose the rotscale matrix for this bone. */
-		if ((bone->flag & BONE_HINGE) && (bone->flag & BONE_NO_SCALE)) {
+		if ((bone->flag & ELEMENT_HINGE) && (bone->flag & ELEMENT_NO_SCALE)) {
 			/* Parent rest rotation and scale. */
 			mul_m4_m4m4(rotscale_mat, parbone->arm_mat, offs_bone);
 		}
-		else if (bone->flag & BONE_HINGE) {
+		else if (bone->flag & ELEMENT_HINGE) {
 			/* Parent rest rotation and pose scale. */
 			float tmat[4][4], tscale[3];
 
@@ -1201,7 +1199,7 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 
 			mul_m4_m4m4(rotscale_mat, tmat, offs_bone);
 		}
-		else if (bone->flag & BONE_NO_SCALE) {
+		else if (bone->flag & ELEMENT_NO_SCALE) {
 			/* Parent pose rotation and rest scale (i.e. no scaling). */
 			float tmat[4][4];
 			copy_m4_m4(tmat, parchan->pose_mat);
@@ -1215,7 +1213,7 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 		/* NOTE: That version does not modify bone's loc when HINGE/NO_SCALE options are set. */
 
 		/* In this case, use the object's space *orientation*. */
-		if (bone->flag & BONE_NO_LOCAL_LOCATION) {
+		if (bone->flag & ELEMENT_NO_LOCAL_LOCATION) {
 			/* XXX I'm sure that code can be simplified! */
 			float bone_loc[4][4], bone_rotscale[3][3], tmat4[4][4], tmat3[3][3];
 			unit_m4(bone_loc);
@@ -1232,7 +1230,7 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 			mul_m4_m4m4(loc_mat, bone_loc, tmat4);
 		}
 		/* Those flags do not affect position, use plain parent transform space! */
-		else if (bone->flag & (BONE_HINGE | BONE_NO_SCALE)) {
+		else if (bone->flag & (ELEMENT_HINGE | ELEMENT_NO_SCALE)) {
 			mul_m4_m4m4(loc_mat, parchan->pose_mat, offs_bone);
 		}
 		/* Else (i.e. default, usual case), just use the same matrix for rotation/scaling, and location. */
@@ -1244,7 +1242,7 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 		/* Rotation/scaling. */
 		copy_m4_m4(rotscale_mat, pchan->bone->arm_mat);
 		/* Translation. */
-		if (pchan->bone->flag & BONE_NO_LOCAL_LOCATION) {
+		if (pchan->bone->flag & ELEMENT_NO_LOCAL_LOCATION) {
 			/* Translation of arm_mat, without the rotation. */
 			unit_m4(loc_mat);
 			copy_v3_v3(loc_mat[3], pchan->bone->arm_mat[3]);
@@ -1769,7 +1767,7 @@ static int rebuild_pose_bone(bPose *pose, ArmatureElement *bone, bPoseChannel *p
 	for (bone = bone->childbase.first; bone; bone = bone->next) {
 		counter = rebuild_pose_bone(pose, bone, pchan, counter);
 		/* for quick detecting of next bone in chain, only b-bone uses it now */
-		if (bone->flag & BONE_CONNECTED)
+		if (bone->flag & ELEMENT_CONNECTED)
 			pchan->child = BKE_pose_channel_find_name(pose, bone->name);
 	}
 
@@ -2363,7 +2361,7 @@ void BKE_pchan_to_mat4(bPoseChannel *pchan, float chan_mat[4][4])
 
 	/* prevent action channels breaking chains */
 	/* need to check for bone here, CONSTRAINT_TYPE_ACTION uses this call */
-	if ((pchan->bone == NULL) || !(pchan->bone->flag & BONE_CONNECTED)) {
+	if ((pchan->bone == NULL) || !(pchan->bone->flag & ELEMENT_CONNECTED)) {
 		copy_v3_v3(chan_mat[3], pchan->loc);
 	}
 }
@@ -2533,7 +2531,7 @@ void BKE_pose_where_is_bone(Scene *scene, Object *ob, bPoseChannel *pchan, float
 	/* Only rootbones get the cyclic offset (unless user doesn't want that). */
 	/* XXX That could be a problem for snapping and other "reverse transform" features... */
 	if (!pchan->parent) {
-		if ((pchan->bone->flag & BONE_NO_CYCLICOFFSET) == 0)
+		if ((pchan->bone->flag & ELEMENT_NO_CYCLICOFFSET) == 0)
 			add_v3_v3(pchan->pose_mat[3], ob->pose->cyclic_offset);
 	}
 
@@ -2565,7 +2563,7 @@ void BKE_pose_where_is_bone(Scene *scene, Object *ob, bPoseChannel *pchan, float
 			BKE_constraints_clear_evalob(cob);
 
 			/* prevent constraints breaking a chain */
-			if (pchan->bone->flag & BONE_CONNECTED) {
+			if (pchan->bone->flag & ELEMENT_CONNECTED) {
 				copy_v3_v3(pchan->pose_mat[3], vec);
 			}
 		}
