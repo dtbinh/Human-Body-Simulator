@@ -205,7 +205,7 @@ void ED_armature_validate_active(struct bArmature *arm);
 
 void ED_muscle_sync_selection(struct ListBase *edmu);
 
-EditArmatureElement *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned, int type);
+EditArmatureElement *ED_armature_edit_bone_add_primitive(struct Object *obedit_arm, float length, bool view_aligned);
 EditArmatureElement *ED_armature_edit_armature_element_add(struct bArmature *arm, const char *name, int type);
 void ED_armature_edit_element_remove(struct bArmature *arm, EditArmatureElement *exBone);
 
