@@ -135,7 +135,7 @@ void draw_motion_path_instance(Scene *scene,
 	
 	glBegin(GL_LINE_STRIP);
 	for (i = 0, mpv = mpv_start; i < len; i++, mpv++) {
-		short sel = (pchan) ? (pchan->bone->flag & BONE_SELECTED) : (ob->flag & SELECT);
+		short sel = (pchan) ? (pchan->bone->flag & ELEMENTSELECTED) : (ob->flag & SELECT);
 		float intensity;  /* how faint */
 		
 		int frame = sfra + i;
