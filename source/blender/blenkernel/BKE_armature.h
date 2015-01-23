@@ -160,7 +160,7 @@ void b_bone_spline_setup(struct bPoseChannel *pchan, int rest, Mat4 result_array
 #define PELEMENT_VISIBLE(arm, element) ( \
 	CHECK_TYPE_INLINE(arm, bArmature *), \
 	CHECK_TYPE_INLINE(element, ArmatureElement *), \
-	(((element)->layer & (arm)->layer) && !((element)->flag & BONE_HIDDEN_P)) \
+	(((element)->layer & (arm)->layer) && !((element)->flag & ELEMENT_HIDDEN_P)) \
 	)
 
 #define PELEMENT_SELECTABLE(arm, element) \
