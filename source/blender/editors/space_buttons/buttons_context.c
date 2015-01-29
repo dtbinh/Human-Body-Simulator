@@ -278,7 +278,7 @@ static int buttons_context_path_material(ButsContextPath *path, bool for_texture
 static int buttons_context_path_bone(ButsContextPath *path)
 {
 	bArmature *arm;
-	EditBone *edbo;
+	EditArmatureElement *edbo;
 
 	/* if we have an armature, get the active bone */
 	if (buttons_context_path_data(path, OB_ARMATURE)) {
