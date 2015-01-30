@@ -41,11 +41,7 @@ def gpencil_stroke_placement_settings(context, layout, gpd):
         row.prop(gpd, "use_stroke_endpoints")
 
 
-<<<<<<< HEAD
 class GreasePencilDrawingToolsPanel:
-=======
-class GreasePencilDrawingToolsPanel():
->>>>>>> Initial commit
     # subclass must set
     # bl_space_type = 'IMAGE_EDITOR'
     bl_label = "Grease Pencil"
@@ -93,11 +89,7 @@ class GreasePencilDrawingToolsPanel():
             col.operator("view3d.ruler")
 
 
-<<<<<<< HEAD
 class GreasePencilStrokeEditPanel:
-=======
-class GreasePencilStrokeEditPanel():
->>>>>>> Initial commit
     # subclass must set
     # bl_space_type = 'IMAGE_EDITOR'
     bl_label = "Edit Strokes"
@@ -204,13 +196,8 @@ class GPENCIL_PIE_tool_palette(Menu):
                 col = pie.column()
                 row = col.row(align=True)
                 row.operator("transform.translate", icon='MAN_TRANS').gpencil_strokes = True
-<<<<<<< HEAD
                 row.operator("transform.rotate", icon='MAN_ROT').gpencil_strokes = True
                 row.operator("transform.resize", text="Scale", icon='MAN_SCALE').gpencil_strokes = True
-=======
-                row.operator("transform.rotate",    icon='MAN_ROT').gpencil_strokes = True
-                row.operator("transform.resize",    text="Scale", icon='MAN_SCALE').gpencil_strokes = True
->>>>>>> Initial commit
                 row = col.row(align=True)
                 row.label("Proportional Edit:")
                 row.prop(context.tool_settings, "proportional_edit", text="", icon_only=True)
@@ -327,15 +314,9 @@ class GPENCIL_UL_layer(UIList):
 
             split = layout.split(percentage=0.25)
             row = split.row(align=True)
-<<<<<<< HEAD
             row.prop(gpl, "color", text="", emboss=gpl.is_stroke_visible)
             row.prop(gpl, "fill_color", text="", emboss=gpl.is_fill_visible)
             split.prop(gpl, "info", text="", emboss=False)
-=======
-            row.prop(gpl, "color",      text="", emboss = gpl.is_stroke_visible)
-            row.prop(gpl, "fill_color", text="", emboss = gpl.is_fill_visible)
-            split.prop(gpl, "info",  text="", emboss=False)
->>>>>>> Initial commit
 
             row = layout.row(align=True)
             row.prop(gpl, "lock", text="", emboss=False)
@@ -345,11 +326,7 @@ class GPENCIL_UL_layer(UIList):
             layout.label(text="", icon_value=icon)
 
 
-<<<<<<< HEAD
 class GreasePencilDataPanel:
-=======
-class GreasePencilDataPanel():
->>>>>>> Initial commit
     # subclass must set
     # bl_space_type = 'IMAGE_EDITOR'
     bl_label = "Grease Pencil"
@@ -394,11 +371,7 @@ class GreasePencilDataPanel():
 
         gpl = context.active_gpencil_layer
         if gpl:
-<<<<<<< HEAD
             sub.operator("gpencil.layer_duplicate", icon='COPY_ID', text="")  # XXX: needs a dedicated icon
-=======
-            sub.operator("gpencil.layer_duplicate", icon='COPY_ID', text="") # XXX: needs a dedicated icon
->>>>>>> Initial commit
 
             col.separator()
 
@@ -482,11 +455,7 @@ class GreasePencilDataPanel():
         sub.prop(gpl, "ghost_after_range", text="After")
 
 
-<<<<<<< HEAD
 class GreasePencilToolsPanel:
-=======
-class GreasePencilToolsPanel():
->>>>>>> Initial commit
     # subclass must set
     # bl_space_type = 'IMAGE_EDITOR'
     # bl_options = {'DEFAULT_CLOSED'}

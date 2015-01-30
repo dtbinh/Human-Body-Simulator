@@ -20,26 +20,17 @@
 import bpy
 from bpy.types import Panel
 
-<<<<<<< HEAD
 from bl_ui.properties_physics_common import (
         point_cache_ui,
         effector_weights_ui,
         )
-=======
-from bl_ui.properties_physics_common import (point_cache_ui,
-                                             effector_weights_ui)
->>>>>>> Initial commit
 
 
 def softbody_panel_enabled(md):
     return (md.point_cache.is_baked is False)
 
 
-<<<<<<< HEAD
 class PhysicButtonsPanel:
-=======
-class PhysicButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "physics"

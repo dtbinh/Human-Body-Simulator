@@ -20,11 +20,8 @@
 #include "blender_sync.h"
 #include "blender_util.h"
 
-<<<<<<< HEAD
 #include "util_logging.h"
 
-=======
->>>>>>> Initial commit
 CCL_NAMESPACE_BEGIN
 
 /* Blender Camera Intermediate: we first convert both the offline and 3d view
@@ -70,10 +67,7 @@ struct BlenderCamera {
 
 	BoundBox2D border;
 	BoundBox2D pano_viewplane;
-<<<<<<< HEAD
 	BoundBox2D viewport_camera_border;
-=======
->>>>>>> Initial commit
 
 	Transform matrix;
 };
@@ -93,11 +87,8 @@ static void blender_camera_init(BlenderCamera *bcam, BL::RenderSettings b_render
 	bcam->border.top = 1.0f;
 	bcam->pano_viewplane.right = 1.0f;
 	bcam->pano_viewplane.top = 1.0f;
-<<<<<<< HEAD
 	bcam->viewport_camera_border.right = 1.0f;
 	bcam->viewport_camera_border.top = 1.0f;
-=======
->>>>>>> Initial commit
 
 	/* render resolution */
 	bcam->full_width = render_resolution_x(b_render);
@@ -377,10 +368,7 @@ static void blender_camera_sync(Camera *cam, BlenderCamera *bcam, int width, int
 
 	/* border */
 	cam->border = bcam->border;
-<<<<<<< HEAD
 	cam->viewport_camera_border = bcam->viewport_camera_border;
-=======
->>>>>>> Initial commit
 
 	/* set update flag */
 	if(cam->modified(prevcam))
@@ -431,10 +419,7 @@ void BlenderSync::sync_camera_motion(BL::Object b_ob, float motion_time)
 	tfm = blender_camera_matrix(tfm, cam->type);
 
 	if(tfm != cam->matrix) {
-<<<<<<< HEAD
 		VLOG(1) << "Camera " << b_ob.name() << " motion detected.";
-=======
->>>>>>> Initial commit
 		if(motion_time == -1.0f) {
 			cam->motion.pre = tfm;
 			cam->use_motion = true;
@@ -535,7 +520,6 @@ static void blender_camera_view_subset(BL::RenderSettings b_render, BL::Scene b_
 	*cam_box = cam * (1.0f/cam_aspect);
 }
 
-<<<<<<< HEAD
 static void blender_camera_border_subset(BL::RenderSettings b_render,
                                          BL::Scene b_scene,
                                          BL::SpaceView3D b_v3d,
@@ -555,8 +539,6 @@ static void blender_camera_border_subset(BL::RenderSettings b_render,
 	*result = cam_box.subset(border);
 }
 
-=======
->>>>>>> Initial commit
 static void blender_camera_border(BlenderCamera *bcam, BL::RenderSettings b_render, BL::Scene b_scene, BL::SpaceView3D b_v3d,
 	BL::RegionView3D b_rv3d, int width, int height)
 {
@@ -575,25 +557,15 @@ static void blender_camera_border(BlenderCamera *bcam, BL::RenderSettings b_rend
 			bcam->border.right = b_v3d.render_border_max_x();
 			bcam->border.bottom = b_v3d.render_border_min_y();
 			bcam->border.top = b_v3d.render_border_max_y();
-<<<<<<< HEAD
 		}
 		return;
 	}
-=======
-
-			return;
-		}
-	}
-	else if(!b_render.use_border())
-		return;
->>>>>>> Initial commit
 
 	BL::Object b_ob = (b_v3d.lock_camera_and_layers())? b_scene.camera(): b_v3d.camera();
 
 	if(!b_ob)
 		return;
 
-<<<<<<< HEAD
 	/* Determine camera border inside the viewport. */
 	BoundBox2D full_border;
 	blender_camera_border_subset(b_render,
@@ -609,14 +581,11 @@ static void blender_camera_border(BlenderCamera *bcam, BL::RenderSettings b_rend
 		return;
 	}
 
-=======
->>>>>>> Initial commit
 	bcam->border.left = b_render.border_min_x();
 	bcam->border.right = b_render.border_max_x();
 	bcam->border.bottom = b_render.border_min_y();
 	bcam->border.top = b_render.border_max_y();
 
-<<<<<<< HEAD
 	/* Determine viewport subset matching camera border. */
 	blender_camera_border_subset(b_render,
 	                             b_scene,
@@ -627,17 +596,6 @@ static void blender_camera_border(BlenderCamera *bcam, BL::RenderSettings b_rend
 	                             bcam->border,
 	                             &bcam->border);
 	bcam->border.clamp();
-=======
-	/* determine camera viewport subset */
-	BoundBox2D view_box, cam_box;
-
-	blender_camera_view_subset(b_render, b_scene, b_ob, b_v3d, b_rv3d, width, height,
-		&view_box, &cam_box);
-
-	/* determine viewport subset matching camera border */
-	cam_box = cam_box.make_relative_to(view_box);
-	bcam->border = cam_box.subset(bcam->border).clamp();
->>>>>>> Initial commit
 }
 
 void BlenderSync::sync_view(BL::SpaceView3D b_v3d, BL::RegionView3D b_rv3d, int width, int height)

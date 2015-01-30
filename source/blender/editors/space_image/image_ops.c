@@ -92,11 +92,8 @@
 
 #include "PIL_time.h"
 
-<<<<<<< HEAD
 #include "RE_engine.h"
 
-=======
->>>>>>> Initial commit
 #include "image_intern.h"
 
 /******************** view navigation utilities *********************/
@@ -3118,7 +3115,6 @@ static int render_border_exec(bContext *C, wmOperator *op)
 {
 	ARegion *ar = CTX_wm_region(C);
 	Scene *scene = CTX_data_scene(C);
-<<<<<<< HEAD
 	Render *re = RE_GetRender(scene->id.name);
 	RenderData *rd;
 	rctf border;
@@ -3134,10 +3130,6 @@ static int render_border_exec(bContext *C, wmOperator *op)
 		return OPERATOR_CANCELLED;
 	}
 
-=======
-	rctf border;
-
->>>>>>> Initial commit
 	/* get rectangle from operator */
 	WM_operator_properties_border_to_rctf(op, &border);
 	UI_view2d_region_to_view_rctf(&ar->v2d, &border, &border);

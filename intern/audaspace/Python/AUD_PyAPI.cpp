@@ -2588,11 +2588,7 @@ Device_set_listener_orientation(Device *self, PyObject *args, void* nothing)
 
 PyDoc_STRVAR(M_aud_Device_speed_of_sound_doc,
 			 "The speed of sound of the device.\n"
-<<<<<<< HEAD
 			 "The speed of sound in air is typically 343.3 m/s.");
-=======
-			 "The speed of sound in air is typically 343 m/s.");
->>>>>>> Initial commit
 
 static PyObject *
 Device_get_speed_of_sound(Device *self, void* nothing)

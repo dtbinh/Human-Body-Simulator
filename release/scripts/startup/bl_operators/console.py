@@ -20,16 +20,10 @@
 
 import bpy
 from bpy.types import Operator
-<<<<<<< HEAD
 from bpy.props import (
         BoolProperty,
         StringProperty,
         )
-=======
-from bpy.props import (BoolProperty,
-                       StringProperty,
-                       )
->>>>>>> Initial commit
 
 
 def _lang_module_get(sc):

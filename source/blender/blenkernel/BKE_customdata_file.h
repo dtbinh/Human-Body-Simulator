@@ -40,7 +40,6 @@ void cdf_free(CDataFile *cdf);
 
 /* File read/write/remove */
 
-<<<<<<< HEAD
 bool cdf_read_open(CDataFile *cdf, const char *filename);
 bool cdf_read_layer(CDataFile *cdf, CDataFileLayer *blay);
 bool cdf_read_data(CDataFile *cdf, unsigned int size, void *data);
@@ -49,16 +48,6 @@ void cdf_read_close(CDataFile *cdf);
 bool cdf_write_open(CDataFile *cdf, const char *filename);
 bool cdf_write_layer(CDataFile *cdf, CDataFileLayer *blay);
 bool cdf_write_data(CDataFile *cdf, unsigned int size, void *data);
-=======
-int cdf_read_open(CDataFile *cdf, const char *filename);
-int cdf_read_layer(CDataFile *cdf, CDataFileLayer *blay);
-int cdf_read_data(CDataFile *cdf, unsigned int size, void *data);
-void cdf_read_close(CDataFile *cdf);
-
-int cdf_write_open(CDataFile *cdf, const char *filename);
-int cdf_write_layer(CDataFile *cdf, CDataFileLayer *blay);
-int cdf_write_data(CDataFile *cdf, unsigned int size, void *data);
->>>>>>> Initial commit
 void cdf_write_close(CDataFile *cdf);
 
 void cdf_remove(const char *filename);

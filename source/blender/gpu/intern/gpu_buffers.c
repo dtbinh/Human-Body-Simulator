@@ -1225,11 +1225,7 @@ void GPU_edge_setup(DerivedMesh *dm)
 		return;
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-<<<<<<< HEAD
 	if (dm->drawObject->points->use_vbo) {
-=======
-	if (dm->drawObject->edges->use_vbo) {
->>>>>>> Initial commit
 		glBindBufferARB(GL_ARRAY_BUFFER_ARB, dm->drawObject->points->id);
 		glVertexPointer(3, GL_FLOAT, 0, 0);
 	}
@@ -1297,10 +1293,7 @@ void GPU_interleaved_attrib_setup(GPUBuffer *buffer, GPUAttrib data[], int numda
 	int i;
 	int elementsize;
 	intptr_t offset = 0;
-<<<<<<< HEAD
 	char *basep;
-=======
->>>>>>> Initial commit
 
 	for (i = 0; i < MAX_GPU_ATTRIB_DATA; i++) {
 		if (attribData[i].index != -1) {
@@ -1313,7 +1306,6 @@ void GPU_interleaved_attrib_setup(GPUBuffer *buffer, GPUAttrib data[], int numda
 
 	if (buffer->use_vbo) {
 		glBindBufferARB(GL_ARRAY_BUFFER_ARB, buffer->id);
-<<<<<<< HEAD
 		basep = NULL;
 	}
 	else {
@@ -1332,28 +1324,6 @@ void GPU_interleaved_attrib_setup(GPUBuffer *buffer, GPUAttrib data[], int numda
 	}
 	
 	attribData[numdata].index = -1;	
-=======
-		for (i = 0; i < numdata; i++) {
-			glEnableVertexAttribArrayARB(data[i].index);
-			glVertexAttribPointerARB(data[i].index, data[i].size, data[i].type,
-			                         GL_FALSE, elementsize, (void *)offset);
-			offset += data[i].size * GPU_typesize(data[i].type);
-
-			attribData[i].index = data[i].index;
-			attribData[i].size = data[i].size;
-			attribData[i].type = data[i].type;
-		}
-		attribData[numdata].index = -1;
-	}
-	else {
-		for (i = 0; i < numdata; i++) {
-			glEnableVertexAttribArrayARB(data[i].index);
-			glVertexAttribPointerARB(data[i].index, data[i].size, data[i].type,
-			                         GL_FALSE, elementsize, (char *)buffer->pointer + offset);
-			offset += data[i].size * GPU_typesize(data[i].type);
-		}
-	}
->>>>>>> Initial commit
 }
 
 
@@ -1450,17 +1420,9 @@ void *GPU_buffer_lock_stream(GPUBuffer *buffer)
 void GPU_buffer_unlock(GPUBuffer *buffer)
 {
 	if (buffer->use_vbo) {
-<<<<<<< HEAD
 		/* note: this operation can fail, could return
 		 * an error code from this function? */
 		glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
-=======
-		if (buffer) {
-			/* note: this operation can fail, could return
-			 * an error code from this function? */
-			glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
-		}
->>>>>>> Initial commit
 		glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
 	}
 }

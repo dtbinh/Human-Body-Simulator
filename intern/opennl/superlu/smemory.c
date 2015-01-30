@@ -483,11 +483,7 @@ void
     else lword = sizeof(double);
 
     if ( Glu->MemModel == SYSTEM ) {
-<<<<<<< HEAD
 	new_mem = (void *) SUPERLU_MALLOC((size_t)new_len * (size_t)lword);
-=======
-	new_mem = (void *) SUPERLU_MALLOC(new_len * lword);
->>>>>>> Initial commit
 /*	new_mem = (void *) calloc(new_len, lword); */
 	if ( no_expand != 0 ) {
 	    tries = 0;
@@ -498,11 +494,7 @@ void
 		    if ( ++tries > 10 ) return (NULL);
 		    alpha = Reduce(alpha);
 		    new_len = alpha * *prev_len;
-<<<<<<< HEAD
 		    new_mem = (void *) SUPERLU_MALLOC((size_t)new_len * (size_t)lword); 
-=======
-		    new_mem = (void *) SUPERLU_MALLOC(new_len * lword); 
->>>>>>> Initial commit
 /*		    new_mem = (void *) calloc(new_len, lword); */
 		}
 	    }
@@ -517,11 +509,7 @@ void
 	
     } else { /* MemModel == USER */
 	if ( no_expand == 0 ) {
-<<<<<<< HEAD
 	    new_mem = suser_malloc((size_t)new_len * (size_t)lword, HEAD);
-=======
-	    new_mem = suser_malloc(new_len * lword, HEAD);
->>>>>>> Initial commit
 	    if ( NotDoubleAlign(new_mem) &&
 		(type == LUSUP || type == UCOL) ) {
 		old_mem = new_mem;

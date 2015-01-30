@@ -98,11 +98,7 @@ public:
 	* @brief determine an image format
 	* @param memorybuffer
 	*/
-<<<<<<< HEAD
 	static const cl_image_format *determineImageFormat(MemoryBuffer *memoryBuffer);
-=======
-	static const cl_image_format* determineImageFormat(MemoryBuffer *memoryBuffer);
->>>>>>> Initial commit
 
 	cl_context getContext() { return this->m_context; }
 

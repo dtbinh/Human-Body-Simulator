@@ -71,10 +71,6 @@ set(SRC
 	BL_DeformableGameObject.cpp
 	BL_MeshDeformer.cpp
 	BL_ModifierDeformer.cpp
-<<<<<<< HEAD
-=======
-	BL_MuscleChannel.cpp
->>>>>>> Initial commit
 	BL_ShapeActionActuator.cpp
 	BL_ShapeDeformer.cpp
 	BL_SkinDeformer.cpp
@@ -97,10 +93,6 @@ set(SRC
 	BL_DeformableGameObject.h
 	BL_MeshDeformer.h
 	BL_ModifierDeformer.h
-<<<<<<< HEAD
-=======
-	BL_MuscleChannel.h
->>>>>>> Initial commit
 	BL_ShapeActionActuator.h
 	BL_ShapeDeformer.h
 	BL_SkinDeformer.h

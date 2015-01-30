@@ -25,11 +25,7 @@
 # don't register these classes since they are only helpers.
 
 
-<<<<<<< HEAD
 class MotionPathButtonsPanel:
-=======
-class MotionPathButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_label = "Motion Paths"
@@ -101,11 +97,7 @@ class MotionPathButtonsPanel():
 
 
 # FIXME: this panel still needs to be ported so that it will work correctly with animviz
-<<<<<<< HEAD
 class OnionSkinButtonsPanel:
-=======
-class OnionSkinButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_label = "Onion Skinning"

@@ -100,11 +100,7 @@ void TextureBaseOperation::executePixelSampled(float output[4], float x, float y
 	vec[1] = textureSize[1] * (v + textureOffset[1]);
 	vec[2] = textureSize[2] * textureOffset[2];
 
-<<<<<<< HEAD
 	retval = multitex_ext(this->m_texture, vec, NULL, NULL, 0, &texres, m_pool, m_sceneColorManage, false);
-=======
-	retval = multitex_ext(this->m_texture, vec, NULL, NULL, 0, &texres, m_pool, m_sceneColorManage);
->>>>>>> Initial commit
 
 	if (texres.talpha)
 		output[3] = texres.ta;

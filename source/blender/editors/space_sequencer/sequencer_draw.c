@@ -70,10 +70,7 @@
 
 #include "WM_api.h"
 
-<<<<<<< HEAD
 #include "MEM_guardedalloc.h"
-=======
->>>>>>> Initial commit
 
 /* own include */
 #include "sequencer_intern.h"
@@ -204,24 +201,16 @@ static void drawseqwave(const bContext *C, SpaceSeq *sseq, Scene *scene, Sequenc
 		
 		SoundWaveform *waveform;
 		
-<<<<<<< HEAD
 		if (!sound->spinlock) {
 			sound->spinlock = MEM_mallocN(sizeof(SpinLock), "sound_spinlock");
 			BLI_spin_init(sound->spinlock);
 		}
 		
 		BLI_spin_lock(sound->spinlock);
-=======
-		if (!sound->mutex)
-			sound->mutex = BLI_mutex_alloc();
-		
-		BLI_mutex_lock(sound->mutex);
->>>>>>> Initial commit
 		if (!seq->sound->waveform) {
 			if (!(sound->flags & SOUND_FLAGS_WAVEFORM_LOADING)) {
 				/* prevent sounds from reloading */
 				seq->sound->flags |= SOUND_FLAGS_WAVEFORM_LOADING;
-<<<<<<< HEAD
 				BLI_spin_unlock(sound->spinlock);
 				sequencer_preview_add_sound(C, seq);
 			}
@@ -231,17 +220,6 @@ static void drawseqwave(const bContext *C, SpaceSeq *sseq, Scene *scene, Sequenc
 			return;  /* nothing to draw */
 		}
 		BLI_spin_unlock(sound->spinlock);
-=======
-				BLI_mutex_unlock(sound->mutex);
-				sequencer_preview_add_sound(C, seq);
-			}
-			else {
-				BLI_mutex_unlock(sound->mutex);
-			}
-			return;  /* nothing to draw */
-		}
-		BLI_mutex_unlock(sound->mutex);
->>>>>>> Initial commit
 		
 		waveform = seq->sound->waveform;
 		
@@ -492,11 +470,7 @@ static void draw_seq_text(View2D *v2d, Sequence *seq, float x1, float x2, float 
 		}
 	}
 	else if (seq->type == SEQ_TYPE_MOVIECLIP) {
-<<<<<<< HEAD
 		if (seq->clip && !STREQ(name, seq->clip->id.name + 2)) {
-=======
-		if (seq->clip && strcmp(name, seq->clip->id.name + 2) != 0) {
->>>>>>> Initial commit
 			str_len = BLI_snprintf(str, sizeof(str), "%s: %s | %d",
 			                       name, seq->clip->id.name + 2, seq->len);
 		}
@@ -506,11 +480,7 @@ static void draw_seq_text(View2D *v2d, Sequence *seq, float x1, float x2, float 
 		}
 	}
 	else if (seq->type == SEQ_TYPE_MASK) {
-<<<<<<< HEAD
 		if (seq->mask && !STREQ(name, seq->mask->id.name + 2)) {
-=======
-		if (seq->mask && strcmp(name, seq->mask->id.name + 2) != 0) {
->>>>>>> Initial commit
 			str_len = BLI_snprintf(str, sizeof(str), "%s: %s | %d",
 			                       name, seq->mask->id.name + 2, seq->len);
 		}

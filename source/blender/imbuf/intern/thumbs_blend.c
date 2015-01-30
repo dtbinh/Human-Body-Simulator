@@ -55,11 +55,7 @@ static ImBuf *loadblend_thumb(gzFile gzfile)
 	/* read the blend file header */
 	if (gzread(gzfile, buf, 12) != 12)
 		return NULL;
-<<<<<<< HEAD
 	if (!STREQLEN(buf, "BLENDER", 7))
-=======
-	if (strncmp(buf, "BLENDER", 7))
->>>>>>> Initial commit
 		return NULL;
 
 	if (buf[7] == '-')

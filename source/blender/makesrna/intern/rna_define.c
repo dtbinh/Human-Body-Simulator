@@ -109,11 +109,7 @@ PropertyDefRNA *rna_findlink(ListBase *listbase, const char *identifier)
 
 	for (link = listbase->first; link; link = link->next) {
 		PropertyRNA *prop = ((PropertyDefRNA *)link)->prop;
-<<<<<<< HEAD
 		if (prop && (STREQ(prop->identifier, identifier))) {
-=======
-		if (prop && (strcmp(prop->identifier, identifier) == 0)) {
->>>>>>> Initial commit
 			return (PropertyDefRNA *)link;
 		}
 	}
@@ -432,11 +428,7 @@ static int rna_validate_identifier(const char *identifier, char *error, bool pro
 	}
 	
 	for (a = 0; kwlist[a]; a++) {
-<<<<<<< HEAD
 		if (STREQ(identifier, kwlist[a])) {
-=======
-		if (strcmp(identifier, kwlist[a]) == 0) {
->>>>>>> Initial commit
 			strcpy(error, "this keyword is reserved by python");
 			return 0;
 		}
@@ -450,11 +442,7 @@ static int rna_validate_identifier(const char *identifier, char *error, bool pro
 		};
 
 		for (a = 0; kwlist_prop[a]; a++) {
-<<<<<<< HEAD
 			if (STREQ(identifier, kwlist_prop[a])) {
-=======
-			if (strcmp(identifier, kwlist_prop[a]) == 0) {
->>>>>>> Initial commit
 				strcpy(error, "this keyword is reserved by python");
 				return 0;
 			}
@@ -508,11 +496,7 @@ void RNA_identifier_sanitize(char *identifier, int property)
 	}
 	
 	for (a = 0; kwlist[a]; a++) {
-<<<<<<< HEAD
 		if (STREQ(identifier, kwlist[a])) {
-=======
-		if (strcmp(identifier, kwlist[a]) == 0) {
->>>>>>> Initial commit
 			/* this keyword is reserved by python.
 			 * just replace the last character by '_' to keep it readable.
 			 */
@@ -529,11 +513,7 @@ void RNA_identifier_sanitize(char *identifier, int property)
 		};
 
 		for (a = 0; kwlist_prop[a]; a++) {
-<<<<<<< HEAD
 			if (STREQ(identifier, kwlist_prop[a])) {
-=======
-			if (strcmp(identifier, kwlist_prop[a]) == 0) {
->>>>>>> Initial commit
 				/* this keyword is reserved by python.
 				 * just replace the last character by '_' to keep it readable.
 				 */
@@ -834,11 +814,7 @@ StructRNA *RNA_def_struct(BlenderRNA *brna, const char *identifier, const char *
 	if (from) {
 		/* find struct to derive from */
 		for (srnafrom = brna->structs.first; srnafrom; srnafrom = srnafrom->cont.next)
-<<<<<<< HEAD
 			if (STREQ(srnafrom->identifier, from))
-=======
-			if (strcmp(srnafrom->identifier, from) == 0)
->>>>>>> Initial commit
 				break;
 
 		if (!srnafrom) {
@@ -920,11 +896,7 @@ void RNA_def_struct_nested(BlenderRNA *brna, StructRNA *srna, const char *struct
 
 	/* find struct to derive from */
 	for (srnafrom = brna->structs.first; srnafrom; srnafrom = srnafrom->cont.next)
-<<<<<<< HEAD
 		if (STREQ(srnafrom->identifier, structname))
-=======
-		if (strcmp(srnafrom->identifier, structname) == 0)
->>>>>>> Initial commit
 			break;
 
 	if (!srnafrom) {
@@ -1899,7 +1871,6 @@ void RNA_def_property_int_sdna(PropertyRNA *prop, const char *structname, const 
 		}
 
 		/* SDNA doesn't pass us unsigned unfortunately .. */
-<<<<<<< HEAD
 		if (dp->dnatype && STREQ(dp->dnatype, "char")) {
 			iprop->hardmin = iprop->softmin = CHAR_MIN;
 			iprop->hardmax = iprop->softmax = CHAR_MAX;
@@ -1909,17 +1880,6 @@ void RNA_def_property_int_sdna(PropertyRNA *prop, const char *structname, const 
 			iprop->hardmax = iprop->softmax = SHRT_MAX;
 		}
 		else if (dp->dnatype && STREQ(dp->dnatype, "int")) {
-=======
-		if (dp->dnatype && strcmp(dp->dnatype, "char") == 0) {
-			iprop->hardmin = iprop->softmin = CHAR_MIN;
-			iprop->hardmax = iprop->softmax = CHAR_MAX;
-		}
-		else if (dp->dnatype && strcmp(dp->dnatype, "short") == 0) {
-			iprop->hardmin = iprop->softmin = SHRT_MIN;
-			iprop->hardmax = iprop->softmax = SHRT_MAX;
-		}
-		else if (dp->dnatype && strcmp(dp->dnatype, "int") == 0) {
->>>>>>> Initial commit
 			iprop->hardmin = INT_MIN;
 			iprop->hardmax = INT_MAX;
 
@@ -1963,11 +1923,7 @@ void RNA_def_property_float_sdna(PropertyRNA *prop, const char *structname, cons
 			}
 		}
 
-<<<<<<< HEAD
 		if (dp->dnatype && STREQ(dp->dnatype, "char")) {
-=======
-		if (dp->dnatype && strcmp(dp->dnatype, "char") == 0) {
->>>>>>> Initial commit
 			fprop->hardmin = fprop->softmin = 0.0f;
 			fprop->hardmax = fprop->softmax = 1.0f;
 		}
@@ -2104,11 +2060,7 @@ void RNA_def_property_collection_sdna(PropertyRNA *prop, const char *structname,
 			}
 		}
 
-<<<<<<< HEAD
 		if (dp->dnatype && STREQ(dp->dnatype, "ListBase")) {
-=======
-		if (dp->dnatype && strcmp(dp->dnatype, "ListBase") == 0) {
->>>>>>> Initial commit
 			cprop->next = (PropCollectionNextFunc)"rna_iterator_listbase_next";
 			cprop->get = (PropCollectionGetFunc)"rna_iterator_listbase_get";
 			cprop->end = (PropCollectionEndFunc)"rna_iterator_listbase_end";
@@ -3475,11 +3427,7 @@ int RNA_def_property_free_identifier(StructOrFunctionRNA *cont_, const char *ide
 	PropertyRNA *prop;
 	
 	for (prop = cont->properties.first; prop; prop = prop->next) {
-<<<<<<< HEAD
 		if (STREQ(prop->identifier, identifier)) {
-=======
-		if (strcmp(prop->identifier, identifier) == 0) {
->>>>>>> Initial commit
 			if (prop->flag & PROP_RUNTIME) {
 				rna_def_property_free(cont_, prop);
 				return 1;

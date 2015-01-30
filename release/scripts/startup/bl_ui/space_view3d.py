@@ -174,11 +174,7 @@ class VIEW3D_MT_editor_menus(Menu):
 # ********** Utilities **********
 
 
-<<<<<<< HEAD
 class ShowHideMenu:
-=======
-class ShowHideMenu():
->>>>>>> Initial commit
     bl_label = "Show/Hide"
     _operator_name = ""
 
@@ -2727,10 +2723,7 @@ class VIEW3D_MT_edit_armature_roll(Menu):
 
 # ********** Panel **********
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 class VIEW3D_PT_grease_pencil(GreasePencilDataPanel, Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'

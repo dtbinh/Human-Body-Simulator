@@ -28,14 +28,11 @@
 #include <stdlib.h>
 
 #include "DNA_property_types.h"
-<<<<<<< HEAD
 #include "DNA_object_types.h"
 
 #include "BLI_path_util.h"
 
 #include "BLF_translation.h"
-=======
->>>>>>> Initial commit
 
 #include "RNA_define.h"
 #include "RNA_enum_types.h"
@@ -105,17 +102,11 @@ static void rna_GameProperty_type_set(PointerRNA *ptr, int value)
 
 static void rna_GameProperty_name_set(PointerRNA *ptr, const char *value)
 {
-<<<<<<< HEAD
 	Object *ob = ptr->id.data;
 	bProperty *prop = ptr->data;
 	BLI_strncpy_utf8(prop->name, value, sizeof(prop->name));
 
 	BLI_uniquename(&ob->prop, prop, DATA_("Property"), '.', offsetof(bProperty, name), sizeof(prop->name));
-=======
-	bProperty *prop = (bProperty *)(ptr->data);
-	BLI_strncpy_utf8(prop->name, value, sizeof(prop->name));
-	BKE_bproperty_unique(NULL, prop, 1);
->>>>>>> Initial commit
 }
 
 

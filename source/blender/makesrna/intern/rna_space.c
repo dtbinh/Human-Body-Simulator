@@ -1249,11 +1249,7 @@ static int rna_SpaceNodeEditor_node_tree_poll(PointerRNA *ptr, const PointerRNA 
 	bNodeTree *ntree = (bNodeTree *)value.data;
 	
 	/* node tree type must match the selected type in node editor */
-<<<<<<< HEAD
 	return (STREQ(snode->tree_idname, ntree->idname));
-=======
-	return (strcmp(snode->tree_idname, ntree->idname) == 0);
->>>>>>> Initial commit
 }
 
 static void rna_SpaceNodeEditor_node_tree_update(const bContext *C, PointerRNA *UNUSED(ptr))

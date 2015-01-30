@@ -22,15 +22,9 @@ from bpy.types import Panel, UIList
 from rna_prop_ui import PropertyPanel
 
 from bl_ui.properties_physics_common import (
-<<<<<<< HEAD
         point_cache_ui,
         effector_weights_ui,
         )
-=======
-    point_cache_ui,
-    effector_weights_ui,
-    )
->>>>>>> Initial commit
 
 
 class SCENE_UL_keying_set_paths(UIList):
@@ -46,11 +40,7 @@ class SCENE_UL_keying_set_paths(UIList):
             layout.label(text="", icon_value=icon)
 
 
-<<<<<<< HEAD
 class SceneButtonsPanel:
-=======
-class SceneButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "scene"
@@ -95,7 +85,6 @@ class SCENE_PT_unit(SceneButtonsPanel, Panel):
             row.prop(unit, "use_separate")
 
 
-<<<<<<< HEAD
 class SceneKeyingSetsPanel:
     def draw_keyframing_settings(self, context, layout, ks, ksp):
         self.draw_keyframing_setting(context, layout, ks, ksp, "Needed",
@@ -143,9 +132,6 @@ class SceneKeyingSetsPanel:
 
 
 class SCENE_PT_keying_sets(SceneButtonsPanel, SceneKeyingSetsPanel, Panel):
-=======
-class SCENE_PT_keying_sets(SceneButtonsPanel, Panel):
->>>>>>> Initial commit
     bl_label = "Keying Sets"
     COMPAT_ENGINES = {'BLENDER_RENDER', 'BLENDER_GAME'}
 
@@ -175,17 +161,10 @@ class SCENE_PT_keying_sets(SceneButtonsPanel, Panel):
 
             col = row.column()
             col.label(text="Keyframing Settings:")
-<<<<<<< HEAD
             self.draw_keyframing_settings(context, col, ks, None)
 
 
 class SCENE_PT_keying_set_paths(SceneButtonsPanel, SceneKeyingSetsPanel, Panel):
-=======
-            col.prop(ks, "bl_options")
-
-
-class SCENE_PT_keying_set_paths(SceneButtonsPanel, Panel):
->>>>>>> Initial commit
     bl_label = "Active Keying Set"
     COMPAT_ENGINES = {'BLENDER_RENDER', 'BLENDER_GAME'}
 
@@ -238,11 +217,7 @@ class SCENE_PT_keying_set_paths(SceneButtonsPanel, Panel):
 
             col = row.column()
             col.label(text="Keyframing Settings:")
-<<<<<<< HEAD
             self.draw_keyframing_settings(context, col, ks, ksp)
-=======
-            col.prop(ksp, "bl_options")
->>>>>>> Initial commit
 
 
 class SCENE_PT_color_management(SceneButtonsPanel, Panel):
@@ -288,18 +263,11 @@ class SCENE_PT_audio(SceneButtonsPanel, Panel):
         split = layout.split()
 
         col = split.column()
-<<<<<<< HEAD
         col.label("Distance Model:")
         col.prop(scene, "audio_distance_model", text="")
         sub = col.column(align=True)
         sub.prop(scene, "audio_doppler_speed", text="Speed")
         sub.prop(scene, "audio_doppler_factor", text="Doppler")
-=======
-        col.label("Listener:")
-        col.prop(scene, "audio_distance_model", text="")
-        col.prop(scene, "audio_doppler_speed", text="Speed")
-        col.prop(scene, "audio_doppler_factor", text="Doppler")
->>>>>>> Initial commit
 
         col = split.column()
         col.label("Format:")

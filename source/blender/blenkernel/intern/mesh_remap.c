@@ -1427,11 +1427,7 @@ void BKE_mesh_remap_calc_loops_from_dm(
 					best_island = use_islands ? island_store.islands[best_island_index] : NULL;
 					as_graph = &as_graphdata[best_island_index];
 					poly_island_index_map = (int *)as_graph->custom_data;
-<<<<<<< HEAD
 					BLI_astar_solution_init(as_graph, &as_solution, NULL);
-=======
-					BLI_astar_solution_init(as_graph, &as_solution, false);
->>>>>>> Initial commit
 				}
 
 				for (plidx_dst = 0; plidx_dst < mp_dst->totloop; plidx_dst++) {

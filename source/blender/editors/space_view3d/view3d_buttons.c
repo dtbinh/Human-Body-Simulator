@@ -941,11 +941,8 @@ static void v3d_transform_butsR(uiLayout *layout, PointerRNA *ptr)
 
 		boneptr = RNA_pointer_get(ptr, "bone");
 		bone = boneptr.data;
-<<<<<<< HEAD
-		uiLayoutSetActive(split, !(bone->parent && bone->flag & BONE_CONNECTED));
-=======
+//		uiLayoutSetActive(split, !(bone->parent && bone->flag & BONE_CONNECTED));
 		uiLayoutSetActive(split, !(bone->parent && bone->flag & ELEMENT_CONNECTED));
->>>>>>> Initial commit
 	}
 	colsub = uiLayoutColumn(split, true);
 	uiItemR(colsub, ptr, "location", 0, NULL, ICON_NONE);
@@ -1031,19 +1028,16 @@ static void v3d_posearmature_buts(uiLayout *layout, Object *ob)
 static void v3d_editarmature_buts(uiLayout *layout, Object *ob)
 {
 	bArmature *arm = ob->data;
-<<<<<<< HEAD
-	EditBone *ebone;
-	uiLayout *col;
-	PointerRNA eboneptr;
-
-	ebone = arm->act_edbone;
-=======
+//	EditBone *ebone;
+//	uiLayout *col;
+//	PointerRNA eboneptr;
+//
+//	ebone = arm->act_edbone;
 	EditArmatureElement *ebone;
 	uiLayout *col;
 	PointerRNA eboneptr;
 
 	ebone = arm->act_edelement;
->>>>>>> Initial commit
 
 	if (!ebone || (ebone->layer & arm->layer) == 0) {
 		uiItemL(layout, IFACE_("Nothing selected"), ICON_NONE);
@@ -1054,11 +1048,8 @@ static void v3d_editarmature_buts(uiLayout *layout, Object *ob)
 
 	col = uiLayoutColumn(layout, false);
 	uiItemR(col, &eboneptr, "head", 0, NULL, ICON_NONE);
-<<<<<<< HEAD
-	if (ebone->parent && ebone->flag & BONE_CONNECTED) {
-=======
+//	if (ebone->parent && ebone->flag & BONE_CONNECTED) {
 	if (ebone->parent && ebone->flag & ELEMENT_CONNECTED) {
->>>>>>> Initial commit
 		PointerRNA parptr = RNA_pointer_get(&eboneptr, "parent");
 		uiItemR(col, &parptr, "tail_radius", 0, IFACE_("Radius (Parent)"), ICON_NONE);
 	}

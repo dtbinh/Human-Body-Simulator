@@ -755,11 +755,7 @@ static int set_engine(int argc, const char **argv, void *data)
 {
 	bContext *C = data;
 	if (argc >= 2) {
-<<<<<<< HEAD
 		if (STREQ(argv[1], "help")) {
-=======
-		if (!strcmp(argv[1], "help")) {
->>>>>>> Initial commit
 			RenderEngineType *type = NULL;
 			printf("Blender Engine Listing:\n");
 			for (type = R_engines.first; type; type = type->next) {
@@ -929,19 +925,11 @@ static int set_ge_parameters(int argc, const char **argv, void *data)
 			SYS_WriteCommandLineInt(syshandle, argv[a], 1);
 #endif
 			/* doMipMap */
-<<<<<<< HEAD
 			if (STREQ(argv[a], "nomipmap")) {
 				GPU_set_mipmap(0); //doMipMap = 0;
 			}
 			/* linearMipMap */
 			if (STREQ(argv[a], "linearmipmap")) {
-=======
-			if (!strcmp(argv[a], "nomipmap")) {
-				GPU_set_mipmap(0); //doMipMap = 0;
-			}
-			/* linearMipMap */
-			if (!strcmp(argv[a], "linearmipmap")) {
->>>>>>> Initial commit
 				GPU_set_linear_mipmap(1); //linearMipMap = 1;
 			}
 
@@ -1567,11 +1555,7 @@ int main(
 	
 #if defined(__APPLE__) && !defined(WITH_PYTHON_MODULE)
 /* patch to ignore argument finder gives us (pid?) */
-<<<<<<< HEAD
 	if (argc == 2 && STREQLEN(argv[1], "-psn_", 5)) {
-=======
-	if (argc == 2 && strncmp(argv[1], "-psn_", 5) == 0) {
->>>>>>> Initial commit
 		extern int GHOST_HACK_getFirstFile(char buf[]);
 		static char firstfilebuf[512];
 

@@ -969,11 +969,7 @@ static void make_duplis_particle_system(const DupliContext *ctx, ParticleSystem 
 			}
 
 			/* some hair paths might be non-existent so they can't be used for duplication */
-<<<<<<< HEAD
 			if (hair && psys->pathcache &&
-=======
-			if (hair &&
->>>>>>> Initial commit
 			    ((a < totpart && psys->pathcache[a]->segments < 0) ||
 			     (a >= totpart && psys->childcache[a - totpart]->segments < 0)))
 			{

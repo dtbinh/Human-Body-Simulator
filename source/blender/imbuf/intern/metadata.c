@@ -76,11 +76,7 @@ bool IMB_metadata_get_field(struct ImBuf *img, const char *key, char *field, con
 	}
 	info = img->metadata;
 	while (info) {
-<<<<<<< HEAD
 		if (STREQ(key, info->key)) {
-=======
-		if (strcmp(key, info->key) == 0) {
->>>>>>> Initial commit
 			BLI_strncpy(field, info->value, len);
 			retval = true;
 			break;
@@ -127,11 +123,7 @@ bool IMB_metadata_del_field(struct ImBuf *img, const char *key)
 	p = img->metadata;
 	p1 = NULL;
 	while (p) {
-<<<<<<< HEAD
 		if (STREQ(key, p->key)) {
-=======
-		if (!strcmp(key, p->key)) {
->>>>>>> Initial commit
 			if (p1)
 				p1->next = p->next;
 			else
@@ -160,11 +152,7 @@ bool IMB_metadata_change_field(struct ImBuf *img, const char *key, const char *f
 
 	p = img->metadata;
 	while (p) {
-<<<<<<< HEAD
 		if (STREQ(key, p->key)) {
-=======
-		if (!strcmp(key, p->key)) {
->>>>>>> Initial commit
 			MEM_freeN(p->value);
 			p->value = BLI_strdup(field);
 			return true;

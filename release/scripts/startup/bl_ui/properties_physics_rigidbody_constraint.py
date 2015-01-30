@@ -21,11 +21,7 @@ import bpy
 from bpy.types import Panel
 
 
-<<<<<<< HEAD
 class PHYSICS_PT_rigidbody_constraint_panel:
-=======
-class PHYSICS_PT_rigidbody_constraint_panel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "physics"

@@ -556,11 +556,7 @@ KeyingSet *ANIM_builtin_keyingset_get_named(KeyingSet *prevKS, const char name[]
 	
 	/* loop over KeyingSets checking names */
 	for (ks = first; ks; ks = ks->next) {
-<<<<<<< HEAD
 		if (STREQ(name, ks->idname))
-=======
-		if (strcmp(name, ks->idname) == 0)
->>>>>>> Initial commit
 			return ks;
 	}
 
@@ -607,11 +603,7 @@ void ANIM_keyingset_info_unregister(Main *bmain, KeyingSetInfo *ksi)
 		ksn = ks->next;
 
 		/* remove if matching typeinfo name */
-<<<<<<< HEAD
 		if (STREQ(ks->typeinfo, ksi->idname)) {
-=======
-		if (strcmp(ks->typeinfo, ksi->idname) == 0) {
->>>>>>> Initial commit
 			Scene *scene;
 			BKE_keyingset_free(ks);
 			BLI_remlink(&builtin_keyingsets, ks);
@@ -922,7 +914,6 @@ short ANIM_validate_keyingset(bContext *C, ListBase *dsources, KeyingSet *ks)
 	return 0;
 } 
 
-<<<<<<< HEAD
 /* Determine which keying flags apply based on the override flags */
 static short keyingset_apply_keying_flags(const short base_flags, const short overrides, const short own_flags)
 {
@@ -954,8 +945,6 @@ static short keyingset_apply_keying_flags(const short base_flags, const short ov
 	return result;
 }
 
-=======
->>>>>>> Initial commit
 /* Given a KeyingSet and context info (if required), modify keyframes for the channels specified
  * by the KeyingSet. This takes into account many of the different combinations of using KeyingSets.
  * Returns the number of channels that keyframes were added to
@@ -965,12 +954,8 @@ int ANIM_apply_keyingset(bContext *C, ListBase *dsources, bAction *act, KeyingSe
 	Scene *scene = CTX_data_scene(C);
 	ReportList *reports = CTX_wm_reports(C);
 	KS_Path *ksp;
-<<<<<<< HEAD
 	const short base_kflags = ANIM_get_keyframing_flags(scene, 1);
 	short kflag = 0, success = 0;
-=======
-	int kflag = 0, success = 0;
->>>>>>> Initial commit
 	const char *groupname = NULL;
 	
 	/* sanity checks */
@@ -979,16 +964,8 @@ int ANIM_apply_keyingset(bContext *C, ListBase *dsources, bAction *act, KeyingSe
 	
 	/* get flags to use */
 	if (mode == MODIFYKEY_MODE_INSERT) {
-<<<<<<< HEAD
 		/* use context settings as base */
 		kflag = keyingset_apply_keying_flags(base_kflags, ks->keyingoverride, ks->keyingflag);
-=======
-		/* use KeyingSet's flags as base */
-		kflag = ks->keyingflag;
-		
-		/* supplement with info from the context */
-		kflag |= ANIM_get_keyframing_flags(scene, 1);
->>>>>>> Initial commit
 	}
 	else if (mode == MODIFYKEY_MODE_DELETE)
 		kflag = 0;
@@ -1014,13 +991,8 @@ int ANIM_apply_keyingset(bContext *C, ListBase *dsources, bAction *act, KeyingSe
 			continue;
 		}
 		
-<<<<<<< HEAD
 		/* since keying settings can be defined on the paths too, apply the settings for this path first */
 		kflag2 = keyingset_apply_keying_flags(kflag, ksp->keyingoverride, ksp->keyingflag);
-=======
-		/* since keying settings can be defined on the paths too, extend the path before using it */
-		kflag2 = (kflag | ksp->keyingflag);
->>>>>>> Initial commit
 		
 		/* get pointer to name of group to add channels to */
 		if (ksp->groupmode == KSP_GROUP_NONE)

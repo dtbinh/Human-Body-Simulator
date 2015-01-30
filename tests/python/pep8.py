@@ -95,18 +95,13 @@ def main():
         print("    %s" % f)
 
     # strict imports
-<<<<<<< HEAD
     print("\n\n\n# checking imports...")
-=======
-    print("\n\n\n# running pep8...")
->>>>>>> Initial commit
     import re
     import_check = re.compile(r"\s*from\s+[A-z\.]+\s+import \*\s*")
     for f, pep8_type in files:
         for i, l in enumerate(open(f, 'r', encoding='utf8')):
             if import_check.match(l):
                 print("%s:%d:0: global import bad practice" % (f, i + 1))
-<<<<<<< HEAD
     del re, import_check
 
     print("\n\n\n# checking class definitions...")
@@ -117,8 +112,6 @@ def main():
             if class_check.match(l):
                 print("%s:%d:0: empty class (), remove" % (f, i + 1))
     del re, class_check
-=======
->>>>>>> Initial commit
 
     print("\n\n\n# running pep8...")
 

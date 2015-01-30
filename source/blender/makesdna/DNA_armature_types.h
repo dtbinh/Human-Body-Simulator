@@ -45,14 +45,8 @@ struct AnimData;
  *
  */
 
-<<<<<<< HEAD
-=======
 #define AE_BONE     0
 #define AE_MUSCLE   1
-typedef enum AETypes {
-    BoneType = 0,
-    MuscleType = 1
-} AETypes;
 
 typedef struct ArmatureElement {
     // Common elements to both Bone and Muscle
@@ -103,7 +97,6 @@ typedef struct MuscleData {
     struct ArmatureElement *start, *end;
 } MuscleData;
 
->>>>>>> Initial commit
 typedef struct Bone {
 	struct Bone *next, *prev;    /*  Next/prev elements within this list */
 	IDProperty  *prop;           /* User-Defined Properties on this Bone */
@@ -134,66 +127,55 @@ typedef struct Bone {
 	short        pad[1];
 } Bone;
 
-<<<<<<< HEAD
-=======
 typedef struct Muscle {
-    struct Muscle  *next, *prev; /* Next/prev elements within this list */
-    IDProperty     *prop; /* User-defined properties */
-    struct Muscle  *parent;
-    ListBase        childbase;
-    char            name[64]; /* Name of the muscle */
+	struct Muscle  *next, *prev; /* Next/prev elements within this list */
+	IDProperty     *prop; /* User-defined properties */
+	struct Muscle  *parent;
+	struct Bone    *start, *end; /* Bones the muscle is connected to */
+	ListBase        childbase;
+	char            name[64]; /* Name of the muscle */
 
-    float           roll;
-    float           head[3]; /* Offset from start bone head */
-    float           tail[3]; /* Offset from end bone head */
-    float           muscle_mat[3][3]; /* Rotation derived from head/tail */
+	float           roll;
+	float           head[3]; /* Offset from start bone head */
+	float           tail[3]; /* Offset from end bone head */
+	float           muscle_mat[3][3]; /* Rotation derived from head/tail */
 
-    int             flag;
+	int             flag;
 
-    float           arm_head[3];
-    float           arm_tail[3];
-    float           arm_mat[4][4];
-    float           arm_roll;
+	float           arm_head[3];
+	float           arm_tail[3];
+	float           arm_mat[4][4];
+	float           arm_roll;
 
-    struct Bone    *start, *end; /* Bones the muscle is connected to */
-    float           length;
+	float           length;
 
-    float           rad_head, rad_tail;
+	float           rad_head, rad_tail;
 
-    int             layer; /* Layer that muscle appears on */
-    short           segments;
-    char            pad[6];
+	int             layer; /* Layer that muscle appears on */
+	short           segments;
+	char            pad[6];
 } Muscle;
 
->>>>>>> Initial commit
 typedef struct bArmature {
 	ID          id;
 	struct AnimData *adt;
 
 	ListBase    bonebase;
-<<<<<<< HEAD
-	ListBase    chainbase;
-	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
-=======
 	ListBase    musclebase;
 	ListBase    chainbase;
 	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
 	ListBase   *edmu;                   /* editmuscle listbase, we use pointer so we can check state */
->>>>>>> Initial commit
 
 	/* active bones should work like active object where possible
 	 * - active and selection are unrelated
 	 * - active & hidden is not allowed
 	 * - from the user perspective active == last selected
 	 * - active should be ignored when not visible (hidden layer) */
-<<<<<<< HEAD
 
-	Bone       *act_bone;               /* active bone */
-	struct EditBone *act_edbone;        /* active editbone (in editmode) */
-=======
+//	Bone       *act_bone;               /* active bone */
+//	struct EditBone *act_edbone;        /* active editbone (in editmode) */
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;
->>>>>>> Initial commit
 
 	void       *sketch;                 /* sketch struct for etch-a-ton */
 
@@ -286,38 +268,35 @@ typedef enum eArmature_GhostType {
 	ARM_GHOST_KEYS = 2
 } eArmature_GhostType;
 
-<<<<<<< HEAD
 /* bone->flag */
-typedef enum eBone_Flag {
-	BONE_SELECTED               = (1 << 0),
-	BONE_ROOTSEL                = (1 << 1),
-	BONE_TIPSEL                 = (1 << 2),
-	BONE_TRANSFORM              = (1 << 3),   /* Used instead of BONE_SELECTED during transform */
-	BONE_CONNECTED              = (1 << 4),   /* when bone has a parent, connect head of bone to parent's tail*/
-	/* 32 used to be quatrot, was always set in files, do not reuse unless you clear it always */
-	BONE_HIDDEN_P               = (1 << 6),   /* hidden Bones when drawing PoseChannels */
-	BONE_DONE                   = (1 << 7),   /* For detecting cyclic dependencies */
-	BONE_DRAW_ACTIVE            = (1 << 8),   /* active is on mouse clicks only - deprecated, ONLY USE FOR DRAWING */
-	BONE_HINGE                  = (1 << 9),   /* No parent rotation or scale */
-	BONE_HIDDEN_A               = (1 << 10),  /* hidden Bones when drawing Armature Editmode */
-	BONE_MULT_VG_ENV            = (1 << 11),  /* multiplies vgroup with envelope */
-	BONE_NO_DEFORM              = (1 << 12),  /* bone doesn't deform geometry */
-	BONE_UNKEYED                = (1 << 13),  /* set to prevent destruction of its unkeyframed pose (after transform) */
-	BONE_HINGE_CHILD_TRANSFORM  = (1 << 14),  /* set to prevent hinge child bones from influencing the transform center */
-	BONE_NO_SCALE               = (1 << 15),  /* No parent scale */
-	BONE_HIDDEN_PG              = (1 << 16),  /* hidden bone when drawing PoseChannels (for ghost drawing) */
-	BONE_DRAWWIRE               = (1 << 17),  /* bone should be drawn as OB_WIRE, regardless of draw-types of view+armature */
-	BONE_NO_CYCLICOFFSET        = (1 << 18),  /* when no parent, bone will not get cyclic offset */
-	BONE_EDITMODE_LOCKED        = (1 << 19),  /* bone transforms are locked in EditMode */
-	BONE_TRANSFORM_CHILD        = (1 << 20),  /* Indicates that a parent is also being transformed */
-	BONE_UNSELECTABLE           = (1 << 21),  /* bone cannot be selected */
-	BONE_NO_LOCAL_LOCATION      = (1 << 22),  /* bone location is in armature space */
-	BONE_RELATIVE_PARENTING     = (1 << 23)   /* object child will use relative transform (like deform) */
-	
-} eBone_Flag;
+//typedef enum eBone_Flag {
+//	BONE_SELECTED               = (1 << 0),
+//	BONE_ROOTSEL                = (1 << 1),
+//	BONE_TIPSEL                 = (1 << 2),
+//	BONE_TRANSFORM              = (1 << 3),   /* Used instead of BONE_SELECTED during transform */
+//	BONE_CONNECTED              = (1 << 4),   /* when bone has a parent, connect head of bone to parent's tail*/
+//	/* 32 used to be quatrot, was always set in files, do not reuse unless you clear it always */
+//	BONE_HIDDEN_P               = (1 << 6),   /* hidden Bones when drawing PoseChannels */
+//	BONE_DONE                   = (1 << 7),   /* For detecting cyclic dependencies */
+//	BONE_DRAW_ACTIVE            = (1 << 8),   /* active is on mouse clicks only - deprecated, ONLY USE FOR DRAWING */
+//	BONE_HINGE                  = (1 << 9),   /* No parent rotation or scale */
+//	BONE_HIDDEN_A               = (1 << 10),  /* hidden Bones when drawing Armature Editmode */
+//	BONE_MULT_VG_ENV            = (1 << 11),  /* multiplies vgroup with envelope */
+//	BONE_NO_DEFORM              = (1 << 12),  /* bone doesn't deform geometry */
+//	BONE_UNKEYED                = (1 << 13),  /* set to prevent destruction of its unkeyframed pose (after transform) */
+//	BONE_HINGE_CHILD_TRANSFORM  = (1 << 14),  /* set to prevent hinge child bones from influencing the transform center */
+//	BONE_NO_SCALE               = (1 << 15),  /* No parent scale */
+//	BONE_HIDDEN_PG              = (1 << 16),  /* hidden bone when drawing PoseChannels (for ghost drawing) */
+//	BONE_DRAWWIRE               = (1 << 17),  /* bone should be drawn as OB_WIRE, regardless of draw-types of view+armature */
+//	BONE_NO_CYCLICOFFSET        = (1 << 18),  /* when no parent, bone will not get cyclic offset */
+//	BONE_EDITMODE_LOCKED        = (1 << 19),  /* bone transforms are locked in EditMode */
+//	BONE_TRANSFORM_CHILD        = (1 << 20),  /* Indicates that a parent is also being transformed */
+//	BONE_UNSELECTABLE           = (1 << 21),  /* bone cannot be selected */
+//	BONE_NO_LOCAL_LOCATION      = (1 << 22),  /* bone location is in armature space */
+//	BONE_RELATIVE_PARENTING     = (1 << 23)   /* object child will use relative transform (like deform) */
+//	
+//} eBone_Flag;
 
-#define MAXBONENAME 64
-=======
 typedef enum eElement_Flag {
     ELEMENT_SELECTED                = (1 << 0),
     ELEMENT_ROOTSEL                 = (1 << 1),
@@ -347,6 +326,5 @@ typedef enum eElement_Flag {
 
 #define MAXBONENAME 64
 #define MAXMUSCLENAME 64
->>>>>>> Initial commit
 
 #endif

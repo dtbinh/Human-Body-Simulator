@@ -30,10 +30,7 @@
 
 #include "util_foreach.h"
 #include "util_hash.h"
-<<<<<<< HEAD
 #include "util_logging.h"
-=======
->>>>>>> Initial commit
 
 CCL_NAMESPACE_BEGIN
 
@@ -255,10 +252,7 @@ Object *BlenderSync::sync_object(BL::Object b_parent, int persistent_id[OBJECT_P
 		if(object && (scene->need_motion() == Scene::MOTION_PASS || object_use_motion(b_ob))) {
 			/* object transformation */
 			if(tfm != object->tfm) {
-<<<<<<< HEAD
 				VLOG(1) << "Object " << b_ob.name() << " motion detected.";
-=======
->>>>>>> Initial commit
 				if(motion_time == -1.0f) {
 					object->motion.pre = tfm;
 					object->use_motion = true;

@@ -24,11 +24,7 @@ from rna_prop_ui import PropertyPanel
 from bpy.types import Curve, SurfaceCurve, TextCurve
 
 
-<<<<<<< HEAD
 class CurveButtonsPanel:
-=======
-class CurveButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "data"

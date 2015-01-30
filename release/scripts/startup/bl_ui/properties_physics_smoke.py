@@ -20,7 +20,6 @@
 import bpy
 from bpy.types import Panel
 
-<<<<<<< HEAD
 from bl_ui.properties_physics_common import (
         point_cache_ui,
         effector_weights_ui,
@@ -28,13 +27,6 @@ from bl_ui.properties_physics_common import (
 
 
 class PhysicButtonsPanel:
-=======
-from bl_ui.properties_physics_common import (point_cache_ui,
-                                             effector_weights_ui)
-
-
-class PhysicButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "physics"

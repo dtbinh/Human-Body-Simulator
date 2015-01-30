@@ -1645,11 +1645,8 @@ void ED_area_prevspace(bContext *C, ScrArea *sa)
 		/* no change */
 		return;
 	}
-<<<<<<< HEAD
 	sa->flag &= ~AREA_FLAG_STACKED_FULLSCREEN;
 
-=======
->>>>>>> Initial commit
 	ED_area_tag_redraw(sa);
 
 	/* send space change notifier */

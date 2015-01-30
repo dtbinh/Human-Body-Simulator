@@ -106,13 +106,10 @@ bool ED_vgroup_sync_from_pose(Object *ob)
 	Object *armobj = BKE_object_pose_armature_get(ob);
 	if (armobj && (armobj->mode & OB_MODE_POSE)) {
 		struct bArmature *arm = armobj->data;
-<<<<<<< HEAD
-		if (arm->act_bone) {
-			int def_num = defgroup_name_index(ob, arm->act_bone->name);
-=======
+//		if (arm->act_bone) {
+//			int def_num = defgroup_name_index(ob, arm->act_bone->name);
 		if (arm->act_element) {
 			int def_num = defgroup_name_index(ob, arm->act_element->name);
->>>>>>> Initial commit
 			if (def_num != -1) {
 				ob->actdef = def_num + 1;
 				return true;

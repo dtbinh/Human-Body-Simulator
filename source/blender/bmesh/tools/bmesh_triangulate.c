@@ -95,13 +95,10 @@ void BM_mesh_triangulate(
 		pf_heap = BLI_heap_new_ex(BLI_POLYFILL_ALLOC_NGON_RESERVE);
 		pf_ehash = BLI_edgehash_new_ex(__func__, BLI_POLYFILL_ALLOC_NGON_RESERVE);
 	}
-<<<<<<< HEAD
 	else {
 		pf_heap = NULL;
 		pf_ehash = NULL;
 	}
-=======
->>>>>>> Initial commit
 
 	if (slot_facemap_out) {
 		/* same as below but call: bm_face_triangulate_mapping() */

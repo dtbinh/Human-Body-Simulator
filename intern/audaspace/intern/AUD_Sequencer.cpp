@@ -39,11 +39,7 @@ AUD_Sequencer::AUD_Sequencer(AUD_Specs specs, float fps, bool muted) :
 	m_id(0),
 	m_muted(muted),
 	m_fps(fps),
-<<<<<<< HEAD
 	m_speed_of_sound(343.3f),
-=======
-	m_speed_of_sound(434),
->>>>>>> Initial commit
 	m_doppler_factor(1),
 	m_distance_model(AUD_DISTANCE_MODEL_INVERSE_CLAMPED),
 	m_volume(1, 1.0f),

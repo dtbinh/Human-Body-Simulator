@@ -2263,11 +2263,8 @@ TextureCoordinateNode::TextureCoordinateNode()
 	add_output("Reflection", SHADER_SOCKET_NORMAL);
 
 	from_dupli = false;
-<<<<<<< HEAD
 	use_transform = false;
 	ob_tfm = transform_identity();
-=======
->>>>>>> Initial commit
 }
 
 void TextureCoordinateNode::attributes(Shader *shader, AttributeRequestSet *attributes)
@@ -2355,7 +2352,6 @@ void TextureCoordinateNode::compile(SVMCompiler& compiler)
 	out = output("Object");
 	if(!out->links.empty()) {
 		compiler.stack_assign(out);
-<<<<<<< HEAD
 		compiler.add_node(texco_node, NODE_TEXCO_OBJECT, out->stack_offset, use_transform);
 		if(use_transform) {
 			Transform ob_itfm = transform_inverse(ob_tfm);
@@ -2364,9 +2360,6 @@ void TextureCoordinateNode::compile(SVMCompiler& compiler)
 			compiler.add_node(ob_itfm.z);
 			compiler.add_node(ob_itfm.w);
 		}
-=======
-		compiler.add_node(texco_node, NODE_TEXCO_OBJECT, out->stack_offset);
->>>>>>> Initial commit
 	}
 
 	out = output("Camera");
@@ -2407,14 +2400,10 @@ void TextureCoordinateNode::compile(OSLCompiler& compiler)
 		compiler.parameter("is_background", true);
 	if(compiler.output_type() == SHADER_TYPE_VOLUME)
 		compiler.parameter("is_volume", true);
-<<<<<<< HEAD
 	compiler.parameter("use_transform", use_transform);
 	Transform ob_itfm = transform_transpose(transform_inverse(ob_tfm));
 	compiler.parameter("object_itfm", ob_itfm);
 
-=======
-	
->>>>>>> Initial commit
 	compiler.parameter("from_dupli", from_dupli);
 
 	compiler.add(this, "node_texture_coordinate");

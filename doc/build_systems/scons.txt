@@ -29,15 +29,9 @@
     a scons-local installation, which can be found in the scons/ subdirectory.
     This document uses the scons-local installation for its examples.
 
-<<<<<<< HEAD
     For build instructions, including dependencies, consult the appropriate
     section for your platform at
     http://wiki.blender.org/index.php/Dev:Doc/Building_Blender. Note that for
-=======
-    Check from the page
-    http://www.blender.org/development/building-blender/getting-dependencies/
-    that you have all dependencies needed for building Blender. Note that for
->>>>>>> Initial commit
     windows many of these dependencies already come in the lib/windows module
     from CVS.
 
@@ -59,7 +53,6 @@
     from the command-line is given, then all libraries and binaries to
     build are configured.
 
-<<<<<<< HEAD
     The build uses BF_BUILDDIR to build into and BF_INSTALLDIR to finally copy
     all needed files to get a proper setup. The BF_DOCDIR is used to generate
     Blender Python documentation files to. These variables have default values
@@ -67,14 +60,6 @@
     $BLENDERHOME/build_files/scons/config/(platform)-config.py. See the next
     section of this document for how to customize these paths. After the build
     successfully completes, you can find everything you need in BF_INSTALLDIR.
-=======
-    The build uses BF_BUILDDIR to build into and BF_INSTALLDIR to
-    finally copy all needed files to get a proper setup. The BF_DOCDIR is
-    used to generate Blender Python documentation files to. These
-    variables have default values for every platform in
-    $BLENDERHOME/config/(platform)-config.py. After the build successfully
-    completes, you can find everything you need in BF_INSTALLDIR.
->>>>>>> Initial commit
 
     If you want to create the installer package of Blender on Windows you'll
     need to install nullsoft scriptable install system from http://nsis.sf.net.
@@ -88,13 +73,8 @@
     ---------------------
 
     The default values for your platform can be found in the directory
-<<<<<<< HEAD
     $BLENDERHOME/build_files/scons/config. Your platform specific defaults are
     in (platform)-config.py, where platform is one of:
-=======
-    $BLENDERHOME/config. Your platform specific defaults are in
-    (platform)-config.py, where platform is one of:
->>>>>>> Initial commit
 
         - linux, for machines running Linux
         - win32-vc, for Windows machines, compiling with a Microsoft compiler
@@ -102,7 +82,6 @@
         - darwin, for OS X machines
         (TBD: add cygwin, solaris and freebsd support)
 
-<<<<<<< HEAD
     These files you will normally not change. If you need to override a
     default value, make a file called $BLENDERHOME/user-config.py, and copy
     settings from the build_files/scons/config/(platform)-config.py that you
@@ -110,14 +89,6 @@
     the configuration file), because you may not get updated options you don't
     change yourself, which may result in build errors. You should NEVER have
     to modify $BLENDERHOME/build_files/scons/config/(platform)-config.py.
-=======
-    These files you will normally not change. If you need to override
-    a default value, make a file called  $BLENDERHOME/user-config.py, and copy
-    settings from the config/(platform)-config.py that you want to change. Don't
-    copy the entire file (unless explicitely stated in the configuration file),
-    because you may not get updated options you don't change yourself, which may
-    result in build errors.
->>>>>>> Initial commit
 
     You can use BF_CONFIG argument to override the default user-config.py
     check. This is just like the user-config.py, but just with another name:
@@ -144,14 +115,6 @@
     (unless you have overridden any of them in your
     $BLENDERHOME/user-config.py).
 
-<<<<<<< HEAD
-=======
-    NOTE: The best way to avoid confusion is the
-    copy $BLENDERHOME/config/(platform)-config.py to
-    $BLENDERHOME/user-config.py. You should NEVER have to modify
-    $BLENDERHOME/config/(platform)-config.py
-
->>>>>>> Initial commit
     Configuring the output
     ----------------------
 

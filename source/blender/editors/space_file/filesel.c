@@ -669,11 +669,7 @@ int autocomplete_directory(struct bContext *C, char *str, void *UNUSED(arg_v))
 			AutoComplete *autocpl = UI_autocomplete_begin(str, FILE_MAX);
 
 			while ((de = readdir(dir)) != NULL) {
-<<<<<<< HEAD
 				if (FILENAME_IS_CURRPAR(de->d_name)) {
-=======
-				if (strcmp(".", de->d_name) == 0 || strcmp("..", de->d_name) == 0) {
->>>>>>> Initial commit
 					/* pass */
 				}
 				else {

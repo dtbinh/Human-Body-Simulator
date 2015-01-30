@@ -316,11 +316,7 @@ static bool delete_recursive(const char *dir)
 	while (i--) {
 		char file[8];
 		BLI_split_file_part(fl->path, file, sizeof(file));
-<<<<<<< HEAD
 		if (FILENAME_IS_CURRPAR(file)) {
-=======
-		if (STREQ(file, ".") || STREQ(file, "..")) {
->>>>>>> Initial commit
 			/* Skip! */
 		}
 		else if (S_ISDIR(fl->type)) {
@@ -588,11 +584,7 @@ static int recursive_operation(const char *startfrom, const char *startto,
 		for (i = 0; i < n; i++) {
 			const struct dirent * const dirent = dirlist[i];
 
-<<<<<<< HEAD
 			if (FILENAME_IS_CURRPAR(dirent->d_name))
-=======
-			if (!strcmp(dirent->d_name, ".") || !strcmp(dirent->d_name, ".."))
->>>>>>> Initial commit
 				continue;
 
 			join_dirfile_alloc(&from_path, &from_alloc_len, from, dirent->d_name);

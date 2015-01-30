@@ -23,7 +23,6 @@
 /** \file blender/blenlib/intern/edgehash.c
  *  \ingroup bli
  *
-<<<<<<< HEAD
  * An (edge -> pointer) chaining hash table.
  * Using unordered int-pairs as keys.
  *
@@ -31,14 +30,6 @@
  * make sure these stay in sync.
  */
 
-=======
- * A general (pointer -> pointer) hash table ADT
- *
- * \note Based on 'BLI_ghash.c', make sure these stay in sync.
- */
-
-
->>>>>>> Initial commit
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>

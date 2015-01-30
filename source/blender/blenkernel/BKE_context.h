@@ -268,11 +268,8 @@ struct Mask *CTX_data_edit_mask(const bContext *C);
 
 int CTX_data_selected_nodes(const bContext *C, ListBase *list);
 
-<<<<<<< HEAD
-struct EditBone *CTX_data_active_bone(const bContext *C);
-=======
+//struct EditBone *CTX_data_active_bone(const bContext *C);
 struct EditArmatureElement *CTX_data_active_bone(const bContext *C);
->>>>>>> Initial commit
 int CTX_data_selected_bones(const bContext *C, ListBase *list);
 int CTX_data_selected_editable_bones(const bContext *C, ListBase *list);
 int CTX_data_visible_bones(const bContext *C, ListBase *list);
@@ -293,10 +290,6 @@ int CTX_data_editable_gpencil_strokes(const bContext *C, ListBase *list);
 #ifdef __cplusplus
 }
 #endif
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 #endif
 

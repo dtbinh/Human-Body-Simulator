@@ -350,11 +350,8 @@ static const char *template_id_browse_tip(StructRNA *type)
 			case ID_BR:  return N_("Browse Brush to be linked");
 			case ID_PA:  return N_("Browse Particle Settings to be linked");
 			case ID_GD:  return N_("Browse Grease Pencil Data to be linked");
-<<<<<<< HEAD
 			case ID_MC:  return N_("Browse Movie Clip to be linked");
 			case ID_MSK: return N_("Browse Mask to be linked");
-=======
->>>>>>> Initial commit
 			case ID_PAL: return N_("Browse Palette Data to be linked");
 			case ID_PC:  return N_("Browse Paint Curve Data to be linked");
 		}
@@ -393,13 +390,10 @@ static const char *template_id_context(StructRNA *type)
 			case ID_BR:  return BLF_I18NCONTEXT_ID_BRUSH;
 			case ID_PA:  return BLF_I18NCONTEXT_ID_PARTICLESETTINGS;
 			case ID_GD:  return BLF_I18NCONTEXT_ID_GPENCIL;
-<<<<<<< HEAD
 			case ID_MC:  return BLF_I18NCONTEXT_ID_MOVIECLIP;
 			case ID_MSK: return BLF_I18NCONTEXT_ID_MASK;
 			case ID_PAL: return BLF_I18NCONTEXT_ID_PALETTE;
 			case ID_PC:  return BLF_I18NCONTEXT_ID_PAINTCURVE;
-=======
->>>>>>> Initial commit
 		}
 	}
 	return BLF_I18NCONTEXT_DEFAULT;
@@ -2868,11 +2862,7 @@ void uiTemplateList(uiLayout *layout, bContext *C, const char *listtype_name, co
 
 	/* validate arguments */
 	/* Forbid default UI_UL_DEFAULT_CLASS_NAME list class without a custom list_id! */
-<<<<<<< HEAD
 	if (STREQ(UI_UL_DEFAULT_CLASS_NAME, listtype_name) && !(list_id && list_id[0])) {
-=======
-	if (!strcmp(UI_UL_DEFAULT_CLASS_NAME, listtype_name) && !(list_id && list_id[0])) {
->>>>>>> Initial commit
 		RNA_warning("template_list using default '%s' UIList class must provide a custom list_id",
 		            UI_UL_DEFAULT_CLASS_NAME);
 		return;

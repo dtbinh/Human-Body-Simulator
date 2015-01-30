@@ -100,11 +100,7 @@ static bool keycmp(const void *a, const void *b)
 			return (BLI_strcasecmp(ka->arg, kb->arg) != 0);
 		}
 		else {
-<<<<<<< HEAD
 			return (!STREQ(ka->arg, kb->arg));
-=======
-			return (strcmp(ka->arg, kb->arg) != 0);
->>>>>>> Initial commit
 		}
 	}
 	else {

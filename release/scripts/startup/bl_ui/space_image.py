@@ -28,11 +28,7 @@ from bl_ui.properties_paint_common import (
 from bl_ui.properties_grease_pencil_common import (
         GreasePencilDrawingToolsPanel,
         GreasePencilStrokeEditPanel,
-<<<<<<< HEAD
         GreasePencilDataPanel,
-=======
-        GreasePencilDataPanel
->>>>>>> Initial commit
         )
 from bpy.app.translations import pgettext_iface as iface_
 
@@ -519,7 +515,6 @@ class MASK_MT_editor_menus(Menu):
 # Mask (similar code in space_clip.py, keep in sync)
 # note! - panel placement does _not_ fit well with image panels... need to fix
 
-<<<<<<< HEAD
 from bl_ui.properties_mask_common import (
         MASK_PT_mask,
         MASK_PT_layers,
@@ -528,14 +523,6 @@ from bl_ui.properties_mask_common import (
         MASK_PT_display,
         MASK_PT_tools,
         )
-=======
-from bl_ui.properties_mask_common import (MASK_PT_mask,
-                                          MASK_PT_layers,
-                                          MASK_PT_spline,
-                                          MASK_PT_point,
-                                          MASK_PT_display,
-                                          MASK_PT_tools)
->>>>>>> Initial commit
 
 
 class IMAGE_PT_mask(MASK_PT_mask, Panel):
@@ -1056,12 +1043,8 @@ class IMAGE_PT_tools_mask(MASK_PT_tools, Panel):
 
 # --- end mask ---
 
-<<<<<<< HEAD
 
 class ImageScopesPanel:
-=======
-class ImageScopesPanel():
->>>>>>> Initial commit
     @classmethod
     def poll(cls, context):
         sima = context.space_data
@@ -1075,10 +1058,7 @@ class ImageScopesPanel():
             return False
         return True
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 class IMAGE_PT_view_histogram(ImageScopesPanel, Panel):
     bl_space_type = 'IMAGE_EDITOR'
     bl_region_type = 'TOOLS'
@@ -1172,10 +1152,7 @@ class IMAGE_PT_grease_pencil(GreasePencilDataPanel, Panel):
 
     # NOTE: this is just a wrapper around the generic GP Panel
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 # Grease Pencil drawing tools
 class IMAGE_PT_tools_grease_pencil_draw(GreasePencilDrawingToolsPanel, Panel):
     bl_space_type = 'IMAGE_EDITOR'

@@ -16,7 +16,6 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-<<<<<<< HEAD
 import bpy
 
 from bpy.props import (
@@ -24,12 +23,6 @@ from bpy.props import (
         EnumProperty,
         StringProperty,
         )
-=======
-import sys
-import bpy
-
-from bpy.props import (BoolProperty, EnumProperty, StringProperty)
->>>>>>> Initial commit
 
 
 class SCENE_OT_freestyle_fill_range_by_selection(bpy.types.Operator):
@@ -39,7 +32,6 @@ class SCENE_OT_freestyle_fill_range_by_selection(bpy.types.Operator):
     bl_label = "Fill Range by Selection"
     bl_options = {'INTERNAL'}
 
-<<<<<<< HEAD
     type = EnumProperty(
             name="Type", description="Type of the modifier to work on",
             items=(("COLOR", "Color", "Color modifier type"),
@@ -50,13 +42,6 @@ class SCENE_OT_freestyle_fill_range_by_selection(bpy.types.Operator):
             name="Name",
             description="Name of the modifier to work on",
             )
-=======
-    type = EnumProperty(name="Type", description="Type of the modifier to work on",
-                        items=(("COLOR", "Color", "Color modifier type"),
-                               ("ALPHA", "Alpha", "Alpha modifier type"),
-                               ("THICKNESS", "Thickness", "Thickness modifier type")))
-    name = StringProperty(name="Name", description="Name of the modifier to work on")
->>>>>>> Initial commit
 
     @classmethod
     def poll(cls, context):
@@ -64,11 +49,8 @@ class SCENE_OT_freestyle_fill_range_by_selection(bpy.types.Operator):
         return rl and rl.freestyle_settings.linesets.active
 
     def execute(self, context):
-<<<<<<< HEAD
         import sys
 
-=======
->>>>>>> Initial commit
         scene = context.scene
         rl = scene.render.layers.active
         lineset = rl.freestyle_settings.linesets.active

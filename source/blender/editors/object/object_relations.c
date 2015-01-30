@@ -728,20 +728,14 @@ bool ED_object_parent_set(ReportList *reports, Main *bmain, Scene *scene, Object
 			else if (partype == PAR_BONE) {
 				ob->partype = PARBONE;  /* note, dna define, not operator property */
 				if (pchan->bone)
-<<<<<<< HEAD
-					pchan->bone->flag &= ~BONE_RELATIVE_PARENTING;
-=======
+//					pchan->bone->flag &= ~BONE_RELATIVE_PARENTING;
 					pchan->bone->flag &= ~ELEMENT_RELATIVE_PARENTING;
->>>>>>> Initial commit
 			}
 			else if (partype == PAR_BONE_RELATIVE) {
 				ob->partype = PARBONE;  /* note, dna define, not operator property */
 				if (pchan->bone)
-<<<<<<< HEAD
-					pchan->bone->flag |= BONE_RELATIVE_PARENTING;
-=======
+//					pchan->bone->flag |= BONE_RELATIVE_PARENTING;
 					pchan->bone->flag |= ELEMENT_RELATIVE_PARENTING;
->>>>>>> Initial commit
 			}
 			else if (partype == PAR_VERTEX) {
 				ob->partype = PARVERT1;

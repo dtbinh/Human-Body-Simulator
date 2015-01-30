@@ -703,11 +703,7 @@ bool BKE_mesh_uv_cdlayer_rename_index(Mesh *me, const int poly_index, const int 
 	}
 
 	/* Loop until we do have exactly the same name for all layers! */
-<<<<<<< HEAD
 	for (i = 1; !STREQ(cdlp->name, cdlu->name) || (cdlf && !STREQ(cdlp->name, cdlf->name)); i++) {
-=======
-	for (i = 1; (strcmp(cdlp->name, cdlu->name) != 0 || (cdlf && strcmp(cdlp->name, cdlf->name) != 0)); i++) {
->>>>>>> Initial commit
 		switch (i % step) {
 			case 0:
 				BLI_strncpy(cdlp->name, cdlu->name, sizeof(cdlp->name));

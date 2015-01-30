@@ -142,15 +142,9 @@ kmi = km.keymap_items.new('screen.frame_offset', 'LEFT_ARROW', 'PRESS')
 kmi.properties.delta = -1
 kmi = km.keymap_items.new('screen.frame_offset', 'RIGHT_ARROW', 'PRESS')
 kmi.properties.delta = 1
-<<<<<<< HEAD
 kmi = km.keymap_items.new('screen.frame_offset', 'WHEELDOWNMOUSE', 'PRESS', ctrl=True, alt=True)
 kmi.properties.delta = 1
 kmi = km.keymap_items.new('screen.frame_offset', 'WHEELUPMOUSE', 'PRESS', ctrl=True, alt=True)
-=======
-kmi = km.keymap_items.new('screen.frame_offset', 'WHEELDOWNMOUSE', 'PRESS', alt=True)
-kmi.properties.delta = 1
-kmi = km.keymap_items.new('screen.frame_offset', 'WHEELUPMOUSE', 'PRESS', alt=True)
->>>>>>> Initial commit
 kmi.properties.delta = -1
 kmi = km.keymap_items.new('screen.frame_jump', 'V', 'PRESS', shift=True, alt=True)
 kmi.properties.end = False
@@ -963,13 +957,10 @@ kmi = km.keymap_items.new('view3d.zoom', 'WHEELINMOUSE', 'PRESS')
 kmi.properties.delta = 1
 kmi = km.keymap_items.new('view3d.zoom', 'WHEELOUTMOUSE', 'PRESS')
 kmi.properties.delta = -1
-<<<<<<< HEAD
 kmi = km.keymap_items.new('view3d.zoom', 'WHEELINMOUSE', 'PRESS', alt=True)
 kmi.properties.delta = 1
 kmi = km.keymap_items.new('view3d.zoom', 'WHEELOUTMOUSE', 'PRESS', alt=True)
 kmi.properties.delta = -1
-=======
->>>>>>> Initial commit
 kmi = km.keymap_items.new('view3d.view_all', 'A', 'PRESS')
 kmi.properties.center = False
 kmi = km.keymap_items.new('view3d.viewnumpad', 'ZERO', 'PRESS', ctrl=True)

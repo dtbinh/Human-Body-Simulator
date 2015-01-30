@@ -112,11 +112,7 @@ class MASK_PT_layers:
             row.prop(active_layer, "use_fill_holes", text="Holes")
 
 
-<<<<<<< HEAD
 class MASK_PT_spline:
-=======
-class MASK_PT_spline():
->>>>>>> Initial commit
     # subclasses must define...
     #~ bl_space_type = 'CLIP_EDITOR'
     #~ bl_region_type = 'UI'
@@ -150,11 +146,7 @@ class MASK_PT_spline():
         col.prop(spline, "use_self_intersection_check")
 
 
-<<<<<<< HEAD
 class MASK_PT_point:
-=======
-class MASK_PT_point():
->>>>>>> Initial commit
     # subclasses must define...
     #~ bl_space_type = 'CLIP_EDITOR'
     #~ bl_region_type = 'UI'
@@ -209,11 +201,7 @@ class MASK_PT_point():
                                 tracks_list, icon='ANIM_DATA', text="Track:")
 
 
-<<<<<<< HEAD
 class MASK_PT_display:
-=======
-class MASK_PT_display():
->>>>>>> Initial commit
     # subclasses must define...
     #~ bl_space_type = 'CLIP_EDITOR'
     #~ bl_region_type = 'UI'
@@ -239,11 +227,7 @@ class MASK_PT_display():
         sub.prop(space_data, "mask_overlay_mode", text="")
 
 
-<<<<<<< HEAD
 class MASK_PT_transforms:
-=======
-class MASK_PT_transforms():
->>>>>>> Initial commit
     # subclasses must define...
     #~ bl_space_type = 'CLIP_EDITOR'
     #~ bl_region_type = 'TOOLS'
@@ -267,11 +251,7 @@ class MASK_PT_transforms():
         col.operator("transform.transform", text="Scale Feather").mode = 'MASK_SHRINKFATTEN'
 
 
-<<<<<<< HEAD
 class MASK_PT_tools:
-=======
-class MASK_PT_tools():
->>>>>>> Initial commit
     # subclasses must define...
     #~ bl_space_type = 'CLIP_EDITOR'
     #~ bl_region_type = 'TOOLS'
@@ -309,11 +289,7 @@ class MASK_PT_tools():
         col.operator("mask.shape_key_rekey", text="Re-Key Shape Points")
 
 
-<<<<<<< HEAD
 class MASK_PT_add:
-=======
-class MASK_PT_add():
->>>>>>> Initial commit
     # subclasses must define...
     #~ bl_space_type = 'CLIP_EDITOR'
     #~ bl_region_type = 'TOOLS'

@@ -84,11 +84,7 @@ def _call_recursive(context, base, py_node):
                 _call_recursive(context, base_new, py_node_child)
 
 
-<<<<<<< HEAD
 class BPyML_BaseUI:
-=======
-class BPyML_BaseUI():
->>>>>>> Initial commit
     """
     This is a mix-in class that defines a draw function
     which checks for draw_data

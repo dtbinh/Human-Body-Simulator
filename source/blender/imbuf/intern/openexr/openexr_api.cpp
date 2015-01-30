@@ -784,11 +784,7 @@ void IMB_exr_read_channels(void *handle)
 
 	/* check if exr was saved with previous versions of blender which flipped images */
 	const StringAttribute *ta = data->ifile->header().findTypedAttribute <StringAttribute> ("BlenderMultiChannel");
-<<<<<<< HEAD
 	short flip = (ta && STREQLEN(ta->value().c_str(), "Blender V2.43", 13)); /* 'previous multilayer attribute, flipped */
-=======
-	short flip = (ta && strncmp(ta->value().c_str(), "Blender V2.43", 13) == 0); /* 'previous multilayer attribute, flipped */
->>>>>>> Initial commit
 
 	for (echan = (ExrChannel *)data->channels.first; echan; echan = echan->next) {
 
@@ -986,11 +982,7 @@ static ExrPass *imb_exr_get_pass(ListBase *lb, char *passname)
 	if (pass == NULL) {
 		pass = (ExrPass *)MEM_callocN(sizeof(ExrPass), "exr pass");
 
-<<<<<<< HEAD
 		if (STREQ(passname, "Combined"))
-=======
-		if (strcmp(passname, "Combined") == 0)
->>>>>>> Initial commit
 			BLI_addhead(lb, pass);
 		else
 			BLI_addtail(lb, pass);

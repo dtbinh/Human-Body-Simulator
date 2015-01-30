@@ -59,10 +59,7 @@ KM_HIERARCHY = [
 
         ('Knife Tool Modal Map', 'EMPTY', 'WINDOW', []),
         ('Paint Stroke Modal', 'EMPTY', 'WINDOW', []),
-<<<<<<< HEAD
         ('Paint Curve', 'EMPTY', 'WINDOW', []),
-=======
->>>>>>> Initial commit
 
         ('Object Non-modal', 'EMPTY', 'WINDOW', []),  # mode change
 
@@ -248,11 +245,7 @@ def keyconfig_export(wm, kc, filepath):
     # the default blender keyconfig, recreating the current setup from a fresh blender
     # without needing to export keymaps which haven't been edited.
 
-<<<<<<< HEAD
     class FakeKeyConfig:
-=======
-    class FakeKeyConfig():
->>>>>>> Initial commit
         keymaps = []
     edited_kc = FakeKeyConfig()
     for km in wm.keyconfigs.user.keymaps:

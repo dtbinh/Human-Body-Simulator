@@ -76,10 +76,7 @@ public:
 
 	/* border */
 	BoundBox2D border;
-<<<<<<< HEAD
 	BoundBox2D viewport_camera_border;
-=======
->>>>>>> Initial commit
 
 	/* transformation */
 	Transform matrix;
@@ -127,10 +124,7 @@ public:
 
 	BoundBox viewplane_bounds_get();
 	float3 transform_raster_to_world(float raster_x, float raster_y);
-<<<<<<< HEAD
 	Transform transform_from_viewplane(BoundBox2D &viewplane);
-=======
->>>>>>> Initial commit
 };
 
 CCL_NAMESPACE_END

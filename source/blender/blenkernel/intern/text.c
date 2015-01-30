@@ -508,7 +508,6 @@ void BKE_text_unlink(Main *bmain, Text *text)
 	bNodeTree *ntree;
 	bNode *node;
 	Material *mat;
-<<<<<<< HEAD
 	Lamp *la;
 	Tex *te;
 	World *wo;
@@ -517,12 +516,6 @@ void BKE_text_unlink(Main *bmain, Text *text)
 	SceneRenderLayer *srl;
 	FreestyleModuleConfig *module;
 	bool update;
-=======
-	Scene *sce;
-	SceneRenderLayer *srl;
-	FreestyleModuleConfig *module;
-	short update;
->>>>>>> Initial commit
 
 	for (ob = bmain->object.first; ob; ob = ob->id.next) {
 		/* game controllers */
@@ -574,7 +567,6 @@ void BKE_text_unlink(Main *bmain, Text *text)
 	}
 	
 	/* nodes */
-<<<<<<< HEAD
 	for (la = bmain->lamp.first; la; la = la->id.next) {
 		ntree = la->nodetree;
 		if (!ntree)
@@ -601,14 +593,11 @@ void BKE_text_unlink(Main *bmain, Text *text)
 		}
 	}
 
-=======
->>>>>>> Initial commit
 	for (mat = bmain->mat.first; mat; mat = mat->id.next) {
 		ntree = mat->nodetree;
 		if (!ntree)
 			continue;
 		for (node = ntree->nodes.first; node; node = node->next) {
-<<<<<<< HEAD
 			if (ELEM(node->type, SH_NODE_SCRIPT, NODE_FRAME)) {
 				if ((Text *)node->id == text) {
 					node->id = NULL;
@@ -649,14 +638,10 @@ void BKE_text_unlink(Main *bmain, Text *text)
 			continue;
 		for (node = ntree->nodes.first; node; node = node->next) {
 			if (node->type == NODE_FRAME) {
-=======
-			if (node->type == SH_NODE_SCRIPT) {
->>>>>>> Initial commit
 				Text *ntext = (Text *)node->id;
 				if (ntext == text) node->id = NULL;
 			}
 		}
-<<<<<<< HEAD
 
 		/* Freestyle (while looping oer the scene) */
 		for (srl = sce->r.layers.first; srl; srl = srl->next) {
@@ -673,15 +658,6 @@ void BKE_text_unlink(Main *bmain, Text *text)
 				if ((Text *)node->id == text) {
 					node->id = NULL;
 				}
-=======
-	}
-	
-	for (ntree = bmain->nodetree.first; ntree; ntree = ntree->id.next) {
-		for (node = ntree->nodes.first; node; node = node->next) {
-			if (node->type == SH_NODE_SCRIPT) {
-				Text *ntext = (Text *)node->id;
-				if (ntext == text) node->id = NULL;
->>>>>>> Initial commit
 			}
 		}
 	}
@@ -702,19 +678,6 @@ void BKE_text_unlink(Main *bmain, Text *text)
 		}
 	}
 
-<<<<<<< HEAD
-=======
-	/* Freestyle */
-	for (sce = bmain->scene.first; sce; sce = sce->id.next) {
-		for (srl = sce->r.layers.first; srl; srl = srl->next) {
-			for (module = srl->freestyleConfig.modules.first; module; module = module->next) {
-				if (module->script == text)
-					module->script = NULL;
-			}
-		}
-	}
-
->>>>>>> Initial commit
 	text->id.us = 0;
 }
 
@@ -2845,11 +2808,7 @@ void txt_unindent(Text *text)
 
 	while (true) {
 		bool changed = false;
-<<<<<<< HEAD
 		if (STREQLEN(text->curl->line, remove, indentlen)) {
-=======
-		if (strncmp(text->curl->line, remove, indentlen) == 0) {
->>>>>>> Initial commit
 			if (num == 0)
 				unindented_first = true;
 			text->curl->len -= indentlen;

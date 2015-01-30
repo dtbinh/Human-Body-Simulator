@@ -90,17 +90,11 @@ const cl_image_format* OpenCLDevice::determineImageFormat(MemoryBuffer *memoryBu
 	int num_channels = memoryBuffer->get_num_channels();
 	if (num_channels == 1) {
 		imageFormat = &IMAGE_FORMAT_VALUE;
-<<<<<<< HEAD
 	}
 	else if (num_channels == 3) {
 		imageFormat = &IMAGE_FORMAT_VECTOR;
 	}
 	else {
-=======
-	} else if (num_channels == 3) {
-		imageFormat = &IMAGE_FORMAT_VECTOR;
-	} else {
->>>>>>> Initial commit
 		imageFormat = &IMAGE_FORMAT_COLOR;
 	}
 

@@ -46,7 +46,7 @@ LANGUAGES = (
     # ID, UI english label, ISO code.
     ( 0, "Default (Default)", "DEFAULT"),
     ( 1, "English (English)", "en_US"),
-    ( 2, "Japanese (日本語)", "ja_JP"),
+    ( 2, "Japanese (日本�", "ja_JP"),
     ( 3, "Dutch (Nederlandse taal)", "nl_NL"),
     ( 4, "Italian (Italiano)", "it_IT"),
     ( 5, "German (Deutsch)", "de_DE"),
@@ -54,25 +54,25 @@ LANGUAGES = (
     ( 7, "Swedish (Svenska)", "sv_SE"),
     ( 8, "French (Français)", "fr_FR"),
     ( 9, "Spanish (Español)", "es"),
-    (10, "Catalan (Català)", "ca_AD"),
+    (10, "Catalan (Catal�)", "ca_AD"),
     (11, "Czech (Český)", "cs_CZ"),
     (12, "Portuguese (Português)", "pt_PT"),
-    (13, "Simplified Chinese (简体中文)", "zh_CN"),
-    (14, "Traditional Chinese (繁體中文)", "zh_TW"),
-    (15, "Russian (Русский)", "ru_RU"),
+    (13, "Simplified Chinese (简体中�", "zh_CN"),
+    (14, "Traditional Chinese (繫�中�", "zh_TW"),
+    (15, "Russian (�уѺий)", "ru_RU"),
     (16, "Croatian (Hrvatski)", "hr_HR"),
-    (17, "Serbian (Српски)", "sr_RS"),
-    (18, "Ukrainian (Український)", "uk_UA"),
+    (17, "Serbian (СрпѺи)", "sr_RS"),
+    (18, "Ukrainian (Українький)", "uk_UA"),
     (19, "Polish (Polski)", "pl_PL"),
     (20, "Romanian (Român)", "ro_RO"),
-    # Using the utf8 flipped form of Arabic (العربية).
-    (21, "Arabic (ﺔﻴﺑﺮﻌﻟﺍ)", "ar_EG"),
-    (22, "Bulgarian (Български)", "bg_BG"),
+    # Using the utf8 flipped form of Arabic (اٹربية).
+    (21, "Arabic (�ﻴ�ﺮ�ﻟ�", "ar_EG"),
+    (22, "Bulgarian (БългарѺи)", "bg_BG"),
     (23, "Greek (Ελληνικά)", "el_GR"),
-    (24, "Korean (한국 언어)", "ko_KR"),
-    (25, "Nepali (नेपाली)", "ne_NP"),
-    # Using the utf8 flipped form of Persian (فارسی).
-    (26, "Persian (ﯽﺳﺭﺎﻓ)", "fa_IR"),
+    (24, "Korean (���국 ��)", "ko_KR"),
+    (25, "Nepali (न।�ाली)", "ne_NP"),
+    # Using the utf8 flipped form of Persian (٧رس�.
+    (26, "Persian (�����", "fa_IR"),
     (27, "Indonesian (Bahasa indonesia)", "id_ID"),
     (28, "Serbian Latin (Srpski latinica)", "sr_RS@latin"),
     (29, "Kyrgyz (Кыргыз тили)", "ky_KG"),
@@ -84,10 +84,10 @@ LANGUAGES = (
     (34, "Estonian (Eestlane)", "et_EE"),
     (35, "Esperanto (Esperanto)", "eo"),
     (36, "Spanish from Spain (Español de España)", "es_ES"),
-    (37, "Amharic (አማርኛ)", "am_ET"),
+    (37, "Amharic (�ማር�", "am_ET"),
     (38, "Uzbek (Oʻzbek)", "uz_UZ"),
     (39, "Uzbek Cyrillic (Ўзбек)", "uz_UZ@cyrillic"),
-    (40, "Hindi (मानक हिन्दी)", "hi_IN"),
+    (40, "Hindi (मान�हिन्दी)", "hi_IN"),
 )
 
 # Default context, in py!
@@ -473,10 +473,7 @@ for p in set(INTERN_PY_SYS_PATHS.split(";")):
 def _do_get(ref, path):
     return os.path.normpath(os.path.join(ref, path))
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 def _do_set(ref, path):
     path = os.path.normpath(path)
     # If given path is absolute, make it relative to current ref one (else we consider it is already the case!)
@@ -488,10 +485,7 @@ def _do_set(ref, path):
             pass
     return path
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 def _gen_get_set_path(ref, name):
     def _get(self):
         return _do_get(getattr(self, ref), getattr(self, name))
@@ -499,10 +493,7 @@ def _gen_get_set_path(ref, name):
         setattr(self, name, _do_set(getattr(self, ref), value))
     return _get, _set
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 def _gen_get_set_paths(ref, name):
     def _get(self):
         return [_do_get(getattr(self, ref), p) for p in getattr(self, name)]
@@ -510,10 +501,7 @@ def _gen_get_set_paths(ref, name):
         setattr(self, name, [_do_set(getattr(self, ref), p) for p in value])
     return _get, _set
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 class I18nSettings:
     """
     Class allowing persistence of our settings!

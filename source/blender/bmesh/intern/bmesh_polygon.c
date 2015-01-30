@@ -780,43 +780,17 @@ void BM_face_triangulate(
 				break;
 			}
 			case MOD_TRIANGULATE_QUAD_SHORTEDGE:
-<<<<<<< HEAD
-=======
-			{
-				BMLoop *l_v3, *l_v4;
-				float d1, d2;
-
-				l_v1 = l_first;
-				l_v2 = l_first->next->next;
-				l_v3 = l_first->next;
-				l_v4 = l_first->prev;
-
-				d1 = len_squared_v3v3(l_v1->v->co, l_v2->v->co);
-				d2 = len_squared_v3v3(l_v3->v->co, l_v4->v->co);
-
-				if (d2 < d1) {
-					l_v1 = l_v3;
-					l_v2 = l_v4;
-				}
-				break;
-			}
->>>>>>> Initial commit
 			case MOD_TRIANGULATE_QUAD_BEAUTY:
 			default:
 			{
 				BMLoop *l_v3, *l_v4;
-<<<<<<< HEAD
 				bool split_24;
-=======
-				float cost;
->>>>>>> Initial commit
 
 				l_v1 = l_first->next;
 				l_v2 = l_first->next->next;
 				l_v3 = l_first->prev;
 				l_v4 = l_first;
 
-<<<<<<< HEAD
 				if (quad_method == MOD_TRIANGULATE_QUAD_SHORTEDGE) {
 					float d1, d2;
 					d1 = len_squared_v3v3(l_v4->v->co, l_v2->v->co);
@@ -839,11 +813,6 @@ void BM_face_triangulate(
 
 				/* named confusingly, l_v1 is in fact the second vertex */
 				if (split_24) {
-=======
-				cost = BM_verts_calc_rotate_beauty(l_v1->v, l_v2->v, l_v3->v, l_v4->v, 0, 0);
-
-				if (cost < 0.0f) {
->>>>>>> Initial commit
 					l_v1 = l_v4;
 					//l_v2 = l_v2;
 				}

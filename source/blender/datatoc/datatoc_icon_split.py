@@ -63,11 +63,7 @@ def image_from_file(filepath):
 
     try:
         import bpy
-<<<<<<< HEAD
     except ImportError:
-=======
-    except:
->>>>>>> Initial commit
         bpy = None
 
     if bpy is not None:

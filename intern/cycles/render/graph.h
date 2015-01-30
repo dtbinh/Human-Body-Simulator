@@ -196,10 +196,7 @@ public:
 	virtual bool has_converter_blackbody() { return false; }
 	virtual bool has_bssrdf_bump() { return false; }
 	virtual bool has_spatial_varying() { return false; }
-<<<<<<< HEAD
 	virtual bool has_object_dependency() { return false; }
-=======
->>>>>>> Initial commit
 
 	vector<ShaderInput*> inputs;
 	vector<ShaderOutput*> outputs;

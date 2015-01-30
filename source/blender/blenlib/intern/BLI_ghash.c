@@ -28,12 +28,8 @@
 /** \file blender/blenlib/intern/BLI_ghash.c
  *  \ingroup bli
  *
-<<<<<<< HEAD
  * A general (pointer -> pointer) chaining hash table
  * for 'Abstract Data Types' (known as an ADT Hash Table).
-=======
- * A general (pointer -> pointer) hash table ADT
->>>>>>> Initial commit
  *
  * \note edgehash.c is based on this, make sure they stay in sync.
  */
@@ -775,11 +771,7 @@ unsigned int BLI_ghashutil_strhash_p(const void *ptr)
 }
 bool BLI_ghashutil_strcmp(const void *a, const void *b)
 {
-<<<<<<< HEAD
 	return (!STREQ(a, b));
-=======
-	return (strcmp(a, b) != 0);
->>>>>>> Initial commit
 }
 
 GHashPair *BLI_ghashutil_pairalloc(const void *first, const void *second)

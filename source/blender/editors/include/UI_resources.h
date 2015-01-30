@@ -293,11 +293,8 @@ enum {
 	TH_INFO_DEBUG,
 	TH_INFO_DEBUG_TEXT,
 	TH_VIEW_OVERLAY,
-<<<<<<< HEAD
 	
 	TH_V3D_CLIPPING_BORDER
-=======
->>>>>>> Initial commit
 };
 /* XXX WARNING: previous is saved in file, so do not change order! */
 

@@ -38,10 +38,6 @@ incs = [
     '../blenkernel',
     '../blenlib',
     '../imbuf',
-<<<<<<< HEAD
-=======
-    '../include',
->>>>>>> Initial commit
     '../makesdna',
     '../makesrna',
     '../physics',

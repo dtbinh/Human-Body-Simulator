@@ -825,7 +825,6 @@ static void xml_read_background(const XMLReadState& state, pugi::xml_node node)
 	Shader *shader = state.scene->shaders[state.scene->default_background];
 	
 	xml_read_bool(&shader->heterogeneous_volume, node, "heterogeneous_volume");
-<<<<<<< HEAD
 	xml_read_int(&shader->volume_interpolation_method, node, "volume_interpolation_method");
 
 	if(xml_equal_string(node, "volume_sampling_method", "distance"))
@@ -834,8 +833,6 @@ static void xml_read_background(const XMLReadState& state, pugi::xml_node node)
 		shader->volume_sampling_method = VOLUME_SAMPLING_EQUIANGULAR;
 	else if(xml_equal_string(node, "volume_sampling_method", "multiple_importance"))
 		shader->volume_sampling_method = VOLUME_SAMPLING_MULTIPLE_IMPORTANCE;
-=======
->>>>>>> Initial commit
 
 	xml_read_shader_graph(state, shader, node);
 }

@@ -721,11 +721,7 @@ MovieTrackingTrack *BKE_tracking_track_get_named(MovieTracking *tracking, MovieT
 	MovieTrackingTrack *track = tracksbase->first;
 
 	while (track) {
-<<<<<<< HEAD
 		if (STREQ(track->name, name))
-=======
-		if (!strcmp(track->name, name))
->>>>>>> Initial commit
 			return track;
 
 		track = track->next;
@@ -1271,11 +1267,7 @@ MovieTrackingPlaneTrack *BKE_tracking_plane_track_get_named(MovieTracking *track
 	     plane_track;
 	     plane_track = plane_track->next)
 	{
-<<<<<<< HEAD
 		if (STREQ(plane_track->name, name)) {
-=======
-		if (!strcmp(plane_track->name, name)) {
->>>>>>> Initial commit
 			return plane_track;
 		}
 	}
@@ -1571,11 +1563,7 @@ MovieTrackingObject *BKE_tracking_object_get_named(MovieTracking *tracking, cons
 	MovieTrackingObject *object = tracking->objects.first;
 
 	while (object) {
-<<<<<<< HEAD
 		if (STREQ(object->name, name))
-=======
-		if (!strcmp(object->name, name))
->>>>>>> Initial commit
 			return object;
 
 		object = object->next;

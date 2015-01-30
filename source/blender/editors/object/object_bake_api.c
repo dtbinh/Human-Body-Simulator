@@ -916,11 +916,7 @@ cage_cleanup:
 				BakeData *bake = &scene->r.bake;
 				char name[FILE_MAX];
 
-<<<<<<< HEAD
 				BKE_image_path_from_imtype(name, filepath, bmain->name, 0, bake->im_format.imtype, true, false);
-=======
-				BKE_makepicstring_from_type(name, filepath, bmain->name, 0, bake->im_format.imtype, true, false);
->>>>>>> Initial commit
 
 				if (is_automatic_name) {
 					BLI_path_suffix(name, FILE_MAX, ob_low->id.name + 2, "_");

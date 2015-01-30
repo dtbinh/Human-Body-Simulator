@@ -64,11 +64,8 @@
 
 /* ********************************** Bone Skinning *********************************************** */
 
-<<<<<<< HEAD
-static int bone_skinnable_cb(Object *ob, Bone *bone, void *datap)
-=======
+//static int bone_skinnable_cb(Object *ob, Bone *bone, void *datap)
 static int bone_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
->>>>>>> Initial commit
 {
 	/* Bones that are deforming
 	 * are regarded to be "skinnable" and are eligible for
@@ -77,11 +74,7 @@ static int bone_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	 * This function performs 2 functions:
 	 *
 	 *   a) It returns 1 if the bone is skinnable.
-<<<<<<< HEAD
 	 *      If we loop over all bones with this 
-=======
-	 *      If we loop over all bones with this
->>>>>>> Initial commit
 	 *      function, we can count the number of
 	 *      skinnable bones.
 	 *   b) If the pointer data is non null,
@@ -96,36 +89,30 @@ static int bone_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	 *      pointers to bones that point to all
 	 *      skinnable bones.
 	 */
-<<<<<<< HEAD
-	Bone ***hbone;
-	int a, segments;
-	struct { Object *armob; void *list; int heat; } *data = datap;
-
-	if (!(ob->mode & OB_MODE_WEIGHT_PAINT) || !(bone->flag & BONE_HIDDEN_P)) {
-		if (!(bone->flag & BONE_NO_DEFORM)) {
-=======
+//	Bone ***hbone;
+//	int a, segments;
+//	struct { Object *armob; void *list; int heat; } *data = datap;
+//
+//	if (!(ob->mode & OB_MODE_WEIGHT_PAINT) || !(bone->flag & BONE_HIDDEN_P)) {
+//		if (!(bone->flag & BONE_NO_DEFORM)) {
 	ArmatureElement ***hbone;
 	int a, segments;
 	struct { Object *armob; void *list; int heat; } *data = datap;
 
 	if (!(ob->mode & OB_MODE_WEIGHT_PAINT) || !(bone->flag & ELEMENT_HIDDEN_P)) {
 		if (!(bone->flag & ELEMENT_NO_DEFORM)) {
->>>>>>> Initial commit
 			if (data->heat && data->armob->pose && BKE_pose_channel_find_name(data->armob->pose, bone->name))
 				segments = bone->segments;
 			else
 				segments = 1;
-<<<<<<< HEAD
+//			
+//			if (data->list != NULL) {
+//				hbone = (Bone ***) &data->list;
+//				
 			
 			if (data->list != NULL) {
-				hbone = (Bone ***) &data->list;
-				
-=======
-
-			if (data->list != NULL) {
 				hbone = (ArmatureElement ***) &data->list;
-
->>>>>>> Initial commit
+				
 				for (a = 0; a < segments; a++) {
 					**hbone = bone;
 					++*hbone;
@@ -137,15 +124,13 @@ static int bone_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	return 0;
 }
 
-<<<<<<< HEAD
-static int vgroup_add_unique_bone_cb(Object *ob, Bone *bone, void *UNUSED(ptr)) 
-{
-	/* This group creates a vertex group to ob that has the
-	 * same name as bone (provided the bone is skinnable). 
-	 * If such a vertex group already exist the routine exits.
-	 */
-	if (!(bone->flag & BONE_NO_DEFORM)) {
-=======
+//static int vgroup_add_unique_bone_cb(Object *ob, Bone *bone, void *UNUSED(ptr)) 
+//{
+//	/* This group creates a vertex group to ob that has the
+//	 * same name as bone (provided the bone is skinnable). 
+//	 * If such a vertex group already exist the routine exits.
+//	 */
+//	if (!(bone->flag & BONE_NO_DEFORM)) {
 static int vgroup_add_unique_bone_cb(Object *ob, ArmatureElement *bone, void *UNUSED(ptr))
 {
 	/* This group creates a vertex group to ob that has the
@@ -153,7 +138,6 @@ static int vgroup_add_unique_bone_cb(Object *ob, ArmatureElement *bone, void *UN
 	 * If such a vertex group already exist the routine exits.
 	 */
 	if (!(bone->flag & ELEMENT_NO_DEFORM)) {
->>>>>>> Initial commit
 		if (!defgroup_find_name(ob, bone->name)) {
 			BKE_object_defgroup_add_name(ob, bone->name);
 			return 1;
@@ -162,11 +146,8 @@ static int vgroup_add_unique_bone_cb(Object *ob, ArmatureElement *bone, void *UN
 	return 0;
 }
 
-<<<<<<< HEAD
-static int dgroup_skinnable_cb(Object *ob, Bone *bone, void *datap) 
-=======
+//static int dgroup_skinnable_cb(Object *ob, Bone *bone, void *datap) 
 static int dgroup_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
->>>>>>> Initial commit
 {
 	/* Bones that are deforming
 	 * are regarded to be "skinnable" and are eligible for
@@ -174,27 +155,16 @@ static int dgroup_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	 *
 	 * This function performs 2 functions:
 	 *
-<<<<<<< HEAD
 	 *   a) If the bone is skinnable, it creates 
-=======
-	 *   a) If the bone is skinnable, it creates
->>>>>>> Initial commit
 	 *      a vertex group for ob that has
 	 *      the name of the skinnable bone
 	 *      (if one doesn't exist already).
 	 *   b) If the pointer data is non null,
 	 *      it is treated like a handle to a
-<<<<<<< HEAD
 	 *      bDeformGroup pointer -- the 
 	 *      bDeformGroup pointer is set to point
 	 *      to the deform group with the bone's
 	 *      name, and the pointer the handle 
-=======
-	 *      bDeformGroup pointer -- the
-	 *      bDeformGroup pointer is set to point
-	 *      to the deform group with the bone's
-	 *      name, and the pointer the handle
->>>>>>> Initial commit
 	 *      points to is incremented to point to the
 	 *      next member of an array of pointers
 	 *      to bDeformGroups. This way we can loop using
@@ -208,36 +178,30 @@ static int dgroup_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	int wpmode = (ob->mode & OB_MODE_WEIGHT_PAINT);
 	bArmature *arm = data->armob->data;
 
-<<<<<<< HEAD
-	if (!wpmode || !(bone->flag & BONE_HIDDEN_P)) {
-		if (!(bone->flag & BONE_NO_DEFORM)) {
-=======
+//	if (!wpmode || !(bone->flag & BONE_HIDDEN_P)) {
+//		if (!(bone->flag & BONE_NO_DEFORM)) {
 	if (!wpmode || !(bone->flag & ELEMENT_HIDDEN_P)) {
 		if (!(bone->flag & ELEMENT_NO_DEFORM)) {
->>>>>>> Initial commit
 			if (data->heat && data->armob->pose && BKE_pose_channel_find_name(data->armob->pose, bone->name))
 				segments = bone->segments;
 			else
 				segments = 1;
-<<<<<<< HEAD
+//			
+//			if (!wpmode || ((arm->layer & bone->layer) && (bone->flag & BONE_SELECTED)))
+//				if (!(defgroup = defgroup_find_name(ob, bone->name)))
+//					defgroup = BKE_object_defgroup_add_name(ob, bone->name);
+//			
+//			if (data->list != NULL) {
+//				hgroup = (bDeformGroup ***) &data->list;
+//				
 			
-			if (!wpmode || ((arm->layer & bone->layer) && (bone->flag & BONE_SELECTED)))
+			if (!wpmode || ((arm->layer & bone->layer) && (bone->flag & ELEMENT_SELECTED)))
 				if (!(defgroup = defgroup_find_name(ob, bone->name)))
 					defgroup = BKE_object_defgroup_add_name(ob, bone->name);
 			
 			if (data->list != NULL) {
 				hgroup = (bDeformGroup ***) &data->list;
 				
-=======
-
-			if (!wpmode || ((arm->layer & bone->layer) && (bone->flag & ELEMENT_SELECTED)))
-				if (!(defgroup = defgroup_find_name(ob, bone->name)))
-					defgroup = BKE_object_defgroup_add_name(ob, bone->name);
-
-			if (data->list != NULL) {
-				hgroup = (bDeformGroup ***) &data->list;
-
->>>>>>> Initial commit
 				for (a = 0; a < segments; a++) {
 					**hgroup = defgroup;
 					++*hgroup;
@@ -276,16 +240,11 @@ static void envelope_bone_weighting(Object *ob, Mesh *mesh, float (*verts)[3], i
 		}
 
 		iflip = (dgroupflip) ? mesh_get_x_mirror_vert(ob, i, use_topology) : -1;
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		/* for each skinnable bone */
 		for (j = 0; j < numbones; ++j) {
 			if (!selected[j])
 				continue;
-<<<<<<< HEAD
 			
 			bone = bonelist[j];
 			dgroup = dgrouplist[j];
@@ -294,26 +253,12 @@ static void envelope_bone_weighting(Object *ob, Mesh *mesh, float (*verts)[3], i
 			distance = distfactor_to_bone(verts[i], root[j], tip[j],
 			                              bone->rad_head * scale, bone->rad_tail * scale, bone->dist * scale);
 			
-=======
-
-			bone = bonelist[j];
-			dgroup = dgrouplist[j];
-
-			/* store the distance-factor from the vertex to the bone */
-			distance = distfactor_to_bone(verts[i], root[j], tip[j],
-			                              bone->rad_head * scale, bone->rad_tail * scale, bone->dist * scale);
-
->>>>>>> Initial commit
 			/* add the vert to the deform group if (weight != 0.0) */
 			if (distance != 0.0f)
 				ED_vgroup_vert_add(ob, dgroup, i, distance, WEIGHT_REPLACE);
 			else
 				ED_vgroup_vert_remove(ob, dgroup, i);
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* do same for mirror */
 			if (dgroupflip && dgroupflip[j] && iflip != -1) {
 				if (distance != 0.0f)
@@ -360,17 +305,10 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 
 	/* count the number of skinnable bones */
 	numbones = bone_looper(ob, arm->bonebase.first, &looper_data, bone_skinnable_cb);
-<<<<<<< HEAD
 	
 	if (numbones == 0)
 		return;
 	
-=======
-
-	if (numbones == 0)
-		return;
-
->>>>>>> Initial commit
 	if (BKE_object_defgroup_data_create(ob->data) == NULL)
 		return;
 
@@ -398,21 +336,13 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 	for (j = 0; j < numbones; ++j) {
 		bone = bonelist[j];
 		dgroup = dgrouplist[j];
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		/* handle bbone */
 		if (heat) {
 			if (segments == 0) {
 				segments = 1;
 				bbone = NULL;
-<<<<<<< HEAD
 				
-=======
-
->>>>>>> Initial commit
 				if ((par->pose) && (pchan = BKE_pose_channel_find_name(par->pose, bone->name))) {
 					if (bone->segments > 1) {
 						segments = bone->segments;
@@ -421,17 +351,10 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 					}
 				}
 			}
-<<<<<<< HEAD
 			
 			segments--;
 		}
 		
-=======
-
-			segments--;
-		}
-
->>>>>>> Initial commit
 		/* compute root and tip */
 		if (bbone) {
 			mul_v3_m4v3(root[j], bone->arm_mat, bbone[segments].mat[3]);
@@ -446,32 +369,25 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 			copy_v3_v3(root[j], bone->arm_head);
 			copy_v3_v3(tip[j], bone->arm_tail);
 		}
-<<<<<<< HEAD
+//		
+//		mul_m4_v3(par->obmat, root[j]);
+//		mul_m4_v3(par->obmat, tip[j]);
+//		
+//		/* set selected */
+//		if (wpmode) {
+//			if ((arm->layer & bone->layer) && (bone->flag & BONE_SELECTED))
 		
 		mul_m4_v3(par->obmat, root[j]);
 		mul_m4_v3(par->obmat, tip[j]);
 		
-		/* set selected */
-		if (wpmode) {
-			if ((arm->layer & bone->layer) && (bone->flag & BONE_SELECTED))
-=======
-
-		mul_m4_v3(par->obmat, root[j]);
-		mul_m4_v3(par->obmat, tip[j]);
-
 		/* set selected */
 		if (wpmode) {
 			if ((arm->layer & bone->layer) && (bone->flag & ELEMENT_SELECTED))
->>>>>>> Initial commit
 				selected[j] = 1;
 		}
 		else
 			selected[j] = 1;
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		/* find flipped group */
 		if (dgroup && mirror) {
 			char name_flip[MAXBONENAME];
@@ -488,20 +404,12 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 	if (wpmode) {
 		/* if in weight paint mode, use final verts from derivedmesh */
 		DerivedMesh *dm = mesh_get_derived_final(scene, ob, CD_MASK_BAREMESH);
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		if (dm->foreachMappedVert) {
 			mesh_get_mapped_verts_coords(dm, verts, mesh->totvert);
 			vertsfilled = 1;
 		}
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		dm->release(dm);
 	}
 	else if (modifiers_findByType(ob, eModifierType_Subsurf)) {
@@ -554,11 +462,7 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 void create_vgroups_from_armature(ReportList *reports, Scene *scene, Object *ob, Object *par,
                                   const int mode, const bool mirror)
 {
-<<<<<<< HEAD
 	/* Lets try to create some vertex groups 
-=======
-	/* Lets try to create some vertex groups
->>>>>>> Initial commit
 	 * based on the bones of the parent armature.
 	 */
 	bArmature *arm = par->data;
@@ -566,11 +470,7 @@ void create_vgroups_from_armature(ReportList *reports, Scene *scene, Object *ob,
 	if (mode == ARM_GROUPS_NAME) {
 		const int defbase_tot = BLI_listbase_count(&ob->defbase);
 		int defbase_add;
-<<<<<<< HEAD
 		/* Traverse the bone list, trying to create empty vertex 
-=======
-		/* Traverse the bone list, trying to create empty vertex
->>>>>>> Initial commit
 		 * groups corresponding to the bone.
 		 */
 		defbase_add = bone_looper(ob, arm->bonebase.first, NULL, vgroup_add_unique_bone_cb);
@@ -582,11 +482,7 @@ void create_vgroups_from_armature(ReportList *reports, Scene *scene, Object *ob,
 		}
 	}
 	else if (ELEM(mode, ARM_GROUPS_ENVELOPE, ARM_GROUPS_AUTO)) {
-<<<<<<< HEAD
 		/* Traverse the bone list, trying to create vertex groups 
-=======
-		/* Traverse the bone list, trying to create vertex groups
->>>>>>> Initial commit
 		 * that are populated with the vertices for which the
 		 * bone is closest.
 		 */

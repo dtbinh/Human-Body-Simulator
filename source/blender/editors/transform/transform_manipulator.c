@@ -141,30 +141,24 @@ static void protectflag_to_drawflags(short protectflag, short *drawflags)
 /* for pose mode */
 static void stats_pose(Scene *scene, RegionView3D *rv3d, bPoseChannel *pchan)
 {
-<<<<<<< HEAD
-	Bone *bone = pchan->bone;
-
-	if (bone) {
-=======
+//	Bone *bone = pchan->bone;
+//
+//	if (bone) {
 	ArmatureElement *element = pchan->bone;
 
 	if (element) {
->>>>>>> Initial commit
 		calc_tw_center(scene, pchan->pose_head);
 		protectflag_to_drawflags(pchan->protectflag, &rv3d->twdrawflag);
 	}
 }
 
 /* for editmode*/
-<<<<<<< HEAD
-static void stats_editbone(RegionView3D *rv3d, EditBone *ebo)
-{
-	if (ebo->flag & BONE_EDITMODE_LOCKED)
-=======
+//static void stats_editbone(RegionView3D *rv3d, EditBone *ebo)
+//{
+//	if (ebo->flag & BONE_EDITMODE_LOCKED)
 static void stats_editbone(RegionView3D *rv3d, EditArmatureElement *ebo)
 {
 	if (ebo->flag & ELEMENT_EDITMODE_LOCKED)
->>>>>>> Initial commit
 		protectflag_to_drawflags(OB_LOCK_LOC | OB_LOCK_ROT | OB_LOCK_SCALE, &rv3d->twdrawflag);
 }
 
@@ -225,11 +219,8 @@ bool gimbal_axis(Object *ob, float gmat[3][3])
 
 
 				/* apply bone transformation */
-<<<<<<< HEAD
-				mul_m3_m3m3(tmat, pchan->bone->bone_mat, mat);
-=======
+//				mul_m3_m3m3(tmat, pchan->bone->bone_mat, mat);
 				mul_m3_m3m3(tmat, pchan->bone->AE_mat, mat);
->>>>>>> Initial commit
 
 				if (pchan->parent) {
 					float parent_mat[3][3];
@@ -370,18 +361,16 @@ static int calc_manipulator_stats(const bContext *C)
 		} /* end editmesh */
 		else if (obedit->type == OB_ARMATURE) {
 			bArmature *arm = obedit->data;
-<<<<<<< HEAD
-			EditBone *ebo;
-
-			if ((v3d->around == V3D_ACTIVE) && (ebo = arm->act_edbone)) {
-				/* doesn't check selection or visibility intentionally */
-				if (ebo->flag & BONE_TIPSEL) {
-					calc_tw_center(scene, ebo->tail);
-					totsel++;
-				}
-				if ((ebo->flag & BONE_ROOTSEL) ||
-				    ((ebo->flag & BONE_TIPSEL) == false))  /* ensure we get at least one point */
-=======
+//			EditBone *ebo;
+//
+//			if ((v3d->around == V3D_ACTIVE) && (ebo = arm->act_edbone)) {
+//				/* doesn't check selection or visibility intentionally */
+//				if (ebo->flag & BONE_TIPSEL) {
+//					calc_tw_center(scene, ebo->tail);
+//					totsel++;
+//				}
+//				if ((ebo->flag & BONE_ROOTSEL) ||
+//				    ((ebo->flag & BONE_TIPSEL) == false))  /* ensure we get at least one point */
 			EditArmatureElement *ebo;
 
 			if ((v3d->around == V3D_ACTIVE) && (ebo = arm->act_edelement)) {
@@ -392,7 +381,6 @@ static int calc_manipulator_stats(const bContext *C)
 				}
 				if ((ebo->flag & ELEMENT_ROOTSEL) ||
 				    ((ebo->flag & ELEMENT_TIPSEL) == false))  /* ensure we get at least one point */
->>>>>>> Initial commit
 				{
 					calc_tw_center(scene, ebo->head);
 					totsel++;
@@ -401,18 +389,16 @@ static int calc_manipulator_stats(const bContext *C)
 			}
 			else {
 				for (ebo = arm->edbo->first; ebo; ebo = ebo->next) {
-<<<<<<< HEAD
-					if (EBONE_VISIBLE(arm, ebo)) {
-						if (ebo->flag & BONE_TIPSEL) {
-							calc_tw_center(scene, ebo->tail);
-							totsel++;
-						}
-						if (ebo->flag & BONE_ROOTSEL) {
-							calc_tw_center(scene, ebo->head);
-							totsel++;
-						}
-						if (ebo->flag & BONE_SELECTED) {
-=======
+//					if (EBONE_VISIBLE(arm, ebo)) {
+//						if (ebo->flag & BONE_TIPSEL) {
+//							calc_tw_center(scene, ebo->tail);
+//							totsel++;
+//						}
+//						if (ebo->flag & BONE_ROOTSEL) {
+//							calc_tw_center(scene, ebo->head);
+//							totsel++;
+//						}
+//						if (ebo->flag & BONE_SELECTED) {
 					if (EELEMENT_VISIBLE(arm, ebo)) {
 						if (ebo->flag & ELEMENT_TIPSEL) {
 							calc_tw_center(scene, ebo->tail);
@@ -423,7 +409,6 @@ static int calc_manipulator_stats(const bContext *C)
 							totsel++;
 						}
 						if (ebo->flag & ELEMENT_SELECTED) {
->>>>>>> Initial commit
 							stats_editbone(rv3d, ebo);
 						}
 					}
@@ -547,13 +532,10 @@ static int calc_manipulator_stats(const bContext *C)
 
 		if ((v3d->around == V3D_ACTIVE) && (pchan = BKE_pose_channel_active(ob))) {
 			/* doesn't check selection or visibility intentionally */
-<<<<<<< HEAD
-			Bone *bone = pchan->bone;
-			if (bone) {
-=======
+//			Bone *bone = pchan->bone;
+//			if (bone) {
 			ArmatureElement *element = pchan->bone;
 			if (element) {
->>>>>>> Initial commit
 				stats_pose(scene, rv3d, pchan);
 				totsel = 1;
 				ok = true;
@@ -565,13 +547,10 @@ static int calc_manipulator_stats(const bContext *C)
 			if (totsel) {
 				/* use channels to get stats */
 				for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-					Bone *bone = pchan->bone;
-					if (bone && (bone->flag & BONE_TRANSFORM)) {
-=======
+//					Bone *bone = pchan->bone;
+//					if (bone && (bone->flag & BONE_TRANSFORM)) {
 					ArmatureElement *element = pchan->bone;
 					if (element && (element->flag & ELEMENT_TRANSFORM)) {
->>>>>>> Initial commit
 						stats_pose(scene, rv3d, pchan);
 					}
 				}
@@ -639,11 +618,7 @@ static int calc_manipulator_stats(const bContext *C)
 	if (ob && totsel) {
 
 		switch (v3d->twmode) {
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 			case V3D_MANIP_GLOBAL:
 			{
 				break; /* nothing to do */
@@ -1062,11 +1037,7 @@ static void draw_manipulator_rotate(
 
 
 	ortho = is_orthogonal_m4(rv3d->twmat);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* apply the transform delta */
 	if (is_moving) {
 		copy_m4_m4(matt, rv3d->twmat); // to copy the parts outside of [3][3]

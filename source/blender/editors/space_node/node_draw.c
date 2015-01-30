@@ -1302,7 +1302,6 @@ void drawnodespace(const bContext *C, ARegion *ar)
 		bNodeLinkDrag *nldrag;
 		LinkData *linkdata;
 		
-<<<<<<< HEAD
 		BLI_assert(snode->id != NULL);
 		
 		path = snode->treepath.last;
@@ -1312,10 +1311,6 @@ void drawnodespace(const bContext *C, ARegion *ar)
 			BLI_strncpy(path->node_name, snode->id->name + 2, sizeof(path->node_name));
 		}
 		
-=======
-		path = snode->treepath.last;
-		
->>>>>>> Initial commit
 		/* current View2D center, will be set temporarily for parent node trees */
 		UI_view2d_center_get(v2d, &center[0], &center[1]);
 		

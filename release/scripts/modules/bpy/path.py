@@ -43,18 +43,11 @@ __all__ = (
 import bpy as _bpy
 import os as _os
 
-<<<<<<< HEAD
 from _bpy_path import (
         extensions_audio,
         extensions_movie,
         extensions_image,
         )
-=======
-from _bpy_path import (extensions_audio,
-                       extensions_movie,
-                       extensions_image,
-                       )
->>>>>>> Initial commit
 
 
 def _getattr_bytes(var, attr):

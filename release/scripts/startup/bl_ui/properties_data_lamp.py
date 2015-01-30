@@ -30,11 +30,7 @@ class LAMP_MT_sunsky_presets(Menu):
     draw = Menu.draw_preset
 
 
-<<<<<<< HEAD
 class DataButtonsPanel:
-=======
-class DataButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "data"

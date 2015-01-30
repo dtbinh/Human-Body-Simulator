@@ -297,11 +297,7 @@ void ui_block_bounds_calc(uiBlock *block)
 
 	/* hardcoded exception... but that one is annoying with larger safety */ 
 	bt = block->buttons.first;
-<<<<<<< HEAD
 	if (bt && STREQLEN(bt->str, "ERROR", 5)) xof = 10;
-=======
-	if (bt && strncmp(bt->str, "ERROR", 5) == 0) xof = 10;
->>>>>>> Initial commit
 	else xof = 40;
 
 	block->safety.xmin = block->rect.xmin - xof;

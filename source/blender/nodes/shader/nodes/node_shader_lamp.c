@@ -62,19 +62,11 @@ static int gpu_shader_lamp(GPUMaterial *mat, bNode *node, bNodeExecData *UNUSED(
 {
 	if (node->id) {
 		GPULamp *lamp = GPU_lamp_from_blender(GPU_material_scene(mat), (Object *)node->id, NULL);
-<<<<<<< HEAD
 		GPUNodeLink *col, *lv, *dist, *visifac, *shadow, *energy;
 
 		visifac = GPU_lamp_get_data(mat, lamp, &col, &lv, &dist, &shadow, &energy);
 
 		return GPU_stack_link(mat, "lamp", in, out, col, energy, lv, dist, shadow, visifac);
-=======
-		GPUNodeLink *col, *lv, *dist, *visifac, *shadow;
-
-		visifac = GPU_lamp_get_data(mat, lamp, &col, &lv, &dist, &shadow);
-
-		return GPU_stack_link(mat, "lamp", in, out, col, lv, dist, shadow, visifac);
->>>>>>> Initial commit
 	}
 
 	return 0;

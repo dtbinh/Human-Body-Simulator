@@ -158,16 +158,14 @@ static void do_outliner_object_select_recursive(Scene *scene, Object *ob_parent,
 	}
 }
 
-<<<<<<< HEAD
-static void do_outliner_bone_select_recursive(bArmature *arm, Bone *bone_parent, bool select)
-{
-	Bone *bone;
-	for (bone = bone_parent->childbase.first; bone; bone = bone->next) {
-		if (select && PBONE_SELECTABLE(arm, bone))
-			bone->flag |= BONE_SELECTED;
-		else
-			bone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
-=======
+//static void do_outliner_bone_select_recursive(bArmature *arm, Bone *bone_parent, bool select)
+//{
+//	Bone *bone;
+//	for (bone = bone_parent->childbase.first; bone; bone = bone->next) {
+//		if (select && PBONE_SELECTABLE(arm, bone))
+//			bone->flag |= BONE_SELECTED;
+//		else
+//			bone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
 static void do_outliner_bone_select_recursive(bArmature *arm, ArmatureElement *bone_parent, bool select)
 {
 	ArmatureElement *bone;
@@ -176,22 +174,19 @@ static void do_outliner_bone_select_recursive(bArmature *arm, ArmatureElement *b
 			bone->flag |= ELEMENT_SELECTED;
 		else
 			bone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
->>>>>>> Initial commit
 		do_outliner_bone_select_recursive(arm, bone, select);
 	}
 }
 
-<<<<<<< HEAD
-static void do_outliner_ebone_select_recursive(bArmature *arm, EditBone *ebone_parent, bool select)
-{
-	EditBone *ebone;
-	for (ebone = ebone_parent->next; ebone; ebone = ebone->next) {
-		if (ED_armature_ebone_is_child_recursive(ebone_parent, ebone)) {
-			if (select && EBONE_SELECTABLE(arm, ebone))
-				ebone->flag |= BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL;
-			else
-				ebone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
-=======
+//static void do_outliner_ebone_select_recursive(bArmature *arm, EditBone *ebone_parent, bool select)
+//{
+//	EditBone *ebone;
+//	for (ebone = ebone_parent->next; ebone; ebone = ebone->next) {
+//		if (ED_armature_ebone_is_child_recursive(ebone_parent, ebone)) {
+//			if (select && EBONE_SELECTABLE(arm, ebone))
+//				ebone->flag |= BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL;
+//			else
+//				ebone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
 static void do_outliner_ebone_select_recursive(bArmature *arm, EditArmatureElement *ebone_parent, bool select)
 {
 	EditArmatureElement *ebone;
@@ -201,7 +196,6 @@ static void do_outliner_ebone_select_recursive(bArmature *arm, EditArmatureEleme
 				ebone->flag |= ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL;
 			else
 				ebone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
->>>>>>> Initial commit
 		}
 	}
 }
@@ -313,13 +307,10 @@ static eOLDrawState tree_element_active_material(
 		}
 	}
 	if (set != OL_SETSEL_NONE) {
-<<<<<<< HEAD
 		/* Tagging object for update seems a bit stupid here, but looks like we have to do it
 		 * for render views to update. See T42973.
 		 * Note that RNA material update does it too, see e.g. rna_MaterialSlot_update(). */
 		DAG_id_tag_update((ID *)ob, OB_RECALC_OB);
-=======
->>>>>>> Initial commit
 		WM_event_add_notifier(C, NC_MATERIAL | ND_SHADING_LINKS, NULL);
 	}
 	return OL_DRAWSEL_NONE;
@@ -533,27 +524,22 @@ static eOLDrawState tree_element_active_posechannel(
 	bPoseChannel *pchan = te->directdata;
 	
 	if (set != OL_SETSEL_NONE) {
-<<<<<<< HEAD
-		if (!(pchan->bone->flag & BONE_HIDDEN_P)) {
-=======
+//		if (!(pchan->bone->flag & BONE_HIDDEN_P)) {
 		if (!(pchan->bone->flag & ELEMENT_HIDDEN_P)) {
->>>>>>> Initial commit
 			
 			if (set != OL_SETSEL_EXTEND) {
 				bPoseChannel *pchannel;
 				/* single select forces all other bones to get unselected */
 				for (pchannel = ob->pose->chanbase.first; pchannel; pchannel = pchannel->next)
-<<<<<<< HEAD
-					pchannel->bone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
-			}
-
-			if ((set == OL_SETSEL_EXTEND) && (pchan->bone->flag & BONE_SELECTED)) {
-				pchan->bone->flag &= ~BONE_SELECTED;
-			}
-			else {
-				pchan->bone->flag |= BONE_SELECTED;
-				arm->act_bone = pchan->bone;
-=======
+//					pchannel->bone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
+//			}
+//
+//			if ((set == OL_SETSEL_EXTEND) && (pchan->bone->flag & BONE_SELECTED)) {
+//				pchan->bone->flag &= ~BONE_SELECTED;
+//			}
+//			else {
+//				pchan->bone->flag |= BONE_SELECTED;
+//				arm->act_bone = pchan->bone;
 					pchannel->bone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
 			}
 
@@ -563,16 +549,12 @@ static eOLDrawState tree_element_active_posechannel(
 			else {
 				pchan->bone->flag |= ELEMENT_SELECTED;
 				arm->act_element = pchan->bone;
->>>>>>> Initial commit
 			}
 
 			if (recursive) {
 				/* Recursive select/deselect */
-<<<<<<< HEAD
-				do_outliner_bone_select_recursive(arm, pchan->bone, (pchan->bone->flag & BONE_SELECTED) != 0);
-=======
+//				do_outliner_bone_select_recursive(arm, pchan->bone, (pchan->bone->flag & BONE_SELECTED) != 0);
 				do_outliner_bone_select_recursive(arm, pchan->bone, (pchan->bone->flag & ELEMENT_SELECTED) != 0);
->>>>>>> Initial commit
 			}
 
 			WM_event_add_notifier(C, NC_OBJECT | ND_BONE_ACTIVE, ob);
@@ -581,11 +563,8 @@ static eOLDrawState tree_element_active_posechannel(
 	}
 	else {
 		if (ob == OBACT && ob->pose) {
-<<<<<<< HEAD
-			if (pchan->bone->flag & BONE_SELECTED) {
-=======
+//			if (pchan->bone->flag & BONE_SELECTED) {
 			if (pchan->bone->flag & ELEMENT_SELECTED) {
->>>>>>> Initial commit
 				return OL_DRAWSEL_NORMAL;
 			}
 		}
@@ -597,35 +576,30 @@ static eOLDrawState tree_element_active_bone(
         bContext *C, Scene *scene, TreeElement *te, TreeStoreElem *tselem, const eOLSetState set, bool recursive)
 {
 	bArmature *arm = (bArmature *)tselem->id;
-<<<<<<< HEAD
-	Bone *bone = te->directdata;
-	
-	if (set != OL_SETSEL_NONE) {
-		if (!(bone->flag & BONE_HIDDEN_P)) {
-=======
+//	Bone *bone = te->directdata;
+//	
+//	if (set != OL_SETSEL_NONE) {
+//		if (!(bone->flag & BONE_HIDDEN_P)) {
 	ArmatureElement *bone = te->directdata;
 	
 	if (set != OL_SETSEL_NONE) {
 		if (!(bone->flag & ELEMENT_HIDDEN_P)) {
->>>>>>> Initial commit
 			Object *ob = OBACT;
 			if (ob) {
 				if (set != OL_SETSEL_EXTEND) {
 					bPoseChannel *pchannel;
 					/* single select forces all other bones to get unselected */
 					for (pchannel = ob->pose->chanbase.first; pchannel; pchannel = pchannel->next)
-<<<<<<< HEAD
-						pchannel->bone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
-				}
-			}
-			
-			if (set == OL_SETSEL_EXTEND && (bone->flag & BONE_SELECTED)) {
-				bone->flag &= ~BONE_SELECTED;
-			}
-			else {
-				bone->flag |= BONE_SELECTED;
-				arm->act_bone = bone;
-=======
+//						pchannel->bone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
+//				}
+//			}
+//			
+//			if (set == OL_SETSEL_EXTEND && (bone->flag & BONE_SELECTED)) {
+//				bone->flag &= ~BONE_SELECTED;
+//			}
+//			else {
+//				bone->flag |= BONE_SELECTED;
+//				arm->act_bone = bone;
 						pchannel->bone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
 				}
 			}
@@ -636,16 +610,12 @@ static eOLDrawState tree_element_active_bone(
 			else {
 				bone->flag |= ELEMENT_SELECTED;
 				arm->act_element = bone;
->>>>>>> Initial commit
 			}
 
 			if (recursive) {
 				/* Recursive select/deselect */
-<<<<<<< HEAD
-				do_outliner_bone_select_recursive(arm, bone, (bone->flag & BONE_SELECTED) != 0);
-=======
+//				do_outliner_bone_select_recursive(arm, bone, (bone->flag & BONE_SELECTED) != 0);
 				do_outliner_bone_select_recursive(arm, bone, (bone->flag & ELEMENT_SELECTED) != 0);
->>>>>>> Initial commit
 			}
 
 			
@@ -656,11 +626,8 @@ static eOLDrawState tree_element_active_bone(
 		Object *ob = OBACT;
 		
 		if (ob && ob->data == arm) {
-<<<<<<< HEAD
-			if (bone->flag & BONE_SELECTED) {
-=======
+//			if (bone->flag & BONE_SELECTED) {
 			if (bone->flag & ELEMENT_SELECTED) {
->>>>>>> Initial commit
 				return OL_DRAWSEL_NORMAL;
 			}
 		}
@@ -670,20 +637,18 @@ static eOLDrawState tree_element_active_bone(
 
 
 /* ebones only draw in editmode armature */
-<<<<<<< HEAD
-static void tree_element_active_ebone__sel(bContext *C, Scene *scene, bArmature *arm, EditBone *ebone, short sel)
-{
-	if (sel) {
-		ebone->flag |= BONE_SELECTED | BONE_ROOTSEL | BONE_TIPSEL;
-		arm->act_edbone = ebone;
-		// flush to parent?
-		if (ebone->parent && (ebone->flag & BONE_CONNECTED)) ebone->parent->flag |= BONE_TIPSEL;
-	}
-	else {
-		ebone->flag &= ~(BONE_SELECTED | BONE_ROOTSEL | BONE_TIPSEL);
-		// flush to parent?
-		if (ebone->parent && (ebone->flag & BONE_CONNECTED)) ebone->parent->flag &= ~BONE_TIPSEL;
-=======
+//static void tree_element_active_ebone__sel(bContext *C, Scene *scene, bArmature *arm, EditBone *ebone, short sel)
+//{
+//	if (sel) {
+//		ebone->flag |= BONE_SELECTED | BONE_ROOTSEL | BONE_TIPSEL;
+//		arm->act_edbone = ebone;
+//		// flush to parent?
+//		if (ebone->parent && (ebone->flag & BONE_CONNECTED)) ebone->parent->flag |= BONE_TIPSEL;
+//	}
+//	else {
+//		ebone->flag &= ~(BONE_SELECTED | BONE_ROOTSEL | BONE_TIPSEL);
+//		// flush to parent?
+//		if (ebone->parent && (ebone->flag & BONE_CONNECTED)) ebone->parent->flag &= ~BONE_TIPSEL;
 static void tree_element_active_ebone__sel(bContext *C, Scene *scene, bArmature *arm, EditArmatureElement *ebone, short sel)
 {
 	if (sel) {
@@ -696,7 +661,6 @@ static void tree_element_active_ebone__sel(bContext *C, Scene *scene, bArmature 
 		ebone->flag &= ~(ELEMENT_SELECTED | ELEMENT_ROOTSEL | ELEMENT_TIPSEL);
 		// flush to parent?
 		if (ebone->parent && (ebone->flag & ELEMENT_CONNECTED)) ebone->parent->flag &= ~ELEMENT_TIPSEL;
->>>>>>> Initial commit
 	}
 
 	WM_event_add_notifier(C, NC_OBJECT | ND_BONE_ACTIVE, scene->obedit);
@@ -705,33 +669,24 @@ static eOLDrawState tree_element_active_ebone(
         bContext *C, Scene *scene, TreeElement *te, TreeStoreElem *UNUSED(tselem), const eOLSetState set, bool recursive)
 {
 	bArmature *arm = scene->obedit->data;
-<<<<<<< HEAD
-	EditBone *ebone = te->directdata;
-=======
+//	EditBone *ebone = te->directdata;
 	EditArmatureElement *ebone = te->directdata;
->>>>>>> Initial commit
 	eOLDrawState status = OL_DRAWSEL_NONE;
 
 	if (set != OL_SETSEL_NONE) {
 		if (set == OL_SETSEL_NORMAL) {
-<<<<<<< HEAD
-			if (!(ebone->flag & BONE_HIDDEN_A)) {
-=======
+//			if (!(ebone->flag & BONE_HIDDEN_A)) {
 			if (!(ebone->flag & ELEMENT_HIDDEN_A)) {
->>>>>>> Initial commit
 				ED_armature_deselect_all(scene->obedit, 0); // deselect
 				tree_element_active_ebone__sel(C, scene, arm, ebone, true);
 				status = OL_DRAWSEL_NORMAL;
 			}
 		}
 		else if (set == OL_SETSEL_EXTEND) {
-<<<<<<< HEAD
-			if (!(ebone->flag & BONE_HIDDEN_A)) {
-				if (!(ebone->flag & BONE_SELECTED)) {
-=======
+//			if (!(ebone->flag & BONE_HIDDEN_A)) {
+//				if (!(ebone->flag & BONE_SELECTED)) {
 			if (!(ebone->flag & ELEMENT_HIDDEN_A)) {
 				if (!(ebone->flag & ELEMENT_SELECTED)) {
->>>>>>> Initial commit
 					tree_element_active_ebone__sel(C, scene, arm, ebone, true);
 					status = OL_DRAWSEL_NORMAL;
 				}
@@ -745,17 +700,14 @@ static eOLDrawState tree_element_active_ebone(
 
 		if (recursive) {
 			/* Recursive select/deselect */
-<<<<<<< HEAD
-			do_outliner_ebone_select_recursive(arm, ebone, (ebone->flag & BONE_SELECTED) != 0);
-		}
-	}
-	else if (ebone->flag & BONE_SELECTED) {
-=======
+//			do_outliner_ebone_select_recursive(arm, ebone, (ebone->flag & BONE_SELECTED) != 0);
+//		}
+//	}
+//	else if (ebone->flag & BONE_SELECTED) {
 			do_outliner_ebone_select_recursive(arm, ebone, (ebone->flag & ELEMENT_SELECTED) != 0);
 		}
 	}
 	else if (ebone->flag & ELEMENT_SELECTED) {
->>>>>>> Initial commit
 		status = OL_DRAWSEL_NORMAL;
 	}
 
@@ -888,11 +840,7 @@ static eOLDrawState tree_element_active_sequence_dup(
 			continue;
 		}
 
-<<<<<<< HEAD
 //		if (STREQ(p->strip->stripdata->name, seq->strip->stripdata->name))
-=======
-//		if (!strcmp(p->strip->stripdata->name, seq->strip->stripdata->name))
->>>>>>> Initial commit
 // XXX			select_single_seq(p, 0);
 		p = p->next;
 	}

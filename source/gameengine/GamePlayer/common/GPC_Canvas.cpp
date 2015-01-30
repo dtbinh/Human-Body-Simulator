@@ -180,11 +180,7 @@ MakeScreenShot(
 	char path[FILE_MAX];
 	BLI_strncpy(path, filename, sizeof(path));
 	BLI_path_abs(path, G.main->name);
-<<<<<<< HEAD
 	BKE_image_path_ensure_ext_from_imtype(path, im_format.imtype);
-=======
-	BKE_add_image_extension_from_type(path, im_format.imtype);
->>>>>>> Initial commit
 
 	// create and save imbuf 
 	ImBuf *ibuf = IMB_allocImBuf(GetWidth(), GetHeight(), 24, 0);

@@ -107,11 +107,7 @@ static ConsoleLine *console_history_find(SpaceConsole *sc, const char *str, Cons
 		if (cl == cl_ignore)
 			continue;
 
-<<<<<<< HEAD
 		if (STREQ(str, cl->line))
-=======
-		if (strcmp(str, cl->line) == 0)
->>>>>>> Initial commit
 			return cl;
 	}
 
@@ -726,11 +722,7 @@ static int console_history_cycle_exec(bContext *C, wmOperator *op)
 	if (ci->prev) {
 		ConsoleLine *ci_prev = (ConsoleLine *)ci->prev;
 
-<<<<<<< HEAD
 		if (STREQ(ci->line, ci_prev->line))
-=======
-		if (strcmp(ci->line, ci_prev->line) == 0)
->>>>>>> Initial commit
 			console_history_free(sc, ci_prev);
 	}
 
@@ -799,11 +791,7 @@ static int console_history_append_exec(bContext *C, wmOperator *op)
 		while ((cl = console_history_find(sc, ci->line, ci)))
 			console_history_free(sc, cl);
 
-<<<<<<< HEAD
 		if (STREQ(str, ci->line)) {
-=======
-		if (strcmp(str, ci->line) == 0) {
->>>>>>> Initial commit
 			MEM_freeN(str);
 			return OPERATOR_FINISHED;
 		}

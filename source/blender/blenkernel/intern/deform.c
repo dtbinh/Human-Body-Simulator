@@ -542,11 +542,7 @@ static bool defgroup_find_name_dupe(const char *name, bDeformGroup *dg, Object *
 
 	for (curdef = ob->defbase.first; curdef; curdef = curdef->next) {
 		if (dg != curdef) {
-<<<<<<< HEAD
 			if (STREQ(curdef->name, name)) {
-=======
-			if (!strcmp(curdef->name, name)) {
->>>>>>> Initial commit
 				return true;
 			}
 		}

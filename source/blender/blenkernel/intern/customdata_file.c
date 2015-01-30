@@ -276,11 +276,7 @@ static int cdf_write_header(CDataFile *cdf)
 	return 1;
 }
 
-<<<<<<< HEAD
 bool cdf_read_open(CDataFile *cdf, const char *filename)
-=======
-int cdf_read_open(CDataFile *cdf, const char *filename)
->>>>>>> Initial commit
 {
 	FILE *f;
 
@@ -303,11 +299,7 @@ int cdf_read_open(CDataFile *cdf, const char *filename)
 	return 1;
 }
 
-<<<<<<< HEAD
 bool cdf_read_layer(CDataFile *cdf, CDataFileLayer *blay)
-=======
-int cdf_read_layer(CDataFile *cdf, CDataFileLayer *blay)
->>>>>>> Initial commit
 {
 	size_t offset;
 	int a;
@@ -324,11 +316,7 @@ int cdf_read_layer(CDataFile *cdf, CDataFileLayer *blay)
 	return (fseek(cdf->readf, offset, SEEK_SET) == 0);
 }
 
-<<<<<<< HEAD
 bool cdf_read_data(CDataFile *cdf, unsigned int size, void *data)
-=======
-int cdf_read_data(CDataFile *cdf, unsigned int size, void *data)
->>>>>>> Initial commit
 {
 	/* read data */
 	if (!fread(data, size, 1, cdf->readf))
@@ -350,11 +338,7 @@ void cdf_read_close(CDataFile *cdf)
 	}
 }
 
-<<<<<<< HEAD
 bool cdf_write_open(CDataFile *cdf, const char *filename)
-=======
-int cdf_write_open(CDataFile *cdf, const char *filename)
->>>>>>> Initial commit
 {
 	CDataFileHeader *header;
 	CDataFileImageHeader *image;
@@ -396,20 +380,12 @@ int cdf_write_open(CDataFile *cdf, const char *filename)
 	return 1;
 }
 
-<<<<<<< HEAD
 bool cdf_write_layer(CDataFile *UNUSED(cdf), CDataFileLayer *UNUSED(blay))
-=======
-int cdf_write_layer(CDataFile *UNUSED(cdf), CDataFileLayer *UNUSED(blay))
->>>>>>> Initial commit
 {
 	return 1;
 }
 
-<<<<<<< HEAD
 bool cdf_write_data(CDataFile *cdf, unsigned int size, void *data)
-=======
-int cdf_write_data(CDataFile *cdf, unsigned int size, void *data)
->>>>>>> Initial commit
 {
 	/* write data */
 	if (!fwrite(data, size, 1, cdf->writef))
@@ -441,11 +417,7 @@ CDataFileLayer *cdf_layer_find(CDataFile *cdf, int type, const char *name)
 	for (a = 0; a < cdf->totlayer; a++) {
 		layer = &cdf->layer[a];
 
-<<<<<<< HEAD
 		if (layer->type == type && STREQ(layer->name, name))
-=======
-		if (layer->type == type && strcmp(layer->name, name) == 0)
->>>>>>> Initial commit
 			return layer;
 	}
 	

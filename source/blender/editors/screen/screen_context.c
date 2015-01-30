@@ -165,22 +165,16 @@ int ed_screen_context(const bContext *C, const char *member, bContextDataResult 
 	}
 	else if (CTX_data_equals(member, "visible_bones") || CTX_data_equals(member, "editable_bones")) {
 		bArmature *arm = (obedit && obedit->type == OB_ARMATURE) ? obedit->data : NULL;
-<<<<<<< HEAD
-		EditBone *ebone, *flipbone = NULL;
-=======
+//		EditBone *ebone, *flipbone = NULL;
 		EditArmatureElement *ebone, *flipbone = NULL;
->>>>>>> Initial commit
 		int editable_bones = CTX_data_equals(member, "editable_bones");
 		
 		if (arm && arm->edbo) {
 			/* Attention: X-Axis Mirroring is also handled here... */
 			for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
 				/* first and foremost, bone must be visible and selected */
-<<<<<<< HEAD
-				if (EBONE_VISIBLE(arm, ebone)) {
-=======
+//				if (EBONE_VISIBLE(arm, ebone)) {
 				if (EELEMENT_VISIBLE(arm, ebone)) {
->>>>>>> Initial commit
 					/* Get 'x-axis mirror equivalent' bone if the X-Axis Mirroring option is enabled
 					 * so that most users of this data don't need to explicitly check for it themselves.
 					 * 
@@ -193,17 +187,14 @@ int ed_screen_context(const bContext *C, const char *member, bContextDataResult 
 					/* if we're filtering for editable too, use the check for that instead, as it has selection check too */
 					if (editable_bones) {
 						/* only selected + editable */
-<<<<<<< HEAD
-						if (EBONE_EDITABLE(ebone)) {
-							CTX_data_list_add(result, &arm->id, &RNA_EditBone, ebone);
-						
-							if ((flipbone) && !(flipbone->flag & BONE_SELECTED))
-=======
+//						if (EBONE_EDITABLE(ebone)) {
+//							CTX_data_list_add(result, &arm->id, &RNA_EditBone, ebone);
+//						
+//							if ((flipbone) && !(flipbone->flag & BONE_SELECTED))
 						if (EELEMENT_EDITABLE(ebone)) {
 							CTX_data_list_add(result, &arm->id, &RNA_EditBone, ebone);
 						
 							if ((flipbone) && !(flipbone->flag & ELEMENT_SELECTED))
->>>>>>> Initial commit
 								CTX_data_list_add(result, &arm->id, &RNA_EditBone, flipbone);
 						}
 					}
@@ -211,11 +202,8 @@ int ed_screen_context(const bContext *C, const char *member, bContextDataResult 
 						/* only include bones if visible */
 						CTX_data_list_add(result, &arm->id, &RNA_EditBone, ebone);
 						
-<<<<<<< HEAD
-						if ((flipbone) && EBONE_VISIBLE(arm, flipbone) == 0)
-=======
+//						if ((flipbone) && EBONE_VISIBLE(arm, flipbone) == 0)
 						if ((flipbone) && EELEMENT_VISIBLE(arm, flipbone) == 0)
->>>>>>> Initial commit
 							CTX_data_list_add(result, &arm->id, &RNA_EditBone, flipbone);
 					}
 				}
@@ -226,22 +214,16 @@ int ed_screen_context(const bContext *C, const char *member, bContextDataResult 
 	}
 	else if (CTX_data_equals(member, "selected_bones") || CTX_data_equals(member, "selected_editable_bones")) {
 		bArmature *arm = (obedit && obedit->type == OB_ARMATURE) ? obedit->data : NULL;
-<<<<<<< HEAD
-		EditBone *ebone, *flipbone = NULL;
-=======
+//		EditBone *ebone, *flipbone = NULL;
 		EditArmatureElement *ebone, *flipbone = NULL;
->>>>>>> Initial commit
 		int selected_editable_bones = CTX_data_equals(member, "selected_editable_bones");
 		
 		if (arm && arm->edbo) {
 			/* Attention: X-Axis Mirroring is also handled here... */
 			for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
 				/* first and foremost, bone must be visible and selected */
-<<<<<<< HEAD
-				if (EBONE_VISIBLE(arm, ebone) && (ebone->flag & BONE_SELECTED)) {
-=======
+//				if (EBONE_VISIBLE(arm, ebone) && (ebone->flag & BONE_SELECTED)) {
 				if (EELEMENT_VISIBLE(arm, ebone) && (ebone->flag & ELEMENT_SELECTED)) {
->>>>>>> Initial commit
 					/* Get 'x-axis mirror equivalent' bone if the X-Axis Mirroring option is enabled
 					 * so that most users of this data don't need to explicitly check for it themselves.
 					 * 
@@ -254,17 +236,14 @@ int ed_screen_context(const bContext *C, const char *member, bContextDataResult 
 					/* if we're filtering for editable too, use the check for that instead, as it has selection check too */
 					if (selected_editable_bones) {
 						/* only selected + editable */
-<<<<<<< HEAD
-						if (EBONE_EDITABLE(ebone)) {
-							CTX_data_list_add(result, &arm->id, &RNA_EditBone, ebone);
-						
-							if ((flipbone) && !(flipbone->flag & BONE_SELECTED))
-=======
+//						if (EBONE_EDITABLE(ebone)) {
+//							CTX_data_list_add(result, &arm->id, &RNA_EditBone, ebone);
+//						
+//							if ((flipbone) && !(flipbone->flag & BONE_SELECTED))
 						if (EELEMENT_EDITABLE(ebone)) {
 							CTX_data_list_add(result, &arm->id, &RNA_EditBone, ebone);
 						
 							if ((flipbone) && !(flipbone->flag & ELEMENT_SELECTED))
->>>>>>> Initial commit
 								CTX_data_list_add(result, &arm->id, &RNA_EditBone, flipbone);
 						}
 					}
@@ -272,11 +251,8 @@ int ed_screen_context(const bContext *C, const char *member, bContextDataResult 
 						/* only include bones if selected */
 						CTX_data_list_add(result, &arm->id, &RNA_EditBone, ebone);
 						
-<<<<<<< HEAD
-						if ((flipbone) && !(flipbone->flag & BONE_SELECTED))
-=======
+//						if ((flipbone) && !(flipbone->flag & BONE_SELECTED))
 						if ((flipbone) && !(flipbone->flag & ELEMENT_SELECTED))
->>>>>>> Initial commit
 							CTX_data_list_add(result, &arm->id, &RNA_EditBone, flipbone);
 					}
 				}
@@ -293,11 +269,8 @@ int ed_screen_context(const bContext *C, const char *member, bContextDataResult 
 		if (obpose && obpose->pose && arm) {
 			for (pchan = obpose->pose->chanbase.first; pchan; pchan = pchan->next) {
 				/* ensure that PoseChannel is on visible layer and is not hidden in PoseMode */
-<<<<<<< HEAD
-				if (PBONE_VISIBLE(arm, pchan->bone)) {
-=======
+//				if (PBONE_VISIBLE(arm, pchan->bone)) {
 				if (PELEMENT_VISIBLE(arm, pchan->bone)) {
->>>>>>> Initial commit
 					CTX_data_list_add(result, &obpose->id, &RNA_PoseBone, pchan);
 				}
 			}
@@ -313,13 +286,10 @@ int ed_screen_context(const bContext *C, const char *member, bContextDataResult 
 		if (obpose && obpose->pose && arm) {
 			for (pchan = obpose->pose->chanbase.first; pchan; pchan = pchan->next) {
 				/* ensure that PoseChannel is on visible layer and is not hidden in PoseMode */
-<<<<<<< HEAD
-				if (PBONE_VISIBLE(arm, pchan->bone)) {
-					if (pchan->bone->flag & BONE_SELECTED)
-=======
+//				if (PBONE_VISIBLE(arm, pchan->bone)) {
+//					if (pchan->bone->flag & BONE_SELECTED)
 				if (PELEMENT_VISIBLE(arm, pchan->bone)) {
 					if (pchan->bone->flag & ELEMENT_SELECTED)
->>>>>>> Initial commit
 						CTX_data_list_add(result, &obpose->id, &RNA_PoseBone, pchan);
 				}
 			}
@@ -331,24 +301,18 @@ int ed_screen_context(const bContext *C, const char *member, bContextDataResult 
 		if (obact && obact->type == OB_ARMATURE) {
 			bArmature *arm = obact->data;
 			if (arm->edbo) {
-<<<<<<< HEAD
-				if (arm->act_edbone) {
-					CTX_data_pointer_set(result, &arm->id, &RNA_EditBone, arm->act_edbone);
-=======
+//				if (arm->act_edbone) {
+//					CTX_data_pointer_set(result, &arm->id, &RNA_EditBone, arm->act_edbone);
 				if (arm->act_edelement) {
 					CTX_data_pointer_set(result, &arm->id, &RNA_EditBone, arm->act_edelement);
->>>>>>> Initial commit
 					return 1;
 				}
 			}
 			else {
-<<<<<<< HEAD
-				if (arm->act_bone) {
-					CTX_data_pointer_set(result, &arm->id, &RNA_Bone, arm->act_bone);
-=======
+//				if (arm->act_bone) {
+//					CTX_data_pointer_set(result, &arm->id, &RNA_Bone, arm->act_bone);
 				if (arm->act_element) {
 					CTX_data_pointer_set(result, &arm->id, &RNA_Bone, arm->act_element);
->>>>>>> Initial commit
 					return 1;
 				}
 			}

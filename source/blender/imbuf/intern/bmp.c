@@ -298,13 +298,9 @@ int imb_savebmp(struct ImBuf *ibuf, const char *name, int flags)
 			if (putc(data[ptr], ofile) == EOF) return 0;
 		}
 		/* add padding here */
-<<<<<<< HEAD
 		for (t = 0; t < extrabytes; t++) {
 			if (putc(0, ofile) == EOF) return 0;
 		}
-=======
-		for (t = 0; t < extrabytes; t++) if (putc(0, ofile) == EOF) return 0;
->>>>>>> Initial commit
 	}
 	if (ofile) {
 		fflush(ofile);

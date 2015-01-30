@@ -38,11 +38,7 @@
 
 CCL_NAMESPACE_BEGIN
 
-<<<<<<< HEAD
 vector<float> blackbody_table_build()
-=======
-vector<float> blackbody_table()
->>>>>>> Initial commit
 {
 	/* quoted from OSLs opcolor.cpp
 	In order to speed up the blackbody computation, we have a table

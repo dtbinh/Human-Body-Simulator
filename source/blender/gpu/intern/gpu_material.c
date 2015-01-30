@@ -1736,11 +1736,7 @@ void GPU_materials_free(void)
 		GPU_material_free(&ma->gpumaterial);
 
 	for (wo=G.main->world.first; wo; wo=wo->id.next)
-<<<<<<< HEAD
 		GPU_material_free(&wo->gpumaterial);
-=======
-		GPU_material_free(&ma->gpumaterial);
->>>>>>> Initial commit
 	
 	GPU_material_free(&defmaterial.gpumaterial);
 
@@ -1957,7 +1953,6 @@ GPULamp *GPU_lamp_from_blender(Scene *scene, Object *ob, Object *par)
 				return lamp;
 			}
 			
-<<<<<<< HEAD
 			/* we need to properly bind to test for completeness */
 			GPU_texture_bind_as_framebuffer(lamp->blurtex);
 			
@@ -1967,12 +1962,6 @@ GPULamp *GPU_lamp_from_blender(Scene *scene, Object *ob, Object *par)
 			}
 			
 			GPU_framebuffer_texture_unbind(lamp->blurfb, lamp->blurtex);
-=======
-			if (!GPU_framebuffer_check_valid(lamp->blurfb, NULL)) {
-				gpu_lamp_shadow_free(lamp);
-				return lamp;				
-			}			
->>>>>>> Initial commit
 		}
 		else {
 			lamp->tex = GPU_texture_create_depth(lamp->size, lamp->size, NULL);
@@ -2107,23 +2096,14 @@ int GPU_lamp_shadow_layer(GPULamp *lamp)
 		return -1;
 }
 
-<<<<<<< HEAD
 GPUNodeLink *GPU_lamp_get_data(GPUMaterial *mat, GPULamp *lamp, GPUNodeLink **col, GPUNodeLink **lv, GPUNodeLink **dist, GPUNodeLink **shadow, GPUNodeLink **energy)
-=======
-GPUNodeLink *GPU_lamp_get_data(GPUMaterial *mat, GPULamp *lamp, GPUNodeLink **col, GPUNodeLink **lv, GPUNodeLink **dist, GPUNodeLink **shadow)
->>>>>>> Initial commit
 {
 	GPUNodeLink *visifac;
 
 	*col = GPU_dynamic_uniform(lamp->dyncol, GPU_DYNAMIC_LAMP_DYNCOL, lamp->ob);
-<<<<<<< HEAD
 	*energy = GPU_dynamic_uniform(&lamp->dynenergy, GPU_DYNAMIC_LAMP_DYNENERGY, lamp->ob);
 	visifac = lamp_get_visibility(mat, lamp, lv, dist);
 
-=======
-	visifac = lamp_get_visibility(mat, lamp, lv, dist);
-	/* looks like it's not used? psy-fi */
->>>>>>> Initial commit
 	shade_light_textures(mat, lamp, col);
 
 	if (GPU_lamp_has_shadow_buffer(lamp)) {
@@ -2229,7 +2209,6 @@ GPUShaderExport *GPU_shader_export(struct Scene *scene, struct Material *ma)
 						glBindTexture(GL_TEXTURE_2D, lastbindcode);
 					}
 					break;
-<<<<<<< HEAD
 
 				case GPU_NONE:
 				case GPU_FLOAT:
@@ -2240,15 +2219,12 @@ GPUShaderExport *GPU_shader_export(struct Scene *scene, struct Material *ma)
 				case GPU_MAT4:
 				case GPU_ATTRIB:
 					break;
-=======
->>>>>>> Initial commit
 				}
 			}
 			else {
 				uniform->type = input->dynamictype;
 				BLI_strncpy(uniform->varname, input->shadername, sizeof(uniform->varname));
 				switch (input->type) {
-<<<<<<< HEAD
 				case GPU_FLOAT:
 					uniform->datatype = GPU_DATA_1F;
 					break;
@@ -2273,26 +2249,6 @@ GPUShaderExport *GPU_shader_export(struct Scene *scene, struct Material *ma)
 				case GPU_SHADOW2D:
 				case GPU_ATTRIB:
 					break;
-=======
-				case 1:
-					uniform->datatype = GPU_DATA_1F;
-					break;
-				case 2:
-					uniform->datatype = GPU_DATA_2F;
-					break;
-				case 3:
-					uniform->datatype = GPU_DATA_3F;
-					break;
-				case 4:
-					uniform->datatype = GPU_DATA_4F;
-					break;
-				case 9:
-					uniform->datatype = GPU_DATA_9F;
-					break;
-				case 16:
-					uniform->datatype = GPU_DATA_16F;
-					break;
->>>>>>> Initial commit
 				}
 
 				if (uniform->type >= GPU_DYNAMIC_LAMP_FIRST && uniform->type <= GPU_DYNAMIC_LAMP_LAST)

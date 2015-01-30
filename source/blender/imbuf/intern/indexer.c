@@ -1148,7 +1148,6 @@ static void index_rebuild_fallback(FallbackIndexBuilderContext *context,
  * ---------------------------------------------------------------------- */
 
 IndexBuildContext *IMB_anim_index_rebuild_context(struct anim *anim, IMB_Timecode_Type tcs_in_use,
-<<<<<<< HEAD
                                                   IMB_Proxy_Size proxy_sizes_in_use, int quality,
                                                   const bool overwrite)
 {
@@ -1174,29 +1173,16 @@ IndexBuildContext *IMB_anim_index_rebuild_context(struct anim *anim, IMB_Timecod
 	if (proxy_sizes_to_build == 0) {
 		return NULL;
 	}
-=======
-                                                  IMB_Proxy_Size proxy_sizes_in_use, int quality)
-{
-	IndexBuildContext *context = NULL;
->>>>>>> Initial commit
 
 	switch (anim->curtype) {
 #ifdef WITH_FFMPEG
 		case ANIM_FFMPEG:
-<<<<<<< HEAD
 			context = index_ffmpeg_create_context(anim, tcs_in_use, proxy_sizes_to_build, quality);
-=======
-			context = index_ffmpeg_create_context(anim, tcs_in_use, proxy_sizes_in_use, quality);
->>>>>>> Initial commit
 			break;
 #endif
 #ifdef WITH_AVI
 		default:
-<<<<<<< HEAD
 			context = index_fallback_create_context(anim, tcs_in_use, proxy_sizes_to_build, quality);
-=======
-			context = index_fallback_create_context(anim, tcs_in_use, proxy_sizes_in_use, quality);
->>>>>>> Initial commit
 			break;
 #endif
 	}
@@ -1273,11 +1259,7 @@ void IMB_free_indices(struct anim *anim)
 
 void IMB_anim_set_index_dir(struct anim *anim, const char *dir)
 {
-<<<<<<< HEAD
 	if (STREQ(anim->index_dir, dir)) {
-=======
-	if (strcmp(anim->index_dir, dir) == 0) {
->>>>>>> Initial commit
 		return;
 	}
 	BLI_strncpy(anim->index_dir, dir, sizeof(anim->index_dir));
@@ -1344,7 +1326,6 @@ int IMB_anim_index_get_frame_index(struct anim *anim, IMB_Timecode_Type tc,
 	return IMB_indexer_get_frame_index(idx, position);
 }
 
-<<<<<<< HEAD
 IMB_Proxy_Size IMB_anim_proxy_get_existing(struct anim *anim)
 {
 	const int num_proxy_sizes = IMB_PROXY_MAX_SLOT;
@@ -1360,5 +1341,3 @@ IMB_Proxy_Size IMB_anim_proxy_get_existing(struct anim *anim)
 	}
 	return existing;
 }
-=======
->>>>>>> Initial commit

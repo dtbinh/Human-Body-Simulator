@@ -424,10 +424,7 @@ typedef struct HaloRen {
 	unsigned int lay;
 	struct Material *mat;
 	struct ImagePool *pool;
-<<<<<<< HEAD
 	bool skip_load_image;
-=======
->>>>>>> Initial commit
 } HaloRen;
 
 /* ------------------------------------------------------------------------- */

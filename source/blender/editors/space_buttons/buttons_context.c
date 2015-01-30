@@ -278,37 +278,28 @@ static int buttons_context_path_material(ButsContextPath *path, bool for_texture
 static int buttons_context_path_bone(ButsContextPath *path)
 {
 	bArmature *arm;
-<<<<<<< HEAD
-	EditBone *edbo;
-=======
+//	EditBone *edbo;
 	EditArmatureElement *edbo;
->>>>>>> Initial commit
 
 	/* if we have an armature, get the active bone */
 	if (buttons_context_path_data(path, OB_ARMATURE)) {
 		arm = path->ptr[path->len - 1].data;
 
 		if (arm->edbo) {
-<<<<<<< HEAD
-			if (arm->act_edbone) {
-				edbo = arm->act_edbone;
-=======
+//			if (arm->act_edbone) {
+//				edbo = arm->act_edbone;
 			if (arm->act_edelement) {
 				edbo = arm->act_edelement;
->>>>>>> Initial commit
 				RNA_pointer_create(&arm->id, &RNA_EditBone, edbo, &path->ptr[path->len]);
 				path->len++;
 				return 1;
 			}
 		}
 		else {
-<<<<<<< HEAD
-			if (arm->act_bone) {
-				RNA_pointer_create(&arm->id, &RNA_Bone, arm->act_bone, &path->ptr[path->len]);
-=======
+//			if (arm->act_bone) {
+//				RNA_pointer_create(&arm->id, &RNA_Bone, arm->act_bone, &path->ptr[path->len]);
 			if (arm->act_element) {
 				RNA_pointer_create(&arm->id, &RNA_Bone, arm->act_element, &path->ptr[path->len]);
->>>>>>> Initial commit
 				path->len++;
 				return 1;
 			}
@@ -337,13 +328,10 @@ static int buttons_context_path_pose_bone(ButsContextPath *path)
 			return 0;
 		}
 		else {
-<<<<<<< HEAD
-			if (arm->act_bone) {
-				bPoseChannel *pchan = BKE_pose_channel_find_name(ob->pose, arm->act_bone->name);
-=======
+//			if (arm->act_bone) {
+//				bPoseChannel *pchan = BKE_pose_channel_find_name(ob->pose, arm->act_bone->name);
 			if (arm->act_element) {
 				bPoseChannel *pchan = BKE_pose_channel_find_name(ob->pose, arm->act_element->name);
->>>>>>> Initial commit
 				if (pchan) {
 					RNA_pointer_create(&ob->id, &RNA_PoseBone, pchan, &path->ptr[path->len]);
 					path->len++;

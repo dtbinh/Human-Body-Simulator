@@ -34,10 +34,7 @@
 #include "MEM_guardedalloc.h"
 
 #include "DNA_anim_types.h"
-<<<<<<< HEAD
-=======
 #include "DNA_armature_types.h"
->>>>>>> Initial commit
 #include "DNA_camera_types.h"
 #include "DNA_curve_types.h"
 #include "DNA_group_types.h"
@@ -412,11 +409,7 @@ Object *ED_object_add_type(bContext *C, int type, const float loc[3], const floa
 	Object *ob;
 
 	/* for as long scene has editmode... */
-<<<<<<< HEAD
 	if (CTX_data_edit_object(C)) 
-=======
-	if (CTX_data_edit_object(C))
->>>>>>> Initial commit
 		ED_object_editmode_exit(C, EM_FREEDATA | EM_FREEUNDO | EM_WAITCURSOR | EM_DO_UNDO);  /* freedata, and undo */
 
 	/* deselects all, sets scene->basact */
@@ -976,7 +969,6 @@ static int group_instance_add_exec(bContext *C, wmOperator *op)
 	Group *group;
 	unsigned int layer;
 	float loc[3], rot[3];
-<<<<<<< HEAD
 	
 	if (RNA_struct_property_is_set(op->ptr, "name")) {
 		char name[MAX_ID_NAME - 2];
@@ -991,19 +983,6 @@ static int group_instance_add_exec(bContext *C, wmOperator *op)
 			                     event->y - ar->winrct.ymin};
 			ED_object_location_from_view(C, loc);
 			ED_view3d_cursor3d_position(C, loc, mval);
-=======
-
-	if (RNA_struct_property_is_set(op->ptr, "name")) {
-		char name[MAX_ID_NAME - 2];
-
-		RNA_string_get(op->ptr, "name", name);
-		group = (Group *)BKE_libblock_find_name(ID_GR, name);
-
-		if (0 == RNA_struct_property_is_set(op->ptr, "location")) {
-			wmEvent *event = CTX_wm_window(C)->eventstate;
-			ED_object_location_from_view(C, loc);
-			ED_view3d_cursor3d_position(C, loc, event->mval);
->>>>>>> Initial commit
 			RNA_float_set_array(op->ptr, "location", loc);
 		}
 	}
@@ -1149,11 +1128,7 @@ static int object_delete_exec(bContext *C, wmOperator *op)
 	const bool use_global = RNA_boolean_get(op->ptr, "use_global");
 	bool changed = false;
 
-<<<<<<< HEAD
 	if (CTX_data_edit_object(C)) 
-=======
-	if (CTX_data_edit_object(C))
->>>>>>> Initial commit
 		return OPERATOR_CANCELLED;
 
 	CTX_DATA_BEGIN (C, Base *, base, selected_bases)
@@ -1190,17 +1165,10 @@ static int object_delete_exec(bContext *C, wmOperator *op)
 	BKE_main_id_flag_listbase(&bmain->scene, LIB_DOIT, 1);
 	for (win = wm->windows.first; win; win = win->next) {
 		scene = win->screen->scene;
-<<<<<<< HEAD
 		
 		if (scene->id.flag & LIB_DOIT) {
 			scene->id.flag &= ~LIB_DOIT;
 			
-=======
-
-		if (scene->id.flag & LIB_DOIT) {
-			scene->id.flag &= ~LIB_DOIT;
-
->>>>>>> Initial commit
 			DAG_relations_tag_update(bmain);
 
 			WM_event_add_notifier(C, NC_SCENE | ND_OB_ACTIVE, scene);
@@ -1954,11 +1922,7 @@ void OBJECT_OT_convert(wmOperatorType *ot)
 
 /**************************** Duplicate ************************/
 
-<<<<<<< HEAD
 /* 
-=======
-/*
->>>>>>> Initial commit
  * dupflag: a flag made from constants declared in DNA_userdef_types.h
  * The flag tells adduplicate() whether to copy data linked to the object, or to reference the existing data.
  * U.dupflag for default operations or you can construct a flag as python does
@@ -2339,11 +2303,7 @@ static int add_named_exec(bContext *C, wmOperator *op)
 		ED_object_location_from_view(C, basen->object->loc);
 		ED_view3d_cursor3d_position(C, basen->object->loc, mval);
 	}
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	ED_base_object_select(basen, BA_SELECT);
 	ED_base_object_activate(C, basen);
 
@@ -2353,11 +2313,7 @@ static int add_named_exec(bContext *C, wmOperator *op)
 
 	MEM_freeN(base);
 
-<<<<<<< HEAD
 	WM_event_add_notifier(C, NC_SCENE | ND_OB_SELECT | ND_OB_ACTIVE, scene);
-=======
-	WM_event_add_notifier(C, NC_SCENE | ND_OB_SELECT, scene);
->>>>>>> Initial commit
 
 	return OPERATOR_FINISHED;
 }

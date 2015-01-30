@@ -20,7 +20,6 @@
 
 import bpy
 from bpy.types import Operator
-<<<<<<< HEAD
 from bpy.props import (
         StringProperty,
         BoolProperty,
@@ -28,14 +27,6 @@ from bpy.props import (
         FloatProperty,
         EnumProperty,
         )
-=======
-from bpy.props import (StringProperty,
-                       BoolProperty,
-                       IntProperty,
-                       FloatProperty,
-                       EnumProperty,
-                       )
->>>>>>> Initial commit
 
 from bpy.app.translations import pgettext_tip as tip_
 
@@ -1747,11 +1738,7 @@ class WM_OT_addon_enable(Operator):
             err_str = traceback.format_exc()
             print(err_str)
 
-<<<<<<< HEAD
         mod = addon_utils.enable(self.module, default_set=True, handle_error=err_cb)
-=======
-        mod = addon_utils.enable(self.module, handle_error=err_cb)
->>>>>>> Initial commit
 
         if mod:
             info = addon_utils.module_bl_info(mod)
@@ -2001,10 +1988,6 @@ class WM_OT_addon_install(Operator):
             # if not compressed file just copy into the addon path
             try:
                 shutil.copyfile(pyfile, path_dest)
-<<<<<<< HEAD
-=======
-
->>>>>>> Initial commit
             except:
                 traceback.print_exc()
                 return {'CANCELLED'}

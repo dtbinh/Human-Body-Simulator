@@ -343,11 +343,7 @@ static void rna_KeyingSet_name_set(PointerRNA *ptr, const char *value)
 	KeyingSet *ks = (KeyingSet *)ptr->data;
 	
 	/* update names of corresponding groups if name changes */
-<<<<<<< HEAD
 	if (!STREQ(ks->name, value)) {
-=======
-	if (strcmp(ks->name, value)) {
->>>>>>> Initial commit
 		KS_Path *ksp;
 		
 		for (ksp = ks->paths.first; ksp; ksp = ksp->next) {
@@ -363,11 +359,7 @@ static void rna_KeyingSet_name_set(PointerRNA *ptr, const char *value)
 					 * conflicts
 					 */
 					for (agrp = adt->action->groups.first; agrp; agrp = agrp->next) {
-<<<<<<< HEAD
 						if (STREQ(ks->name, agrp->name)) {
-=======
-						if (strcmp(ks->name, agrp->name) == 0) {
->>>>>>> Initial commit
 							/* there should only be one of these in the action, so can stop... */
 							BLI_strncpy(agrp->name, value, sizeof(agrp->name));
 							break;
@@ -562,7 +554,6 @@ static FCurve *rna_Driver_from_existing(AnimData *adt, bContext *C, FCurve *src_
 #else
 
 /* helper function for Keying Set -> keying settings */
-<<<<<<< HEAD
 static void rna_def_common_keying_flags(StructRNA *srna, short reg)
 {
 	PropertyRNA *prop;
@@ -603,18 +594,6 @@ static void rna_def_common_keying_flags(StructRNA *srna, short reg)
 	RNA_def_property_boolean_sdna(prop, NULL, "keyingflag", INSERTKEY_XYZ2RGB);
 	RNA_def_property_ui_text(prop, "F-Curve Colors - XYZ to RGB", "Color for newly added transformation F-Curves (Location, Rotation, Scale) is based on the transform axis");
 	if (reg) RNA_def_property_flag(prop, PROP_REGISTER_OPTIONAL);
-=======
-/* TODO: use reg option! */
-static void rna_def_common_keying_flags(StructRNA *srna, short UNUSED(reg))
-{
-	PropertyRNA *prop;
-
-	prop = RNA_def_property(srna, "bl_options", PROP_ENUM, PROP_NONE);
-	RNA_def_property_enum_sdna(prop, NULL, "keyingflag");
-	RNA_def_property_enum_items(prop, keying_flag_items);
-	RNA_def_property_flag(prop, PROP_REGISTER_OPTIONAL | PROP_ENUM_FLAG);
-	RNA_def_property_ui_text(prop, "Options",  "Keying set options");
->>>>>>> Initial commit
 }
 
 /* --- */
@@ -661,7 +640,6 @@ static void rna_def_keyingset_info(BlenderRNA *brna)
 	RNA_def_property_flag(prop, PROP_REGISTER_OPTIONAL);
 	RNA_def_property_ui_text(prop, "Description", "A short description of the keying set");
 	
-<<<<<<< HEAD
 	/* Regarding why we don't use rna_def_common_keying_flags() here:
 	 * - Using it would keep this case in sync with the other places 
 	 *   where these options are exposed (which are optimised for being
@@ -676,9 +654,6 @@ static void rna_def_keyingset_info(BlenderRNA *brna)
 	RNA_def_property_enum_items(prop, keying_flag_items);
 	RNA_def_property_flag(prop, PROP_REGISTER_OPTIONAL | PROP_ENUM_FLAG);
 	RNA_def_property_ui_text(prop, "Options",  "Keying Set options to use when inserting keyframes");
-=======
-	rna_def_common_keying_flags(srna, 1); /* '1' arg here is to indicate that we need these to be set on registering */
->>>>>>> Initial commit
 	
 	RNA_define_verify_sdna(1);
 	

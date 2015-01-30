@@ -95,15 +95,9 @@ static void preview_startjob(void *data, short *stop, short *do_update, float *p
 				sound = previewjb->sound;
 
 				/* make sure we cleanup the loading flag! */
-<<<<<<< HEAD
 				BLI_spin_lock(sound->spinlock);
 				sound->flags &= ~SOUND_FLAGS_WAVEFORM_LOADING;
 				BLI_spin_unlock(sound->spinlock);
-=======
-				BLI_mutex_lock(sound->mutex);
-				sound->flags &= ~SOUND_FLAGS_WAVEFORM_LOADING;
-				BLI_mutex_unlock(sound->mutex);
->>>>>>> Initial commit
 				
 				BLI_mutex_lock(pj->mutex);
 				previewjb = previewjb->next;

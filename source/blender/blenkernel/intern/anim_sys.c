@@ -791,11 +791,7 @@ static void fcurves_path_rename_fix(ID *owner_id, const char *prefix, const char
 			if (fcu->rna_path != old_path) {
 				bActionGroup *agrp = fcu->grp;
 				
-<<<<<<< HEAD
 				if ((agrp) && STREQ(oldName, agrp->name)) {
-=======
-				if ((agrp) && strcmp(oldName, agrp->name) == 0) {
->>>>>>> Initial commit
 					BLI_strncpy(agrp->name, newName, sizeof(agrp->name));
 				}
 			}
@@ -832,11 +828,7 @@ static void drivers_path_rename_fix(ID *owner_id, ID *ref_id, const char *prefix
 					/* also fix the bone-name (if applicable) */
 					if (strstr(prefix, "bones")) {
 						if ( ((dtar->id) && (GS(dtar->id->name) == ID_OB) && (!ref_id || ((Object *)(dtar->id))->data == ref_id)) &&
-<<<<<<< HEAD
 						     (dtar->pchan_name[0]) && STREQ(oldName, dtar->pchan_name) )
-=======
-						     (dtar->pchan_name[0]) && (strcmp(oldName, dtar->pchan_name) == 0) )
->>>>>>> Initial commit
 						{
 							BLI_strncpy(dtar->pchan_name, newName, sizeof(dtar->pchan_name));
 						}
@@ -1289,11 +1281,7 @@ KS_Path *BKE_keyingset_find_path(KeyingSet *ks, ID *id, const char group_name[],
 			eq_id = 0;
 		
 		/* path */
-<<<<<<< HEAD
 		if ((ksp->rna_path == NULL) || !STREQ(rna_path, ksp->rna_path))
-=======
-		if ((ksp->rna_path == NULL) || strcmp(rna_path, ksp->rna_path))
->>>>>>> Initial commit
 			eq_path = 0;
 			
 		/* index - need to compare whole-array setting too... */
@@ -1329,10 +1317,7 @@ KeyingSet *BKE_keyingset_add(ListBase *list, const char idname[], const char nam
 
 	ks->flag = flag;
 	ks->keyingflag = keyingflag;
-<<<<<<< HEAD
 	ks->keyingoverride = keyingflag; /* NOTE: assume that if one is set one way, the other should be too, so that it'll work */
-=======
->>>>>>> Initial commit
 	
 	/* add KeyingSet to list */
 	BLI_addtail(list, ks);

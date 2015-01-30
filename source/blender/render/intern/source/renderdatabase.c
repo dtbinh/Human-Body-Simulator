@@ -954,10 +954,7 @@ HaloRen *RE_inithalo(Render *re, ObjectRen *obr, Material *ma,
                      const float vec[3], const float vec1[3],
                      const float *orco, float hasize, float vectsize, int seed)
 {
-<<<<<<< HEAD
 	const bool skip_load_image = (re->r.scemode & R_NO_IMAGE_LOAD) != 0;
-=======
->>>>>>> Initial commit
 	HaloRen *har;
 	MTex *mtex;
 	float tin, tr, tg, tb, ta;
@@ -1049,11 +1046,7 @@ HaloRen *RE_inithalo(Render *re, ObjectRen *obr, Material *ma,
 				}
 			}
 
-<<<<<<< HEAD
 			externtex(mtex, texvec, &tin, &tr, &tg, &tb, &ta, 0, re->pool, skip_load_image);
-=======
-			externtex(mtex, texvec, &tin, &tr, &tg, &tb, &ta, 0, re->pool);
->>>>>>> Initial commit
 
 			yn= tin*mtex->colfac;
 			//zn= tin*mtex->alphafac;
@@ -1073,10 +1066,7 @@ HaloRen *RE_inithalo(Render *re, ObjectRen *obr, Material *ma,
 	}
 
 	har->pool = re->pool;
-<<<<<<< HEAD
 	har->skip_load_image = (re->r.scemode & R_NO_IMAGE_LOAD) != 0;
-=======
->>>>>>> Initial commit
 
 	return har;
 }
@@ -1085,10 +1075,7 @@ HaloRen *RE_inithalo_particle(Render *re, ObjectRen *obr, DerivedMesh *dm, Mater
                               const float vec[3], const float vec1[3],
                               const float *orco, const float *uvco, float hasize, float vectsize, int seed, const float pa_co[3])
 {
-<<<<<<< HEAD
 	const bool skip_load_image = (re->r.scemode & R_NO_IMAGE_LOAD) != 0;
-=======
->>>>>>> Initial commit
 	HaloRen *har;
 	MTex *mtex;
 	float tin, tr, tg, tb, ta;
@@ -1192,11 +1179,7 @@ HaloRen *RE_inithalo_particle(Render *re, ObjectRen *obr, DerivedMesh *dm, Mater
 				copy_v3_v3(texvec, orco);
 			}
 
-<<<<<<< HEAD
 			hasrgb = externtex(mtex, texvec, &tin, &tr, &tg, &tb, &ta, 0, re->pool, skip_load_image);
-=======
-			hasrgb = externtex(mtex, texvec, &tin, &tr, &tg, &tb, &ta, 0, re->pool);
->>>>>>> Initial commit
 
 			//yn= tin*mtex->colfac;
 			//zn= tin*mtex->alphafac;
@@ -1240,10 +1223,7 @@ HaloRen *RE_inithalo_particle(Render *re, ObjectRen *obr, DerivedMesh *dm, Mater
 		}
 
 	har->pool = re->pool;
-<<<<<<< HEAD
 	har->skip_load_image = (re->r.scemode & R_NO_IMAGE_LOAD) != 0;
-=======
->>>>>>> Initial commit
 
 	return har;
 }

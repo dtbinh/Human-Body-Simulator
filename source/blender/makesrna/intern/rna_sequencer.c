@@ -310,22 +310,7 @@ static void rna_Sequence_frame_offset_range(PointerRNA *ptr, int *min, int *max,
 static void rna_Sequence_use_proxy_set(PointerRNA *ptr, int value)
 {
 	Sequence *seq = (Sequence *)ptr->data;
-<<<<<<< HEAD
 	BKE_sequencer_proxy_set(seq, value != 0);
-=======
-	if (value) {
-		seq->flag |= SEQ_USE_PROXY;
-		if (seq->strip->proxy == NULL) {
-			seq->strip->proxy = MEM_callocN(sizeof(struct StripProxy), "StripProxy");
-			seq->strip->proxy->quality = 90;
-			seq->strip->proxy->build_tc_flags = SEQ_PROXY_TC_ALL;
-			seq->strip->proxy->build_size_flags = SEQ_PROXY_IMAGE_SIZE_25;
-		}
-	}
-	else {
-		seq->flag ^= SEQ_USE_PROXY;
-	}
->>>>>>> Initial commit
 }
 
 static void rna_Sequence_use_translation_set(PointerRNA *ptr, int value)
@@ -1191,13 +1176,10 @@ static void rna_def_strip_proxy(BlenderRNA *brna)
 
 	RNA_def_property_update(prop, NC_SCENE | ND_SEQUENCER, "rna_SequenceProxy_update");
 
-<<<<<<< HEAD
 	prop = RNA_def_property(srna, "use_overwrite", PROP_BOOLEAN, PROP_NONE);
 	RNA_def_property_boolean_negative_sdna(prop, NULL, "build_flags", SEQ_PROXY_SKIP_EXISTING);
 	RNA_def_property_ui_text(prop, "Overwite", "Overwrite existing proxy files when building");
 
-=======
->>>>>>> Initial commit
 	prop = RNA_def_property(srna, "build_25", PROP_BOOLEAN, PROP_NONE);
 	RNA_def_property_boolean_sdna(prop, NULL, "build_size_flags", SEQ_PROXY_IMAGE_SIZE_25);
 	RNA_def_property_ui_text(prop, "25%", "Build 25% proxy resolution");

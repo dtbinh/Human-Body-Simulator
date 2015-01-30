@@ -183,11 +183,7 @@ static GHash *text_autocomplete_build(Text *text)
 					const int choice_len = i_end - i_start;
 
 					if ((choice_len > seek_len) &&
-<<<<<<< HEAD
 					    (seek_len == 0 || STREQLEN(seek, str_sub, seek_len)) &&
-=======
-					    (seek_len == 0 || strncmp(seek, str_sub, seek_len) == 0) &&
->>>>>>> Initial commit
 					    (seek != str_sub))
 					{
 						// printf("Adding: %s\n", s);

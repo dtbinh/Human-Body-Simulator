@@ -234,11 +234,7 @@ static PyObject *Euler_rotate_axis(EulerObject *self, PyObject *args)
 PyDoc_STRVAR(Euler_rotate_doc,
 ".. method:: rotate(other)\n"
 "\n"
-<<<<<<< HEAD
 "   Rotates the euler by another mathutils value.\n"
-=======
-"   Rotates the euler a by another mathutils value.\n"
->>>>>>> Initial commit
 "\n"
 "   :arg other: rotation component of mathutils value\n"
 "   :type other: :class:`Euler`, :class:`Quaternion` or :class:`Matrix`\n"

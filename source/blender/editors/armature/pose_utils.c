@@ -58,19 +58,11 @@
 /* Contents of this File:
  *
  * This file contains methods shared between Pose Slide and Pose Lib;
-<<<<<<< HEAD
  * primarily the functions in question concern Animato <-> Pose 
  * convenience functions, such as applying/getting pose values
  * and/or inserting keyframes for these.
  */
 /* *********************************************** */ 
-=======
- * primarily the functions in question concern Animato <-> Pose
- * convenience functions, such as applying/getting pose values
- * and/or inserting keyframes for these.
- */
-/* *********************************************** */
->>>>>>> Initial commit
 /* FCurves <-> PoseChannels Links */
 
 /* helper for poseAnim_mapping_get() -> get the relevant F-Curves per PoseChannel */
@@ -78,21 +70,14 @@ static void fcurves_to_pchan_links_get(ListBase *pfLinks, Object *ob, bAction *a
 {
 	ListBase curves = {NULL, NULL};
 	int transFlags = action_get_item_transforms(act, ob, pchan, &curves);
-<<<<<<< HEAD
 	
 	pchan->flag &= ~(POSE_LOC | POSE_ROT | POSE_SIZE);
 	
-=======
-
-	pchan->flag &= ~(POSE_LOC | POSE_ROT | POSE_SIZE);
-
->>>>>>> Initial commit
 	/* check if any transforms found... */
 	if (transFlags) {
 		/* make new linkage data */
 		tPChanFCurveLink *pfl = MEM_callocN(sizeof(tPChanFCurveLink), "tPChanFCurveLink");
 		PointerRNA ptr;
-<<<<<<< HEAD
 		
 		pfl->fcurves = curves;
 		pfl->pchan = pchan;
@@ -104,19 +89,6 @@ static void fcurves_to_pchan_links_get(ListBase *pfLinks, Object *ob, bAction *a
 		/* add linkage data to operator data */
 		BLI_addtail(pfLinks, pfl);
 		
-=======
-
-		pfl->fcurves = curves;
-		pfl->pchan = pchan;
-
-		/* get the RNA path to this pchan - this needs to be freed! */
-		RNA_pointer_create((ID *)ob, &RNA_PoseBone, pchan, &ptr);
-		pfl->pchan_path = RNA_path_from_ID_to_struct(&ptr);
-
-		/* add linkage data to operator data */
-		BLI_addtail(pfLinks, pfl);
-
->>>>>>> Initial commit
 		/* set pchan's transform flags */
 		if (transFlags & ACT_TRANS_LOC)
 			pchan->flag |= POSE_LOC;
@@ -124,11 +96,7 @@ static void fcurves_to_pchan_links_get(ListBase *pfLinks, Object *ob, bAction *a
 			pchan->flag |= POSE_ROT;
 		if (transFlags & ACT_TRANS_SCALE)
 			pchan->flag |= POSE_SIZE;
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 		/* store current transforms */
 		copy_v3_v3(pfl->oldloc, pchan->loc);
 		copy_v3_v3(pfl->oldrot, pchan->eul);
@@ -136,31 +104,18 @@ static void fcurves_to_pchan_links_get(ListBase *pfLinks, Object *ob, bAction *a
 		copy_qt_qt(pfl->oldquat, pchan->quat);
 		copy_v3_v3(pfl->oldaxis, pchan->rotAxis);
 		pfl->oldangle = pchan->rotAngle;
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		/* make copy of custom properties */
 		if (pchan->prop && (transFlags & ACT_TRANS_PROP))
 			pfl->oldprops = IDP_CopyProperty(pchan->prop);
 	}
-<<<<<<< HEAD
 } 
-=======
-}
->>>>>>> Initial commit
 
 
 /* get sets of F-Curves providing transforms for the bones in the Pose  */
 void poseAnim_mapping_get(bContext *C, ListBase *pfLinks, Object *ob, bAction *act)
-<<<<<<< HEAD
 {	
 	/* for each Pose-Channel which gets affected, get the F-Curves for that channel 
-=======
-{
-	/* for each Pose-Channel which gets affected, get the F-Curves for that channel
->>>>>>> Initial commit
 	 * and set the relevant transform flags...
 	 */
 	CTX_DATA_BEGIN (C, bPoseChannel *, pchan, selected_pose_bones)
@@ -168,11 +123,7 @@ void poseAnim_mapping_get(bContext *C, ListBase *pfLinks, Object *ob, bAction *a
 		fcurves_to_pchan_links_get(pfLinks, ob, act, pchan);
 	}
 	CTX_DATA_END;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* if no PoseChannels were found, try a second pass, doing visible ones instead
 	 * i.e. if nothing selected, do whole pose
 	 */
@@ -189,25 +140,16 @@ void poseAnim_mapping_get(bContext *C, ListBase *pfLinks, Object *ob, bAction *a
 void poseAnim_mapping_free(ListBase *pfLinks)
 {
 	tPChanFCurveLink *pfl, *pfln = NULL;
-<<<<<<< HEAD
 		
 	/* free the temp pchan links and their data */
 	for (pfl = pfLinks->first; pfl; pfl = pfln) {
 		pfln = pfl->next;
 		
-=======
-
-	/* free the temp pchan links and their data */
-	for (pfl = pfLinks->first; pfl; pfl = pfln) {
-		pfln = pfl->next;
-
->>>>>>> Initial commit
 		/* free custom properties */
 		if (pfl->oldprops) {
 			IDP_FreeProperty(pfl->oldprops);
 			MEM_freeN(pfl->oldprops);
 		}
-<<<<<<< HEAD
 		
 		/* free list of F-Curve reference links */
 		BLI_freelistN(&pfl->fcurves);
@@ -215,15 +157,6 @@ void poseAnim_mapping_free(ListBase *pfLinks)
 		/* free pchan RNA Path */
 		MEM_freeN(pfl->pchan_path);
 		
-=======
-
-		/* free list of F-Curve reference links */
-		BLI_freelistN(&pfl->fcurves);
-
-		/* free pchan RNA Path */
-		MEM_freeN(pfl->pchan_path);
-
->>>>>>> Initial commit
 		/* free link itself */
 		BLI_freelinkN(pfLinks, pfl);
 	}
@@ -235,13 +168,8 @@ void poseAnim_mapping_free(ListBase *pfLinks)
 void poseAnim_mapping_refresh(bContext *C, Scene *scene, Object *ob)
 {
 	bArmature *arm = (bArmature *)ob->data;
-<<<<<<< HEAD
 	
 	/* old optimize trick... this enforces to bypass the depgraph 
-=======
-
-	/* old optimize trick... this enforces to bypass the depgraph
->>>>>>> Initial commit
 	 *	- note: code copied from transform_generics.c -> recalcData()
 	 */
 	/* FIXME: shouldn't this use the builtin stuff? */
@@ -249,11 +177,7 @@ void poseAnim_mapping_refresh(bContext *C, Scene *scene, Object *ob)
 		DAG_id_tag_update(&ob->id, OB_RECALC_DATA);  /* sets recalc flags */
 	else
 		BKE_pose_where_is(scene, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* note, notifier might evolve */
 	WM_event_add_notifier(C, NC_OBJECT | ND_POSE, ob);
 }
@@ -262,19 +186,11 @@ void poseAnim_mapping_refresh(bContext *C, Scene *scene, Object *ob)
 void poseAnim_mapping_reset(ListBase *pfLinks)
 {
 	tPChanFCurveLink *pfl;
-<<<<<<< HEAD
 	
 	/* iterate over each pose-channel affected, restoring all channels to their original values */
 	for (pfl = pfLinks->first; pfl; pfl = pfl->next) {
 		bPoseChannel *pchan = pfl->pchan;
 		
-=======
-
-	/* iterate over each pose-channel affected, restoring all channels to their original values */
-	for (pfl = pfLinks->first; pfl; pfl = pfl->next) {
-		bPoseChannel *pchan = pfl->pchan;
-
->>>>>>> Initial commit
 		/* just copy all the values over regardless of whether they changed or not */
 		copy_v3_v3(pchan->loc, pfl->oldloc);
 		copy_v3_v3(pchan->eul, pfl->oldrot);
@@ -282,11 +198,7 @@ void poseAnim_mapping_reset(ListBase *pfLinks)
 		copy_qt_qt(pchan->quat, pfl->oldquat);
 		copy_v3_v3(pchan->rotAxis, pfl->oldaxis);
 		pchan->rotAngle = pfl->oldangle;
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		/* just overwrite values of properties from the stored copies (there should be some) */
 		if (pfl->oldprops)
 			IDP_SyncGroupValues(pfl->pchan->prop, pfl->oldprops);
@@ -301,48 +213,27 @@ void poseAnim_mapping_autoKeyframe(bContext *C, Scene *scene, Object *ob, ListBa
 		KeyingSet *ks = ANIM_get_keyingset_for_autokeying(scene, ANIM_KS_WHOLE_CHARACTER_ID);
 		ListBase dsources = {NULL, NULL};
 		tPChanFCurveLink *pfl;
-<<<<<<< HEAD
 		
 		/* iterate over each pose-channel affected, tagging bones to be keyed */
 		/* XXX: here we already have the information about what transforms exist, though 
-=======
-
-		/* iterate over each pose-channel affected, tagging bones to be keyed */
-		/* XXX: here we already have the information about what transforms exist, though
->>>>>>> Initial commit
 		 * it might be easier to just overwrite all using normal mechanisms
 		 */
 		for (pfl = pfLinks->first; pfl; pfl = pfl->next) {
 			bPoseChannel *pchan = pfl->pchan;
-<<<<<<< HEAD
+//			
 			
-			/* add datasource override for the PoseChannel, to be used later */
-			ANIM_relative_keyingset_add_source(&dsources, &ob->id, &RNA_PoseBone, pchan); 
-			
-			/* clear any unkeyed tags */
-			if (pchan->bone)
-				pchan->bone->flag &= ~BONE_UNKEYED;
-		}
-		
-		/* insert keyframes for all relevant bones in one go */
-		ANIM_apply_keyingset(C, &dsources, NULL, ks, MODIFYKEY_MODE_INSERT, cframe);
-		BLI_freelistN(&dsources);
-		
-=======
-
 			/* add datasource override for the PoseChannel, to be used later */
 			ANIM_relative_keyingset_add_source(&dsources, &ob->id, &RNA_PoseBone, pchan);
-
+			
 			/* clear any unkeyed tags */
 			if (pchan->bone)
 				pchan->bone->flag &= ~ELEMENT_UNKEYED;
 		}
-
+		
 		/* insert keyframes for all relevant bones in one go */
 		ANIM_apply_keyingset(C, &dsources, NULL, ks, MODIFYKEY_MODE_INSERT, cframe);
 		BLI_freelistN(&dsources);
-
->>>>>>> Initial commit
+		
 		/* do the bone paths
 		 *	- only do this if keyframes should have been added
 		 *	- do not calculate unless there are paths already to update...
@@ -356,18 +247,13 @@ void poseAnim_mapping_autoKeyframe(bContext *C, Scene *scene, Object *ob, ListBa
 
 /* ------------------------- */
 
-<<<<<<< HEAD
 /* find the next F-Curve for a PoseChannel with matching path... 
-=======
-/* find the next F-Curve for a PoseChannel with matching path...
->>>>>>> Initial commit
  *	- path is not just the pfl rna_path, since that path doesn't have property info yet
  */
 LinkData *poseAnim_mapping_getNextFCurve(ListBase *fcuLinks, LinkData *prev, const char *path)
 {
 	LinkData *first = (prev) ? prev->next : (fcuLinks) ? fcuLinks->first : NULL;
 	LinkData *ld;
-<<<<<<< HEAD
 	
 	/* check each link to see if the linked F-Curve has a matching path */
 	for (ld = first; ld; ld = ld->next) {
@@ -378,24 +264,8 @@ LinkData *poseAnim_mapping_getNextFCurve(ListBase *fcuLinks, LinkData *prev, con
 			return ld;
 	}
 	
-=======
-
-	/* check each link to see if the linked F-Curve has a matching path */
-	for (ld = first; ld; ld = ld->next) {
-		FCurve *fcu = (FCurve *)ld->data;
-
-		/* check if paths match */
-		if (strcmp(path, fcu->rna_path) == 0)
-			return ld;
-	}
-
->>>>>>> Initial commit
 	/* none found */
 	return NULL;
 }
 
-<<<<<<< HEAD
 /* *********************************************** */  
-=======
-/* *********************************************** */
->>>>>>> Initial commit

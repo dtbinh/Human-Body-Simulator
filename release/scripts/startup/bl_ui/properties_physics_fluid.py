@@ -29,11 +29,7 @@ class FLUID_MT_presets(Menu):
     draw = Menu.draw_preset
 
 
-<<<<<<< HEAD
 class PhysicButtonsPanel:
-=======
-class PhysicButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "physics"

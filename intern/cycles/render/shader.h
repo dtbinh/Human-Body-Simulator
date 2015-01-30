@@ -106,10 +106,7 @@ public:
 	bool has_converter_blackbody;
 	bool has_bssrdf_bump;
 	bool has_heterogeneous_volume;
-<<<<<<< HEAD
 	bool has_object_dependency;
-=======
->>>>>>> Initial commit
 
 	/* requested mesh attributes */
 	AttributeRequestSet attributes;
@@ -174,12 +171,9 @@ protected:
 	typedef unordered_map<ustring, uint, ustringHash> AttributeIDMap;
 	AttributeIDMap unique_attribute_id;
 
-<<<<<<< HEAD
 	vector<float> blackbody_table;
 	vector<float> beckmann_table;
 
-=======
->>>>>>> Initial commit
 	size_t blackbody_table_offset;
 	size_t beckmann_table_offset;
 };

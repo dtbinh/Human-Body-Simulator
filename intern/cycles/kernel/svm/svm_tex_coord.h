@@ -18,7 +18,6 @@ CCL_NAMESPACE_BEGIN
 
 /* Texture Coordinate Node */
 
-<<<<<<< HEAD
 ccl_device void svm_node_tex_coord(KernelGlobals *kg,
                                    ShaderData *sd,
                                    int path_flag,
@@ -29,16 +28,10 @@ ccl_device void svm_node_tex_coord(KernelGlobals *kg,
 	float3 data;
 	uint type = node.y;
 	uint out_offset = node.z;
-=======
-ccl_device void svm_node_tex_coord(KernelGlobals *kg, ShaderData *sd, int path_flag, float *stack, uint type, uint out_offset)
-{
-	float3 data;
->>>>>>> Initial commit
 
 	switch(type) {
 		case NODE_TEXCO_OBJECT: {
 			data = sd->P;
-<<<<<<< HEAD
 			if(node.w == 0) {
 				if(sd->object != OBJECT_NONE) {
 					object_inverse_position_transform(kg, sd, &data);
@@ -52,10 +45,6 @@ ccl_device void svm_node_tex_coord(KernelGlobals *kg, ShaderData *sd, int path_f
 				tfm.w = read_node_float(kg, offset);
 				data = transform_point(&tfm, data);
 			}
-=======
-			if(sd->object != OBJECT_NONE)
-				object_inverse_position_transform(kg, sd, &data);
->>>>>>> Initial commit
 			break;
 		}
 		case NODE_TEXCO_NORMAL: {

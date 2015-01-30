@@ -239,11 +239,7 @@ static void draw_tile(int sx, int sy, int width, int height, int colorid, int sh
 static int get_file_icon(struct direntry *file)
 {
 	if (file->type & S_IFDIR) {
-<<<<<<< HEAD
 		if (FILENAME_IS_PARENT(file->relname)) {
-=======
-		if (strcmp(file->relname, "..") == 0) {
->>>>>>> Initial commit
 			return ICON_FILE_PARENT;
 		}
 		if (file->flags & FILE_TYPE_APPLICATIONBUNDLE) {
@@ -407,11 +403,7 @@ static void renamebutton_cb(bContext *C, void *UNUSED(arg1), char *oldname)
 	BLI_strncpy(filename, sfile->params->renameedit, sizeof(filename));
 	BLI_make_file_string(G.main->name, newname, sfile->params->dir, filename);
 
-<<<<<<< HEAD
 	if (!STREQ(orgname, newname)) {
-=======
-	if (strcmp(orgname, newname) != 0) {
->>>>>>> Initial commit
 		if (!BLI_exists(newname)) {
 			BLI_rename(orgname, newname);
 			/* to make sure we show what is on disk */
@@ -537,11 +529,7 @@ void file_draw_list(const bContext *C, ARegion *ar)
 				int shade = (params->active_file == i) || (file->selflag & FILE_SEL_HIGHLIGHTED) ? 20 : 0;
 
 				/* readonly files (".." and ".") must not be drawn as selected - set color back to normal */
-<<<<<<< HEAD
 				if (FILENAME_IS_CURRPAR(file->relname)) {
-=======
-				if (STREQ(file->relname, "..") || STREQ(file->relname, ".")) {
->>>>>>> Initial commit
 					colorid = TH_BACK;
 				}
 				draw_tile(sx, sy - 1, layout->tile_w + 4, sfile->layout->tile_h + layout->tile_border_y, colorid, shade);
@@ -550,11 +538,7 @@ void file_draw_list(const bContext *C, ARegion *ar)
 		UI_draw_roundbox_corner_set(UI_CNR_NONE);
 
 		/* don't drag parent or refresh items */
-<<<<<<< HEAD
 		do_drag = !(FILENAME_IS_CURRPAR(file->relname));
-=======
-		do_drag = !(STREQ(file->relname, "..") || STREQ(file->relname, "."));
->>>>>>> Initial commit
 
 		if (FILE_IMGDISPLAY == params->display) {
 			is_icon = 0;

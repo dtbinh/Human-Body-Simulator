@@ -64,10 +64,7 @@
 #include "ED_space_api.h"
 
 #include "UI_view2d.h"
-<<<<<<< HEAD
 #include "UI_interface.h"
-=======
->>>>>>> Initial commit
 
 
 /* own include */
@@ -150,20 +147,12 @@ static void proxy_startjob(void *pjv, short *stop, short *do_update, float *prog
 		struct SeqIndexBuildContext *context = link->data;
 
 		BKE_sequencer_proxy_rebuild(context, stop, do_update, progress);
-<<<<<<< HEAD
 		
 		if (*stop) {
 			pj->stop = 1;
 			fprintf(stderr,  "Canceling proxy rebuild on users request...\n");
 			break;
 		}
-=======
-	}
-
-	if (*stop) {
-		pj->stop = 1;
-		fprintf(stderr,  "Canceling proxy rebuild on users request...\n");
->>>>>>> Initial commit
 	}
 }
 
@@ -1000,21 +989,13 @@ static void UNUSED_FUNCTION(seq_remap_paths) (Scene *scene)
 // XXX	if (0 == sbutton(to, 0, sizeof(to)-1, "To: "))
 //		return;
 	
-<<<<<<< HEAD
 	if (STREQ(to, from))
-=======
-	if (strcmp(to, from) == 0)
->>>>>>> Initial commit
 		return;
 	
 	SEQP_BEGIN (ed, seq)
 	{
 		if (seq->flag & SELECT) {
-<<<<<<< HEAD
 			if (STREQLEN(seq->strip->dir, from, strlen(from))) {
-=======
-			if (strncmp(seq->strip->dir, from, strlen(from)) == 0) {
->>>>>>> Initial commit
 				printf("found %s\n", seq->strip->dir);
 				
 				/* strip off the beginning */
@@ -3418,7 +3399,6 @@ void SEQUENCER_OT_rebuild_proxy(wmOperatorType *ot)
 	ot->flag = OPTYPE_REGISTER;
 }
 
-<<<<<<< HEAD
 static int sequencer_enable_proxies_invoke(bContext *C, wmOperator *op, const wmEvent *UNUSED(event))
 {
 	return WM_operator_props_dialog_popup(C, op, 10 * UI_UNIT_X, 5 * UI_UNIT_Y);
@@ -3433,6 +3413,7 @@ static int sequencer_enable_proxies_exec(bContext *C, wmOperator *op)
 	bool proxy_50 = RNA_boolean_get(op->ptr, "proxy_50");
 	bool proxy_75 = RNA_boolean_get(op->ptr, "proxy_75");
 	bool proxy_100 = RNA_boolean_get(op->ptr, "proxy_100");
+	bool override = RNA_boolean_get(op->ptr, "override");
 
 	if (ed == NULL || 
 	    !(proxy_25 || proxy_50 || proxy_75 || proxy_100)) {
@@ -3455,6 +3436,8 @@ static int sequencer_enable_proxies_exec(bContext *C, wmOperator *op)
 					seq->strip->proxy->build_size_flags |= SEQ_PROXY_IMAGE_SIZE_75;
 				if (proxy_100)
 					seq->strip->proxy->build_size_flags |= SEQ_PROXY_IMAGE_SIZE_100;
+				if (!override)
+					seq->strip->proxy->build_flags |= SEQ_PROXY_SKIP_EXISTING;
 			}
 		}
 	}
@@ -3483,10 +3466,9 @@ void SEQUENCER_OT_enable_proxies(wmOperatorType *ot)
 	RNA_def_boolean(ot->srna, "proxy_50", false, "50%", "");
 	RNA_def_boolean(ot->srna, "proxy_75", false, "75%", "");
 	RNA_def_boolean(ot->srna, "proxy_100", false, "100%", "");
+	RNA_def_boolean(ot->srna, "override", false, "Override", "");
 }
 
-=======
->>>>>>> Initial commit
 /* change ops */
 
 static EnumPropertyItem prop_change_effect_input_types[] = {

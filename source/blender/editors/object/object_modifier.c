@@ -97,45 +97,29 @@ ModifierData *ED_object_modifier_add(ReportList *reports, Main *bmain, Scene *sc
 {
 	ModifierData *md = NULL, *new_md = NULL;
 	ModifierTypeInfo *mti = modifierType_getInfo(type);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* only geometry objects should be able to get modifiers [#25291] */
 	if (!ELEM(ob->type, OB_MESH, OB_CURVE, OB_SURF, OB_FONT, OB_LATTICE)) {
 		BKE_reportf(reports, RPT_WARNING, "Modifiers cannot be added to object '%s'", ob->id.name + 2);
 		return NULL;
 	}
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (mti->flags & eModifierTypeFlag_Single) {
 		if (modifiers_findByType(ob, type)) {
 			BKE_report(reports, RPT_WARNING, "Only one modifier of this type is allowed");
 			return NULL;
 		}
 	}
-<<<<<<< HEAD
 	
 	if (type == eModifierType_ParticleSystem) {
 		/* don't need to worry about the new modifier's name, since that is set to the number
 		 * of particle systems which shouldn't have too many duplicates 
-=======
-
-	if (type == eModifierType_ParticleSystem) {
-		/* don't need to worry about the new modifier's name, since that is set to the number
-		 * of particle systems which shouldn't have too many duplicates
->>>>>>> Initial commit
 		 */
 		new_md = object_add_particle_system(scene, ob, name);
 	}
 	else {
 		/* get new modifier data to add */
 		new_md = modifier_new(type);
-<<<<<<< HEAD
 		
 		if (mti->flags & eModifierTypeFlag_RequiresOriginalData) {
 			md = ob->modifiers.first;
@@ -143,15 +127,6 @@ ModifierData *ED_object_modifier_add(ReportList *reports, Main *bmain, Scene *sc
 			while (md && modifierType_getInfo(md->type)->type == eModifierTypeType_OnlyDeform)
 				md = md->next;
 			
-=======
-
-		if (mti->flags & eModifierTypeFlag_RequiresOriginalData) {
-			md = ob->modifiers.first;
-
-			while (md && modifierType_getInfo(md->type)->type == eModifierTypeType_OnlyDeform)
-				md = md->next;
-
->>>>>>> Initial commit
 			BLI_insertlinkbefore(&ob->modifiers, md, new_md);
 		}
 		else
@@ -164,11 +139,7 @@ ModifierData *ED_object_modifier_add(ReportList *reports, Main *bmain, Scene *sc
 		/* make sure modifier data has unique name */
 
 		modifier_unique_name(&ob->modifiers, new_md);
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		/* special cases */
 		if (type == eModifierType_Softbody) {
 			if (!ob->soft) {
@@ -179,11 +150,7 @@ ModifierData *ED_object_modifier_add(ReportList *reports, Main *bmain, Scene *sc
 		else if (type == eModifierType_Collision) {
 			if (!ob->pd)
 				ob->pd = object_add_collision_fields(0);
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			ob->pd->deflect = 1;
 			DAG_relations_tag_update(bmain);
 		}
@@ -228,11 +195,7 @@ static bool object_has_modifier(const Object *ob, const ModifierData *exclude,
  * each of them.
  *
  * If include_orig is true, the callback will run on 'orig_ob' too.
-<<<<<<< HEAD
  * 
-=======
- *
->>>>>>> Initial commit
  * If the callback ever returns true, iteration will stop and the
  * function value will be true. Otherwise the function returns false.
  */
@@ -498,7 +461,6 @@ int ED_object_modifier_convert(ReportList *UNUSED(reports), Main *bmain, Scene *
 	/* add new mesh */
 	obn = BKE_object_add(bmain, scene, OB_MESH);
 	me = obn->data;
-<<<<<<< HEAD
 	
 	me->totvert = totvert;
 	me->totedge = totedge;
@@ -507,16 +469,6 @@ int ED_object_modifier_convert(ReportList *UNUSED(reports), Main *bmain, Scene *
 	me->medge = CustomData_add_layer(&me->edata, CD_MEDGE, CD_CALLOC, NULL, totedge);
 	me->mface = CustomData_add_layer(&me->fdata, CD_MFACE, CD_CALLOC, NULL, 0);
 	
-=======
-
-	me->totvert = totvert;
-	me->totedge = totedge;
-
-	me->mvert = CustomData_add_layer(&me->vdata, CD_MVERT, CD_CALLOC, NULL, totvert);
-	me->medge = CustomData_add_layer(&me->edata, CD_MEDGE, CD_CALLOC, NULL, totedge);
-	me->mface = CustomData_add_layer(&me->fdata, CD_MFACE, CD_CALLOC, NULL, 0);
-
->>>>>>> Initial commit
 	mvert = me->mvert;
 	medge = me->medge;
 
@@ -591,30 +543,18 @@ static int modifier_apply_shape(ReportList *reports, Scene *scene, Object *ob, M
 		Mesh *me = ob->data;
 		Key *key = me->key;
 		KeyBlock *kb;
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		if (!modifier_isSameTopology(md) || mti->type == eModifierTypeType_NonGeometrical) {
 			BKE_report(reports, RPT_ERROR, "Only deforming modifiers can be applied to shapes");
 			return 0;
 		}
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		dm = mesh_create_derived_for_modifier(scene, ob, md, 0);
 		if (!dm) {
 			BKE_report(reports, RPT_ERROR, "Modifier is disabled or returned error, skipping apply");
 			return 0;
 		}
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		if (key == NULL) {
 			key = me->key = BKE_key_add((ID *)me);
 			key->type = KEY_RELATIVE;
@@ -626,11 +566,7 @@ static int modifier_apply_shape(ReportList *reports, Scene *scene, Object *ob, M
 
 		kb = BKE_keyblock_add(key, md->name);
 		DM_to_meshkey(dm, me, kb);
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		dm->release(dm);
 	}
 	else {
@@ -718,11 +654,7 @@ static int modifier_apply_obdata(ReportList *reports, Scene *scene, Object *ob, 
 		ParticleSystem *psys = ob->particlesystem.first;
 
 		for (; psys; psys = psys->next) {
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			if (psys->part->type != PART_HAIR)
 				continue;
 
@@ -782,11 +714,7 @@ int ED_object_modifier_apply(ReportList *reports, Scene *scene, Object *ob, Modi
 int ED_object_modifier_copy(ReportList *UNUSED(reports), Object *ob, ModifierData *md)
 {
 	ModifierData *nmd;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	nmd = modifier_new(md->type);
 	modifier_copyData(md, nmd);
 	BLI_insertlinkafter(&ob->modifiers, md, nmd);
@@ -808,29 +736,17 @@ static int modifier_add_exec(bContext *C, wmOperator *op)
 		return OPERATOR_CANCELLED;
 
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
 static EnumPropertyItem *modifier_add_itemf(bContext *C, PointerRNA *UNUSED(ptr), PropertyRNA *UNUSED(prop), bool *r_free)
-<<<<<<< HEAD
 {	
-=======
-{
->>>>>>> Initial commit
 	Object *ob = ED_object_active_context(C);
 	EnumPropertyItem *item = NULL, *md_item, *group_item = NULL;
 	ModifierTypeInfo *mti;
 	int totitem = 0, a;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (!ob)
 		return modifier_type_items;
 
@@ -875,26 +791,15 @@ void OBJECT_OT_modifier_add(wmOperatorType *ot)
 	ot->name = "Add Modifier";
 	ot->description = "Add a modifier to the active object";
 	ot->idname = "OBJECT_OT_modifier_add";
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* api callbacks */
 	ot->invoke = WM_menu_invoke;
 	ot->exec = modifier_add_exec;
 	ot->poll = ED_operator_object_active_editable;
-<<<<<<< HEAD
 	
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 	
-=======
-
-	/* flags */
-	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
-
->>>>>>> Initial commit
 	/* properties */
 	prop = RNA_def_enum(ot->srna, "type", modifier_type_items, eModifierType_Subsurf, "Type", "");
 	RNA_def_enum_funcs(prop, modifier_add_itemf);
@@ -907,19 +812,11 @@ int edit_modifier_poll_generic(bContext *C, StructRNA *rna_type, int obtype_flag
 {
 	PointerRNA ptr = CTX_data_pointer_get_type(C, "modifier", rna_type);
 	Object *ob = (ptr.id.data) ? ptr.id.data : ED_object_active_context(C);
-<<<<<<< HEAD
 	
 	if (!ob || ob->id.lib) return 0;
 	if (obtype_flag && ((1 << ob->type) & obtype_flag) == 0) return 0;
 	if (ptr.id.data && ((ID *)ptr.id.data)->lib) return 0;
 	
-=======
-
-	if (!ob || ob->id.lib) return 0;
-	if (obtype_flag && ((1 << ob->type) & obtype_flag) == 0) return 0;
-	if (ptr.id.data && ((ID *)ptr.id.data)->lib) return 0;
-
->>>>>>> Initial commit
 	return 1;
 }
 
@@ -936,11 +833,7 @@ void edit_modifier_properties(wmOperatorType *ot)
 int edit_modifier_invoke_properties(bContext *C, wmOperator *op)
 {
 	ModifierData *md;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (RNA_struct_property_is_set(op->ptr, "modifier")) {
 		return true;
 	}
@@ -961,15 +854,9 @@ ModifierData *edit_modifier_property_get(wmOperator *op, Object *ob, int type)
 	char modifier_name[MAX_NAME];
 	ModifierData *md;
 	RNA_string_get(op->ptr, "modifier", modifier_name);
-<<<<<<< HEAD
 	
 	md = modifiers_findByName(ob, modifier_name);
 	
-=======
-
-	md = modifiers_findByName(ob, modifier_name);
-
->>>>>>> Initial commit
 	if (md && type != 0 && md->type != type)
 		md = NULL;
 
@@ -985,11 +872,7 @@ static int modifier_remove_exec(bContext *C, wmOperator *op)
 	Object *ob = ED_object_active_context(C);
 	ModifierData *md = edit_modifier_property_get(op, ob, 0);
 	int mode_orig = ob->mode;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (!md || !ED_object_modifier_remove(op->reports, bmain, ob, md))
 		return OPERATOR_CANCELLED;
 
@@ -1000,11 +883,7 @@ static int modifier_remove_exec(bContext *C, wmOperator *op)
 		if ((ob->mode & OB_MODE_PARTICLE_EDIT) == 0)
 			if (scene->basact && scene->basact->object == ob)
 				WM_event_add_notifier(C, NC_SCENE | ND_MODE | NS_MODE_OBJECT, NULL);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1025,11 +904,7 @@ void OBJECT_OT_modifier_remove(wmOperatorType *ot)
 	ot->invoke = modifier_remove_invoke;
 	ot->exec = modifier_remove_exec;
 	ot->poll = edit_modifier_poll;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -1047,11 +922,7 @@ static int modifier_move_up_exec(bContext *C, wmOperator *op)
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1072,11 +943,7 @@ void OBJECT_OT_modifier_move_up(wmOperatorType *ot)
 	ot->invoke = modifier_move_up_invoke;
 	ot->exec = modifier_move_up_exec;
 	ot->poll = edit_modifier_poll;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -1094,11 +961,7 @@ static int modifier_move_down_exec(bContext *C, wmOperator *op)
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1119,11 +982,7 @@ void OBJECT_OT_modifier_move_down(wmOperatorType *ot)
 	ot->invoke = modifier_move_down_invoke;
 	ot->exec = modifier_move_down_exec;
 	ot->poll = edit_modifier_poll;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -1144,11 +1003,7 @@ static int modifier_apply_exec(bContext *C, wmOperator *op)
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1175,17 +1030,10 @@ void OBJECT_OT_modifier_apply(wmOperatorType *ot)
 	ot->invoke = modifier_apply_invoke;
 	ot->exec = modifier_apply_exec;
 	ot->poll = edit_modifier_poll;
-<<<<<<< HEAD
 	
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	
-=======
-
-	/* flags */
-	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
-
->>>>>>> Initial commit
 	RNA_def_enum(ot->srna, "apply_as", modifier_apply_as_items, MODIFIER_APPLY_DATA, "Apply as", "How to apply the modifier to the geometry");
 	edit_modifier_properties(ot);
 }
@@ -1198,21 +1046,13 @@ static int modifier_convert_exec(bContext *C, wmOperator *op)
 	Scene *scene = CTX_data_scene(C);
 	Object *ob = ED_object_active_context(C);
 	ModifierData *md = edit_modifier_property_get(op, ob, 0);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (!md || !ED_object_modifier_convert(op->reports, bmain, scene, ob, md))
 		return OPERATOR_CANCELLED;
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1233,11 +1073,7 @@ void OBJECT_OT_modifier_convert(wmOperatorType *ot)
 	ot->invoke = modifier_convert_invoke;
 	ot->exec = modifier_convert_exec;
 	ot->poll = edit_modifier_poll;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -1255,11 +1091,7 @@ static int modifier_copy_exec(bContext *C, wmOperator *op)
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1280,11 +1112,7 @@ void OBJECT_OT_modifier_copy(wmOperatorType *ot)
 	ot->invoke = modifier_copy_invoke;
 	ot->exec = modifier_copy_exec;
 	ot->poll = edit_modifier_poll;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -1301,31 +1129,18 @@ static int multires_higher_levels_delete_exec(bContext *C, wmOperator *op)
 {
 	Object *ob = ED_object_active_context(C);
 	MultiresModifierData *mmd = (MultiresModifierData *)edit_modifier_property_get(op, ob, eModifierType_Multires);
-<<<<<<< HEAD
 	
 	if (!mmd)
 		return OPERATOR_CANCELLED;
 	
-=======
-
-	if (!mmd)
-		return OPERATOR_CANCELLED;
-
->>>>>>> Initial commit
 	multiresModifier_del_levels(mmd, ob, 1);
 
 	ED_object_iter_other(CTX_data_main(C), ob, true,
 	                     ED_object_multires_update_totlevels_cb,
 	                     &mmd->totlvl);
-<<<<<<< HEAD
 	
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
 	
-=======
-
-	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1346,11 +1161,7 @@ void OBJECT_OT_multires_higher_levels_delete(wmOperatorType *ot)
 	ot->poll = multires_poll;
 	ot->invoke = multires_higher_levels_delete_invoke;
 	ot->exec = multires_higher_levels_delete_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -1362,17 +1173,10 @@ static int multires_subdivide_exec(bContext *C, wmOperator *op)
 {
 	Object *ob = ED_object_active_context(C);
 	MultiresModifierData *mmd = (MultiresModifierData *)edit_modifier_property_get(op, ob, eModifierType_Multires);
-<<<<<<< HEAD
 	
 	if (!mmd)
 		return OPERATOR_CANCELLED;
 	
-=======
-
-	if (!mmd)
-		return OPERATOR_CANCELLED;
-
->>>>>>> Initial commit
 	multiresModifier_subdivide(mmd, ob, 0, mmd->simple);
 
 	ED_object_iter_other(CTX_data_main(C), ob, true,
@@ -1386,11 +1190,7 @@ static int multires_subdivide_exec(bContext *C, wmOperator *op)
 		/* ensure that grid paint mask layer is created */
 		BKE_sculpt_mask_layers_ensure(ob, mmd);
 	}
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1411,11 +1211,7 @@ void OBJECT_OT_multires_subdivide(wmOperatorType *ot)
 	ot->poll = multires_poll;
 	ot->invoke = multires_subdivide_invoke;
 	ot->exec = multires_subdivide_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -1479,22 +1275,14 @@ void OBJECT_OT_multires_reshape(wmOperatorType *ot)
 	ot->poll = multires_poll;
 	ot->invoke = multires_reshape_invoke;
 	ot->exec = multires_reshape_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
 }
 
 
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 /****************** multires save external operator *********************/
 
 static int multires_external_save_exec(bContext *C, wmOperator *op)
@@ -1509,11 +1297,7 @@ static int multires_external_save_exec(bContext *C, wmOperator *op)
 
 	if (CustomData_external_test(&me->ldata, CD_MDISPS))
 		return OPERATOR_CANCELLED;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	RNA_string_get(op->ptr, "filepath", path);
 
 	if (relative)
@@ -1521,11 +1305,7 @@ static int multires_external_save_exec(bContext *C, wmOperator *op)
 
 	CustomData_external_add(&me->ldata, &me->id, CD_MDISPS, me->totloop, path);
 	CustomData_external_write(&me->ldata, &me->id, CD_MASK_MESH, me->totloop, 0);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1538,40 +1318,23 @@ static int multires_external_save_invoke(bContext *C, wmOperator *op, const wmEv
 
 	if (!edit_modifier_invoke_properties(C, op))
 		return OPERATOR_CANCELLED;
-<<<<<<< HEAD
 	
 	mmd = (MultiresModifierData *)edit_modifier_property_get(op, ob, eModifierType_Multires);
 	
 	if (!mmd)
 		return OPERATOR_CANCELLED;
 	
-=======
-
-	mmd = (MultiresModifierData *)edit_modifier_property_get(op, ob, eModifierType_Multires);
-
-	if (!mmd)
-		return OPERATOR_CANCELLED;
-
->>>>>>> Initial commit
 	if (CustomData_external_test(&me->ldata, CD_MDISPS))
 		return OPERATOR_CANCELLED;
 
 	if (RNA_struct_property_is_set(op->ptr, "filepath"))
 		return multires_external_save_exec(C, op);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	op->customdata = me;
 
 	BLI_snprintf(path, sizeof(path), "//%s.btx", me->id.name + 2);
 	RNA_string_set(op->ptr, "filepath", path);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	WM_event_add_fileselect(C, op);
 
 	return OPERATOR_RUNNING_MODAL;
@@ -1587,11 +1350,7 @@ void OBJECT_OT_multires_external_save(wmOperatorType *ot)
 	ot->exec = multires_external_save_exec;
 	ot->invoke = multires_external_save_invoke;
 	ot->poll = multires_poll;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 
@@ -1612,11 +1371,7 @@ static int multires_external_pack_exec(bContext *C, wmOperator *UNUSED(op))
 
 	/* XXX don't remove.. */
 	CustomData_external_remove(&me->ldata, &me->id, CD_MDISPS, me->totloop);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1628,11 +1383,7 @@ void OBJECT_OT_multires_external_pack(wmOperatorType *ot)
 
 	ot->poll = multires_poll;
 	ot->exec = multires_external_pack_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 }
@@ -1642,26 +1393,15 @@ static int multires_base_apply_exec(bContext *C, wmOperator *op)
 {
 	Object *ob = ED_object_active_context(C);
 	MultiresModifierData *mmd = (MultiresModifierData *)edit_modifier_property_get(op, ob, eModifierType_Multires);
-<<<<<<< HEAD
 	
 	if (!mmd)
 		return OPERATOR_CANCELLED;
 	
-=======
-
-	if (!mmd)
-		return OPERATOR_CANCELLED;
-
->>>>>>> Initial commit
 	multiresModifier_base_apply(mmd, ob);
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1683,11 +1423,7 @@ void OBJECT_OT_multires_base_apply(wmOperatorType *ot)
 	ot->poll = multires_poll;
 	ot->invoke = multires_base_apply_invoke;
 	ot->exec = multires_base_apply_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -1700,11 +1436,7 @@ static void modifier_skin_customdata_delete(Object *ob)
 {
 	Mesh *me = ob->data;
 	BMEditMesh *em = me->edit_btmesh;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (em)
 		BM_data_layer_free(em->bm, &em->bm->vdata, CD_MVERT_SKIN);
 	else
@@ -1727,11 +1459,7 @@ static void skin_root_clear(BMesh *bm, BMVert *bm_vert, GSet *visited)
 {
 	BMEdge *bm_edge;
 	BMIter bm_iter;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	BM_ITER_ELEM (bm_edge, &bm_iter, bm_vert, BM_EDGES_OF_VERT) {
 		BMVert *v2 = BM_edge_other_vert(bm_edge, bm_vert);
 
@@ -1783,11 +1511,7 @@ static int skin_root_mark_exec(bContext *C, wmOperator *UNUSED(op))
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1799,11 +1523,7 @@ void OBJECT_OT_skin_root_mark(wmOperatorType *ot)
 
 	ot->poll = skin_edit_poll;
 	ot->exec = skin_root_mark_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 }
@@ -1846,11 +1566,7 @@ static int skin_loose_mark_clear_exec(bContext *C, wmOperator *op)
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1868,11 +1584,7 @@ void OBJECT_OT_skin_loose_mark_clear(wmOperatorType *ot)
 
 	ot->poll = skin_edit_poll;
 	ot->exec = skin_loose_mark_clear_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 
@@ -1904,11 +1616,7 @@ static int skin_radii_equalize_exec(bContext *C, wmOperator *UNUSED(op))
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -1920,11 +1628,7 @@ void OBJECT_OT_skin_radii_equalize(wmOperatorType *ot)
 
 	ot->poll = skin_edit_poll;
 	ot->exec = skin_radii_equalize_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 }
@@ -1934,11 +1638,8 @@ static void skin_armature_bone_create(Object *skin_ob,
                                       bArmature *arm,
                                       BLI_bitmap *edges_visited,
                                       const MeshElemMap *emap,
-<<<<<<< HEAD
-                                      EditBone *parent_bone,
-=======
+//                                      EditBone *parent_bone,
                                       EditArmatureElement *parent_bone,
->>>>>>> Initial commit
                                       int parent_v)
 {
 	int i;
@@ -1946,11 +1647,8 @@ static void skin_armature_bone_create(Object *skin_ob,
 	for (i = 0; i < emap[parent_v].count; i++) {
 		int endx = emap[parent_v].indices[i];
 		const MEdge *e = &medge[endx];
-<<<<<<< HEAD
-		EditBone *bone;
-=======
+//		EditBone *bone;
 		EditArmatureElement *bone;
->>>>>>> Initial commit
 		bDeformGroup *dg;
 		int v;
 
@@ -1961,17 +1659,14 @@ static void skin_armature_bone_create(Object *skin_ob,
 
 		v = (e->v1 == parent_v ? e->v2 : e->v1);
 
-<<<<<<< HEAD
-		bone = ED_armature_edit_bone_add(arm, "Bone");
-
-		bone->parent = parent_bone;
-		bone->flag |= BONE_CONNECTED;
-=======
+//		bone = ED_armature_edit_bone_add(arm, "Bone");
+//
+//		bone->parent = parent_bone;
+//		bone->flag |= BONE_CONNECTED;
 		bone = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
 
 		bone->parent = parent_bone;
 		bone->flag |= ELEMENT_CONNECTED;
->>>>>>> Initial commit
 
 		copy_v3_v3(bone->head, mvert[parent_v].co);
 		copy_v3_v3(bone->tail, mvert[v].co);
@@ -1983,11 +1678,7 @@ static void skin_armature_bone_create(Object *skin_ob,
 			ED_vgroup_vert_add(skin_ob, dg, parent_v, 1, WEIGHT_REPLACE);
 			ED_vgroup_vert_add(skin_ob, dg, v, 1, WEIGHT_REPLACE);
 		}
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		skin_armature_bone_create(skin_ob,
 		                          mvert, medge,
 		                          arm,
@@ -2020,11 +1711,7 @@ static Object *modifier_skin_armature_create(Main *bmain, Scene *scene, Object *
 	                     CD_CALLOC,
 	                     NULL,
 	                     me->totvert);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	arm_ob = BKE_object_add(bmain, scene, OB_ARMATURE);
 	BKE_object_transform_copy(arm_ob, skin_ob);
 	arm = arm_ob->data;
@@ -2043,21 +1730,15 @@ static Object *modifier_skin_armature_create(Main *bmain, Scene *scene, Object *
 	 * edit-armature functions to convert back to regular bones */
 	for (v = 0; v < me->totvert; v++) {
 		if (mvert_skin[v].flag & MVERT_SKIN_ROOT) {
-<<<<<<< HEAD
-			EditBone *bone = NULL;
-=======
+//			EditBone *bone = NULL;
 			EditArmatureElement *bone = NULL;
->>>>>>> Initial commit
 
 			/* Unless the skin root has just one adjacent edge, create
 			 * a fake root bone (have it going off in the Y direction
 			 * (arbitrary) */
 			if (emap[v].count > 1) {
-<<<<<<< HEAD
-				bone = ED_armature_edit_bone_add(arm, "Bone");
-=======
+/				bone = ED_armature_edit_bone_add(arm, "Bone");
 				bone = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
->>>>>>> Initial commit
 
 				copy_v3_v3(bone->head, me->mvert[v].co);
 				copy_v3_v3(bone->tail, me->mvert[v].co);
@@ -2065,11 +1746,7 @@ static Object *modifier_skin_armature_create(Main *bmain, Scene *scene, Object *
 				bone->head[1] = 1.0f;
 				bone->rad_head = bone->rad_tail = 0.25;
 			}
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			if (emap[v].count >= 1) {
 				skin_armature_bone_create(skin_ob,
 				                          mvert, me->medge,
@@ -2143,11 +1820,7 @@ void OBJECT_OT_skin_armature_create(wmOperatorType *ot)
 	ot->poll = skin_poll;
 	ot->invoke = skin_armature_create_invoke;
 	ot->exec = skin_armature_create_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -2165,11 +1838,7 @@ static int meshdeform_bind_exec(bContext *C, wmOperator *op)
 	Scene *scene = CTX_data_scene(C);
 	Object *ob = ED_object_active_context(C);
 	MeshDeformModifierData *mmd = (MeshDeformModifierData *)edit_modifier_property_get(op, ob, eModifierType_MeshDeform);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (!mmd)
 		return OPERATOR_CANCELLED;
 
@@ -2194,11 +1863,7 @@ static int meshdeform_bind_exec(bContext *C, wmOperator *op)
 		mmd->totvert = 0;
 		mmd->totcagevert = 0;
 		mmd->totinfluence = 0;
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 		WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
 	}
@@ -2227,11 +1892,7 @@ static int meshdeform_bind_exec(bContext *C, wmOperator *op)
 		mmd->bindfunc = NULL;
 		mmd->modifier.mode = mode;
 	}
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -2239,11 +1900,7 @@ static int meshdeform_bind_invoke(bContext *C, wmOperator *op, const wmEvent *UN
 {
 	if (edit_modifier_invoke_properties(C, op))
 		return meshdeform_bind_exec(C, op);
-<<<<<<< HEAD
 	else 
-=======
-	else
->>>>>>> Initial commit
 		return OPERATOR_CANCELLED;
 }
 
@@ -2253,20 +1910,12 @@ void OBJECT_OT_meshdeform_bind(wmOperatorType *ot)
 	ot->name = "Mesh Deform Bind";
 	ot->description = "Bind mesh to cage in mesh deform modifier";
 	ot->idname = "OBJECT_OT_meshdeform_bind";
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* api callbacks */
 	ot->poll = meshdeform_poll;
 	ot->invoke = meshdeform_bind_invoke;
 	ot->exec = meshdeform_bind_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -2283,11 +1932,7 @@ static int explode_refresh_exec(bContext *C, wmOperator *op)
 {
 	Object *ob = ED_object_active_context(C);
 	ExplodeModifierData *emd = (ExplodeModifierData *)edit_modifier_property_get(op, ob, eModifierType_Explode);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (!emd)
 		return OPERATOR_CANCELLED;
 
@@ -2295,11 +1940,7 @@ static int explode_refresh_exec(bContext *C, wmOperator *op)
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -2321,11 +1962,7 @@ void OBJECT_OT_explode_refresh(wmOperatorType *ot)
 	ot->poll = explode_poll;
 	ot->invoke = explode_refresh_invoke;
 	ot->exec = explode_refresh_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
@@ -2343,24 +1980,14 @@ static int ocean_bake_poll(bContext *C)
 static void init_ocean_modifier_bake(struct Ocean *oc, struct OceanModifierData *omd)
 {
 	int do_heightfield, do_chop, do_normals, do_jacobian;
-<<<<<<< HEAD
 	
 	if (!omd || !oc) return; 
 	
-=======
-
-	if (!omd || !oc) return;
-
->>>>>>> Initial commit
 	do_heightfield = true;
 	do_chop = (omd->chop_amount > 0);
 	do_normals = (omd->flag & MOD_OCEAN_GENERATE_NORMALS);
 	do_jacobian = (omd->flag & MOD_OCEAN_GENERATE_FOAM);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	BKE_init_ocean(oc, omd->resolution * omd->resolution, omd->resolution * omd->resolution, omd->spatial_size, omd->spatial_size,
 	               omd->wind_velocity, omd->smallest_wave, 1.0, omd->wave_direction, omd->damp, omd->wave_alignment,
 	               omd->depth, omd->time,
@@ -2390,13 +2017,8 @@ static int oceanbake_breakjob(void *UNUSED(customdata))
 {
 	//OceanBakeJob *ob = (OceanBakeJob *)customdata;
 	//return *(ob->stop);
-<<<<<<< HEAD
 	
 	/* this is not nice yet, need to make the jobs list template better 
-=======
-
-	/* this is not nice yet, need to make the jobs list template better
->>>>>>> Initial commit
 	 * for identifying/acting upon various different jobs */
 	/* but for now we'll reuse the render break... */
 	return (G.is_break);
@@ -2406,17 +2028,10 @@ static int oceanbake_breakjob(void *UNUSED(customdata))
 static void oceanbake_update(void *customdata, float progress, int *cancel)
 {
 	OceanBakeJob *oj = customdata;
-<<<<<<< HEAD
 	
 	if (oceanbake_breakjob(oj))
 		*cancel = 1;
 	
-=======
-
-	if (oceanbake_breakjob(oj))
-		*cancel = 1;
-
->>>>>>> Initial commit
 	*(oj->do_update) = true;
 	*(oj->progress) = progress;
 }
@@ -2424,7 +2039,6 @@ static void oceanbake_update(void *customdata, float progress, int *cancel)
 static void oceanbake_startjob(void *customdata, short *stop, short *do_update, float *progress)
 {
 	OceanBakeJob *oj = customdata;
-<<<<<<< HEAD
 	
 	oj->stop = stop;
 	oj->do_update = do_update;
@@ -2434,17 +2048,6 @@ static void oceanbake_startjob(void *customdata, short *stop, short *do_update, 
 	
 	BKE_bake_ocean(oj->ocean, oj->och, oceanbake_update, (void *)oj);
 	
-=======
-
-	oj->stop = stop;
-	oj->do_update = do_update;
-	oj->progress = progress;
-
-	G.is_break = false;   /* XXX shared with render - replace with job 'stop' switch */
-
-	BKE_bake_ocean(oj->ocean, oj->och, oceanbake_update, (void *)oj);
-
->>>>>>> Initial commit
 	*do_update = true;
 	*stop = 0;
 }
@@ -2452,20 +2055,12 @@ static void oceanbake_startjob(void *customdata, short *stop, short *do_update, 
 static void oceanbake_endjob(void *customdata)
 {
 	OceanBakeJob *oj = customdata;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (oj->ocean) {
 		BKE_free_ocean(oj->ocean);
 		oj->ocean = NULL;
 	}
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	oj->omd->oceancache = oj->och;
 	oj->omd->cached = true;
 }
@@ -2479,7 +2074,6 @@ static int ocean_bake_exec(bContext *C, wmOperator *op)
 	struct Ocean *ocean;
 	int f, cfra, i = 0;
 	const bool free = RNA_boolean_get(op->ptr, "free");
-<<<<<<< HEAD
 	
 	wmJob *wm_job;
 	OceanBakeJob *oj;
@@ -2487,15 +2081,6 @@ static int ocean_bake_exec(bContext *C, wmOperator *op)
 	if (!omd)
 		return OPERATOR_CANCELLED;
 	
-=======
-
-	wmJob *wm_job;
-	OceanBakeJob *oj;
-
-	if (!omd)
-		return OPERATOR_CANCELLED;
-
->>>>>>> Initial commit
 	if (free) {
 		omd->refresh |= MOD_OCEAN_REFRESH_CLEAR_CACHE;
 		DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
@@ -2506,19 +2091,11 @@ static int ocean_bake_exec(bContext *C, wmOperator *op)
 	och = BKE_init_ocean_cache(omd->cachepath, modifier_path_relbase(ob),
 	                           omd->bakestart, omd->bakeend, omd->wave_scale,
 	                           omd->chop_amount, omd->foam_coverage, omd->foam_fade, omd->resolution);
-<<<<<<< HEAD
 	
 	och->time = MEM_mallocN(och->duration * sizeof(float), "foam bake time");
 	
 	cfra = scene->r.cfra;
 	
-=======
-
-	och->time = MEM_mallocN(och->duration * sizeof(float), "foam bake time");
-
-	cfra = scene->r.cfra;
-
->>>>>>> Initial commit
 	/* precalculate time variable before baking */
 	for (f = omd->bakestart; f <= omd->bakeend; f++) {
 		/* from physics_fluid.c:
@@ -2529,7 +2106,6 @@ static int ocean_bake_exec(bContext *C, wmOperator *op)
 		 * This doesn't work with drivers:
 		 * --> BKE_animsys_evaluate_animdata(&fsDomain->id, fsDomain->adt, eval_time, ADT_RECALC_ALL);
 		 */
-<<<<<<< HEAD
 		
 		/* Modifying the global scene isn't nice, but we can do it in 
 		 * this part of the process before a threaded job is created */
@@ -2565,43 +2141,6 @@ static int ocean_bake_exec(bContext *C, wmOperator *op)
 	
 	scene->r.cfra = cfra;
 	
-=======
-
-		/* Modifying the global scene isn't nice, but we can do it in
-		 * this part of the process before a threaded job is created */
-
-		//scene->r.cfra = f;
-		//ED_update_for_newframe(CTX_data_main(C), scene, 1);
-
-		/* ok, this doesn't work with drivers, but is way faster.
-		 * let's use this for now and hope nobody wants to drive the time value... */
-		BKE_animsys_evaluate_animdata(scene, (ID *)ob, ob->adt, f, ADT_RECALC_ANIM);
-
-		och->time[i] = omd->time;
-		i++;
-	}
-
-	/* make a copy of ocean to use for baking - threadsafety */
-	ocean = BKE_add_ocean();
-	init_ocean_modifier_bake(ocean, omd);
-
-#if 0
-	BKE_bake_ocean(ocean, och);
-
-	omd->oceancache = och;
-	omd->cached = true;
-
-	scene->r.cfra = cfra;
-
-	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
-	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-#endif
-
-	/* job stuff */
-
-	scene->r.cfra = cfra;
-
->>>>>>> Initial commit
 	/* setup job */
 	wm_job = WM_jobs_get(CTX_wm_manager(C), CTX_wm_window(C), scene, "Ocean Simulation",
 	                     WM_JOB_PROGRESS, WM_JOB_TYPE_OBJECT_SIM_OCEAN);
@@ -2609,7 +2148,6 @@ static int ocean_bake_exec(bContext *C, wmOperator *op)
 	oj->ocean = ocean;
 	oj->och = och;
 	oj->omd = omd;
-<<<<<<< HEAD
 	
 	WM_jobs_customdata_set(wm_job, oj, oceanbake_free);
 	WM_jobs_timer(wm_job, 0.1, NC_OBJECT | ND_MODIFIER, NC_OBJECT | ND_MODIFIER);
@@ -2619,17 +2157,6 @@ static int ocean_bake_exec(bContext *C, wmOperator *op)
 	
 	
 	
-=======
-
-	WM_jobs_customdata_set(wm_job, oj, oceanbake_free);
-	WM_jobs_timer(wm_job, 0.1, NC_OBJECT | ND_MODIFIER, NC_OBJECT | ND_MODIFIER);
-	WM_jobs_callbacks(wm_job, oceanbake_startjob, NULL, NULL, oceanbake_endjob);
-
-	WM_jobs_start(CTX_wm_manager(C), wm_job);
-
-
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -2647,7 +2174,6 @@ void OBJECT_OT_ocean_bake(wmOperatorType *ot)
 	ot->name = "Bake Ocean";
 	ot->description = "Bake an image sequence of ocean data";
 	ot->idname = "OBJECT_OT_ocean_bake";
-<<<<<<< HEAD
 	
 	ot->poll = ocean_bake_poll;
 	ot->invoke = ocean_bake_invoke;
@@ -2657,17 +2183,6 @@ void OBJECT_OT_ocean_bake(wmOperatorType *ot)
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);
 	
-=======
-
-	ot->poll = ocean_bake_poll;
-	ot->invoke = ocean_bake_invoke;
-	ot->exec = ocean_bake_exec;
-
-	/* flags */
-	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
-	edit_modifier_properties(ot);
-
->>>>>>> Initial commit
 	RNA_def_boolean(ot->srna, "free", false, "Free", "Free the bake, rather than generating it");
 }
 
@@ -2700,11 +2215,7 @@ static int laplaciandeform_bind_invoke(bContext *C, wmOperator *op, const wmEven
 {
 	if (edit_modifier_invoke_properties(C, op))
 		return laplaciandeform_bind_exec(C, op);
-<<<<<<< HEAD
 	else 
-=======
-	else
->>>>>>> Initial commit
 		return OPERATOR_CANCELLED;
 }
 
@@ -2714,20 +2225,12 @@ void OBJECT_OT_laplaciandeform_bind(wmOperatorType *ot)
 	ot->name = "Laplacian Deform Bind";
 	ot->description = "Bind mesh to system in laplacian deform modifier";
 	ot->idname = "OBJECT_OT_laplaciandeform_bind";
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* api callbacks */
 	ot->poll = laplaciandeform_poll;
 	ot->invoke = laplaciandeform_bind_invoke;
 	ot->exec = laplaciandeform_bind_exec;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO | OPTYPE_INTERNAL;
 	edit_modifier_properties(ot);

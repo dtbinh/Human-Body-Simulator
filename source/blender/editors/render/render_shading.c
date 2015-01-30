@@ -1412,11 +1412,7 @@ static int envmap_save_exec(bContext *C, wmOperator *op)
 	RNA_string_get(op->ptr, "filepath", path);
 	
 	if (scene->r.scemode & R_EXTENSION) {
-<<<<<<< HEAD
 		BKE_image_path_ensure_ext_from_imformat(path, &scene->r.im_format);
-=======
-		BKE_add_image_extension(path, &scene->r.im_format);
->>>>>>> Initial commit
 	}
 	
 	WM_cursor_wait(1);

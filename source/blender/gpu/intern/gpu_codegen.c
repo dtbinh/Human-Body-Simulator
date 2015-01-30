@@ -62,7 +62,6 @@ extern char datatoc_gpu_shader_vertex_world_glsl[];
 static char *glsl_material_library = NULL;
 
 
-<<<<<<< HEAD
 /* type definitions and constants */
 
 enum {
@@ -89,16 +88,6 @@ typedef struct GPUFunction {
 static const char *GPU_DATATYPE_STR[17] = {"", "float", "vec2", "vec3", "vec4",
 	NULL, NULL, NULL, NULL, "mat3", NULL, NULL, NULL, NULL, NULL, NULL, "mat4"};
 
-=======
-/* structs and defines */
-
-static const char *GPU_DATATYPE_STR[17] = {"", "float", "vec2", "vec3", "vec4",
-	NULL, NULL, NULL, NULL, "mat3", NULL, NULL, NULL, NULL, NULL, NULL, "mat4"};
-
-#define LINK_IMAGE_BLENDER	1
-#define LINK_IMAGE_PREVIEW	2
-
->>>>>>> Initial commit
 /* GLSL code parsing for finding function definitions.
  * These are stored in a hash for lookup when creating a material. */
 
@@ -155,13 +144,9 @@ static char *gpu_str_skip_token(char *str, char *token, int max)
 static void gpu_parse_functions_string(GHash *hash, char *code)
 {
 	GPUFunction *function;
-<<<<<<< HEAD
 	GPUType type;
 	GPUFunctionQual qual;
 	int i;
-=======
-	int i, type, qual;
->>>>>>> Initial commit
 
 	while ((code = strstr(code, "void "))) {
 		function = MEM_callocN(sizeof(GPUFunction), "GPUFunction");
@@ -181,11 +166,7 @@ static void gpu_parse_functions_string(GHash *hash, char *code)
 				code = gpu_str_skip_token(code, NULL, 0);
 
 			/* test for type */
-<<<<<<< HEAD
 			type= GPU_NONE;
-=======
-			type= 0;
->>>>>>> Initial commit
 			for (i=1; i<=16; i++) {
 				if (GPU_DATATYPE_STR[i] && gpu_str_prefix(code, GPU_DATATYPE_STR[i])) {
 					type= i;
@@ -199,11 +180,7 @@ static void gpu_parse_functions_string(GHash *hash, char *code)
 				type= GPU_TEX2D;
 
 			if (type) {
-<<<<<<< HEAD
 				/* add parameter */
-=======
-				/* add paramater */
->>>>>>> Initial commit
 				code = gpu_str_skip_token(code, NULL, 0);
 				code = gpu_str_skip_token(code, NULL, 0);
 				function->paramqual[function->totparam]= qual;
@@ -274,11 +251,7 @@ static char *gpu_generate_function_prototyps(GHash *hash)
 }
 #endif
 
-<<<<<<< HEAD
 static GPUFunction *gpu_lookup_function(const char *name)
-=======
-GPUFunction *GPU_lookup_function(const char *name)
->>>>>>> Initial commit
 {
 	if (!FUNCTION_HASH) {
 		FUNCTION_HASH = BLI_ghash_str_new("GPU_lookup_function gh");
@@ -367,11 +340,7 @@ static void codegen_convert_datatype(DynStr *ds, int from, int to, const char *t
 	}
 }
 
-<<<<<<< HEAD
 static void codegen_print_datatype(DynStr *ds, const GPUType type, float *data)
-=======
-static void codegen_print_datatype(DynStr *ds, int type, float *data)
->>>>>>> Initial commit
 {
 	int i;
 
@@ -418,7 +387,6 @@ const char *GPU_builtin_name(GPUBuiltin builtin)
 		return "";
 }
 
-<<<<<<< HEAD
 /* assign only one texid per buffer to avoid sampling the same texture twice */
 static void codegen_set_texid(GHash *bindhash, GPUInput *input, int *texid, void *key)
 {
@@ -435,8 +403,6 @@ static void codegen_set_texid(GHash *bindhash, GPUInput *input, int *texid, void
 	}
 }
 
-=======
->>>>>>> Initial commit
 static void codegen_set_unique_ids(ListBase *nodes)
 {
 	GHash *bindhash, *definehash;
@@ -452,19 +418,13 @@ static void codegen_set_unique_ids(ListBase *nodes)
 		for (input=node->inputs.first; input; input=input->next) {
 			/* set id for unique names of uniform variables */
 			input->id = id++;
-<<<<<<< HEAD
 			input->bindtex = false;
 			input->definetex = false;
-=======
-			input->bindtex = 0;
-			input->definetex = 0;
->>>>>>> Initial commit
 
 			/* set texid used for settings texture slot with multitexture */
 			if (codegen_input_has_texture(input) &&
 			    ((input->source == GPU_SOURCE_TEX) || (input->source == GPU_SOURCE_TEX_PIXEL)))
 			{
-<<<<<<< HEAD
 				/* assign only one texid per buffer to avoid sampling
 				 * the same texture twice */
 				if (input->link) {
@@ -482,71 +442,19 @@ static void codegen_set_unique_ids(ListBase *nodes)
 				else if (input->tex) {
 					/* input is user created texture, check tex pointer */
 					codegen_set_texid(bindhash, input, &texid, input->tex);
-=======
-				if (input->link) {
-					/* input is texture from buffer, assign only one texid per
-					 * buffer to avoid sampling the same texture twice */
-					if (!BLI_ghash_haskey(bindhash, input->link)) {
-						input->texid = texid++;
-						input->bindtex = 1;
-						BLI_ghash_insert(bindhash, input->link, SET_INT_IN_POINTER(input->texid));
-					}
-					else
-						input->texid = GET_INT_FROM_POINTER(BLI_ghash_lookup(bindhash, input->link));
-				}
-				else if (input->ima) {
-					/* input is texture from image, assign only one texid per
-					 * buffer to avoid sampling the same texture twice */
-					if (!BLI_ghash_haskey(bindhash, input->ima)) {
-						input->texid = texid++;
-						input->bindtex = 1;
-						BLI_ghash_insert(bindhash, input->ima, SET_INT_IN_POINTER(input->texid));
-					}
-					else
-						input->texid = GET_INT_FROM_POINTER(BLI_ghash_lookup(bindhash, input->ima));
-				}
-				else if (input->prv) {
-					/* input is texture from preview render, assign only one texid per
-					 * buffer to avoid sampling the same texture twice */
-					if (!BLI_ghash_haskey(bindhash, input->prv)) {
-						input->texid = texid++;
-						input->bindtex = 1;
-						BLI_ghash_insert(bindhash, input->prv, SET_INT_IN_POINTER(input->texid));
-					}
-					else
-						input->texid = GET_INT_FROM_POINTER(BLI_ghash_lookup(bindhash, input->prv));
-				}
-				else {
-					if (!BLI_ghash_haskey(bindhash, input->tex)) {
-						/* input is user created texture, check tex pointer */
-						input->texid = texid++;
-						input->bindtex = 1;
-						BLI_ghash_insert(bindhash, input->tex, SET_INT_IN_POINTER(input->texid));
-					}
-					else
-						input->texid = GET_INT_FROM_POINTER(BLI_ghash_lookup(bindhash, input->tex));
->>>>>>> Initial commit
 				}
 
 				/* make sure this pixel is defined exactly once */
 				if (input->source == GPU_SOURCE_TEX_PIXEL) {
 					if (input->ima) {
 						if (!BLI_ghash_haskey(definehash, input->ima)) {
-<<<<<<< HEAD
 							input->definetex = true;
-=======
-							input->definetex = 1;
->>>>>>> Initial commit
 							BLI_ghash_insert(definehash, input->ima, SET_INT_IN_POINTER(input->texid));
 						}
 					}
 					else {
 						if (!BLI_ghash_haskey(definehash, input->link)) {
-<<<<<<< HEAD
 							input->definetex = true;
-=======
-							input->definetex = 1;
->>>>>>> Initial commit
 							BLI_ghash_insert(definehash, input->link, SET_INT_IN_POINTER(input->texid));
 						}
 					}
@@ -707,11 +615,7 @@ static void codegen_call_functions(DynStr *ds, ListBase *nodes, GPUOutput *final
 	BLI_dynstr_append(ds, ";\n");
 }
 
-<<<<<<< HEAD
 static char *code_generate_fragment(ListBase *nodes, GPUOutput *output)
-=======
-static char *code_generate_fragment(ListBase *nodes, GPUOutput *output, const char *UNUSED(name))
->>>>>>> Initial commit
 {
 	DynStr *ds = BLI_dynstr_new();
 	char *code;
@@ -745,11 +649,7 @@ static char *code_generate_fragment(ListBase *nodes, GPUOutput *output, const ch
 	return code;
 }
 
-<<<<<<< HEAD
 static char *code_generate_vertex(ListBase *nodes, const GPUMatType type)
-=======
-static char *code_generate_vertex(ListBase *nodes, int type)
->>>>>>> Initial commit
 {
 	DynStr *ds = BLI_dynstr_new();
 	GPUNode *node;
@@ -849,11 +749,7 @@ GPUShader *GPU_pass_shader(GPUPass *pass)
 	return pass->shader;
 }
 
-<<<<<<< HEAD
 static void gpu_nodes_extract_dynamic_inputs(GPUPass *pass, ListBase *nodes)
-=======
-static void GPU_nodes_extract_dynamic_inputs(GPUPass *pass, ListBase *nodes)
->>>>>>> Initial commit
 {
 	GPUShader *shader = pass->shader;
 	GPUNode *node;
@@ -975,27 +871,16 @@ void GPU_pass_unbind(GPUPass *pass)
 
 /* Node Link Functions */
 
-<<<<<<< HEAD
 static GPUNodeLink *GPU_node_link_create(void)
 {
 	GPUNodeLink *link = MEM_callocN(sizeof(GPUNodeLink), "GPUNodeLink");
 	link->type = GPU_NONE;
-=======
-static GPUNodeLink *GPU_node_link_create(int type)
-{
-	GPUNodeLink *link = MEM_callocN(sizeof(GPUNodeLink), "GPUNodeLink");
-	link->type = type;
->>>>>>> Initial commit
 	link->users++;
 
 	return link;
 }
 
-<<<<<<< HEAD
 static void gpu_node_link_free(GPUNodeLink *link)
-=======
-static void GPU_node_link_free(GPUNodeLink *link)
->>>>>>> Initial commit
 {
 	link->users--;
 
@@ -1020,16 +905,7 @@ static GPUNode *GPU_node_begin(const char *name)
 	return node;
 }
 
-<<<<<<< HEAD
 static void gpu_node_input_link(GPUNode *node, GPUNodeLink *link, const GPUType type)
-=======
-static void GPU_node_end(GPUNode *UNUSED(node))
-{
-	/* empty */
-}
-
-static void gpu_node_input_link(GPUNode *node, GPUNodeLink *link, int type)
->>>>>>> Initial commit
 {
 	GPUInput *input;
 	GPUNode *outnode;
@@ -1039,11 +915,7 @@ static void gpu_node_input_link(GPUNode *node, GPUNodeLink *link, int type)
 		outnode = link->output->node;
 		name = outnode->name;
 
-<<<<<<< HEAD
 		if (STREQ(name, "set_value") || STREQ(name, "set_rgb")) {
-=======
-		if (strcmp(name, "set_value")==0 || strcmp(name, "set_rgb")==0) {
->>>>>>> Initial commit
 			input = MEM_dupallocN(outnode->inputs.first);
 			input->type = type;
 			if (input->link)
@@ -1087,11 +959,7 @@ static void gpu_node_input_link(GPUNode *node, GPUNodeLink *link, int type)
 		input->tex = link->dynamictex;
 		input->textarget = GL_TEXTURE_2D;
 		input->textype = type;
-<<<<<<< HEAD
 		input->dynamictex = true;
-=======
-		input->dynamictex = 1;
->>>>>>> Initial commit
 		input->dynamicdata = link->ptr2;
 		MEM_freeN(link);
 	}
@@ -1113,11 +981,7 @@ static void gpu_node_input_link(GPUNode *node, GPUNodeLink *link, int type)
 		input->type = GPU_VEC4;
 		input->source = GPU_SOURCE_TEX;
 
-<<<<<<< HEAD
 		if (link->image == GPU_NODE_LINK_IMAGE_PREVIEW)
-=======
-		if (link->image == LINK_IMAGE_PREVIEW)
->>>>>>> Initial commit
 			input->prv = link->ptr1;
 		else {
 			input->ima = link->ptr1;
@@ -1162,21 +1026,13 @@ static void gpu_node_input_socket(GPUNode *node, GPUNodeStack *sock)
 		gpu_node_input_link(node, sock->link, sock->type);
 	}
 	else {
-<<<<<<< HEAD
 		link = GPU_node_link_create();
-=======
-		link = GPU_node_link_create(0);
->>>>>>> Initial commit
 		link->ptr1 = sock->vec;
 		gpu_node_input_link(node, link, sock->type);
 	}
 }
 
-<<<<<<< HEAD
 static void gpu_node_output(GPUNode *node, const GPUType type, GPUNodeLink **link)
-=======
-static void GPU_node_output(GPUNode *node, int type, const char *UNUSED(name), GPUNodeLink **link)
->>>>>>> Initial commit
 {
 	GPUOutput *output = MEM_callocN(sizeof(GPUOutput), "GPUOutput");
 
@@ -1184,12 +1040,8 @@ static void GPU_node_output(GPUNode *node, int type, const char *UNUSED(name), G
 	output->node = node;
 
 	if (link) {
-<<<<<<< HEAD
 		*link = output->link = GPU_node_link_create();
 		output->link->type = type;
-=======
-		*link = output->link = GPU_node_link_create(type);
->>>>>>> Initial commit
 		output->link->output = output;
 
 		/* note: the caller owns the reference to the linkfer, GPUOutput
@@ -1200,21 +1052,13 @@ static void GPU_node_output(GPUNode *node, int type, const char *UNUSED(name), G
 	BLI_addtail(&node->outputs, output);
 }
 
-<<<<<<< HEAD
 static void gpu_inputs_free(ListBase *inputs)
-=======
-static void GPU_inputs_free(ListBase *inputs)
->>>>>>> Initial commit
 {
 	GPUInput *input;
 
 	for (input=inputs->first; input; input=input->next) {
 		if (input->link)
-<<<<<<< HEAD
 			gpu_node_link_free(input->link);
-=======
-			GPU_node_link_free(input->link);
->>>>>>> Initial commit
 		else if (input->tex && !input->dynamictex)
 			GPU_texture_free(input->tex);
 	}
@@ -1222,48 +1066,28 @@ static void GPU_inputs_free(ListBase *inputs)
 	BLI_freelistN(inputs);
 }
 
-<<<<<<< HEAD
 static void gpu_node_free(GPUNode *node)
 {
 	GPUOutput *output;
 
 	gpu_inputs_free(&node->inputs);
-=======
-static void GPU_node_free(GPUNode *node)
-{
-	GPUOutput *output;
-
-	GPU_inputs_free(&node->inputs);
->>>>>>> Initial commit
 
 	for (output=node->outputs.first; output; output=output->next)
 		if (output->link) {
 			output->link->output = NULL;
-<<<<<<< HEAD
 			gpu_node_link_free(output->link);
-=======
-			GPU_node_link_free(output->link);
->>>>>>> Initial commit
 		}
 
 	BLI_freelistN(&node->outputs);
 	MEM_freeN(node);
 }
 
-<<<<<<< HEAD
 static void gpu_nodes_free(ListBase *nodes)
-=======
-static void GPU_nodes_free(ListBase *nodes)
->>>>>>> Initial commit
 {
 	GPUNode *node;
 
 	while ((node = BLI_pophead(nodes))) {
-<<<<<<< HEAD
 		gpu_node_free(node);
-=======
-		GPU_node_free(node);
->>>>>>> Initial commit
 	}
 }
 
@@ -1285,11 +1109,7 @@ static void gpu_nodes_get_vertex_attributes(ListBase *nodes, GPUVertexAttribs *a
 			if (input->source == GPU_SOURCE_ATTRIB) {
 				for (a=0; a<attribs->totlayer; a++) {
 					if (attribs->layer[a].type == input->attribtype &&
-<<<<<<< HEAD
 					    STREQ(attribs->layer[a].name, input->attribname))
-=======
-					    strcmp(attribs->layer[a].name, input->attribname) == 0)
->>>>>>> Initial commit
 					{
 						break;
 					}
@@ -1329,15 +1149,9 @@ static void gpu_nodes_get_builtin_flag(ListBase *nodes, int *builtin)
 
 /* varargs linking  */
 
-<<<<<<< HEAD
 GPUNodeLink *GPU_attribute(const CustomDataType type, const char *name)
 {
 	GPUNodeLink *link = GPU_node_link_create();
-=======
-GPUNodeLink *GPU_attribute(int type, const char *name)
-{
-	GPUNodeLink *link = GPU_node_link_create(0);
->>>>>>> Initial commit
 
 	link->attribtype= type;
 	link->attribname= name;
@@ -1347,11 +1161,7 @@ GPUNodeLink *GPU_attribute(int type, const char *name)
 
 GPUNodeLink *GPU_uniform(float *num)
 {
-<<<<<<< HEAD
 	GPUNodeLink *link = GPU_node_link_create();
-=======
-	GPUNodeLink *link = GPU_node_link_create(0);
->>>>>>> Initial commit
 
 	link->ptr1= num;
 	link->ptr2= NULL;
@@ -1359,7 +1169,6 @@ GPUNodeLink *GPU_uniform(float *num)
 	return link;
 }
 
-<<<<<<< HEAD
 GPUNodeLink *GPU_dynamic_uniform(float *num, GPUDynamicType dynamictype, void *data)
 {
 	GPUNodeLink *link = GPU_node_link_create();
@@ -1367,15 +1176,6 @@ GPUNodeLink *GPU_dynamic_uniform(float *num, GPUDynamicType dynamictype, void *d
 	link->ptr1= num;
 	link->ptr2= data;
 	link->dynamic= true;
-=======
-GPUNodeLink *GPU_dynamic_uniform(float *num, int dynamictype, void *data)
-{
-	GPUNodeLink *link = GPU_node_link_create(0);
-
-	link->ptr1= num;
-	link->ptr2= data;
-	link->dynamic= 1;
->>>>>>> Initial commit
 	link->dynamictype = dynamictype;
 
 
@@ -1384,15 +1184,9 @@ GPUNodeLink *GPU_dynamic_uniform(float *num, int dynamictype, void *data)
 
 GPUNodeLink *GPU_image(Image *ima, ImageUser *iuser, bool is_data)
 {
-<<<<<<< HEAD
 	GPUNodeLink *link = GPU_node_link_create();
 
 	link->image = GPU_NODE_LINK_IMAGE_BLENDER;
-=======
-	GPUNodeLink *link = GPU_node_link_create(0);
-
-	link->image = LINK_IMAGE_BLENDER;
->>>>>>> Initial commit
 	link->ptr1 = ima;
 	link->ptr2 = iuser;
 	link->image_isdata = is_data;
@@ -1402,15 +1196,9 @@ GPUNodeLink *GPU_image(Image *ima, ImageUser *iuser, bool is_data)
 
 GPUNodeLink *GPU_image_preview(PreviewImage *prv)
 {
-<<<<<<< HEAD
 	GPUNodeLink *link = GPU_node_link_create();
 	
 	link->image= GPU_NODE_LINK_IMAGE_PREVIEW;
-=======
-	GPUNodeLink *link = GPU_node_link_create(0);
-	
-	link->image= LINK_IMAGE_PREVIEW;
->>>>>>> Initial commit
 	link->ptr1= prv;
 	
 	return link;
@@ -1419,34 +1207,20 @@ GPUNodeLink *GPU_image_preview(PreviewImage *prv)
 
 GPUNodeLink *GPU_texture(int size, float *pixels)
 {
-<<<<<<< HEAD
 	GPUNodeLink *link = GPU_node_link_create();
 
 	link->texture = true;
-=======
-	GPUNodeLink *link = GPU_node_link_create(0);
-
-	link->texture = 1;
->>>>>>> Initial commit
 	link->texturesize = size;
 	link->ptr1= pixels;
 
 	return link;
 }
 
-<<<<<<< HEAD
 GPUNodeLink *GPU_dynamic_texture(GPUTexture *tex, GPUDynamicType dynamictype, void *data)
 {
 	GPUNodeLink *link = GPU_node_link_create();
 
 	link->dynamic = true;
-=======
-GPUNodeLink *GPU_dynamic_texture(GPUTexture *tex, int dynamictype, void *data)
-{
-	GPUNodeLink *link = GPU_node_link_create(0);
-
-	link->dynamic = 1;
->>>>>>> Initial commit
 	link->dynamictex = tex;
 	link->dynamictype = dynamictype;
 	link->ptr2 = data;
@@ -1456,11 +1230,7 @@ GPUNodeLink *GPU_dynamic_texture(GPUTexture *tex, int dynamictype, void *data)
 
 GPUNodeLink *GPU_builtin(GPUBuiltin builtin)
 {
-<<<<<<< HEAD
 	GPUNodeLink *link = GPU_node_link_create();
-=======
-	GPUNodeLink *link = GPU_node_link_create(0);
->>>>>>> Initial commit
 
 	link->builtin= builtin;
 
@@ -1469,11 +1239,7 @@ GPUNodeLink *GPU_builtin(GPUBuiltin builtin)
 
 GPUNodeLink *GPU_opengl_builtin(GPUOpenGLBuiltin builtin)
 {
-<<<<<<< HEAD
 	GPUNodeLink *link = GPU_node_link_create();
-=======
-	GPUNodeLink *link = GPU_node_link_create(0);
->>>>>>> Initial commit
 
 	link->oglbuiltin = builtin;
 
@@ -1488,11 +1254,7 @@ bool GPU_link(GPUMaterial *mat, const char *name, ...)
 	va_list params;
 	int i;
 
-<<<<<<< HEAD
 	function = gpu_lookup_function(name);
-=======
-	function = GPU_lookup_function(name);
->>>>>>> Initial commit
 	if (!function) {
 		fprintf(stderr, "GPU failed to find function %s\n", name);
 		return 0;
@@ -1504,11 +1266,7 @@ bool GPU_link(GPUMaterial *mat, const char *name, ...)
 	for (i=0; i<function->totparam; i++) {
 		if (function->paramqual[i] != FUNCTION_QUAL_IN) {
 			linkptr= va_arg(params, GPUNodeLink**);
-<<<<<<< HEAD
 			gpu_node_output(node, function->paramtype[i], linkptr);
-=======
-			GPU_node_output(node, function->paramtype[i], "", linkptr);
->>>>>>> Initial commit
 		}
 		else {
 			link= va_arg(params, GPUNodeLink*);
@@ -1517,11 +1275,6 @@ bool GPU_link(GPUMaterial *mat, const char *name, ...)
 	}
 	va_end(params);
 
-<<<<<<< HEAD
-=======
-	GPU_node_end(node);
-
->>>>>>> Initial commit
 	gpu_material_add_node(mat, node);
 
 	return 1;
@@ -1535,11 +1288,7 @@ bool GPU_stack_link(GPUMaterial *mat, const char *name, GPUNodeStack *in, GPUNod
 	va_list params;
 	int i, totin, totout;
 
-<<<<<<< HEAD
 	function = gpu_lookup_function(name);
-=======
-	function = GPU_lookup_function(name);
->>>>>>> Initial commit
 	if (!function) {
 		fprintf(stderr, "GPU failed to find function %s\n", name);
 		return 0;
@@ -1558,11 +1307,7 @@ bool GPU_stack_link(GPUMaterial *mat, const char *name, GPUNodeStack *in, GPUNod
 	
 	if (out) {
 		for (i = 0; out[i].type != GPU_NONE; i++) {
-<<<<<<< HEAD
 			gpu_node_output(node, out[i].type, &out[i].link);
-=======
-			GPU_node_output(node, out[i].type, out[i].name, &out[i].link);
->>>>>>> Initial commit
 			totout++;
 		}
 	}
@@ -1572,11 +1317,7 @@ bool GPU_stack_link(GPUMaterial *mat, const char *name, GPUNodeStack *in, GPUNod
 		if (function->paramqual[i] != FUNCTION_QUAL_IN) {
 			if (totout == 0) {
 				linkptr= va_arg(params, GPUNodeLink**);
-<<<<<<< HEAD
 				gpu_node_output(node, function->paramtype[i], linkptr);
-=======
-				GPU_node_output(node, function->paramtype[i], "", linkptr);
->>>>>>> Initial commit
 			}
 			else
 				totout--;
@@ -1595,11 +1336,6 @@ bool GPU_stack_link(GPUMaterial *mat, const char *name, GPUNodeStack *in, GPUNod
 	}
 	va_end(params);
 
-<<<<<<< HEAD
-=======
-	GPU_node_end(node);
-
->>>>>>> Initial commit
 	gpu_material_add_node(mat, node);
 	
 	return 1;
@@ -1615,11 +1351,7 @@ int GPU_link_changed(GPUNodeLink *link)
 		node = link->output->node;
 		name = node->name;
 
-<<<<<<< HEAD
 		if (STREQ(name, "set_value") || STREQ(name, "set_rgb")) {
-=======
-		if (strcmp(name, "set_value")==0 || strcmp(name, "set_rgb")==0) {
->>>>>>> Initial commit
 			input = node->inputs.first;
 			return (input->link != NULL);
 		}
@@ -1644,11 +1376,7 @@ static void gpu_nodes_tag(GPUNodeLink *link)
 	if (node->tag)
 		return;
 	
-<<<<<<< HEAD
 	node->tag = true;
-=======
-	node->tag= 1;
->>>>>>> Initial commit
 	for (input=node->inputs.first; input; input=input->next)
 		if (input->link)
 			gpu_nodes_tag(input->link);
@@ -1659,11 +1387,7 @@ static void gpu_nodes_prune(ListBase *nodes, GPUNodeLink *outlink)
 	GPUNode *node, *next;
 
 	for (node=nodes->first; node; node=node->next)
-<<<<<<< HEAD
 		node->tag = false;
-=======
-		node->tag= 0;
->>>>>>> Initial commit
 
 	gpu_nodes_tag(outlink);
 
@@ -1672,22 +1396,14 @@ static void gpu_nodes_prune(ListBase *nodes, GPUNodeLink *outlink)
 
 		if (!node->tag) {
 			BLI_remlink(nodes, node);
-<<<<<<< HEAD
 			gpu_node_free(node);
-=======
-			GPU_node_free(node);
->>>>>>> Initial commit
 		}
 	}
 }
 
-<<<<<<< HEAD
 GPUPass *GPU_generate_pass(ListBase *nodes, GPUNodeLink *outlink,
 						   GPUVertexAttribs *attribs, int *builtins,
 						   const GPUMatType type, const char *UNUSED(name))
-=======
-GPUPass *GPU_generate_pass(ListBase *nodes, GPUNodeLink *outlink, GPUVertexAttribs *attribs, int *builtins, int type, const char *name)
->>>>>>> Initial commit
 {
 	GPUShader *shader;
 	GPUPass *pass;
@@ -1705,11 +1421,7 @@ GPUPass *GPU_generate_pass(ListBase *nodes, GPUNodeLink *outlink, GPUVertexAttri
 	gpu_nodes_get_builtin_flag(nodes, builtins);
 
 	/* generate code and compile with opengl */
-<<<<<<< HEAD
 	fragmentcode = code_generate_fragment(nodes, outlink->output);
-=======
-	fragmentcode = code_generate_fragment(nodes, outlink->output, name);
->>>>>>> Initial commit
 	vertexcode = code_generate_vertex(nodes, type);
 	shader = GPU_shader_create(vertexcode, fragmentcode, glsl_material_library, NULL);
 
@@ -1721,11 +1433,7 @@ GPUPass *GPU_generate_pass(ListBase *nodes, GPUNodeLink *outlink, GPUVertexAttri
 			MEM_freeN(vertexcode);
 		memset(attribs, 0, sizeof(*attribs));
 		memset(builtins, 0, sizeof(*builtins));
-<<<<<<< HEAD
 		gpu_nodes_free(nodes);
-=======
-		GPU_nodes_free(nodes);
->>>>>>> Initial commit
 		return NULL;
 	}
 	
@@ -1739,13 +1447,8 @@ GPUPass *GPU_generate_pass(ListBase *nodes, GPUNodeLink *outlink, GPUVertexAttri
 	pass->libcode = glsl_material_library;
 
 	/* extract dynamic inputs and throw away nodes */
-<<<<<<< HEAD
 	gpu_nodes_extract_dynamic_inputs(pass, nodes);
 	gpu_nodes_free(nodes);
-=======
-	GPU_nodes_extract_dynamic_inputs(pass, nodes);
-	GPU_nodes_free(nodes);
->>>>>>> Initial commit
 
 	return pass;
 }
@@ -1753,11 +1456,7 @@ GPUPass *GPU_generate_pass(ListBase *nodes, GPUNodeLink *outlink, GPUVertexAttri
 void GPU_pass_free(GPUPass *pass)
 {
 	GPU_shader_free(pass->shader);
-<<<<<<< HEAD
 	gpu_inputs_free(&pass->inputs);
-=======
-	GPU_inputs_free(&pass->inputs);
->>>>>>> Initial commit
 	if (pass->fragmentcode)
 		MEM_freeN(pass->fragmentcode);
 	if (pass->vertexcode)

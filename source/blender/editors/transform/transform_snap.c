@@ -1408,11 +1408,8 @@ static bool snapArmature(short snap_mode, ARegion *ar, Object *ob, bArmature *ar
 		for (eBone = arm->edbo->first; eBone; eBone = eBone->next) {
 			if (eBone->layer & arm->layer) {
 				/* skip hidden or moving (selected) bones */
-<<<<<<< HEAD
-				if ((eBone->flag & (BONE_HIDDEN_A | BONE_ROOTSEL | BONE_TIPSEL)) == 0) {
-=======
+//				if ((eBone->flag & (BONE_HIDDEN_A | BONE_ROOTSEL | BONE_TIPSEL)) == 0) {
 				if ((eBone->flag & (ELEMENT_HIDDEN_A | ELEMENT_ROOTSEL | ELEMENT_TIPSEL)) == 0) {
->>>>>>> Initial commit
 					switch (snap_mode) {
 						case SCE_SNAP_MODE_VERTEX:
 							retval |= snapVertex(ar, eBone->head, NULL, obmat, NULL, ray_start, ray_start_local, ray_normal_local, mval, r_loc, NULL, r_dist_px, r_depth);
@@ -1428,20 +1425,14 @@ static bool snapArmature(short snap_mode, ARegion *ar, Object *ob, bArmature *ar
 	}
 	else if (ob->pose && ob->pose->chanbase.first) {
 		bPoseChannel *pchan;
-<<<<<<< HEAD
-		Bone *bone;
-=======
+//		Bone *bone;
 		ArmatureElement *bone;
->>>>>>> Initial commit
 		
 		for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 			bone = pchan->bone;
 			/* skip hidden bones */
-<<<<<<< HEAD
-			if (bone && !(bone->flag & (BONE_HIDDEN_P | BONE_HIDDEN_PG))) {
-=======
+//			if (bone && !(bone->flag & (BONE_HIDDEN_P | BONE_HIDDEN_PG))) {
 			if (bone && !(bone->flag & (ELEMENT_HIDDEN_P | ELEMENT_HIDDEN_PG))) {
->>>>>>> Initial commit
 				const float *head_vec = pchan->pose_head;
 				const float *tail_vec = pchan->pose_tail;
 				

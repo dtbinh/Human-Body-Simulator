@@ -40,11 +40,8 @@ struct BPoint;
 struct Base;
 struct BezTriple;
 struct BoundBox;
-<<<<<<< HEAD
 struct EditBone;
-=======
 struct EditArmatureElement;
->>>>>>> Initial commit
 struct ImBuf;
 struct MVert;
 struct Main;
@@ -170,11 +167,8 @@ void lattice_foreachScreenVert(
         void *userData, const eV3DProjTest clip_flag);
 void armature_foreachScreenBone(
         struct ViewContext *vc,
-<<<<<<< HEAD
-        void (*func)(void *userData, struct EditBone *ebone,
-=======
+//        void (*func)(void *userData, struct EditBone *ebone,
         void (*func)(void *userData, struct EditArmatureElement *ebone,
->>>>>>> Initial commit
                      const float screen_co_a[2], const float screen_co_b[2]),
         void *userData, const eV3DProjTest clip_flag);
 void pose_foreachScreenBone(
@@ -318,10 +312,6 @@ struct ImBuf *ED_view3d_draw_offscreen_imbuf(struct Scene *scene, struct View3D 
                                              bool draw_background, int alpha_mode, char err_out[256]);
 struct ImBuf *ED_view3d_draw_offscreen_imbuf_simple(struct Scene *scene, struct Object *camera, int width, int height, unsigned int flag, int drawtype,
                                                     bool use_solid_tex, bool use_gpencil, bool draw_background, int alpha_mode, char err_out[256]);
-<<<<<<< HEAD
-=======
-void ED_view3d_offscreen_sky_color_get(struct Scene *scene, float sky_color[3]);
->>>>>>> Initial commit
 
 struct Base *ED_view3d_give_base_under_cursor(struct bContext *C, const int mval[2]);
 void ED_view3d_quadview_update(struct ScrArea *sa, struct ARegion *ar, bool do_clip);

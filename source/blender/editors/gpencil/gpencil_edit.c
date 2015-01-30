@@ -2502,70 +2502,41 @@ static bool gp_convert_draw_check_prop(PointerRNA *ptr, PropertyRNA *prop)
 	const bool valid_timing = RNA_boolean_get(ptr, "use_timing_data");
 	
 	/* Always show those props */
-<<<<<<< HEAD
 	if (STREQ(prop_id, "type") ||
 	    STREQ(prop_id, "use_normalize_weights") ||
 	    STREQ(prop_id, "radius_multiplier") ||
 	    STREQ(prop_id, "use_link_strokes"))
-=======
-	if (strcmp(prop_id, "type") == 0 ||
-	    strcmp(prop_id, "use_normalize_weights") == 0 ||
-	    strcmp(prop_id, "radius_multiplier") == 0 ||
-	    strcmp(prop_id, "use_link_strokes") == 0)
->>>>>>> Initial commit
 	{
 		return true;
 	}
 	
 	/* Never show this prop */
-<<<<<<< HEAD
 	if (STREQ(prop_id, "use_timing_data"))
-=======
-	if (strcmp(prop_id, "use_timing_data") == 0)
->>>>>>> Initial commit
 		return false;
 	
 	if (link_strokes) {
 		/* Only show when link_stroke is true */
-<<<<<<< HEAD
 		if (STREQ(prop_id, "timing_mode"))
-=======
-		if (strcmp(prop_id, "timing_mode") == 0)
->>>>>>> Initial commit
 			return true;
 		
 		if (timing_mode != GP_STROKECONVERT_TIMING_NONE) {
 			/* Only show when link_stroke is true and stroke timing is enabled */
-<<<<<<< HEAD
 			if (STREQ(prop_id, "frame_range") ||
 			    STREQ(prop_id, "start_frame"))
-=======
-			if (strcmp(prop_id, "frame_range") == 0 ||
-			    strcmp(prop_id, "start_frame") == 0)
->>>>>>> Initial commit
 			{
 				return true;
 			}
 			
 			/* Only show if we have valid timing data! */
-<<<<<<< HEAD
 			if (valid_timing && STREQ(prop_id, "use_realtime"))
 				return true;
 			
 			/* Only show if realtime or valid_timing is false! */
 			if ((!realtime || !valid_timing) && STREQ(prop_id, "end_frame"))
-=======
-			if (valid_timing && strcmp(prop_id, "use_realtime") == 0)
-				return true;
-			
-			/* Only show if realtime or valid_timing is false! */
-			if ((!realtime || !valid_timing) && strcmp(prop_id, "end_frame") == 0)
->>>>>>> Initial commit
 				return true;
 			
 			if (valid_timing && timing_mode == GP_STROKECONVERT_TIMING_CUSTOMGAP) {
 				/* Only show for custom gaps! */
-<<<<<<< HEAD
 				if (STREQ(prop_id, "gap_duration"))
 					return true;
 				
@@ -2575,17 +2546,6 @@ static bool gp_convert_draw_check_prop(PointerRNA *ptr, PropertyRNA *prop)
 				
 				/* Only show seed for randomize action! */
 				if (STREQ(prop_id, "seed") && (gap_duration > 0.0f) && (gap_randomness > 0.0f))
-=======
-				if (strcmp(prop_id, "gap_duration") == 0)
-					return true;
-				
-				/* Only show randomness for non-null custom gaps! */
-				if (strcmp(prop_id, "gap_randomness") == 0 && (gap_duration > 0.0f))
-					return true;
-				
-				/* Only show seed for randomize action! */
-				if (strcmp(prop_id, "seed") == 0 && (gap_duration > 0.0f) && (gap_randomness > 0.0f))
->>>>>>> Initial commit
 					return true;
 			}
 		}

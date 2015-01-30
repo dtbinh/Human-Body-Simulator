@@ -166,21 +166,19 @@ static void stats_object_edit(Object *obedit, SceneStats *stats)
 		for (ebo = arm->edbo->first; ebo; ebo = ebo->next) {
 			stats->totbone++;
 			
-<<<<<<< HEAD
-			if ((ebo->flag & BONE_CONNECTED) && ebo->parent)
-				stats->totvert--;
-			
-			if (ebo->flag & BONE_TIPSEL)
-				stats->totvertsel++;
-			if (ebo->flag & BONE_ROOTSEL)
-				stats->totvertsel++;
-			
-			if (ebo->flag & BONE_SELECTED) stats->totbonesel++;
-
-			/* if this is a connected child and it's parent is being moved, remove our root */
-			if ((ebo->flag & BONE_CONNECTED) && (ebo->flag & BONE_ROOTSEL) &&
-			    ebo->parent && (ebo->parent->flag & BONE_TIPSEL))
-=======
+//			if ((ebo->flag & BONE_CONNECTED) && ebo->parent)
+//				stats->totvert--;
+//			
+//			if (ebo->flag & BONE_TIPSEL)
+//				stats->totvertsel++;
+//			if (ebo->flag & BONE_ROOTSEL)
+//				stats->totvertsel++;
+//			
+//			if (ebo->flag & BONE_SELECTED) stats->totbonesel++;
+//
+//			/* if this is a connected child and it's parent is being moved, remove our root */
+//			if ((ebo->flag & BONE_CONNECTED) && (ebo->flag & BONE_ROOTSEL) &&
+//			    ebo->parent && (ebo->parent->flag & BONE_TIPSEL))
 			if ((ebo->flag & ELEMENT_CONNECTED) && ebo->parent)
 				stats->totvert--;
 			
@@ -194,7 +192,6 @@ static void stats_object_edit(Object *obedit, SceneStats *stats)
 			/* if this is a connected child and it's parent is being moved, remove our root */
 			if ((ebo->flag & ELEMENT_CONNECTED) && (ebo->flag & ELEMENT_ROOTSEL) &&
 			    ebo->parent && (ebo->parent->flag & ELEMENT_TIPSEL))
->>>>>>> Initial commit
 			{
 				stats->totvertsel--;
 			}
@@ -270,11 +267,7 @@ static void stats_object_pose(Object *ob, SceneStats *stats)
 
 		for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 			stats->totbone++;
-<<<<<<< HEAD
 			if (pchan->bone && (pchan->bone->flag & BONE_SELECTED))
-=======
-			if (pchan->bone && (pchan->bone->flag & ELEMENT_SELECTED))
->>>>>>> Initial commit
 				if (pchan->bone->layer & arm->layer)
 					stats->totbonesel++;
 		}

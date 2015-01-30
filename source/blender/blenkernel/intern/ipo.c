@@ -161,38 +161,24 @@ static AdrBit2Path ma_mode_bits[] = {
 	{ \
 		*tot = sizeof(items) / sizeof(AdrBit2Path); \
 		return items; \
-<<<<<<< HEAD
 	} (void)0
-=======
-	}
->>>>>>> Initial commit
 
 /* This function checks if a Blocktype+Adrcode combo, returning a mapping table */
 static AdrBit2Path *adrcode_bitmaps_to_paths(int blocktype, int adrcode, int *tot)
 {
 	/* Object layers */
-<<<<<<< HEAD
 	if ((blocktype == ID_OB) && (adrcode == OB_LAY)) {
 		RET_ABP(ob_layer_bits);
 	}
 	else if ((blocktype == ID_MA) && (adrcode == MA_MODE)) {
 		RET_ABP(ma_mode_bits);
 	}
-=======
-	if ((blocktype == ID_OB) && (adrcode == OB_LAY))
-		RET_ABP(ob_layer_bits)
-	else if ((blocktype == ID_MA) && (adrcode == MA_MODE))
-		RET_ABP(ma_mode_bits)
->>>>>>> Initial commit
 	// XXX TODO: add other types...
 	
 	/* Normal curve */
 	return NULL;
 }
-<<<<<<< HEAD
 #undef RET_ABP
-=======
->>>>>>> Initial commit
 
 /* *************************************************** */
 /* ADRCODE to RNA-Path Conversion Code  - Standard */
@@ -936,19 +922,11 @@ static char *get_rna_access(int blocktype, int adrcode, char actname[], char con
 		BLI_snprintf(buf, sizeof(buf), "pose.bones[\"%s\"].constraints[\"%s\"]", actname, constname);
 	}
 	else if (actname && actname[0]) {
-<<<<<<< HEAD
 		if ((blocktype == ID_OB) && STREQ(actname, "Object")) {
 			/* Actionified "Object" IPO's... no extra path stuff needed */
 			buf[0] = '\0'; /* empty string */
 		}
 		else if ((blocktype == ID_KE) && STREQ(actname, "Shape")) {
-=======
-		if ((blocktype == ID_OB) && strcmp(actname, "Object") == 0) {
-			/* Actionified "Object" IPO's... no extra path stuff needed */
-			buf[0] = '\0'; /* empty string */
-		}
-		else if ((blocktype == ID_KE) && strcmp(actname, "Shape") == 0) {
->>>>>>> Initial commit
 			/* Actionified "Shape" IPO's - these are forced onto object level via the action container there... */
 			strcpy(buf, "data.shape_keys");
 		}
@@ -1348,11 +1326,7 @@ static void icu_to_fcurves(ID *id, ListBase *groups, ListBase *list, IpoCurve *i
 				 *	- we now need as 'frames'
 				 */
 				if ( (id) && (icu->blocktype == GS(id->name)) && 
-<<<<<<< HEAD
 				     (fcu->rna_path && STREQ(fcu->rna_path, "eval_time")) )
-=======
-				     (fcu->rna_path && strcmp(fcu->rna_path, "eval_time") == 0) )
->>>>>>> Initial commit
 				{
 					Curve *cu = (Curve *)id;
 					
@@ -1429,15 +1403,9 @@ static void ipo_to_animato(ID *id, Ipo *ipo, char actname[], char constname[], S
 	 *		F-Curves for bones). This may be added later... for now let's just dump without them...
 	 */
 	if (actname) {
-<<<<<<< HEAD
 		if ((ipo->blocktype == ID_OB) && STREQ(actname, "Object"))
 			actname = NULL;
 		else if ((ipo->blocktype == ID_OB) && STREQ(actname, "Shape"))
-=======
-		if ((ipo->blocktype == ID_OB) && (strcmp(actname, "Object") == 0))
-			actname = NULL;
-		else if ((ipo->blocktype == ID_OB) && (strcmp(actname, "Shape") == 0))
->>>>>>> Initial commit
 			actname = NULL;
 	}
 	

@@ -37,10 +37,7 @@
 
 #include "MEM_guardedalloc.h"
 
-<<<<<<< HEAD
 #include "BLI_utildefines.h"
-=======
->>>>>>> Initial commit
 #include "BLI_string.h"
 #include "BLI_fileops.h"
 
@@ -271,11 +268,7 @@ handle_app1(j_decompress_ptr cinfo)
 	if (length < 16) {
 		for (i = 0; i < length; i++) INPUT_BYTE(cinfo, neogeo[i], return false);
 		length = 0;
-<<<<<<< HEAD
 		if (STREQLEN(neogeo, "NeoGeo", 6)) memcpy(&ibuf_ftype, neogeo + 6, 4);
-=======
-		if (strncmp(neogeo, "NeoGeo", 6) == 0) memcpy(&ibuf_ftype, neogeo + 6, 4);
->>>>>>> Initial commit
 		ibuf_ftype = BIG_LONG(ibuf_ftype);
 	}
 	INPUT_SYNC(cinfo);  /* do before skip_input_data */
@@ -393,11 +386,7 @@ static ImBuf *ibJpegImageFromCinfo(struct jpeg_decompress_struct *cinfo, int fla
 				 * That is why we need split it to the
 				 * common key/value here.
 				 */
-<<<<<<< HEAD
 				if (!STREQLEN(str, "Blender", 7)) {
-=======
-				if (strncmp(str, "Blender", 7)) {
->>>>>>> Initial commit
 					/*
 					 * Maybe the file have text that
 					 * we don't know "what it's", in that
@@ -506,11 +495,7 @@ static void write_jpeg(struct jpeg_compress_struct *cinfo, struct ImBuf *ibuf)
 		text = MEM_mallocN(530, "stamp info read");
 		iptr = ibuf->metadata;
 		while (iptr) {
-<<<<<<< HEAD
 			if (STREQ(iptr->key, "None")) {
-=======
-			if (!strcmp(iptr->key, "None")) {
->>>>>>> Initial commit
 				jpeg_write_marker(cinfo, JPEG_COM, (JOCTET *) iptr->value, strlen(iptr->value) + 1);
 				goto next_stamp_info;
 			}

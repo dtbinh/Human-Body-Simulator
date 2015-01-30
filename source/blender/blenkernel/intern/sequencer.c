@@ -1290,10 +1290,7 @@ typedef struct SeqIndexBuildContext {
 	int tc_flags;
 	int size_flags;
 	int quality;
-<<<<<<< HEAD
 	bool overwrite;
-=======
->>>>>>> Initial commit
 
 	Main *bmain;
 	Scene *scene;
@@ -1485,12 +1482,8 @@ static ImBuf *seq_proxy_fetch(const SeqRenderData *context, Sequence *seq, int c
 	}
 }
 
-<<<<<<< HEAD
 static void seq_proxy_build_frame(const SeqRenderData *context, Sequence *seq, int cfra,
                                   int proxy_render_size, const bool overwrite)
-=======
-static void seq_proxy_build_frame(const SeqRenderData *context, Sequence *seq, int cfra, int proxy_render_size)
->>>>>>> Initial commit
 {
 	char name[PROXY_MAXFILE];
 	int quality;
@@ -1502,13 +1495,10 @@ static void seq_proxy_build_frame(const SeqRenderData *context, Sequence *seq, i
 		return;
 	}
 
-<<<<<<< HEAD
 	if (!overwrite && BLI_exists(name)) {
 		return;
 	}
 
-=======
->>>>>>> Initial commit
 	ibuf_tmp = seq_render_strip(context, seq, cfra);
 
 	rectx = (proxy_render_size * ibuf_tmp->x) / 100;
@@ -1562,10 +1552,7 @@ SeqIndexBuildContext *BKE_sequencer_proxy_rebuild_context(Main *bmain, Scene *sc
 	context->tc_flags   = nseq->strip->proxy->build_tc_flags;
 	context->size_flags = nseq->strip->proxy->build_size_flags;
 	context->quality    = nseq->strip->proxy->quality;
-<<<<<<< HEAD
 	context->overwrite = (nseq->strip->proxy->build_flags & SEQ_PROXY_SKIP_EXISTING) == 0;
-=======
->>>>>>> Initial commit
 
 	context->bmain = bmain;
 	context->scene = scene;
@@ -1577,12 +1564,8 @@ SeqIndexBuildContext *BKE_sequencer_proxy_rebuild_context(Main *bmain, Scene *sc
 
 		if (nseq->anim) {
 			context->index_context = IMB_anim_index_rebuild_context(nseq->anim,
-<<<<<<< HEAD
 			        context->tc_flags, context->size_flags, context->quality,
 			        context->overwrite);
-=======
-			        context->tc_flags, context->size_flags, context->quality);
->>>>>>> Initial commit
 		}
 	}
 
@@ -1591,10 +1574,7 @@ SeqIndexBuildContext *BKE_sequencer_proxy_rebuild_context(Main *bmain, Scene *sc
 
 void BKE_sequencer_proxy_rebuild(SeqIndexBuildContext *context, short *stop, short *do_update, float *progress)
 {
-<<<<<<< HEAD
 	const bool overwrite = context->overwrite;
-=======
->>>>>>> Initial commit
 	SeqRenderData render_context;
 	Sequence *seq = context->seq;
 	Scene *scene = context->scene;
@@ -1631,7 +1611,6 @@ void BKE_sequencer_proxy_rebuild(SeqIndexBuildContext *context, short *stop, sho
 
 	for (cfra = seq->startdisp + seq->startstill;  cfra < seq->enddisp - seq->endstill; cfra++) {
 		if (context->size_flags & IMB_PROXY_25) {
-<<<<<<< HEAD
 			seq_proxy_build_frame(&render_context, seq, cfra, 25, overwrite);
 		}
 		if (context->size_flags & IMB_PROXY_50) {
@@ -1642,18 +1621,6 @@ void BKE_sequencer_proxy_rebuild(SeqIndexBuildContext *context, short *stop, sho
 		}
 		if (context->size_flags & IMB_PROXY_100) {
 			seq_proxy_build_frame(&render_context, seq, cfra, 100, overwrite);
-=======
-			seq_proxy_build_frame(&render_context, seq, cfra, 25);
-		}
-		if (context->size_flags & IMB_PROXY_50) {
-			seq_proxy_build_frame(&render_context, seq, cfra, 50);
-		}
-		if (context->size_flags & IMB_PROXY_75) {
-			seq_proxy_build_frame(&render_context, seq, cfra, 75);
-		}
-		if (context->size_flags & IMB_PROXY_100) {
-			seq_proxy_build_frame(&render_context, seq, cfra, 100);
->>>>>>> Initial commit
 		}
 
 		*progress = (float) (cfra - seq->startdisp - seq->startstill) / (seq->enddisp - seq->endstill - seq->startdisp - seq->startstill);
@@ -1677,7 +1644,6 @@ void BKE_sequencer_proxy_rebuild_finish(SeqIndexBuildContext *context, bool stop
 	MEM_freeN(context);
 }
 
-<<<<<<< HEAD
 void BKE_sequencer_proxy_set(struct Sequence *seq, bool value)
 {
 	if (value) {
@@ -1694,8 +1660,6 @@ void BKE_sequencer_proxy_set(struct Sequence *seq, bool value)
 	}	
 }
 
-=======
->>>>>>> Initial commit
 /*********************** color balance *************************/
 
 static StripColorBalance calc_cb(StripColorBalance *cb_)
@@ -2670,11 +2634,7 @@ static ImBuf *seq_render_scene_strip(const SeqRenderData *context, Sequence *seq
 		 * When rendering from command line renderer is called from main thread, in this
 		 * case it's always safe to render scene here
 		 */
-<<<<<<< HEAD
 		if (!is_thread_main || is_rendering == false || is_background || context->eval_ctx->mode == DAG_EVAL_RENDER) {
-=======
-		if (!is_thread_main || is_rendering == false || is_background) {
->>>>>>> Initial commit
 			if (re == NULL)
 				re = RE_NewRender(scene->id.name);
 
@@ -2823,15 +2783,11 @@ static ImBuf *do_render_strip_uncached(const SeqRenderData *context, Sequence *s
 			seq_open_anim_file(seq);
 
 			if (seq->anim) {
-<<<<<<< HEAD
 				IMB_Proxy_Size proxy_size = seq_rendersize_to_proxysize(context->preview_render_size);
-=======
->>>>>>> Initial commit
 				IMB_anim_set_preseek(seq->anim, seq->anim_preseek);
 
 				ibuf = IMB_anim_absolute(seq->anim, nr + seq->anim_startofs,
 				                         seq->strip->proxy ? seq->strip->proxy->tc : IMB_TC_RECORD_RUN,
-<<<<<<< HEAD
 				                         proxy_size);
 
 				/* fetching for requested proxy sze failed, try fetching the original isntead */
@@ -2840,10 +2796,6 @@ static ImBuf *do_render_strip_uncached(const SeqRenderData *context, Sequence *s
 					                         seq->strip->proxy ? seq->strip->proxy->tc : IMB_TC_RECORD_RUN,
 					                         IMB_PROXY_NONE);
 				}
-=======
-				                         seq_rendersize_to_proxysize(context->preview_render_size));
-
->>>>>>> Initial commit
 				if (ibuf) {
 					BKE_sequencer_imbuf_to_sequencer_space(context->scene, ibuf, false);
 

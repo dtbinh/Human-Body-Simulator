@@ -22,10 +22,6 @@ from bpy.types import Header, Menu, Panel
 from bl_ui.properties_grease_pencil_common import GreasePencilDataPanel, GreasePencilToolsPanel
 from bpy.app.translations import pgettext_iface as iface_
 
-<<<<<<< HEAD
-=======
-from bl_ui.properties_data_camera import draw_display_safe_settings
->>>>>>> Initial commit
 
 def act_strip(context):
     try:
@@ -76,10 +72,6 @@ class SEQUENCER_HT_header(Header):
         row.prop(scene, "lock_frame_selection_to_range", text="", toggle=True)
 
         layout.prop(st, "view_type", expand=True, text="")
-<<<<<<< HEAD
-=======
-        layout.prop(st, "waveform_draw_type", text="")
->>>>>>> Initial commit
 
         if st.view_type in {'PREVIEW', 'SEQUENCER_PREVIEW'}:
             layout.prop(st, "display_mode", expand=True, text="")
@@ -121,11 +113,7 @@ class SEQUENCER_HT_header(Header):
                 row.prop(toolsettings, "proportional_edit", icon_only=True)
                 if toolsettings.proportional_edit != 'DISABLED':
                     row.prop(toolsettings, "proportional_edit_falloff", icon_only=True)
-<<<<<<< HEAD
 
-=======
-					
->>>>>>> Initial commit
         row = layout.row(align=True)
         row.operator("render.opengl", text="", icon='RENDER_STILL').sequencer = True
         props = row.operator("render.opengl", text="", icon='RENDER_ANIMATION')
@@ -174,15 +162,10 @@ class SEQUENCER_MT_view(Menu):
         layout = self.layout
 
         st = context.space_data
-<<<<<<< HEAD
         is_preview = st.view_type in {'PREVIEW', 'SEQUENCER_PREVIEW'}
         is_sequencer_view = st.view_type in {'SEQUENCER', 'SEQUENCER_PREVIEW'}
 
         if st.view_type == 'PREVIEW':
-=======
-
-        if st.view_type in {'PREVIEW'}:
->>>>>>> Initial commit
             # Specifying the REGION_PREVIEW context is needed in preview-only
             # mode, else the lookup for the shortcut will fail in
             # wm_keymap_item_find_props() (see #32595).
@@ -192,17 +175,10 @@ class SEQUENCER_MT_view(Menu):
 
         layout.separator()
 
-<<<<<<< HEAD
         if is_sequencer_view:
             layout.operator("sequencer.view_all", text="View all Sequences")
             layout.operator("sequencer.view_selected")
         if is_preview:
-=======
-        if st.view_type in {'SEQUENCER', 'SEQUENCER_PREVIEW'}:
-            layout.operator("sequencer.view_all", text="View all Sequences")
-            layout.operator("sequencer.view_selected")
-        if st.view_type in {'PREVIEW', 'SEQUENCER_PREVIEW'}:
->>>>>>> Initial commit
             layout.operator_context = 'INVOKE_REGION_PREVIEW'
             layout.operator("sequencer.view_all_preview", text="Fit preview in window")
 
@@ -220,22 +196,14 @@ class SEQUENCER_MT_view(Menu):
             # # XXX, invokes in the header view
             # layout.operator("sequencer.view_ghost_border", text="Overlay Border")
 
-<<<<<<< HEAD
         if is_sequencer_view:
-=======
-        if st.view_type in {'SEQUENCER', 'SEQUENCER_PREVIEW'}:
->>>>>>> Initial commit
             layout.prop(st, "show_seconds")
             layout.prop(st, "show_frame_indicator")
             layout.prop(st, "show_strip_offset")
 
-<<<<<<< HEAD
             layout.prop_menu_enum(st, "waveform_draw_type")
 
         if is_preview:
-=======
-        if st.view_type in {'PREVIEW', 'SEQUENCER_PREVIEW'}:
->>>>>>> Initial commit
             if st.display_mode == 'IMAGE':
                 layout.prop(st, "show_safe_areas")
             elif st.display_mode == 'WAVEFORM':
@@ -243,11 +211,7 @@ class SEQUENCER_MT_view(Menu):
 
         layout.separator()
 
-<<<<<<< HEAD
         if is_sequencer_view:
-=======
-        if st.view_type in {'SEQUENCER', 'SEQUENCER_PREVIEW'}:
->>>>>>> Initial commit
             layout.prop(st, "use_marker_sync")
             layout.separator()
 
@@ -463,11 +427,7 @@ class SEQUENCER_MT_strip(Menu):
         layout.menu("SEQUENCER_MT_change")
 
 
-<<<<<<< HEAD
 class SequencerButtonsPanel:
-=======
-class SequencerButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'SEQUENCE_EDITOR'
     bl_region_type = 'UI'
 
@@ -480,11 +440,7 @@ class SequencerButtonsPanel():
         return cls.has_sequencer(context) and (act_strip(context) is not None)
 
 
-<<<<<<< HEAD
 class SequencerButtonsPanel_Output:
-=======
-class SequencerButtonsPanel_Output():
->>>>>>> Initial commit
     bl_space_type = 'SEQUENCE_EDITOR'
     bl_region_type = 'UI'
 
@@ -973,10 +929,7 @@ class SEQUENCER_PT_proxy(SequencerButtonsPanel, Panel):
             row.prop(strip.proxy, "build_50")
             row.prop(strip.proxy, "build_75")
             row.prop(strip.proxy, "build_100")
-<<<<<<< HEAD
             layout.prop(strip.proxy, "use_overwrite")
-=======
->>>>>>> Initial commit
 
             col = layout.column()
             col.label(text="Build JPEG quality")
@@ -988,13 +941,10 @@ class SEQUENCER_PT_proxy(SequencerButtonsPanel, Panel):
 
                 col.prop(strip.proxy, "timecode")
 
-<<<<<<< HEAD
         col = layout.column()
         col.operator("sequencer.enable_proxies")        
         col.operator("sequencer.rebuild_proxy")
 
-=======
->>>>>>> Initial commit
 
 class SEQUENCER_PT_preview(SequencerButtonsPanel_Output, Panel):
     bl_label = "Scene Preview/Render"
@@ -1054,7 +1004,6 @@ class SEQUENCER_PT_view_safe_areas(SequencerButtonsPanel_Output, Panel):
         self.layout.prop(st, "show_safe_areas", text="")
 
     def draw(self, context):
-<<<<<<< HEAD
         from bl_ui.properties_data_camera import draw_display_safe_settings
 
         layout = self.layout
@@ -1062,12 +1011,6 @@ class SEQUENCER_PT_view_safe_areas(SequencerButtonsPanel_Output, Panel):
         safe_data = context.scene.safe_areas
 
         draw_display_safe_settings(layout, safe_data, st)
-=======
-        layout = self.layout
-        st = context.space_data
-
-        draw_display_safe_settings(layout, st)
->>>>>>> Initial commit
 
 
 class SEQUENCER_PT_modifiers(SequencerButtonsPanel, Panel):
@@ -1140,13 +1083,8 @@ class SEQUENCER_PT_grease_pencil_tools(GreasePencilToolsPanel, SequencerButtonsP
     bl_region_type = 'UI'
 
     # NOTE: this is just a wrapper around the generic GP tools panel
-<<<<<<< HEAD
     # It contains access to some essential tools usually found only in
     # toolbar, which doesn't exist here...
-=======
-	# It contains access to some essential tools usually found only in
-	# toolbar, which doesn't exist here...
->>>>>>> Initial commit
 
 
 if __name__ == "__main__":  # only for live edit.

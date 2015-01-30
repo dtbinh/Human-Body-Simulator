@@ -21,11 +21,7 @@ import bpy
 from bpy.types import Panel, UIList
 
 
-<<<<<<< HEAD
 class RenderLayerButtonsPanel:
-=======
-class RenderLayerButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "render_layer"

@@ -2271,11 +2271,7 @@ void	CcdPhysicsEnvironment::CallbackTriggers()
 		{
 			for (int j=0;j<numContacts;j++)
 			{
-<<<<<<< HEAD
 				btVector3 color(1,1,0);
-=======
-				btVector3 color(1,0,0);
->>>>>>> Initial commit
 				const btManifoldPoint& cp = manifold->getContactPoint(j);
 				m_debugDrawer->drawContactPoint(cp.m_positionWorldOnB,
 				                                cp.m_normalWorldOnB,
@@ -3000,12 +2996,8 @@ struct	BlenderDebugDraw : public btIDebugDraw
 
 	virtual void	drawContactPoint(const btVector3& PointOnB,const btVector3& normalOnB,float distance,int lifeTime,const btVector3& color)
 	{
-<<<<<<< HEAD
 		drawLine(PointOnB, PointOnB + normalOnB, color);
 		drawSphere(PointOnB, 0.1, color);
-=======
-		//not yet
->>>>>>> Initial commit
 	}
 
 	virtual void	setDebugMode(int debugMode)

@@ -94,11 +94,8 @@ typedef struct StripProxy {
 	                       // to build
 	short build_tc_flags;  // time code flags (see below) of all tc indices
 	                       // to build
-<<<<<<< HEAD
 	short build_flags;
 	char pad[6];
-=======
->>>>>>> Initial commit
 } StripProxy;
 
 typedef struct Strip {
@@ -403,14 +400,11 @@ enum {
 #define SEQ_PROXY_TC_RECORD_RUN_NO_GAPS         8
 #define SEQ_PROXY_TC_ALL                        15
 
-<<<<<<< HEAD
 /* SeqProxy->build_flags */
 enum {
 	SEQ_PROXY_SKIP_EXISTING = 1,
 };
 
-=======
->>>>>>> Initial commit
 /* seq->alpha_mode */
 enum {
 	SEQ_ALPHA_STRAIGHT = 0,

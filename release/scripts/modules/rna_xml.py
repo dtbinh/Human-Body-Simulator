@@ -331,11 +331,7 @@ def xml2rna(root_xml,
                                     rna2xml_node(child_xml_real, subsubvalue)
 
                     else:
-<<<<<<< HEAD
                         # print(elems)
-=======
-#                        print(elems)
->>>>>>> Initial commit
 
                         if len(elems) == 1:
                             # sub node named by its type

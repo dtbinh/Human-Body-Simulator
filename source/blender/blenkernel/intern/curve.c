@@ -593,13 +593,10 @@ Nurb *BKE_nurb_copy(Nurb *src, int pntsu, int pntsv)
 	newnu->pntsu = pntsu;
 	newnu->pntsv = pntsv;
 
-<<<<<<< HEAD
 	/* caller can manually handle these arrays */
 	newnu->knotsu = NULL;
 	newnu->knotsv = NULL;
 
-=======
->>>>>>> Initial commit
 	if (src->bezt) {
 		newnu->bezt = (BezTriple *)MEM_mallocN(pntsu * pntsv * sizeof(BezTriple), "copyNurb2");
 	}
@@ -3354,7 +3351,6 @@ void BKE_nurb_handle_calc_simple(Nurb *nu, BezTriple *bezt)
 	}
 }
 
-<<<<<<< HEAD
 void BKE_nurb_handle_calc_simple_auto(Nurb *nu, BezTriple *bezt)
 {
 	if (nu->pntsu > 1) {
@@ -3370,8 +3366,6 @@ void BKE_nurb_handle_calc_simple_auto(Nurb *nu, BezTriple *bezt)
 	}
 }
 
-=======
->>>>>>> Initial commit
 /**
  * Use when something has changed handle positions.
  *
@@ -3629,33 +3623,12 @@ void BKE_nurbList_handles_recalculate(ListBase *editnurb, const bool calc_length
 
 				if (h1_select || h2_select) {
 
-<<<<<<< HEAD
 					float co1_back[3], co2_back[3];
 
 					copy_v3_v3(co1_back, bezt->vec[0]);
 					copy_v3_v3(co2_back, bezt->vec[2]);
 
 					BKE_nurb_handle_calc_simple_auto(nu, bezt);
-=======
-					/* Override handle types to HD_AUTO and recalculate */
-
-					char h1_back, h2_back;
-					float co1_back[3], co2_back[3];
-
-					h1_back = bezt->h1;
-					h2_back = bezt->h2;
-
-					bezt->h1 = HD_AUTO;
-					bezt->h2 = HD_AUTO;
-
-					copy_v3_v3(co1_back, bezt->vec[0]);
-					copy_v3_v3(co2_back, bezt->vec[2]);
-
-					BKE_nurb_handle_calc_simple(nu, bezt);
-
-					bezt->h1 = h1_back;
-					bezt->h2 = h2_back;
->>>>>>> Initial commit
 
 					if (h1_select) {
 						if (!calc_length) {

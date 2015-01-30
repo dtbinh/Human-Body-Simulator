@@ -1011,11 +1011,7 @@ void BKE_image_all_free_anim_ibufs(int cfra)
 
 /* *********** READ AND WRITE ************** */
 
-<<<<<<< HEAD
 int BKE_image_imtype_to_ftype(const char imtype)
-=======
-int BKE_imtype_to_ftype(const char imtype)
->>>>>>> Initial commit
 {
 	if (imtype == R_IMF_IMTYPE_TARGA)
 		return TGA;
@@ -1055,11 +1051,7 @@ int BKE_imtype_to_ftype(const char imtype)
 		return JPG | 90;
 }
 
-<<<<<<< HEAD
 char BKE_image_ftype_to_imtype(const int ftype)
-=======
-char BKE_ftype_to_imtype(const int ftype)
->>>>>>> Initial commit
 {
 	if (ftype == 0)
 		return R_IMF_IMTYPE_TARGA;
@@ -1231,7 +1223,6 @@ char BKE_imtype_valid_depths(const char imtype)
  * creator.c help info */
 char BKE_imtype_from_arg(const char *imtype_arg)
 {
-<<<<<<< HEAD
 	if      (STREQ(imtype_arg, "TGA")) return R_IMF_IMTYPE_TARGA;
 	else if (STREQ(imtype_arg, "IRIS")) return R_IMF_IMTYPE_IRIS;
 #ifdef WITH_DDS
@@ -1263,48 +1254,11 @@ char BKE_imtype_from_arg(const char *imtype_arg)
 #endif
 #ifdef WITH_OPENJPEG
 	else if (STREQ(imtype_arg, "JP2")) return R_IMF_IMTYPE_JP2;
-=======
-	if      (!strcmp(imtype_arg, "TGA")) return R_IMF_IMTYPE_TARGA;
-	else if (!strcmp(imtype_arg, "IRIS")) return R_IMF_IMTYPE_IRIS;
-#ifdef WITH_DDS
-	else if (!strcmp(imtype_arg, "DDS")) return R_IMF_IMTYPE_DDS;
-#endif
-	else if (!strcmp(imtype_arg, "JPEG")) return R_IMF_IMTYPE_JPEG90;
-	else if (!strcmp(imtype_arg, "IRIZ")) return R_IMF_IMTYPE_IRIZ;
-	else if (!strcmp(imtype_arg, "RAWTGA")) return R_IMF_IMTYPE_RAWTGA;
-	else if (!strcmp(imtype_arg, "AVIRAW")) return R_IMF_IMTYPE_AVIRAW;
-	else if (!strcmp(imtype_arg, "AVIJPEG")) return R_IMF_IMTYPE_AVIJPEG;
-	else if (!strcmp(imtype_arg, "PNG")) return R_IMF_IMTYPE_PNG;
-	else if (!strcmp(imtype_arg, "QUICKTIME")) return R_IMF_IMTYPE_QUICKTIME;
-	else if (!strcmp(imtype_arg, "BMP")) return R_IMF_IMTYPE_BMP;
-#ifdef WITH_HDR
-	else if (!strcmp(imtype_arg, "HDR")) return R_IMF_IMTYPE_RADHDR;
-#endif
-#ifdef WITH_TIFF
-	else if (!strcmp(imtype_arg, "TIFF")) return R_IMF_IMTYPE_TIFF;
-#endif
-#ifdef WITH_OPENEXR
-	else if (!strcmp(imtype_arg, "EXR")) return R_IMF_IMTYPE_OPENEXR;
-	else if (!strcmp(imtype_arg, "MULTILAYER")) return R_IMF_IMTYPE_MULTILAYER;
-#endif
-	else if (!strcmp(imtype_arg, "MPEG")) return R_IMF_IMTYPE_FFMPEG;
-	else if (!strcmp(imtype_arg, "FRAMESERVER")) return R_IMF_IMTYPE_FRAMESERVER;
-#ifdef WITH_CINEON
-	else if (!strcmp(imtype_arg, "CINEON")) return R_IMF_IMTYPE_CINEON;
-	else if (!strcmp(imtype_arg, "DPX")) return R_IMF_IMTYPE_DPX;
-#endif
-#ifdef WITH_OPENJPEG
-	else if (!strcmp(imtype_arg, "JP2")) return R_IMF_IMTYPE_JP2;
->>>>>>> Initial commit
 #endif
 	else return R_IMF_IMTYPE_INVALID;
 }
 
-<<<<<<< HEAD
 static bool image_path_ensure_ext(char *string, const char imtype, const ImageFormatData *im_format)
-=======
-static bool do_add_image_extension(char *string, const char imtype, const ImageFormatData *im_format)
->>>>>>> Initial commit
 {
 	const char *extension = NULL;
 	const char *extension_test;
@@ -1414,7 +1368,6 @@ static bool do_add_image_extension(char *string, const char imtype, const ImageF
 	}
 }
 
-<<<<<<< HEAD
 bool BKE_image_path_ensure_ext_from_imformat(char *string, const ImageFormatData *im_format)
 {
 	return image_path_ensure_ext(string, im_format->imtype, im_format);
@@ -1423,16 +1376,6 @@ bool BKE_image_path_ensure_ext_from_imformat(char *string, const ImageFormatData
 bool BKE_image_path_ensure_ext_from_imtype(char *string, const char imtype)
 {
 	return image_path_ensure_ext(string, imtype, NULL);
-=======
-int BKE_add_image_extension(char *string, const ImageFormatData *im_format)
-{
-	return do_add_image_extension(string, im_format->imtype, im_format);
-}
-
-int BKE_add_image_extension_from_type(char *string, const char imtype)
-{
-	return do_add_image_extension(string, imtype, NULL);
->>>>>>> Initial commit
 }
 
 void BKE_imformat_defaults(ImageFormatData *im_format)
@@ -1708,13 +1651,9 @@ static void stampdata(Scene *scene, Object *camera, StampData *stamp_data, int d
 	}
 }
 
-<<<<<<< HEAD
 void BKE_image_stamp_buf(
         Scene *scene, Object *camera,
         unsigned char *rect, float *rectf, int width, int height, int channels)
-=======
-void BKE_stamp_buf(Scene *scene, Object *camera, unsigned char *rect, float *rectf, int width, int height, int channels)
->>>>>>> Initial commit
 {
 	struct StampData stamp_data;
 	float w, h, pad;
@@ -2139,14 +2078,9 @@ int BKE_imbuf_write_stamp(Scene *scene, struct Object *camera, ImBuf *ibuf, cons
 }
 
 
-<<<<<<< HEAD
 static void image_path_makepicstring(
         char *string, const char *base, const char *relbase, int frame, const char imtype,
         const ImageFormatData *im_format, const short use_ext, const short use_frames)
-=======
-static void do_makepicstring(char *string, const char *base, const char *relbase, int frame, const char imtype,
-                             const ImageFormatData *im_format, const short use_ext, const short use_frames)
->>>>>>> Initial commit
 {
 	if (string == NULL) return;
 	BLI_strncpy(string, base, FILE_MAX - 10);   /* weak assumption */
@@ -2156,7 +2090,6 @@ static void do_makepicstring(char *string, const char *base, const char *relbase
 		BLI_path_frame(string, frame, 4);
 
 	if (use_ext)
-<<<<<<< HEAD
 		image_path_ensure_ext(string, imtype, im_format);
 }
 
@@ -2172,21 +2105,6 @@ void BKE_image_path_from_imtype(
         const char imtype, const bool use_ext, const bool use_frames)
 {
 	image_path_makepicstring(string, base, relbase, frame, imtype, NULL, use_ext, use_frames);
-=======
-		do_add_image_extension(string, imtype, im_format);
-}
-
-void BKE_makepicstring(char *string, const char *base, const char *relbase, int frame,
-                       const ImageFormatData *im_format, const bool use_ext, const bool use_frames)
-{
-	do_makepicstring(string, base, relbase, frame, im_format->imtype, im_format, use_ext, use_frames);
-}
-
-void BKE_makepicstring_from_type(char *string, const char *base, const char *relbase, int frame,
-                                 const char imtype, const bool use_ext, const bool use_frames)
-{
-	do_makepicstring(string, base, relbase, frame, imtype, NULL, use_ext, use_frames);
->>>>>>> Initial commit
 }
 
 /* used by sequencer too */

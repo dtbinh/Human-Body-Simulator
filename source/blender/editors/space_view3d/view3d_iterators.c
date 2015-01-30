@@ -391,28 +391,22 @@ void lattice_foreachScreenVert(
 /* ED_view3d_init_mats_rv3d must be called first */
 void armature_foreachScreenBone(
         struct ViewContext *vc,
-<<<<<<< HEAD
-        void (*func)(void *userData, struct EditBone *ebone, const float screen_co_a[2], const float screen_co_b[2]),
-        void *userData, const eV3DProjTest clip_flag)
-{
-	bArmature *arm = vc->obedit->data;
-	EditBone *ebone;
-=======
+//        void (*func)(void *userData, struct EditBone *ebone, const float screen_co_a[2], const float screen_co_b[2]),
+//        void *userData, const eV3DProjTest clip_flag)
+//{
+//	bArmature *arm = vc->obedit->data;
+//	EditBone *ebone;
         void (*func)(void *userData, struct EditArmatureElement *ebone, const float screen_co_a[2], const float screen_co_b[2]),
         void *userData, const eV3DProjTest clip_flag)
 {
 	bArmature *arm = vc->obedit->data;
 	EditArmatureElement *ebone;
->>>>>>> Initial commit
 
 	ED_view3d_check_mats_rv3d(vc->rv3d);
 
 	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-<<<<<<< HEAD
-		if (EBONE_VISIBLE(arm, ebone)) {
-=======
+//		if (EBONE_VISIBLE(arm, ebone)) {
 		if (EELEMENT_VISIBLE(arm, ebone)) {
->>>>>>> Initial commit
 			float screen_co_a[2], screen_co_b[2];
 			int points_proj_tot = 0;
 
@@ -457,11 +451,8 @@ void pose_foreachScreenBone(
 	ED_view3d_check_mats_rv3d(vc->rv3d);
 
 	for (pchan = pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-		if (PBONE_VISIBLE(arm, pchan->bone)) {
-=======
+//		if (PBONE_VISIBLE(arm, pchan->bone)) {
 		if (PELEMENT_VISIBLE(arm, pchan->bone)) {
->>>>>>> Initial commit
 			float screen_co_a[2], screen_co_b[2];
 			int points_proj_tot = 0;
 

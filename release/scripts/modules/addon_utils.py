@@ -36,7 +36,6 @@ error_encoding = False
 addons_fake_modules = {}
 
 
-<<<<<<< HEAD
 # called only once at startup, avoids calling 'reset_all', correct but slower.
 def _initialize():
     path_list = paths()
@@ -46,8 +45,6 @@ def _initialize():
         enable(addon.module)
 
 
-=======
->>>>>>> Initial commit
 def paths():
     # RELEASE SCRIPTS: official scripts distributed in Blender releases
     addon_paths = _bpy.utils.script_paths("addons")
@@ -162,11 +159,7 @@ def modules_refresh(module_cache=addons_fake_modules):
             force_support = None
 
         for mod_name, mod_path in _bpy.path.module_names(path):
-<<<<<<< HEAD
             modules_stale.discard(mod_name)
-=======
-            modules_stale -= {mod_name}
->>>>>>> Initial commit
             mod = module_cache.get(mod_name)
             if mod:
                 if mod.__file__ != mod_path:
@@ -198,24 +191,16 @@ def modules_refresh(module_cache=addons_fake_modules):
 
 
 def modules(module_cache=addons_fake_modules, refresh=True):
-<<<<<<< HEAD
     if refresh or ((module_cache is addons_fake_modules) and modules._is_first):
         modules_refresh(module_cache)
         modules._is_first = False
-=======
-    if refresh:
-        modules_refresh(module_cache)
->>>>>>> Initial commit
 
     mod_list = list(module_cache.values())
     mod_list.sort(key=lambda mod: (mod.bl_info["category"],
                                    mod.bl_info["name"],
                                    ))
     return mod_list
-<<<<<<< HEAD
 modules._is_first = True
-=======
->>>>>>> Initial commit
 
 
 def check(module_name):
@@ -266,11 +251,7 @@ def _addon_remove(module_name):
             addons.remove(addon)
 
 
-<<<<<<< HEAD
 def enable(module_name, default_set=False, persistent=False, handle_error=None):
-=======
-def enable(module_name, default_set=True, persistent=False, handle_error=None):
->>>>>>> Initial commit
     """
     Enables an addon by name.
 
@@ -327,12 +308,8 @@ def enable(module_name, default_set=True, persistent=False, handle_error=None):
             mod.__addon_enabled__ = False
         except:
             handle_error()
-<<<<<<< HEAD
             if default_set:
                 _addon_remove(module_name)
-=======
-            _addon_remove(module_name)
->>>>>>> Initial commit
             return None
 
         # 2) try register collected modules
@@ -346,12 +323,8 @@ def enable(module_name, default_set=True, persistent=False, handle_error=None):
                   getattr(mod, "__file__", module_name))
             handle_error()
             del sys.modules[module_name]
-<<<<<<< HEAD
             if default_set:
                 _addon_remove(module_name)
-=======
-            _addon_remove(module_name)
->>>>>>> Initial commit
             return None
 
     # * OK loaded successfully! *

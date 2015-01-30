@@ -215,13 +215,10 @@ bAction *BKE_action_copy(bAction *src)
 		}
 	}
 	
-<<<<<<< HEAD
 	if (src->id.lib) {
 		BKE_id_lib_local_paths(G.main, src->id.lib, &dst->id);
 	}
 
-=======
->>>>>>> Initial commit
 	return dst;
 }
 
@@ -457,14 +454,9 @@ bPoseChannel *BKE_pose_channel_find_name(const bPose *pose, const char *name)
 		return NULL;
 	
 	if (pose->chanhash)
-<<<<<<< HEAD
 		return BLI_ghash_lookup(pose->chanhash, (const void *)name);
 	
 	return BLI_findstring(&((const bPose *)pose)->chanbase, name, offsetof(bPoseChannel, name));
-=======
-		return BLI_ghash_lookup(pose->chanhash, (void *)name);
-	return NULL;
->>>>>>> Initial commit
 }
 
 /**
@@ -544,11 +536,8 @@ bPoseChannel *BKE_pose_channel_active(Object *ob)
 
 	/* find active */
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-		if ((pchan->bone) && (pchan->bone == arm->act_bone) && (pchan->bone->layer & arm->layer))
-=======
+//		if ((pchan->bone) && (pchan->bone == arm->act_bone) && (pchan->bone->layer & arm->layer))
 		if ((pchan->bone) && (pchan->bone == arm->act_element) && (pchan->bone->layer & arm->layer))
->>>>>>> Initial commit
 			return pchan;
 	}
 	
@@ -917,11 +906,8 @@ void BKE_pose_update_constraint_flags(bPose *pose)
 					
 					while (parchan) {
 						data->rootbone++;
-<<<<<<< HEAD
-						if ((parchan->bone->flag & BONE_CONNECTED) == 0)
-=======
+//						if ((parchan->bone->flag & BONE_CONNECTED) == 0)
 						if ((parchan->bone->flag & ELEMENT_CONNECTED) == 0)
->>>>>>> Initial commit
 							break;
 						parchan = parchan->parent;
 					}
@@ -964,11 +950,8 @@ void framechange_poses_clear_unkeyed(void)
 		if ((pose = ob->pose)) {
 			for (pchan = pose->chanbase.first; pchan; pchan = pchan->next) {
 				if (pchan->bone) 
-<<<<<<< HEAD
-					pchan->bone->flag &= ~BONE_UNKEYED;
-=======
+//					pchan->bone->flag &= ~BONE_UNKEYED;
 					pchan->bone->flag &= ~ELEMENT_UNKEYED;
->>>>>>> Initial commit
 			}
 		}
 	}
@@ -1022,17 +1005,12 @@ void BKE_pose_remove_group(bPose *pose, bActionGroup *grp, const int index)
 	/* now, remove it from the pose */
 	BLI_freelinkN(&pose->agroups, grp);
 	if (pose->active_group >= idx) {
-<<<<<<< HEAD
 		const bool has_groups = !BLI_listbase_is_empty(&pose->agroups);
 		pose->active_group--;
 		if (pose->active_group == 0 && has_groups) {
 			pose->active_group = 1;
 		}
 		else if (pose->active_group < 0 || !has_groups) {
-=======
-		pose->active_group--;
-		if (pose->active_group < 0 || BLI_listbase_is_empty(&pose->agroups)) {
->>>>>>> Initial commit
 			pose->active_group = 0;
 		}
 	}

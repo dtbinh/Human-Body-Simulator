@@ -3534,11 +3534,8 @@ int ED_screen_animation_play(bContext *C, int sync, int mode)
 		/* stop playback now */
 		ED_screen_animation_timer(C, 0, 0, 0, 0);
 		sound_stop_scene(scene);
-<<<<<<< HEAD
 
 		WM_event_add_notifier(C, NC_SCENE | ND_FRAME, scene);
-=======
->>>>>>> Initial commit
 	}
 	else {
 		int refresh = SPACE_TIME; /* these settings are currently only available from a menu in the TimeLine */
@@ -3700,15 +3697,9 @@ static int fullscreen_back_exec(bContext *C, wmOperator *op)
 		BKE_report(op->reports, RPT_ERROR, "No fullscreen areas were found");
 		return OPERATOR_CANCELLED;
 	}
-<<<<<<< HEAD
 
 	ED_screen_full_prevspace(C, sa);
 
-=======
-	
-	ED_screen_full_restore(C, sa);
-	
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 

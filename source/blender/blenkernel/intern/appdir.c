@@ -641,11 +641,7 @@ static void bli_where_am_i(char *fullname, const size_t maxlen, const char *name
 			}
 		}
 #if defined(DEBUG)
-<<<<<<< HEAD
 		if (!STREQ(name, fullname)) {
-=======
-		if (strcmp(name, fullname)) {
->>>>>>> Initial commit
 			printf("guessing '%s' == '%s'\n", name, fullname);
 		}
 #endif

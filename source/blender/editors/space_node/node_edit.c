@@ -566,11 +566,7 @@ void snode_set_context(const bContext *C)
 		return;
 	}
 	
-<<<<<<< HEAD
 	if (snode->nodetree && !STREQ(snode->nodetree->idname, snode->tree_idname)) {
-=======
-	if (snode->nodetree && strcmp(snode->nodetree->idname, snode->tree_idname) != 0) {
->>>>>>> Initial commit
 		/* current tree does not match selected type, clear tree path */
 		ntree = NULL;
 		id = NULL;

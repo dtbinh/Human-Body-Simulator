@@ -1721,11 +1721,7 @@ static int graphkeys_euler_filter_exec(bContext *C, wmOperator *op)
 		 * so if the paths or the ID's don't match up, then a curve needs to be added 
 		 * to a new group
 		 */
-<<<<<<< HEAD
 		if ((euf) && (euf->id == ale->id) && (STREQ(euf->rna_path, fcu->rna_path))) {
-=======
-		if ((euf) && (euf->id == ale->id) && (strcmp(euf->rna_path, fcu->rna_path) == 0)) {
->>>>>>> Initial commit
 			/* this should be fine to add to the existing group then */
 			euf->fcurves[fcu->array_index] = fcu;
 		}

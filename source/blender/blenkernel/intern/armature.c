@@ -91,7 +91,6 @@ bArmature *BKE_armature_from_object(Object *ob)
 	return NULL;
 }
 
-<<<<<<< HEAD
 void BKE_armature_bonelist_free(ListBase *lb)
 {
 	Bone *bone;
@@ -105,7 +104,7 @@ void BKE_armature_bonelist_free(ListBase *lb)
 	}
 
 	BLI_freelistN(lb);
-=======
+}
 void BKE_armature_elementlist_free(ListBase *lb) {
     ArmatureElement *elem;
 
@@ -119,18 +118,16 @@ void BKE_armature_elementlist_free(ListBase *lb) {
     }
 
     BLI_freelistN(lb);
->>>>>>> Initial commit
 }
 
 void BKE_armature_free(bArmature *arm)
 {
 	if (arm) {
-<<<<<<< HEAD
 		BKE_armature_bonelist_free(&arm->bonebase);
-=======
-        BKE_armature_elementlist_free(&arm->bonebase);
-        BKE_armature_elementlist_free(&arm->musclebase);
->>>>>>> Initial commit
+
+		BKE_armature_elementlist_free(&arm->bonebase);
+		BKE_armature_elementlist_free(&arm->musclebase);
+
 
 		/* free editmode data */
 		if (arm->edbo) {
@@ -140,16 +137,13 @@ void BKE_armature_free(bArmature *arm)
 			arm->edbo = NULL;
 		}
 
-<<<<<<< HEAD
-=======
 		if (arm->edmu) {
-            BLI_freelistN(arm->edmu);
+			BLI_freelistN(arm->edmu);
 
-            MEM_freeN(arm->edmu);
-            arm->edmu = NULL;
+			MEM_freeN(arm->edmu);
+			arm->edmu = NULL;
 		}
 
->>>>>>> Initial commit
 		/* free sketch */
 		if (arm->sketch) {
 			freeSketch(arm->sketch);
@@ -208,15 +202,12 @@ void BKE_armature_make_local(bArmature *arm)
 	}
 }
 
-<<<<<<< HEAD
-static void copy_bonechildren(Bone *newBone, Bone *oldBone, Bone *actBone, Bone **newActBone)
-{
-	Bone *curBone, *newChildBone;
-=======
+//static void copy_bonechildren(Bone *newBone, Bone *oldBone, Bone *actBone, Bone **newActBone)
+//{
+//	Bone *curBone, *newChildBone;
 static void copy_armaturelementchildren(ArmatureElement *newBone, ArmatureElement *oldBone, ArmatureElement *actBone, ArmatureElement **newActBone)
 {
 	ArmatureElement *curBone, *newChildBone;
->>>>>>> Initial commit
 
 	if (oldBone == actBone)
 		*newActBone = newBone;
@@ -231,11 +222,8 @@ static void copy_armaturelementchildren(ArmatureElement *newBone, ArmatureElemen
 	newChildBone = newBone->childbase.first;
 	for (curBone = oldBone->childbase.first; curBone; curBone = curBone->next) {
 		newChildBone->parent = newBone;
-<<<<<<< HEAD
-		copy_bonechildren(newChildBone, curBone, actBone, newActBone);
-=======
+//		copy_bonechildren(newChildBone, curBone, actBone, newActBone);
 		copy_armaturelementchildren(newChildBone, curBone, actBone, newActBone);
->>>>>>> Initial commit
 		newChildBone = newChildBone->next;
 	}
 }
@@ -243,13 +231,10 @@ static void copy_armaturelementchildren(ArmatureElement *newBone, ArmatureElemen
 bArmature *BKE_armature_copy(bArmature *arm)
 {
 	bArmature *newArm;
-<<<<<<< HEAD
-	Bone *oldBone, *newBone;
-	Bone *newActBone = NULL;
-=======
+//	Bone *oldBone, *newBone;
+//	Bone *newActBone = NULL;
 	ArmatureElement *oldBone, *newBone;
 	ArmatureElement *newActBone = NULL;
->>>>>>> Initial commit
 
 	newArm = BKE_libblock_copy(&arm->id);
 	BLI_duplicatelist(&newArm->bonebase, &arm->bonebase);
@@ -258,16 +243,14 @@ bArmature *BKE_armature_copy(bArmature *arm)
 	newBone = newArm->bonebase.first;
 	for (oldBone = arm->bonebase.first; oldBone; oldBone = oldBone->next) {
 		newBone->parent = NULL;
-<<<<<<< HEAD
-		copy_bonechildren(newBone, oldBone, arm->act_bone, &newActBone);
-		newBone = newBone->next;
-	}
-
-	newArm->act_bone = newActBone;
-
-	newArm->edbo = NULL;
-	newArm->act_edbone = NULL;
-=======
+//		copy_bonechildren(newBone, oldBone, arm->act_bone, &newActBone);
+//		newBone = newBone->next;
+//	}
+//
+//	newArm->act_bone = newActBone;
+//
+//	newArm->edbo = NULL;
+//	newArm->act_edbone = NULL;
 		copy_armaturelementchildren(newBone, oldBone, arm->act_element, &newActBone);
 		newBone = newBone->next;
 	}
@@ -277,7 +260,6 @@ bArmature *BKE_armature_copy(bArmature *arm)
 	newArm->edbo = NULL;
 	newArm->edmu = NULL;
 	newArm->act_edelement = NULL;
->>>>>>> Initial commit
 	newArm->sketch = NULL;
 
 	if (arm->id.lib) {
@@ -287,19 +269,16 @@ bArmature *BKE_armature_copy(bArmature *arm)
 	return newArm;
 }
 
-<<<<<<< HEAD
-static Bone *get_named_bone_bonechildren(Bone *bone, const char *name)
-{
-	Bone *curBone, *rbone;
-
-	if (STREQ(bone->name, name))
-=======
+//static Bone *get_named_bone_bonechildren(Bone *bone, const char *name)
+//{
+//	Bone *curBone, *rbone;
+//
+//	if (STREQ(bone->name, name))
 static ArmatureElement *get_named_bone_bonechildren(ArmatureElement *bone, const char *name)
 {
 	ArmatureElement *curBone, *rbone;
 
-	if (!strcmp(bone->name, name))
->>>>>>> Initial commit
+	if (STREQ(bone->name, name))
 		return bone;
 
 	for (curBone = bone->childbase.first; curBone; curBone = curBone->next) {
@@ -311,18 +290,15 @@ static ArmatureElement *get_named_bone_bonechildren(ArmatureElement *bone, const
 	return NULL;
 }
 
-<<<<<<< HEAD
 
 /* Walk the list until the bone is found */
-Bone *BKE_armature_find_bone_name(bArmature *arm, const char *name)
-{
-	Bone *bone = NULL, *curBone;
-=======
+//Bone *BKE_armature_find_bone_name(bArmature *arm, const char *name)
+//{
+//	Bone *bone = NULL, *curBone;
 /* Walk the list until the bone is found */
 ArmatureElement *BKE_armature_find_bone_name(bArmature *arm, const char *name)
 {
 	ArmatureElement *bone = NULL, *curBone;
->>>>>>> Initial commit
 
 	if (!arm)
 		return NULL;
@@ -503,11 +479,8 @@ static void equalize_bezier(float *data, int desired)
 void b_bone_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BBONE_SUBDIV])
 {
 	bPoseChannel *next, *prev;
-<<<<<<< HEAD
-	Bone *bone = pchan->bone;
-=======
+//	Bone *bone = pchan->bone;
 	ArmatureElement *bone = pchan->bone;
->>>>>>> Initial commit
 	float h1[3], h2[3], scale[3], length, hlength1, hlength2, roll1 = 0.0f, roll2;
 	float mat3[3][3], imat[4][4], posemat[4][4], scalemat[4][4], iscalemat[4][4];
 	float data[MAX_BBONE_SUBDIV + 1][4], *fp;
@@ -529,19 +502,16 @@ void b_bone_spline_setup(bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BB
 		}
 	}
 
-<<<<<<< HEAD
-	hlength1 = bone->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
-	hlength2 = bone->ease2 * length * 0.390464f;
-
-	/* evaluate next and prev bones */
-	if (bone->flag & BONE_CONNECTED)
-=======
+//	hlength1 = bone->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
+//	hlength2 = bone->ease2 * length * 0.390464f;
+//
+//	/* evaluate next and prev bones */
+//	if (bone->flag & BONE_CONNECTED)
 	hlength1 = ((BoneData*)bone->data)->ease1 * length * 0.390464f; /* 0.5f * sqrt(2) * kappa, the handle length for near-perfect circles */
 	hlength2 = ((BoneData*)bone->data)->ease2 * length * 0.390464f;
 
 	/* evaluate next and prev bones */
 	if (bone->flag & ELEMENT_CONNECTED)
->>>>>>> Initial commit
 		prev = pchan->parent;
 	else
 		prev = NULL;
@@ -678,11 +648,8 @@ typedef struct bPoseChanDeform {
 
 static void pchan_b_bone_defmats(bPoseChannel *pchan, bPoseChanDeform *pdef_info, int use_quaternion)
 {
-<<<<<<< HEAD
-	Bone *bone = pchan->bone;
-=======
+//	Bone *bone = pchan->bone;
 	ArmatureElement *bone = pchan->bone;
->>>>>>> Initial commit
 	Mat4 b_bone[MAX_BBONE_SUBDIV], b_bone_rest[MAX_BBONE_SUBDIV];
 	Mat4 *b_bone_mats;
 	DualQuat *b_bone_dual_quats = NULL;
@@ -722,11 +689,8 @@ static void pchan_b_bone_defmats(bPoseChannel *pchan, bPoseChanDeform *pdef_info
 	}
 }
 
-<<<<<<< HEAD
-static void b_bone_deform(bPoseChanDeform *pdef_info, Bone *bone, float co[3], DualQuat *dq, float defmat[3][3])
-=======
+//static void b_bone_deform(bPoseChanDeform *pdef_info, Bone *bone, float co[3], DualQuat *dq, float defmat[3][3])
 static void b_bone_deform(bPoseChanDeform *pdef_info, ArmatureElement *bone, float co[3], DualQuat *dq, float defmat[3][3])
->>>>>>> Initial commit
 {
 	Mat4 *b_bone = pdef_info->b_bone_mats;
 	float (*mat)[4] = b_bone[0].mat;
@@ -824,11 +788,8 @@ static void pchan_deform_mat_add(bPoseChannel *pchan, float weight, float bbonem
 static float dist_bone_deform(bPoseChannel *pchan, bPoseChanDeform *pdef_info, float vec[3], DualQuat *dq,
                               float mat[3][3], const float co[3])
 {
-<<<<<<< HEAD
-	Bone *bone = pchan->bone;
-=======
+//	Bone *bone = pchan->bone;
 	ArmatureElement *bone = pchan->bone;
->>>>>>> Initial commit
 	float fac, contrib = 0.0;
 	float cop[3], bbonemat[3][3];
 	DualQuat bbonedq;
@@ -838,17 +799,14 @@ static float dist_bone_deform(bPoseChannel *pchan, bPoseChanDeform *pdef_info, f
 
 	copy_v3_v3(cop, co);
 
-<<<<<<< HEAD
-	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, bone->dist);
-
-	if (fac > 0.0f) {
-		fac *= bone->weight;
-=======
+//	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, bone->dist);
+//
+//	if (fac > 0.0f) {
+//		fac *= bone->weight;
 	fac = distfactor_to_bone(cop, bone->arm_head, bone->arm_tail, bone->rad_head, bone->rad_tail, ((BoneData*)bone->data)->dist);
 
 	if (fac > 0.0f) {
 		fac *= ((BoneData*)bone->data)->weight;
->>>>>>> Initial commit
 		contrib = fac;
 		if (contrib > 0.0f) {
 			if (vec) {
@@ -959,11 +917,8 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 	totchan = 0;
 	pdef_info = pdef_info_array;
 	for (pchan = armOb->pose->chanbase.first; pchan; pchan = pchan->next, pdef_info++) {
-<<<<<<< HEAD
-		if (!(pchan->bone->flag & BONE_NO_DEFORM)) {
-=======
+//		if (!(pchan->bone->flag & BONE_NO_DEFORM)) {
 		if (!(pchan->bone->flag & ELEMENT_NO_DEFORM)) {
->>>>>>> Initial commit
 			if (pchan->bone->segments > 1)
 				pchan_b_bone_defmats(pchan, pdef_info, use_quaternion);
 
@@ -1012,11 +967,8 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 					defnrToPC[i] = BKE_pose_channel_find_name(armOb->pose, dg->name);
 					/* exclude non-deforming bones */
 					if (defnrToPC[i]) {
-<<<<<<< HEAD
-						if (defnrToPC[i]->bone->flag & BONE_NO_DEFORM) {
-=======
+//						if (defnrToPC[i]->bone->flag & BONE_NO_DEFORM) {
 						if (defnrToPC[i]->bone->flag & ELEMENT_NO_DEFORM) {
->>>>>>> Initial commit
 							defnrToPC[i] = NULL;
 						}
 						else {
@@ -1095,24 +1047,18 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 				const int index = dw->def_nr;
 				if (index >= 0 && index < defbase_tot && (pchan = defnrToPC[index])) {
 					float weight = dw->weight;
-<<<<<<< HEAD
-					Bone *bone = pchan->bone;
-=======
+//					Bone *bone = pchan->bone;
 					ArmatureElement *bone = pchan->bone;
->>>>>>> Initial commit
 					pdef_info = pdef_info_array + defnrToPCIndex[index];
 
 					deformed = 1;
 
-<<<<<<< HEAD
-					if (bone && bone->flag & BONE_MULT_VG_ENV) {
-						weight *= distfactor_to_bone(co, bone->arm_head, bone->arm_tail,
-						                             bone->rad_head, bone->rad_tail, bone->dist);
-=======
+//					if (bone && bone->flag & BONE_MULT_VG_ENV) {
+//						weight *= distfactor_to_bone(co, bone->arm_head, bone->arm_tail,
+//						                             bone->rad_head, bone->rad_tail, bone->dist);
 					if (bone && bone->flag & ELEMENT_MULT_VG_ENV) {
 						weight *= distfactor_to_bone(co, bone->arm_head, bone->arm_tail,
 						                             bone->rad_head, bone->rad_tail, ((BoneData*)bone->data)->dist);
->>>>>>> Initial commit
 					}
 					pchan_bone_deform(pchan, pdef_info, weight, vec, dq, smat, co, &contrib);
 				}
@@ -1122,11 +1068,8 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 			if (deformed == 0 && use_envelope) {
 				pdef_info = pdef_info_array;
 				for (pchan = armOb->pose->chanbase.first; pchan; pchan = pchan->next, pdef_info++) {
-<<<<<<< HEAD
-					if (!(pchan->bone->flag & BONE_NO_DEFORM))
-=======
+//					if (!(pchan->bone->flag & BONE_NO_DEFORM))
 					if (!(pchan->bone->flag & ELEMENT_NO_DEFORM))
->>>>>>> Initial commit
 						contrib += dist_bone_deform(pchan, pdef_info, vec, dq, smat, co);
 				}
 			}
@@ -1134,11 +1077,8 @@ void armature_deform_verts(Object *armOb, Object *target, DerivedMesh *dm, float
 		else if (use_envelope) {
 			pdef_info = pdef_info_array;
 			for (pchan = armOb->pose->chanbase.first; pchan; pchan = pchan->next, pdef_info++) {
-<<<<<<< HEAD
-				if (!(pchan->bone->flag & BONE_NO_DEFORM))
-=======
+//				if (!(pchan->bone->flag & BONE_NO_DEFORM))
 				if (!(pchan->bone->flag & ELEMENT_NO_DEFORM))
->>>>>>> Initial commit
 					contrib += dist_bone_deform(pchan, pdef_info, vec, dq, smat, co);
 			}
 		}
@@ -1256,21 +1196,15 @@ void BKE_armature_loc_world_to_pose(Object *ob, const float inloc[3], float outl
 /* Simple helper, computes the offset bone matrix.
  *     offs_bone = yoffs(b-1) + root(b) + bonemat(b).
  * Not exported, as it is only used in this file currently... */
-<<<<<<< HEAD
-static void get_offset_bone_mat(Bone *bone, float offs_bone[4][4])
-=======
+//static void get_offset_bone_mat(Bone *bone, float offs_bone[4][4])
 static void get_offset_bone_mat(ArmatureElement *bone, float offs_bone[4][4])
->>>>>>> Initial commit
 {
 	if (!bone->parent)
 		return;
 
 	/* Bone transform itself. */
-<<<<<<< HEAD
-	copy_m4_m3(offs_bone, bone->bone_mat);
-=======
+//	copy_m4_m3(offs_bone, bone->bone_mat);
 	copy_m4_m3(offs_bone, bone->AE_mat);
->>>>>>> Initial commit
 
 	/* The bone's root offset (is in the parent's coordinate system). */
 	copy_v3_v3(offs_bone[3], bone->head);
@@ -1298,11 +1232,8 @@ static void get_offset_bone_mat(ArmatureElement *bone, float offs_bone[4][4])
  */
 void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float loc_mat[4][4])
 {
-<<<<<<< HEAD
-	Bone *bone, *parbone;
-=======
+//	Bone *bone, *parbone;
 	ArmatureElement *bone, *parbone;
->>>>>>> Initial commit
 	bPoseChannel *parchan;
 
 	/* set up variables for quicker access below */
@@ -1316,19 +1247,16 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 		get_offset_bone_mat(bone, offs_bone);
 
 		/* Compose the rotscale matrix for this bone. */
-<<<<<<< HEAD
-		if ((bone->flag & BONE_HINGE) && (bone->flag & BONE_NO_SCALE)) {
-			/* Parent rest rotation and scale. */
-			mul_m4_m4m4(rotscale_mat, parbone->arm_mat, offs_bone);
-		}
-		else if (bone->flag & BONE_HINGE) {
-=======
+//		if ((bone->flag & BONE_HINGE) && (bone->flag & BONE_NO_SCALE)) {
+//			/* Parent rest rotation and scale. */
+//			mul_m4_m4m4(rotscale_mat, parbone->arm_mat, offs_bone);
+//		}
+//		else if (bone->flag & BONE_HINGE) {
 		if ((bone->flag & ELEMENT_HINGE) && (bone->flag & ELEMENT_NO_SCALE)) {
 			/* Parent rest rotation and scale. */
 			mul_m4_m4m4(rotscale_mat, parbone->arm_mat, offs_bone);
 		}
 		else if (bone->flag & ELEMENT_HINGE) {
->>>>>>> Initial commit
 			/* Parent rest rotation and pose scale. */
 			float tmat[4][4], tscale[3];
 
@@ -1341,11 +1269,8 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 
 			mul_m4_m4m4(rotscale_mat, tmat, offs_bone);
 		}
-<<<<<<< HEAD
-		else if (bone->flag & BONE_NO_SCALE) {
-=======
+//		else if (bone->flag & BONE_NO_SCALE) {
 		else if (bone->flag & ELEMENT_NO_SCALE) {
->>>>>>> Initial commit
 			/* Parent pose rotation and rest scale (i.e. no scaling). */
 			float tmat[4][4];
 			copy_m4_m4(tmat, parchan->pose_mat);
@@ -1359,11 +1284,8 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 		/* NOTE: That version does not modify bone's loc when HINGE/NO_SCALE options are set. */
 
 		/* In this case, use the object's space *orientation*. */
-<<<<<<< HEAD
-		if (bone->flag & BONE_NO_LOCAL_LOCATION) {
-=======
+//		if (bone->flag & BONE_NO_LOCAL_LOCATION) {
 		if (bone->flag & ELEMENT_NO_LOCAL_LOCATION) {
->>>>>>> Initial commit
 			/* XXX I'm sure that code can be simplified! */
 			float bone_loc[4][4], bone_rotscale[3][3], tmat4[4][4], tmat3[3][3];
 			unit_m4(bone_loc);
@@ -1380,11 +1302,8 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 			mul_m4_m4m4(loc_mat, bone_loc, tmat4);
 		}
 		/* Those flags do not affect position, use plain parent transform space! */
-<<<<<<< HEAD
-		else if (bone->flag & (BONE_HINGE | BONE_NO_SCALE)) {
-=======
+//		else if (bone->flag & (BONE_HINGE | BONE_NO_SCALE)) {
 		else if (bone->flag & (ELEMENT_HINGE | ELEMENT_NO_SCALE)) {
->>>>>>> Initial commit
 			mul_m4_m4m4(loc_mat, parchan->pose_mat, offs_bone);
 		}
 		/* Else (i.e. default, usual case), just use the same matrix for rotation/scaling, and location. */
@@ -1396,11 +1315,8 @@ void BKE_pchan_to_pose_mat(bPoseChannel *pchan, float rotscale_mat[4][4], float 
 		/* Rotation/scaling. */
 		copy_m4_m4(rotscale_mat, pchan->bone->arm_mat);
 		/* Translation. */
-<<<<<<< HEAD
-		if (pchan->bone->flag & BONE_NO_LOCAL_LOCATION) {
-=======
+//		if (pchan->bone->flag & BONE_NO_LOCAL_LOCATION) {
 		if (pchan->bone->flag & ELEMENT_NO_LOCAL_LOCATION) {
->>>>>>> Initial commit
 			/* Translation of arm_mat, without the rotation. */
 			unit_m4(loc_mat);
 			copy_v3_v3(loc_mat[3], pchan->bone->arm_mat[3]);
@@ -1616,30 +1532,18 @@ void mat3_to_vec_roll(float mat[3][3], float r_vec[3], float *r_roll)
  *   -> w = (-v.x, v.y, -v.z)
  *
  * Solving this, we get (x, y and z being the components of v):
-<<<<<<< HEAD
- *     ┌ (x^2 * y + z^2) / (x^2 + z^2),   x,   x * z * (y - 1) / (x^2 + z^2) ┐
- * M = │  x * (y^2 - 1)  / (x^2 + z^2),   y,    z * (y^2 - 1)  / (x^2 + z^2) │
- *     └ x * z * (y - 1) / (x^2 + z^2),   z,   (x^2 + z^2 * y) / (x^2 + z^2) ┘
-=======
- *     „¡ (x^2 * y + z^2) / (x^2 + z^2),   x,   x * z * (y - 1) / (x^2 + z^2) „¢
- * M = „   x * (y^2 - 1)  / (x^2 + z^2),   y,    z * (y^2 - 1)  / (x^2 + z^2) „ 
- *     „¤ x * z * (y - 1) / (x^2 + z^2),   z,   (x^2 + z^2 * y) / (x^2 + z^2) „£
->>>>>>> Initial commit
+ *     �(x^2 * y + z^2) / (x^2 + z^2),   x,   x * z * (y - 1) / (x^2 + z^2) �
+ * M = � x * (y^2 - 1)  / (x^2 + z^2),   y,    z * (y^2 - 1)  / (x^2 + z^2) �
+ *     �x * z * (y - 1) / (x^2 + z^2),   z,   (x^2 + z^2 * y) / (x^2 + z^2) �
  *
  * This is stable as long as v (the bone) is not too much aligned with +/-Y (i.e. x and z components
  * are not too close to 0).
  *
  * Since v is normalized, we have x^2 + y^2 + z^2 = 1, hence x^2 + z^2 = 1 - y^2 = (1 - y)(1 + y).
  * This allows to simplifies M like this:
-<<<<<<< HEAD
- *     ┌ 1 - x^2 / (1 + y),   x,     -x * z / (1 + y) ┐
- * M = │                -x,   y,                   -z │
- *     └  -x * z / (1 + y),   z,    1 - z^2 / (1 + y) ┘
-=======
- *     „¡ 1 - x^2 / (1 + y),   x,     -x * z / (1 + y) „¢
- * M = „                 -x,   y,                   -z „ 
- *     „¤  -x * z / (1 + y),   z,    1 - z^2 / (1 + y) „£
->>>>>>> Initial commit
+ *     �1 - x^2 / (1 + y),   x,     -x * z / (1 + y) �
+ * M = �               -x,   y,                   -z �
+ *     � -x * z / (1 + y),   z,    1 - z^2 / (1 + y) �
  *
  * Written this way, we see the case v = +Y is no more a singularity. The only one remaining is the bone being
  * aligned with -Y.
@@ -1651,29 +1555,17 @@ void mat3_to_vec_roll(float mat[3][3], float r_vec[3], float *r_roll)
  * will degenerate. So let's now focus on these corner elements.
  *
  * We rewrite M so that it only contains its four corner elements, and combine the 1 / (1 + y) factor:
-<<<<<<< HEAD
- *                    ┌ 1 + y - x^2,        -x * z ┐
- * M* = 1 / (1 + y) * │                            │
- *                    └      -x * z,   1 + y - z^2 ┘
-=======
- *                    „¡ 1 + y - x^2,        -x * z „¢
- * M* = 1 / (1 + y) * „                             „ 
- *                    „¤      -x * z,   1 + y - z^2 „£
->>>>>>> Initial commit
+ *                    �1 + y - x^2,        -x * z �
+ * M* = 1 / (1 + y) * �                           �
+ *                    �     -x * z,   1 + y - z^2 �
  *
  * When y is close to -1, computing 1 / (1 + y) will cause severe numerical instability, so we ignore it and
  * normalize M instead. We know y^2 = 1 - (x^2 + z^2), and y < 0, hence y = -sqrt(1 - (x^2 + z^2)).
  * Since x and z are both close to 0, we apply the binomial expansion to the first order:
  * y = -sqrt(1 - (x^2 + z^2)) = -1 + (x^2 + z^2) / 2. Which gives:
-<<<<<<< HEAD
- *                        ┌  z^2 - x^2,  -2 * x * z ┐
- * M* = 1 / (x^2 + z^2) * │                         │
- *                        └ -2 * x * z,   x^2 - z^2 ┘
-=======
- *                        „¡  z^2 - x^2,  -2 * x * z „¢
- * M* = 1 / (x^2 + z^2) * „                          „ 
- *                        „¤ -2 * x * z,   x^2 - z^2 „£
->>>>>>> Initial commit
+ *                        � z^2 - x^2,  -2 * x * z �
+ * M* = 1 / (x^2 + z^2) * �                        �
+ *                        �-2 * x * z,   x^2 - z^2 �
  */
 void vec_roll_to_mat3_normalized(const float nor[3], const float roll, float mat[3][3])
 {
@@ -1743,21 +1635,15 @@ void vec_roll_to_mat3(const float vec[3], const float roll, float mat[3][3])
 
 /* recursive part, calculates restposition of entire tree of children */
 /* used by exiting editmode too */
-<<<<<<< HEAD
-void BKE_armature_where_is_bone(Bone *bone, Bone *prevbone)
-=======
+//void BKE_armature_where_is_bone(Bone *bone, Bone *prevbone)
 void BKE_armature_where_is_bone(ArmatureElement *bone, ArmatureElement *prevbone)
->>>>>>> Initial commit
 {
 	float vec[3];
 
 	/* Bone Space */
 	sub_v3_v3v3(vec, bone->tail, bone->head);
-<<<<<<< HEAD
-	vec_roll_to_mat3(vec, bone->roll, bone->bone_mat);
-=======
+//	vec_roll_to_mat3(vec, bone->roll, bone->bone_mat);
 	vec_roll_to_mat3(vec, bone->roll, bone->AE_mat);
->>>>>>> Initial commit
 
 	bone->length = len_v3v3(bone->head, bone->tail);
 
@@ -1777,11 +1663,8 @@ void BKE_armature_where_is_bone(ArmatureElement *bone, ArmatureElement *prevbone
 		mul_m4_m4m4(bone->arm_mat, prevbone->arm_mat, offs_bone);
 	}
 	else {
-<<<<<<< HEAD
-		copy_m4_m3(bone->arm_mat, bone->bone_mat);
-=======
+//		copy_m4_m3(bone->arm_mat, bone->bone_mat);
 		copy_m4_m3(bone->arm_mat, bone->AE_mat);
->>>>>>> Initial commit
 		copy_v3_v3(bone->arm_mat[3], bone->head);
 	}
 
@@ -1796,11 +1679,8 @@ void BKE_armature_where_is_bone(ArmatureElement *bone, ArmatureElement *prevbone
  * after editing armature itself, now only on reading file */
 void BKE_armature_where_is(bArmature *arm)
 {
-<<<<<<< HEAD
-	Bone *bone;
-=======
+//	Bone *bone;
 	ArmatureElement *bone;
->>>>>>> Initial commit
 
 	/* hierarchical from root to children */
 	for (bone = arm->bonebase.first; bone; bone = bone->next) {
@@ -1835,12 +1715,6 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 	if (error)
 		return;
 
-<<<<<<< HEAD
-=======
-    if (error)
-        return;
-
->>>>>>> Initial commit
 	/* clear all transformation values from library */
 	BKE_pose_rest(frompose);
 
@@ -1855,11 +1729,7 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 
 	for (pchan = pose->chanbase.first; pchan; pchan = pchan->next) {
 		pchanp = BKE_pose_channel_find_name(frompose, pchan->name);
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		if (UNLIKELY(pchanp == NULL)) {
 			/* happens for proxies that become invalid because of a missing link
 			 * for regular cases it shouldn't happen at all */
@@ -1867,11 +1737,7 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 		else if (pchan->bone->layer & layer_protected) {
 			ListBase proxylocal_constraints = {NULL, NULL};
 			bPoseChannel pchanw;
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* copy posechannel to temp, but restore important pointers */
 			pchanw = *pchanp;
 			pchanw.prev = pchan->prev;
@@ -1886,21 +1752,13 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 			/* this is freed so copy a copy, else undo crashes */
 			if (pchanw.prop) {
 				pchanw.prop = IDP_CopyProperty(pchanw.prop);
-<<<<<<< HEAD
 				
-=======
-
->>>>>>> Initial commit
 				/* use the values from the existing props */
 				if (pchan->prop) {
 					IDP_SyncGroupValues(pchanw.prop, pchan->prop);
 				}
 			}
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* constraints - proxy constraints are flushed... local ones are added after
 			 *     1. extract constraints not from proxy (CONSTRAINT_PROXY_LOCAL) from pchan's constraints
 			 *     2. copy proxy-pchan's constraints on-to new
@@ -1912,51 +1770,29 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 			BKE_constraints_proxylocal_extract(&proxylocal_constraints, &pchan->constraints);
 			BKE_constraints_copy(&pchanw.constraints, &pchanp->constraints, false);
 			BLI_movelisttolist(&pchanw.constraints, &proxylocal_constraints);
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* constraints - set target ob pointer to own object */
 			for (con = pchanw.constraints.first; con; con = con->next) {
 				bConstraintTypeInfo *cti = BKE_constraint_typeinfo_get(con);
 				ListBase targets = {NULL, NULL};
 				bConstraintTarget *ct;
-<<<<<<< HEAD
 				
 				if (cti && cti->get_constraint_targets) {
 					cti->get_constraint_targets(con, &targets);
 					
-=======
-
-				if (cti && cti->get_constraint_targets) {
-					cti->get_constraint_targets(con, &targets);
-
->>>>>>> Initial commit
 					for (ct = targets.first; ct; ct = ct->next) {
 						if (ct->tar == from)
 							ct->tar = ob;
 					}
-<<<<<<< HEAD
 					
-=======
-
->>>>>>> Initial commit
 					if (cti->flush_constraint_targets)
 						cti->flush_constraint_targets(con, &targets, 0);
 				}
 			}
-<<<<<<< HEAD
 			
 			/* free stuff from current channel */
 			BKE_pose_channel_free(pchan);
 			
-=======
-
-			/* free stuff from current channel */
-			BKE_pose_channel_free(pchan);
-
->>>>>>> Initial commit
 			/* copy data in temp back over to the cleaned-out (but still allocated) original channel */
 			*pchan = pchanw;
 			if (pchan->custom) {
@@ -1994,11 +1830,8 @@ static void pose_proxy_synchronize(Object *ob, Object *from, int layer_protected
 	}
 }
 
-<<<<<<< HEAD
-static int rebuild_pose_bone(bPose *pose, Bone *bone, bPoseChannel *parchan, int counter)
-=======
+//static int rebuild_pose_bone(bPose *pose, Bone *bone, bPoseChannel *parchan, int counter)
 static int rebuild_pose_bone(bPose *pose, ArmatureElement *bone, bPoseChannel *parchan, int counter)
->>>>>>> Initial commit
 {
 	bPoseChannel *pchan = BKE_pose_channel_verify(pose, bone->name); /* verify checks and/or adds */
 
@@ -2010,11 +1843,8 @@ static int rebuild_pose_bone(bPose *pose, ArmatureElement *bone, bPoseChannel *p
 	for (bone = bone->childbase.first; bone; bone = bone->next) {
 		counter = rebuild_pose_bone(pose, bone, pchan, counter);
 		/* for quick detecting of next bone in chain, only b-bone uses it now */
-<<<<<<< HEAD
-		if (bone->flag & BONE_CONNECTED)
-=======
+//		if (bone->flag & BONE_CONNECTED)
 		if (bone->flag & ELEMENT_CONNECTED)
->>>>>>> Initial commit
 			pchan->child = BKE_pose_channel_find_name(pose, bone->name);
 	}
 
@@ -2025,11 +1855,8 @@ static int rebuild_pose_bone(bPose *pose, ArmatureElement *bone, bPoseChannel *p
 /* NOTE: pose->flag is set for it */
 void BKE_pose_rebuild(Object *ob, bArmature *arm)
 {
-<<<<<<< HEAD
-	Bone *bone;
-=======
+//	Bone *bone;
 	ArmatureElement *bone;
->>>>>>> Initial commit
 	bPose *pose;
 	bPoseChannel *pchan, *next;
 	int counter = 0;
@@ -2064,10 +1891,6 @@ void BKE_pose_rebuild(Object *ob, bArmature *arm)
 			BLI_freelinkN(&pose->chanbase, pchan);
 		}
 	}
-<<<<<<< HEAD
-=======
-
->>>>>>> Initial commit
 	/* printf("rebuild pose %s, %d bones\n", ob->id.name, counter); */
 
 	/* synchronize protected layers with proxy */
@@ -2153,11 +1976,7 @@ static void splineik_init_tree_from_pchan(Scene *scene, Object *UNUSED(ob), bPos
 		/* only happens on reload file, but violates depsgraph still... fix! */
 		if (ELEM(NULL,  ikData->tar->curve_cache, ikData->tar->curve_cache->path, ikData->tar->curve_cache->path->data)) {
 			BKE_displist_make_curveTypes(scene, ikData->tar, 0);
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* path building may fail in EditMode after removing verts [#33268]*/
 			if (ELEM(NULL, ikData->tar->curve_cache->path, ikData->tar->curve_cache->path->data)) {
 				/* BLI_assert(cu->path != NULL); */
@@ -2463,37 +2282,21 @@ static void splineik_evaluate_bone(tSplineIK_Tree *tree, Scene *scene, Object *o
 			{
 				/* improved volume preservation based on the Stretch To constraint */
 				float final_scale;
-<<<<<<< HEAD
 				
-=======
-
->>>>>>> Initial commit
 				/* as the basis for volume preservation, we use the inverse scale factor... */
 				if (fabsf(scaleFac) != 0.0f) {
 					/* NOTE: The method here is taken wholesale from the Stretch To constraint */
 					float bulge = powf(1.0f / fabsf(scaleFac), ikData->bulge);
-<<<<<<< HEAD
 					
-=======
-
->>>>>>> Initial commit
 					if (bulge > 1.0f) {
 						if (ikData->flag & CONSTRAINT_SPLINEIK_USE_BULGE_MAX) {
 							float bulge_max = max_ff(ikData->bulge_max, 1.0f);
 							float hard = min_ff(bulge, bulge_max);
-<<<<<<< HEAD
 							
 							float range = bulge_max - 1.0f;
 							float scale = (range > 0.0f) ? 1.0f / range : 0.0f;
 							float soft = 1.0f + range * atanf((bulge - 1.0f) * scale) / (0.5f * M_PI);
 							
-=======
-
-							float range = bulge_max - 1.0f;
-							float scale = (range > 0.0f) ? 1.0f / range : 0.0f;
-							float soft = 1.0f + range * atanf((bulge - 1.0f) * scale) / (0.5f * M_PI);
-
->>>>>>> Initial commit
 							bulge = interpf(soft, hard, ikData->bulge_smooth);
 						}
 					}
@@ -2501,7 +2304,6 @@ static void splineik_evaluate_bone(tSplineIK_Tree *tree, Scene *scene, Object *o
 						if (ikData->flag & CONSTRAINT_SPLINEIK_USE_BULGE_MIN) {
 							float bulge_min = CLAMPIS(ikData->bulge_min, 0.0f, 1.0f);
 							float hard = max_ff(bulge, bulge_min);
-<<<<<<< HEAD
 							
 							float range = 1.0f - bulge_min;
 							float scale = (range > 0.0f) ? 1.0f / range : 0.0f;
@@ -2511,17 +2313,6 @@ static void splineik_evaluate_bone(tSplineIK_Tree *tree, Scene *scene, Object *o
 						}
 					}
 					
-=======
-
-							float range = 1.0f - bulge_min;
-							float scale = (range > 0.0f) ? 1.0f / range : 0.0f;
-							float soft = 1.0f - range * atanf((1.0f - bulge) * scale) / (0.5f * M_PI);
-
-							bulge = interpf(soft, hard, ikData->bulge_smooth);
-						}
-					}
-
->>>>>>> Initial commit
 					/* compute scale factor for xz axes from this value */
 					final_scale = sqrt(bulge);
 				}
@@ -2529,11 +2320,7 @@ static void splineik_evaluate_bone(tSplineIK_Tree *tree, Scene *scene, Object *o
 					/* no scaling, so scale factor is simple */
 					final_scale = 1.0f;
 				}
-<<<<<<< HEAD
 				
-=======
-
->>>>>>> Initial commit
 				/* apply the scaling (assuming normalised scale) */
 				mul_v3_fl(poseMat[0], final_scale);
 				mul_v3_fl(poseMat[2], final_scale);
@@ -2651,11 +2438,8 @@ void BKE_pchan_to_mat4(bPoseChannel *pchan, float chan_mat[4][4])
 
 	/* prevent action channels breaking chains */
 	/* need to check for bone here, CONSTRAINT_TYPE_ACTION uses this call */
-<<<<<<< HEAD
-	if ((pchan->bone == NULL) || !(pchan->bone->flag & BONE_CONNECTED)) {
-=======
+//	if ((pchan->bone == NULL) || !(pchan->bone->flag & BONE_CONNECTED)) {
 	if ((pchan->bone == NULL) || !(pchan->bone->flag & ELEMENT_CONNECTED)) {
->>>>>>> Initial commit
 		copy_v3_v3(chan_mat[3], pchan->loc);
 	}
 }
@@ -2723,11 +2507,7 @@ static void do_strip_modifiers(Scene *scene, Object *armob, Bone *bone, bPoseCha
 						/* validate first */
 						if (amod->ob && amod->ob->type == OB_CURVE && amod->channel[0]) {
 
-<<<<<<< HEAD
 							if (STREQ(pchan->name, amod->channel)) {
-=======
-							if (strcmp(pchan->name, amod->channel) == 0) {
->>>>>>> Initial commit
 								float mat4[4][4], mat3[3][3];
 
 								curve_deform_vector(scene, amod->ob, armob, bone->arm_mat[3], pchan->pose_mat[3], mat3, amod->no_rot_axis);
@@ -2740,11 +2520,7 @@ static void do_strip_modifiers(Scene *scene, Object *armob, Bone *bone, bPoseCha
 					break;
 					case ACTSTRIP_MOD_NOISE:
 					{
-<<<<<<< HEAD
 						if (STREQ(pchan->name, amod->channel)) {
-=======
-						if (strcmp(pchan->name, amod->channel) == 0) {
->>>>>>> Initial commit
 							float nor[3], loc[3], ofs;
 							float eul[3], size[3], eulo[3], sizeo[3];
 
@@ -2833,11 +2609,8 @@ void BKE_pose_where_is_bone(Scene *scene, Object *ob, bPoseChannel *pchan, float
 	/* Only rootbones get the cyclic offset (unless user doesn't want that). */
 	/* XXX That could be a problem for snapping and other "reverse transform" features... */
 	if (!pchan->parent) {
-<<<<<<< HEAD
-		if ((pchan->bone->flag & BONE_NO_CYCLICOFFSET) == 0)
-=======
+//		if ((pchan->bone->flag & BONE_NO_CYCLICOFFSET) == 0)
 		if ((pchan->bone->flag & ELEMENT_NO_CYCLICOFFSET) == 0)
->>>>>>> Initial commit
 			add_v3_v3(pchan->pose_mat[3], ob->pose->cyclic_offset);
 	}
 
@@ -2869,11 +2642,8 @@ void BKE_pose_where_is_bone(Scene *scene, Object *ob, bPoseChannel *pchan, float
 			BKE_constraints_clear_evalob(cob);
 
 			/* prevent constraints breaking a chain */
-<<<<<<< HEAD
-			if (pchan->bone->flag & BONE_CONNECTED) {
-=======
+//			if (pchan->bone->flag & BONE_CONNECTED) {
 			if (pchan->bone->flag & ELEMENT_CONNECTED) {
->>>>>>> Initial commit
 				copy_v3_v3(pchan->pose_mat[3], vec);
 			}
 		}
@@ -2890,11 +2660,8 @@ void BKE_pose_where_is_bone(Scene *scene, Object *ob, bPoseChannel *pchan, float
 void BKE_pose_where_is(Scene *scene, Object *ob)
 {
 	bArmature *arm;
-<<<<<<< HEAD
-	Bone *bone;
-=======
+//	Bone *bone;
 	ArmatureElement *bone;
->>>>>>> Initial commit
 	bPoseChannel *pchan;
 	float imat[4][4];
 	float ctime;
@@ -2911,11 +2678,7 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 	ctime = BKE_scene_frame_get(scene); /* not accurate... */
 
 	/* In editmode or restposition we read the data from the bones */
-<<<<<<< HEAD
 	if (arm->edbo || (arm->flag & ARM_RESTPOS)) {
-=======
-	if (arm->edbo/* || arm->edmu*/ || (arm->flag & ARM_RESTPOS)) {
->>>>>>> Initial commit
 		for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 			bone = pchan->bone;
 			if (bone) {
@@ -2974,10 +2737,6 @@ void BKE_pose_where_is(Scene *scene, Object *ob)
 static int minmax_armature(Object *ob, float r_min[3], float r_max[3])
 {
 	bPoseChannel *pchan;
-<<<<<<< HEAD
-=======
-	bMuscleChannel *pmuscle;
->>>>>>> Initial commit
 
 	/* For now, we assume BKE_pose_where_is has already been called (hence we have valid data in pachan). */
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
@@ -2985,16 +2744,7 @@ static int minmax_armature(Object *ob, float r_min[3], float r_max[3])
 		minmax_v3v3_v3(r_min, r_max, pchan->pose_tail);
 	}
 
-<<<<<<< HEAD
 	return (BLI_listbase_is_empty(&ob->pose->chanbase) == false);
-=======
-	for (pmuscle = ob->pose->musclebase.first; pmuscle; pmuscle = pmuscle->next) {
-        minmax_v3v3_v3(r_min, r_max, pmuscle->pose_head);
-        minmax_v3v3_v3(r_min, r_max, pmuscle->pose_tail);
-	}
-
-    return (BLI_listbase_is_empty(&ob->pose->chanbase) == false || BLI_listbase_is_empty(&ob->pose->musclebase) == false);
->>>>>>> Initial commit
 }
 
 static void boundbox_armature(Object *ob, float loc[3], float size[3])

@@ -5,11 +5,7 @@
                           menu_shadow_width="12"
                           icon_file=""
                           icon_alpha="1"
-<<<<<<< HEAD
                           widget_emboss="#ffffff05"
-=======
-                          emboss="#ffffff05"
->>>>>>> Initial commit
                           axis_x="#ff5a5a"
                           axis_y="#58ff58"
                           axis_z="#6262ff">

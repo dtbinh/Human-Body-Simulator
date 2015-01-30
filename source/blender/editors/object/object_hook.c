@@ -79,29 +79,17 @@ static int return_editmesh_indexar(
 	BMVert *eve;
 	BMIter iter;
 	int *index, nr, totvert = 0;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	BM_ITER_MESH (eve, &iter, em->bm, BM_VERTS_OF_MESH) {
 		if (BM_elem_flag_test(eve, BM_ELEM_SELECT)) totvert++;
 	}
 	if (totvert == 0) return 0;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	*r_indexar = index = MEM_mallocN(4 * totvert, "hook indexar");
 	*r_tot = totvert;
 	nr = 0;
 	zero_v3(r_cent);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	BM_ITER_MESH (eve, &iter, em->bm, BM_VERTS_OF_MESH) {
 		if (BM_elem_flag_test(eve, BM_ELEM_SELECT)) {
 			*index = nr; index++;
@@ -109,15 +97,9 @@ static int return_editmesh_indexar(
 		}
 		nr++;
 	}
-<<<<<<< HEAD
 	
 	mul_v3_fl(r_cent, 1.0f / (float)totvert);
 	
-=======
-
-	mul_v3_fl(r_cent, 1.0f / (float)totvert);
-
->>>>>>> Initial commit
 	return totvert;
 }
 
@@ -151,15 +133,9 @@ static bool return_editmesh_vgroup(Object *obedit, BMEditMesh *em, char *r_name,
 			return true;
 		}
 	}
-<<<<<<< HEAD
 	
 	return false;
 }	
-=======
-
-	return false;
-}
->>>>>>> Initial commit
 
 static void select_editbmesh_hook(Object *ob, HookModifierData *hmd)
 {
@@ -168,17 +144,10 @@ static void select_editbmesh_hook(Object *ob, HookModifierData *hmd)
 	BMVert *eve;
 	BMIter iter;
 	int index = 0, nr = 0;
-<<<<<<< HEAD
 	
 	if (hmd->indexar == NULL)
 		return;
 	
-=======
-
-	if (hmd->indexar == NULL)
-		return;
-
->>>>>>> Initial commit
 	BM_ITER_MESH (eve, &iter, em->bm, BM_VERTS_OF_MESH) {
 		if (nr == hmd->indexar[index]) {
 			BM_vert_select_set(em->bm, eve, true);
@@ -197,11 +166,7 @@ static int return_editlattice_indexar(
 {
 	BPoint *bp;
 	int *index, nr, totvert = 0, a;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* count */
 	a = editlatt->pntsu * editlatt->pntsv * editlatt->pntsw;
 	bp = editlatt->def;
@@ -213,20 +178,12 @@ static int return_editlattice_indexar(
 	}
 
 	if (totvert == 0) return 0;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	*r_indexar = index = MEM_mallocN(4 * totvert, "hook indexar");
 	*r_tot = totvert;
 	nr = 0;
 	zero_v3(r_cent);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	a = editlatt->pntsu * editlatt->pntsv * editlatt->pntsw;
 	bp = editlatt->def;
 	while (a--) {
@@ -239,15 +196,9 @@ static int return_editlattice_indexar(
 		bp++;
 		nr++;
 	}
-<<<<<<< HEAD
 	
 	mul_v3_fl(r_cent, 1.0f / (float)totvert);
 	
-=======
-
-	mul_v3_fl(r_cent, 1.0f / (float)totvert);
-
->>>>>>> Initial commit
 	return totvert;
 }
 
@@ -280,11 +231,7 @@ static int return_editcurve_indexar(
 	BPoint *bp;
 	BezTriple *bezt;
 	int *index, a, nr, totvert = 0;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	for (nu = editnurb->first; nu; nu = nu->next) {
 		if (nu->type == CU_BEZIER) {
 			bezt = nu->bezt;
@@ -306,20 +253,12 @@ static int return_editcurve_indexar(
 		}
 	}
 	if (totvert == 0) return 0;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	*r_indexar = index = MEM_mallocN(4 * totvert, "hook indexar");
 	*r_tot = totvert;
 	nr = 0;
 	zero_v3(r_cent);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	for (nu = editnurb->first; nu; nu = nu->next) {
 		if (nu->type == CU_BEZIER) {
 			bezt = nu->bezt;
@@ -356,15 +295,9 @@ static int return_editcurve_indexar(
 			}
 		}
 	}
-<<<<<<< HEAD
 	
 	mul_v3_fl(r_cent, 1.0f / (float)totvert);
 	
-=======
-
-	mul_v3_fl(r_cent, 1.0f / (float)totvert);
-
->>>>>>> Initial commit
 	return totvert;
 }
 
@@ -374,11 +307,7 @@ static bool object_hook_index_array(Scene *scene, Object *obedit,
 	*r_indexar = NULL;
 	*r_tot = 0;
 	r_name[0] = 0;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	switch (obedit->type) {
 		case OB_MESH:
 		{
@@ -422,11 +351,7 @@ static void select_editcurve_hook(Object *obedit, HookModifierData *hmd)
 	BPoint *bp;
 	BezTriple *bezt;
 	int index = 0, a, nr = 0;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	for (nu = editnurb->first; nu; nu = nu->next) {
 		if (nu->type == CU_BEZIER) {
 			bezt = nu->bezt;
@@ -447,11 +372,7 @@ static void select_editcurve_hook(Object *obedit, HookModifierData *hmd)
 					if (index < hmd->totindex - 1) index++;
 				}
 				nr++;
-<<<<<<< HEAD
 				
-=======
-
->>>>>>> Initial commit
 				bezt++;
 			}
 		}
@@ -495,19 +416,11 @@ static void object_hook_from_context(bContext *C, PointerRNA *ptr, const int num
 	}
 }
 
-<<<<<<< HEAD
 static void object_hook_select(Object *ob, HookModifierData *hmd) 
 {
 	if (hmd->indexar == NULL)
 		return;
 	
-=======
-static void object_hook_select(Object *ob, HookModifierData *hmd)
-{
-	if (hmd->indexar == NULL)
-		return;
-
->>>>>>> Initial commit
 	if (ob->type == OB_MESH) select_editbmesh_hook(ob, hmd);
 	else if (ob->type == OB_LATTICE) select_editlattice_hook(ob, hmd);
 	else if (ob->type == OB_CURVE) select_editcurve_hook(ob, hmd);
@@ -519,22 +432,14 @@ static void object_hook_select(Object *ob, HookModifierData *hmd)
 static int hook_op_edit_poll(bContext *C)
 {
 	Object *obedit = CTX_data_edit_object(C);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (obedit) {
 		if (ED_operator_editmesh(C)) return 1;
 		if (ED_operator_editsurfcurve(C)) return 1;
 		if (ED_operator_editlattice(C)) return 1;
 		//if (ED_operator_editmball(C)) return 1;
 	}
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return 0;
 }
 
@@ -544,19 +449,11 @@ static Object *add_hook_object_new(Main *bmain, Scene *scene, Object *obedit)
 	Object *ob;
 
 	ob = BKE_object_add(bmain, scene, OB_EMPTY);
-<<<<<<< HEAD
 	
 	basedit = BKE_scene_base_find(scene, obedit);
 	base = BKE_scene_base_find(scene, ob);
 	base->lay = ob->lay = obedit->lay;
 	
-=======
-
-	basedit = BKE_scene_base_find(scene, obedit);
-	base = BKE_scene_base_find(scene, ob);
-	base->lay = ob->lay = obedit->lay;
-
->>>>>>> Initial commit
 	/* icky, BKE_object_add sets new base as active.
 	 * so set it back to the original edit object */
 	scene->basact = basedit;
@@ -572,11 +469,7 @@ static int add_hook_object(Main *bmain, Scene *scene, Object *obedit, Object *ob
 	float pose_mat[4][4];
 	int tot, ok, *indexar;
 	char name[MAX_NAME];
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	ok = object_hook_index_array(scene, obedit, &tot, &indexar, name, cent);
 
 	if (!ok) {
@@ -585,7 +478,6 @@ static int add_hook_object(Main *bmain, Scene *scene, Object *obedit, Object *ob
 	}
 
 	if (mode == OBJECT_ADDHOOK_NEWOB && !ob) {
-<<<<<<< HEAD
 		
 		ob = add_hook_object_new(bmain, scene, obedit);
 		
@@ -593,59 +485,35 @@ static int add_hook_object(Main *bmain, Scene *scene, Object *obedit, Object *ob
 		mul_v3_m4v3(ob->loc, obedit->obmat, cent);
 	}
 	
-=======
-
-		ob = add_hook_object_new(bmain, scene, obedit);
-
-		/* transform cent to global coords for loc */
-		mul_v3_m4v3(ob->loc, obedit->obmat, cent);
-	}
-
->>>>>>> Initial commit
 	md = obedit->modifiers.first;
 	while (md && modifierType_getInfo(md->type)->type == eModifierTypeType_OnlyDeform) {
 		md = md->next;
 	}
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	hmd = (HookModifierData *) modifier_new(eModifierType_Hook);
 	BLI_insertlinkbefore(&obedit->modifiers, md, hmd);
 	BLI_snprintf(hmd->modifier.name, sizeof(hmd->modifier.name), "Hook-%s", ob->id.name + 2);
 	modifier_unique_name(&obedit->modifiers, (ModifierData *)hmd);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	hmd->object = ob;
 	hmd->indexar = indexar;
 	copy_v3_v3(hmd->cent, cent);
 	hmd->totindex = tot;
 	BLI_strncpy(hmd->name, name, sizeof(hmd->name));
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	unit_m4(pose_mat);
 
 	if (mode == OBJECT_ADDHOOK_SELOB_BONE) {
 		bArmature *arm = ob->data;
 		BLI_assert(ob->type == OB_ARMATURE);
-<<<<<<< HEAD
-		if (arm->act_bone) {
-			bPoseChannel *pchan_act;
-
-			BLI_strncpy(hmd->subtarget, arm->act_bone->name, sizeof(hmd->subtarget));
-=======
+//		if (arm->act_bone) {
+//			bPoseChannel *pchan_act;
+//
+//			BLI_strncpy(hmd->subtarget, arm->act_bone->name, sizeof(hmd->subtarget));
 		if (arm->act_element) {
 			bPoseChannel *pchan_act;
 
 			BLI_strncpy(hmd->subtarget, arm->act_element->name, sizeof(hmd->subtarget));
->>>>>>> Initial commit
 
 			pchan_act = BKE_pose_channel_active(ob);
 			if (LIKELY(pchan_act)) {
@@ -661,19 +529,11 @@ static int add_hook_object(Main *bmain, Scene *scene, Object *obedit, Object *ob
 	/* vert x (obmat x hook->imat) x hook->obmat x ob->imat */
 	/*        (parentinv         )                          */
 	BKE_object_where_is_calc(scene, ob);
-<<<<<<< HEAD
 	
 	invert_m4_m4(ob->imat, ob->obmat);
 	/* apparently this call goes from right to left... */
 	mul_m4_series(hmd->parentinv, pose_mat, ob->imat, obedit->obmat);
 	
-=======
-
-	invert_m4_m4(ob->imat, ob->obmat);
-	/* apparently this call goes from right to left... */
-	mul_m4_series(hmd->parentinv, pose_mat, ob->imat, obedit->obmat);
-
->>>>>>> Initial commit
 	DAG_relations_tag_update(bmain);
 
 	return true;
@@ -687,11 +547,7 @@ static int object_add_hook_selob_exec(bContext *C, wmOperator *op)
 	Object *obsel = NULL;
 	const bool use_bone = RNA_boolean_get(op->ptr, "use_bone");
 	const int mode = use_bone ? OBJECT_ADDHOOK_SELOB_BONE : OBJECT_ADDHOOK_SELOB;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	CTX_DATA_BEGIN (C, Object *, ob, selected_objects)
 	{
 		if (ob != obedit) {
@@ -700,11 +556,7 @@ static int object_add_hook_selob_exec(bContext *C, wmOperator *op)
 		}
 	}
 	CTX_DATA_END;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (!obsel) {
 		BKE_report(op->reports, RPT_ERROR, "Cannot add hook with no other selected objects");
 		return OPERATOR_CANCELLED;
@@ -714,11 +566,7 @@ static int object_add_hook_selob_exec(bContext *C, wmOperator *op)
 		BKE_report(op->reports, RPT_ERROR, "Cannot add hook bone for a non armature object");
 		return OPERATOR_CANCELLED;
 	}
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	if (add_hook_object(bmain, scene, obedit, obsel, mode, op->reports)) {
 		WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, obedit);
 		return OPERATOR_FINISHED;
@@ -734,19 +582,11 @@ void OBJECT_OT_hook_add_selob(wmOperatorType *ot)
 	ot->name = "Hook to Selected Object";
 	ot->description = "Hook selected vertices to the first selected object";
 	ot->idname = "OBJECT_OT_hook_add_selob";
-<<<<<<< HEAD
 	
 	/* api callbacks */
 	ot->exec = object_add_hook_selob_exec;
 	ot->poll = hook_op_edit_poll;
 	
-=======
-
-	/* api callbacks */
-	ot->exec = object_add_hook_selob_exec;
-	ot->poll = hook_op_edit_poll;
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 
@@ -776,19 +616,11 @@ void OBJECT_OT_hook_add_newob(wmOperatorType *ot)
 	ot->name = "Hook to New Object";
 	ot->description = "Hook selected vertices to a newly created object";
 	ot->idname = "OBJECT_OT_hook_add_newob";
-<<<<<<< HEAD
 	
 	/* api callbacks */
 	ot->exec = object_add_hook_newob_exec;
 	ot->poll = hook_op_edit_poll;
 	
-=======
-
-	/* api callbacks */
-	ot->exec = object_add_hook_newob_exec;
-	ot->poll = hook_op_edit_poll;
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 }
@@ -804,7 +636,6 @@ static int object_hook_remove_exec(bContext *C, wmOperator *op)
 		BKE_report(op->reports, RPT_ERROR, "Could not find hook modifier");
 		return OPERATOR_CANCELLED;
 	}
-<<<<<<< HEAD
 	
 	/* remove functionality */
 	
@@ -814,42 +645,20 @@ static int object_hook_remove_exec(bContext *C, wmOperator *op)
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
 	
-=======
-
-	/* remove functionality */
-
-	BLI_remlink(&ob->modifiers, (ModifierData *)hmd);
-	modifier_free((ModifierData *)hmd);
-
-	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
-	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
 static EnumPropertyItem *hook_mod_itemf(bContext *C, PointerRNA *UNUSED(ptr), PropertyRNA *UNUSED(prop), bool *r_free)
-<<<<<<< HEAD
 {	
-=======
-{
->>>>>>> Initial commit
 	Object *ob = CTX_data_edit_object(C);
 	EnumPropertyItem tmp = {0, "", 0, "", ""};
 	EnumPropertyItem *item = NULL;
 	ModifierData *md = NULL;
 	int a, totitem = 0;
-<<<<<<< HEAD
 	
 	if (!ob)
 		return DummyRNA_NULL_items;
 	
-=======
-
-	if (!ob)
-		return DummyRNA_NULL_items;
-
->>>>>>> Initial commit
 	for (a = 0, md = ob->modifiers.first; md; md = md->next, a++) {
 		if (md->type == eModifierType_Hook) {
 			tmp.value = a;
@@ -859,55 +668,32 @@ static EnumPropertyItem *hook_mod_itemf(bContext *C, PointerRNA *UNUSED(ptr), Pr
 			RNA_enum_item_add(&item, &totitem, &tmp);
 		}
 	}
-<<<<<<< HEAD
 	
 	RNA_enum_item_end(&item, &totitem);
 	*r_free = true;
 	
-=======
-
-	RNA_enum_item_end(&item, &totitem);
-	*r_free = true;
-
->>>>>>> Initial commit
 	return item;
 }
 
 void OBJECT_OT_hook_remove(wmOperatorType *ot)
 {
 	PropertyRNA *prop;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* identifiers */
 	ot->name = "Remove Hook";
 	ot->idname = "OBJECT_OT_hook_remove";
 	ot->description = "Remove a hook from the active object";
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* api callbacks */
 	ot->exec = object_hook_remove_exec;
 	ot->invoke = WM_menu_invoke;
 	ot->poll = hook_op_edit_poll;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flags */
 	/* this operator removes modifier which isn't stored in local undo stack,
 	 * so redoing it from redo panel gives totally weird results  */
 	ot->flag = /*OPTYPE_REGISTER|*/ OPTYPE_UNDO;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* properties */
 	prop = RNA_def_enum(ot->srna, "modifier", DummyRNA_NULL_items, 0, "Modifier", "Modifier number to remove");
 	RNA_def_enum_funcs(prop, hook_mod_itemf);
@@ -932,27 +718,18 @@ static int object_hook_reset_exec(bContext *C, wmOperator *op)
 
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
 void OBJECT_OT_hook_reset(wmOperatorType *ot)
 {
 	PropertyRNA *prop;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* identifiers */
 	ot->name = "Reset Hook";
 	ot->description = "Recalculate and clear offset transformation";
 	ot->idname = "OBJECT_OT_hook_reset";
-<<<<<<< HEAD
 	
 	/* callbacks */
 	ot->exec = object_hook_reset_exec;
@@ -961,16 +738,6 @@ void OBJECT_OT_hook_reset(wmOperatorType *ot)
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 	
-=======
-
-	/* callbacks */
-	ot->exec = object_hook_reset_exec;
-	ot->poll = hook_op_edit_poll;
-
-	/* flags */
-	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
-
->>>>>>> Initial commit
 	/* properties */
 	prop = RNA_def_enum(ot->srna, "modifier", DummyRNA_NULL_items, 0, "Modifier", "Modifier number to assign to");
 	RNA_def_enum_funcs(prop, hook_mod_itemf);
@@ -985,17 +752,12 @@ static int object_hook_recenter_exec(bContext *C, wmOperator *op)
 	HookModifierData *hmd = NULL;
 	Scene *scene = CTX_data_scene(C);
 	float bmat[3][3], imat[3][3];
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	object_hook_from_context(C, &ptr, num, &ob, &hmd);
 	if (hmd == NULL) {
 		BKE_report(op->reports, RPT_ERROR, "Could not find hook modifier");
 		return OPERATOR_CANCELLED;
 	}
-<<<<<<< HEAD
 	
 	/* recenter functionality */
 	copy_m3_m4(bmat, ob->obmat);
@@ -1007,35 +769,17 @@ static int object_hook_recenter_exec(bContext *C, wmOperator *op)
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
 	
-=======
-
-	/* recenter functionality */
-	copy_m3_m4(bmat, ob->obmat);
-	invert_m3_m3(imat, bmat);
-
-	sub_v3_v3v3(hmd->cent, scene->cursor, ob->obmat[3]);
-	mul_m3_v3(imat, hmd->cent);
-
-	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
-	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
 void OBJECT_OT_hook_recenter(wmOperatorType *ot)
 {
 	PropertyRNA *prop;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* identifiers */
 	ot->name = "Recenter Hook";
 	ot->description = "Set hook center to cursor position";
 	ot->idname = "OBJECT_OT_hook_recenter";
-<<<<<<< HEAD
 	
 	/* callbacks */
 	ot->exec = object_hook_recenter_exec;
@@ -1044,16 +788,6 @@ void OBJECT_OT_hook_recenter(wmOperatorType *ot)
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 	
-=======
-
-	/* callbacks */
-	ot->exec = object_hook_recenter_exec;
-	ot->poll = hook_op_edit_poll;
-
-	/* flags */
-	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
-
->>>>>>> Initial commit
 	/* properties */
 	prop = RNA_def_enum(ot->srna, "modifier", DummyRNA_NULL_items, 0, "Modifier", "Modifier number to assign to");
 	RNA_def_enum_funcs(prop, hook_mod_itemf);
@@ -1070,32 +804,21 @@ static int object_hook_assign_exec(bContext *C, wmOperator *op)
 	float cent[3];
 	char name[MAX_NAME];
 	int *indexar, tot;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	object_hook_from_context(C, &ptr, num, &ob, &hmd);
 	if (hmd == NULL) {
 		BKE_report(op->reports, RPT_ERROR, "Could not find hook modifier");
 		return OPERATOR_CANCELLED;
 	}
-<<<<<<< HEAD
 	
 	/* assign functionality */
 	
-=======
-
-	/* assign functionality */
-
->>>>>>> Initial commit
 	if (!object_hook_index_array(scene, ob, &tot, &indexar, name, cent)) {
 		BKE_report(op->reports, RPT_WARNING, "Requires selected vertices or active vertex group");
 		return OPERATOR_CANCELLED;
 	}
 	if (hmd->indexar)
 		MEM_freeN(hmd->indexar);
-<<<<<<< HEAD
 	
 	copy_v3_v3(hmd->cent, cent);
 	hmd->indexar = indexar;
@@ -1104,53 +827,27 @@ static int object_hook_assign_exec(bContext *C, wmOperator *op)
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
 	
-=======
-
-	copy_v3_v3(hmd->cent, cent);
-	hmd->indexar = indexar;
-	hmd->totindex = tot;
-
-	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
-	WM_event_add_notifier(C, NC_OBJECT | ND_MODIFIER, ob);
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
 void OBJECT_OT_hook_assign(wmOperatorType *ot)
 {
 	PropertyRNA *prop;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* identifiers */
 	ot->name = "Assign to Hook";
 	ot->description = "Assign the selected vertices to a hook";
 	ot->idname = "OBJECT_OT_hook_assign";
-<<<<<<< HEAD
 	
 	/* callbacks */
 	ot->exec = object_hook_assign_exec;
 	ot->poll = hook_op_edit_poll;
 	
-=======
-
-	/* callbacks */
-	ot->exec = object_hook_assign_exec;
-	ot->poll = hook_op_edit_poll;
-
->>>>>>> Initial commit
 	/* flags */
 	/* this operator changes data stored in modifier which doesn't get pushed to undo stack,
 	 * so redoing it from redo panel gives totally weird results  */
 	ot->flag = /*OPTYPE_REGISTER|*/ OPTYPE_UNDO;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* properties */
 	prop = RNA_def_enum(ot->srna, "modifier", DummyRNA_NULL_items, 0, "Modifier", "Modifier number to assign to");
 	RNA_def_enum_funcs(prop, hook_mod_itemf);
@@ -1163,47 +860,29 @@ static int object_hook_select_exec(bContext *C, wmOperator *op)
 	int num = RNA_enum_get(op->ptr, "modifier");
 	Object *ob = NULL;
 	HookModifierData *hmd = NULL;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	object_hook_from_context(C, &ptr, num, &ob, &hmd);
 	if (hmd == NULL) {
 		BKE_report(op->reports, RPT_ERROR, "Could not find hook modifier");
 		return OPERATOR_CANCELLED;
 	}
-<<<<<<< HEAD
 	
 	/* select functionality */
 	object_hook_select(ob, hmd);
 	
 	WM_event_add_notifier(C, NC_GEOM | ND_SELECT, ob->data);
 	
-=======
-
-	/* select functionality */
-	object_hook_select(ob, hmd);
-
-	WM_event_add_notifier(C, NC_GEOM | ND_SELECT, ob->data);
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
 void OBJECT_OT_hook_select(wmOperatorType *ot)
 {
 	PropertyRNA *prop;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* identifiers */
 	ot->name = "Select Hook";
 	ot->description = "Select affected vertices on mesh";
 	ot->idname = "OBJECT_OT_hook_select";
-<<<<<<< HEAD
 	
 	/* callbacks */
 	ot->exec = object_hook_select_exec;
@@ -1212,16 +891,6 @@ void OBJECT_OT_hook_select(wmOperatorType *ot)
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 	
-=======
-
-	/* callbacks */
-	ot->exec = object_hook_select_exec;
-	ot->poll = hook_op_edit_poll;
-
-	/* flags */
-	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
-
->>>>>>> Initial commit
 	/* properties */
 	prop = RNA_def_enum(ot->srna, "modifier", DummyRNA_NULL_items, 0, "Modifier", "Modifier number to remove");
 	RNA_def_enum_funcs(prop, hook_mod_itemf);

@@ -369,7 +369,6 @@ enum {
 	 (event_type >= LEFTCTRLKEY && event_type <= LEFTSHIFTKEY) == false &&    \
 	 (event_type >= UNKNOWNKEY  && event_type <= GRLESSKEY) == false)
 
-<<<<<<< HEAD
 /* internal helpers*/
 #define _VA_IS_EVENT_MOD2(v, a) (CHECK_TYPE_INLINE(v, wmEvent *), \
        ((v)->a))
@@ -382,8 +381,6 @@ enum {
 
 /* reusable IS_EVENT_MOD(event, shift, ctrl, alt, oskey), macro */
 #define IS_EVENT_MOD(...) VA_NARGS_CALL_OVERLOAD(_VA_IS_EVENT_MOD, __VA_ARGS__)
-=======
->>>>>>> Initial commit
 
 /* ********** wmEvent.val ********** */
 
@@ -412,18 +409,10 @@ enum {
 
 /* File select */
 enum {
-<<<<<<< HEAD
 	EVT_FILESELECT_FULL_OPEN        = 1,
 	EVT_FILESELECT_EXEC             = 2,
 	EVT_FILESELECT_CANCEL           = 3,
 	EVT_FILESELECT_EXTERNAL_CANCEL  = 4,
-=======
-	EVT_FILESELECT_OPEN             = 1,
-	EVT_FILESELECT_FULL_OPEN        = 2,
-	EVT_FILESELECT_EXEC             = 3,
-	EVT_FILESELECT_CANCEL           = 4,
-	EVT_FILESELECT_EXTERNAL_CANCEL  = 5,
->>>>>>> Initial commit
 };
 
 /* Gesture */

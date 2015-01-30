@@ -227,12 +227,7 @@ void MeshImporter::set_vcol(MLoopCol *mlc, VCOLDataWrapper &vob, int loop_index,
 {
 	COLLADAFW::UIntValuesArray& indices =index_list.getIndices();
 	int index;
-<<<<<<< HEAD
 	for (index = 0; index < count; index++, mlc++) {
-=======
-	for(index = 0; index < count; index++,mlc++)
-	{
->>>>>>> Initial commit
 		int v_index = indices[index+loop_index];
 		vob.get_vcol(v_index,mlc);
 	}
@@ -712,12 +707,7 @@ void MeshImporter::read_polys(COLLADAFW::Mesh *collada_mesh, Mesh *me)
 						mpoly->flag |= ME_SMOOTH;
 				}
 
-<<<<<<< HEAD
 				for (unsigned int vcolor_index = 0 ; vcolor_index < index_list_array_vcolor.getCount();vcolor_index++) {
-=======
-				for(unsigned int vcolor_index = 0 ; vcolor_index < index_list_array_vcolor.getCount();vcolor_index++)
-				{
->>>>>>> Initial commit
 					COLLADAFW::IndexList& index_list = *index_list_array_vcolor[vcolor_index];
 					COLLADAFW::String colname = extract_vcolname(index_list.getName());
 					MLoopCol *mloopcol = (MLoopCol  *)CustomData_get_layer_named(&me->ldata, CD_MLOOPCOL, colname.c_str());
@@ -1071,11 +1061,7 @@ MTFace *MeshImporter::assign_material_to_geom(COLLADAFW::MaterialBinding cmateri
 	// set texture face
 	if (color_texture &&
 	    strlen((color_texture)->uvname) &&
-<<<<<<< HEAD
 	    !STREQ(layername, color_texture->uvname)) {
-=======
-	    strcmp(layername, color_texture->uvname) != 0) {
->>>>>>> Initial commit
 		texture_face = (MTFace *)CustomData_get_layer_named(&me->fdata, CD_MTFACE,
 		                                                    color_texture->uvname);
 		strcpy(layername, color_texture->uvname);

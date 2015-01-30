@@ -21,11 +21,7 @@ import bpy
 from bpy.types import Panel
 
 
-<<<<<<< HEAD
 class DataButtonsPanel:
-=======
-class DataButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "data"

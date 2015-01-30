@@ -357,39 +357,22 @@ static int sequencer_select_invoke(bContext *C, wmOperator *op, const wmEvent *e
 			case SEQ_SELECT_LR_MOUSE:
 				x = UI_view2d_region_to_view_x(v2d, event->mval[0]);
 				break;
-<<<<<<< HEAD
 			case SEQ_SELECT_LR_LEFT:
 			case SEQ_SELECT_LR_RIGHT:
 				x = CFRA;
-=======
-				
-			case SEQ_SELECT_LR_LEFT:
-				x = CFRA - 1;
-				break;
-			case SEQ_SELECT_LR_RIGHT:
-				x = CFRA + 1;
->>>>>>> Initial commit
 				break;
 		}
 		
 		SEQP_BEGIN (ed, seq)
 		{
 			if (x < CFRA) {
-<<<<<<< HEAD
 				if (seq->enddisp <= CFRA) {
-=======
-				if (seq->enddisp < CFRA) {
->>>>>>> Initial commit
 					seq->flag |= SELECT;
 					recurs_sel_seq(seq);
 				}
 			}
 			else {
-<<<<<<< HEAD
 				if (seq->startdisp >= CFRA) {
-=======
-				if (seq->startdisp > CFRA) {
->>>>>>> Initial commit
 					seq->flag |= SELECT;
 					recurs_sel_seq(seq);
 				}
@@ -1013,11 +996,7 @@ static bool select_grouped_data(Editing *ed, Sequence *actseq)
 	if (SEQ_HAS_PATH(actseq) && dir) {
 		SEQP_BEGIN (ed, seq)
 		{
-<<<<<<< HEAD
 			if (SEQ_HAS_PATH(seq) && seq->strip && STREQ(seq->strip->dir, dir)) {
-=======
-			if (SEQ_HAS_PATH(seq) && seq->strip && strcmp(seq->strip->dir, dir) == 0) {
->>>>>>> Initial commit
 				seq->flag |= SELECT;
 				changed = true;
 			}

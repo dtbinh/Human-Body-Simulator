@@ -373,11 +373,7 @@ bool BKE_autotrack_context_step(AutoTrackContext *context)
 	bool ok = false;
 	int track;
 
-<<<<<<< HEAD
 #pragma omp parallel for if (context->num_tracks > 1)
-=======
-#pragma omp parallel for if(context->num_tracks > 1)
->>>>>>> Initial commit
 	for (track = 0; track < context->num_tracks; ++track) {
 		AutoTrackOptions *options = &context->options[track];
 		libmv_Marker libmv_current_marker,
@@ -387,7 +383,6 @@ bool BKE_autotrack_context_step(AutoTrackContext *context)
 		int frame = BKE_movieclip_remap_scene_to_clip_frame(
 			context->clips[options->clip_index],
 			context->user.framenr);
-<<<<<<< HEAD
 		bool has_marker;
 
 		BLI_spin_lock(&context->spin_lock);
@@ -399,15 +394,6 @@ bool BKE_autotrack_context_step(AutoTrackContext *context)
 		BLI_spin_unlock(&context->spin_lock);
 
 		if (has_marker) {
-=======
-
-		if (libmv_autoTrackGetMarker(context->autotrack,
-		                             options->clip_index,
-		                             frame,
-		                             options->track_index,
-		                             &libmv_current_marker))
-		{
->>>>>>> Initial commit
 			if (!tracking_check_marker_margin(&libmv_current_marker,
 			                                  options->track->margin,
 			                                  context->frame_width,
@@ -445,11 +431,7 @@ bool BKE_autotrack_context_step(AutoTrackContext *context)
 			}
 			else {
 				options->is_failed = true;
-<<<<<<< HEAD
 				options->failed_frame = frame + frame_delta;
-=======
-				options->failed_frame = frame;
->>>>>>> Initial commit
 			}
 			ok = true;
 		}
@@ -464,19 +446,11 @@ bool BKE_autotrack_context_step(AutoTrackContext *context)
 
 void BKE_autotrack_context_sync(AutoTrackContext *context)
 {
-<<<<<<< HEAD
 	int newframe, frame_delta = context->backwards ? -1 : 1;
 	int clip, frame;
 
 	BLI_spin_lock(&context->spin_lock);
 	newframe = context->user.framenr;
-=======
-	int newframe = context->user.framenr,
-	    frame_delta = context->backwards ? -1 : 1;
-	int clip, frame;
-
-	BLI_spin_lock(&context->spin_lock);
->>>>>>> Initial commit
 	for (frame = context->sync_frame;
 	     frame != (context->backwards ? newframe - 1 : newframe + 1);
 	     frame += frame_delta)
@@ -489,7 +463,6 @@ void BKE_autotrack_context_sync(AutoTrackContext *context)
 			AutoTrackOptions *options = &context->options[track];
 			int track_frame = BKE_movieclip_remap_scene_to_clip_frame(
 				context->clips[options->clip_index], frame);
-<<<<<<< HEAD
 			if (options->is_failed && options->failed_frame == track_frame) {
 				MovieTrackingMarker *prev_marker =
 					BKE_tracking_marker_get_exact(options->track, frame);
@@ -502,24 +475,6 @@ void BKE_autotrack_context_sync(AutoTrackContext *context)
 					BKE_tracking_marker_insert(options->track, &marker);
 					continue;
 				}
-=======
-			if (options->is_failed) {
-				if (options->failed_frame == track_frame) {
-					MovieTrackingMarker *prev_marker =
-						BKE_tracking_marker_get_exact(
-							  options->track,
-							  frame);
-					if (prev_marker) {
-						marker = *prev_marker;
-						marker.framenr = context->backwards ?
-						                 track_frame - 1 :
-						                 track_frame + 1;
-						marker.flag |= MARKER_DISABLED;
-						BKE_tracking_marker_insert(options->track, &marker);
-					}
-				}
-				continue;
->>>>>>> Initial commit
 			}
 			if (libmv_autoTrackGetMarker(context->autotrack,
 			                             clip,

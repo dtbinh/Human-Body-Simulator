@@ -249,11 +249,7 @@ static void borderselect_graphkeys(
 		data_lasso->rectf_scaled = &scaled_rectf;
 		ked.data = data_lasso;
 	}
-<<<<<<< HEAD
 	else if (mode == BEZT_OK_REGION_CIRCLE) {
-=======
-	if (mode == BEZT_OK_REGION_CIRCLE) {
->>>>>>> Initial commit
 		struct KeyframeEdit_CircleData *data_circle = data;
 		data_circle->rectf_scaled = &scaled_rectf;
 		ked.data = data;

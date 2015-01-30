@@ -33,19 +33,12 @@
  *  \author nzc
  */
 
-<<<<<<< HEAD
-=======
 struct ArmatureElement;
->>>>>>> Initial commit
 struct Bone;
 struct Main;
 struct bArmature;
 struct bPose;
 struct bPoseChannel;
-<<<<<<< HEAD
-=======
-struct bMuscleChannel;
->>>>>>> Initial commit
 struct bConstraint;
 struct Scene;
 struct Object;
@@ -63,17 +56,10 @@ typedef struct PoseTarget {
 
 typedef struct PoseTree {
 	struct PoseTree *next, *prev;
-<<<<<<< HEAD
 	
 	int type;                       /* type of IK that this serves (CONSTRAINT_TYPE_KINEMATIC or ..._SPLINEIK) */
 	int totchannel;                 /* number of pose channels */
 	
-=======
-
-	int type;                       /* type of IK that this serves (CONSTRAINT_TYPE_KINEMATIC or ..._SPLINEIK) */
-	int totchannel;                 /* number of pose channels */
-
->>>>>>> Initial commit
 	struct ListBase targets;        /* list of targets of the tree */
 	struct bPoseChannel **pchan;    /* array of pose channels */
 	int     *parent;                /* and their parents */
@@ -90,49 +76,29 @@ extern "C" {
 
 struct bArmature *BKE_armature_add(struct Main *bmain, const char *name);
 struct bArmature *BKE_armature_from_object(struct Object *ob);
-<<<<<<< HEAD
 void BKE_armature_bonelist_free(struct ListBase *lb);
-=======
 void BKE_armature_elementlist_free(struct ListBase *lb);
->>>>>>> Initial commit
 void BKE_armature_free(struct bArmature *arm);
 void BKE_armature_make_local(struct bArmature *arm);
 struct bArmature *BKE_armature_copy(struct bArmature *arm);
 
-<<<<<<< HEAD
-=======
-/* Convert from muscle to bone and vice versa */
-//void BKE_init_editarmatureelement(struct EditArmatureElement *eelem);
-
->>>>>>> Initial commit
 /* Bounding box. */
 struct BoundBox *BKE_armature_boundbox_get(struct Object *ob);
 
 int bone_autoside_name(char name[64], int strip_number, short axis, float head, float tail);
 
-<<<<<<< HEAD
 struct Bone *BKE_armature_find_bone_name(struct bArmature *arm, const char *name);
-=======
 struct ArmatureElement *BKE_armature_find_bone_name(struct bArmature *arm, const char *name);
->>>>>>> Initial commit
 
 float distfactor_to_bone(const float vec[3], const float b1[3], const float b2[3], float r1, float r2, float rdist);
 
 void BKE_armature_where_is(struct bArmature *arm);
-<<<<<<< HEAD
 void BKE_armature_where_is_bone(struct Bone *bone, struct Bone *prevbone);
-=======
 void BKE_armature_where_is_bone(struct ArmatureElement *bone, struct ArmatureElement *prevbone);
->>>>>>> Initial commit
 void BKE_pose_rebuild(struct Object *ob, struct bArmature *arm);
 void BKE_pose_where_is(struct Scene *scene, struct Object *ob);
 void BKE_pose_where_is_bone(struct Scene *scene, struct Object *ob, struct bPoseChannel *pchan, float ctime, bool do_extra);
 void BKE_pose_where_is_bone_tail(struct bPoseChannel *pchan);
-<<<<<<< HEAD
-=======
-//void BKE_pose_where_is_muscle(struct Scene *scene, struct Object *ob, struct bMuscleChannel *pmuscle, float ctime, bool do_extra);
-//void BKE_pose_where_is_muscle_tail(struct bMuscleChannel *pmuscle);
->>>>>>> Initial commit
 
 /* get_objectspace_bone_matrix has to be removed still */
 void get_objectspace_bone_matrix(struct Bone *bone, float M_accumulatedMatrix[4][4], int root, int posed);
@@ -148,36 +114,16 @@ void BKE_armature_loc_pose_to_bone(struct bPoseChannel *pchan, const float inloc
 void BKE_armature_mat_bone_to_pose(struct bPoseChannel *pchan, float inmat[4][4], float outmat[4][4]);
 void BKE_armature_mat_pose_to_delta(float delta_mat[4][4], float pose_mat[4][4], float arm_mat[4][4]);
 
-<<<<<<< HEAD
 void BKE_armature_mat_pose_to_bone_ex(struct Object *ob, struct bPoseChannel *pchan, float inmat[4][4], float outmat[4][4]);
-=======
-void BKE_armature_mat_pose_to_muscle(struct bMuscleChannel *pmuscle, float inmat[4][4], float outmat[4][4]);
-void BKE_armature_loc_pose_to_muscle(struct bMuscleChannel *pmuscle, const float inloc[3], float outloc[3]);
-void BKE_armature_mat_muscle_to_pose(struct bMuscleChannel *pmuscle, float inmat[4][4], float outmat[4][4]);
-
-void BKE_armature_mat_pose_to_bone_ex(struct Object *ob, struct bPoseChannel *pchan, float inmat[4][4], float outmat[4][4]);
-void BKE_armature_mat_pose_to_muscle_ex(struct Object *ob, struct bMuscleChannel *pmuscle, float inmat[4][4], float outmat[4][4]);
->>>>>>> Initial commit
 
 void BKE_pchan_mat3_to_rot(struct bPoseChannel *pchan, float mat[3][3], bool use_compat);
 void BKE_pchan_apply_mat4(struct bPoseChannel *pchan, float mat[4][4], bool use_comat);
 void BKE_pchan_to_mat4(struct bPoseChannel *pchan, float chan_mat[4][4]);
 void BKE_pchan_calc_mat(struct bPoseChannel *pchan);
-<<<<<<< HEAD
-=======
-//void BKE_pmuscle_mat3_to_rot(struct bMuscleChannel *pmuscle, float mat[3][3], bool use_compat);
-//void BKE_pmuscle_apply_mat4(struct bMuscleChannel *pmuscle, float mat[4][4], bool use_compat);
-//void BKE_pmuscle_to_mat4(struct bMuscleChannel *pmuscle, float chan_mat[4][4]);
-//void BKE_pmuscle_calc_mat(struct bMuscleChannel *pmuscle);
->>>>>>> Initial commit
 
 /* Get the "pchan to pose" transform matrix. These matrices apply the effects of
  * HINGE/NO_SCALE/NO_LOCAL_LOCATION options over the pchan loc/rot/scale transformations. */
 void BKE_pchan_to_pose_mat(struct bPoseChannel *pchan, float rotscale_mat[4][4], float loc_mat[4][4]);
-<<<<<<< HEAD
-=======
-void BKE_pmuscle_to_pose_mat(struct bMuscleChannel *pmuscle, float rotscale_mat[4][4], float loc_mat[4][4]);
->>>>>>> Initial commit
 
 /* Rotation Mode Conversions - Used for PoseChannels + Objects... */
 void BKE_rotMode_change_values(float quat[4], float eul[3], float axis[3], float *angle, short oldMode, short newMode);
@@ -185,11 +131,6 @@ void BKE_rotMode_change_values(float quat[4], float eul[3], float axis[3], float
 /* B-Bone support */
 #define MAX_BBONE_SUBDIV    32
 
-<<<<<<< HEAD
-=======
-#define MAX_BMUSCLE_SUBDIV  32
-
->>>>>>> Initial commit
 typedef struct Mat4 {
 	float mat[4][4];
 } Mat4;
@@ -197,7 +138,6 @@ typedef struct Mat4 {
 void b_bone_spline_setup(struct bPoseChannel *pchan, int rest, Mat4 result_array[MAX_BBONE_SUBDIV]);
 
 /* like EBONE_VISIBLE */
-<<<<<<< HEAD
 #define PBONE_VISIBLE(arm, bone) ( \
 	CHECK_TYPE_INLINE(arm, bArmature *), \
 	CHECK_TYPE_INLINE(bone, Bone *), \
@@ -206,7 +146,7 @@ void b_bone_spline_setup(struct bPoseChannel *pchan, int rest, Mat4 result_array
 
 #define PBONE_SELECTABLE(arm, bone) \
 	(PBONE_VISIBLE(arm, bone) && !((bone)->flag & BONE_UNSELECTABLE))
-=======
+
 #define PELEMENT_VISIBLE(arm, element) ( \
 	CHECK_TYPE_INLINE(arm, bArmature *), \
 	CHECK_TYPE_INLINE(element, ArmatureElement *), \
@@ -215,7 +155,7 @@ void b_bone_spline_setup(struct bPoseChannel *pchan, int rest, Mat4 result_array
 
 #define PELEMENT_SELECTABLE(arm, element) \
     (PELEMENT_VISIBLE(arm, element) && !((element)->flag & ELEMENT_UNSELECTABLE))
->>>>>>> Initial commit
+
 
 #ifdef __cplusplus
 }

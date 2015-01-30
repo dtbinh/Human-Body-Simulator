@@ -38,17 +38,10 @@ __all__ = (
 from _bpy import types, props, app, data, context
 
 # python modules
-<<<<<<< HEAD
 from . import utils, path
 
 # fake operator module
 from .ops import ops_fake_module as ops
-=======
-from . import utils, path, ops
-
-# fake operator module
-ops = ops.ops_fake_module
->>>>>>> Initial commit
 
 
 def main():

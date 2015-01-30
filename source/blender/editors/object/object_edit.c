@@ -42,11 +42,8 @@
 #include "BLI_utildefines.h"
 #include "BLI_ghash.h"
 
-<<<<<<< HEAD
 #include "BLF_translation.h"
 
-=======
->>>>>>> Initial commit
 #include "DNA_armature_types.h"
 #include "DNA_curve_types.h"
 #include "DNA_group_types.h"
@@ -1352,11 +1349,7 @@ static int shade_smooth_exec(bContext *C, wmOperator *op)
 	ID *data;
 	Curve *cu;
 	Nurb *nu;
-<<<<<<< HEAD
 	int clear = (STREQ(op->idname, "OBJECT_OT_shade_flat"));
-=======
-	int clear = (strcmp(op->idname, "OBJECT_OT_shade_flat") == 0);
->>>>>>> Initial commit
 	bool done = false, linked_data = false;
 
 	CTX_DATA_BEGIN(C, Object *, ob, selected_editable_objects)
@@ -1710,11 +1703,7 @@ static int game_property_new_exec(bContext *C, wmOperator *op)
 		BLI_strncpy(prop->name, name, sizeof(prop->name));
 	}
 
-<<<<<<< HEAD
 	BLI_uniquename(&ob->prop, prop, DATA_("Property"), '.', offsetof(bProperty, name), sizeof(prop->name));
-=======
-	BKE_bproperty_unique(NULL, prop, 0); // make_unique_prop_names(prop->name);
->>>>>>> Initial commit
 
 	WM_event_add_notifier(C, NC_LOGIC, NULL);
 	return OPERATOR_FINISHED;

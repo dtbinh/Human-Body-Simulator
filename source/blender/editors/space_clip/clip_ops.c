@@ -1307,7 +1307,6 @@ static void proxy_endjob(void *pjv)
 	if (pj->index_context)
 		IMB_anim_index_rebuild_finish(pj->index_context, pj->stop);
 
-<<<<<<< HEAD
 	if (pj->clip->source == MCLIP_SRC_MOVIE) {
 		/* Timecode might have changed, so do a full reload to deal with this. */
 		BKE_movieclip_reload(pj->clip);
@@ -1316,9 +1315,6 @@ static void proxy_endjob(void *pjv)
 		/* For image sequences we'll preserve original cache. */
 		BKE_movieclip_clear_proxy_cache(pj->clip);
 	}
-=======
-	BKE_movieclip_reload(pj->clip);
->>>>>>> Initial commit
 
 	WM_main_add_notifier(NC_MOVIECLIP | ND_DISPLAY, pj->clip);
 }
@@ -1346,12 +1342,8 @@ static int clip_rebuild_proxy_exec(bContext *C, wmOperator *UNUSED(op))
 
 	if (clip->anim) {
 		pj->index_context = IMB_anim_index_rebuild_context(clip->anim, clip->proxy.build_tc_flag,
-<<<<<<< HEAD
 		                                                   clip->proxy.build_size_flag, clip->proxy.quality,
 		                                                   true);
-=======
-		                                                   clip->proxy.build_size_flag, clip->proxy.quality);
->>>>>>> Initial commit
 	}
 
 	WM_jobs_customdata_set(wm_job, pj, proxy_freejob);

@@ -38,10 +38,7 @@
 #include "DNA_space_types.h"
 #include "DNA_screen_types.h"
 #include "DNA_userdef_types.h"
-<<<<<<< HEAD
 #include "DNA_text_types.h"
-=======
->>>>>>> Initial commit
 
 #include "BKE_context.h"
 #include "BKE_curve.h"
@@ -393,10 +390,7 @@ static void node_draw_frame_label(bNodeTree *ntree, bNode *node, const float asp
 	float width, ascender;
 	float x, y;
 	const int font_size = data->label_size / aspect;
-<<<<<<< HEAD
 	const float margin = NODE_DY / 4;
-=======
->>>>>>> Initial commit
 
 	nodeLabel(ntree, node, label, sizeof(label));
 
@@ -412,16 +406,11 @@ static void node_draw_frame_label(bNodeTree *ntree, bNode *node, const float asp
 	
 	/* 'x' doesn't need aspect correction */
 	x = BLI_rctf_cent_x(rct) - (0.5f * width);
-<<<<<<< HEAD
 	y = rct->ymax - ((margin / aspect) + (ascender * aspect));
-=======
-	y = rct->ymax - (((NODE_DY / 4) / aspect) + (ascender * aspect));
->>>>>>> Initial commit
 
 	BLF_position(fontid, x, y, 0);
 	BLF_draw(fontid, label, BLF_DRAW_STR_DUMMY_MAX);
 
-<<<<<<< HEAD
 	/* draw text body */
 	if (node->id) {
 		Text *text = (Text *)node->id;
@@ -453,8 +442,6 @@ static void node_draw_frame_label(bNodeTree *ntree, bNode *node, const float asp
 		BLF_disable(fontid, BLF_CLIPPING);
 	}
 
-=======
->>>>>>> Initial commit
 	BLF_disable(fontid, BLF_ASPECT);
 }
 
@@ -907,10 +894,7 @@ static void node_shader_buts_tex_voronoi(uiLayout *layout, bContext *UNUSED(C), 
 
 static void node_shader_buts_tex_coord(uiLayout *layout, bContext *UNUSED(C), PointerRNA *ptr)
 {
-<<<<<<< HEAD
 	uiItemR(layout, ptr, "object", 0, NULL, 0);
-=======
->>>>>>> Initial commit
 	uiItemR(layout, ptr, "from_dupli", 0, NULL, 0);
 }
 

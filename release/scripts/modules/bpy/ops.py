@@ -36,10 +36,7 @@ class BPyOps:
 
      bpy.ops
     """
-<<<<<<< HEAD
     __slots__ = ()
-=======
->>>>>>> Initial commit
 
     def __getattr__(self, module):
         """

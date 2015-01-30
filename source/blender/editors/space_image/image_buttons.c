@@ -780,11 +780,7 @@ void uiTemplateImage(uiLayout *layout, bContext *C, PointerRNA *ptr, const char 
 					bool has_alpha = true;
 
 					if (ibuf) {
-<<<<<<< HEAD
 						int imtype = BKE_image_ftype_to_imtype(ibuf->ftype);
-=======
-						int imtype = BKE_ftype_to_imtype(ibuf->ftype);
->>>>>>> Initial commit
 						char valid_channels = BKE_imtype_valid_channels(imtype, false);
 
 						has_alpha = (valid_channels & IMA_CHAN_FLAG_ALPHA) != 0;

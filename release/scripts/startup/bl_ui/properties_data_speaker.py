@@ -22,11 +22,7 @@ from bpy.types import Panel
 from rna_prop_ui import PropertyPanel
 
 
-<<<<<<< HEAD
 class DataButtonsPanel:
-=======
-class DataButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "data"

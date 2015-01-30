@@ -135,28 +135,22 @@ static void outliner_rna_width(SpaceOops *soops, ListBase *lb, int *w, int start
 
 /* ****************************************************** */
 
-<<<<<<< HEAD
-static void restrictbutton_recursive_ebone(bContext *C, EditBone *ebone_parent, int flag, bool set_flag)
-{
-	Object *obedit = CTX_data_edit_object(C);
-	bArmature *arm = obedit->data;
-	EditBone *ebone;
-=======
+//static void restrictbutton_recursive_ebone(bContext *C, EditBone *ebone_parent, int flag, bool set_flag)
+//{
+//	Object *obedit = CTX_data_edit_object(C);
+//	bArmature *arm = obedit->data;
+//	EditBone *ebone;
 static void restrictbutton_recursive_ebone(bContext *C, EditArmatureElement *ebone_parent, int flag, bool set_flag)
 {
 	Object *obedit = CTX_data_edit_object(C);
 	bArmature *arm = obedit->data;
 	EditArmatureElement *ebone;
->>>>>>> Initial commit
 	
 	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
 		if (ED_armature_ebone_is_child_recursive(ebone_parent, ebone)) {
 			if (set_flag) {
-<<<<<<< HEAD
-				ebone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
-=======
+//				ebone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
 				ebone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
->>>>>>> Initial commit
 				ebone->flag |= flag;
 			}
 			else {
@@ -171,11 +165,8 @@ static void restrictbutton_recursive_bone(bContext *C, bArmature *arm, Bone *bon
 	Bone *bone;
 	for (bone = bone_parent->childbase.first; bone; bone = bone->next) {
 		if (set_flag) {
-<<<<<<< HEAD
-			bone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
-=======
+//			bone->flag &= ~(BONE_TIPSEL | BONE_SELECTED | BONE_ROOTSEL);
 			bone->flag &= ~(ELEMENT_TIPSEL | ELEMENT_SELECTED | ELEMENT_ROOTSEL);
->>>>>>> Initial commit
 			bone->flag |= flag;
 		}
 		else {
@@ -309,19 +300,16 @@ static void restrictbutton_bone_visibility_cb(bContext *C, void *poin, void *poi
 {
 	bArmature *arm = (bArmature *)poin;
 	Bone *bone = (Bone *)poin2;
-<<<<<<< HEAD
-	if (bone->flag & BONE_HIDDEN_P)
-		bone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
-
-	if (CTX_wm_window(C)->eventstate->ctrl) {
-		restrictbutton_recursive_bone(C, arm, bone, BONE_HIDDEN_P, (bone->flag & BONE_HIDDEN_P) != 0);
-=======
+//	if (bone->flag & BONE_HIDDEN_P)
+//		bone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
+//
+//	if (CTX_wm_window(C)->eventstate->ctrl) {
+//		restrictbutton_recursive_bone(C, arm, bone, BONE_HIDDEN_P, (bone->flag & BONE_HIDDEN_P) != 0);
 	if (bone->flag & ELEMENT_HIDDEN_P)
 		bone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
 
 	if (CTX_wm_window(C)->eventstate->ctrl) {
 		restrictbutton_recursive_bone(C, arm, bone, ELEMENT_HIDDEN_P, (bone->flag & ELEMENT_HIDDEN_P) != 0);
->>>>>>> Initial commit
 	}
 
 	WM_event_add_notifier(C, NC_OBJECT | ND_POSE, NULL);
@@ -331,19 +319,16 @@ static void restrictbutton_bone_select_cb(bContext *C, void *poin, void *poin2)
 {
 	bArmature *arm = (bArmature *)poin;
 	Bone *bone = (Bone *)poin2;
-<<<<<<< HEAD
-	if (bone->flag & BONE_UNSELECTABLE)
-		bone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
-
-	if (CTX_wm_window(C)->eventstate->ctrl) {
-		restrictbutton_recursive_bone(C, arm, bone, BONE_UNSELECTABLE, (bone->flag & BONE_UNSELECTABLE) != 0);
-=======
+//	if (bone->flag & BONE_UNSELECTABLE)
+//		bone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
+//
+//	if (CTX_wm_window(C)->eventstate->ctrl) {
+//		restrictbutton_recursive_bone(C, arm, bone, BONE_UNSELECTABLE, (bone->flag & BONE_UNSELECTABLE) != 0);
 	if (bone->flag & ELEMENT_UNSELECTABLE)
 		bone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
 
 	if (CTX_wm_window(C)->eventstate->ctrl) {
 		restrictbutton_recursive_bone(C, arm, bone, ELEMENT_UNSELECTABLE, (bone->flag & ELEMENT_UNSELECTABLE) != 0);
->>>>>>> Initial commit
 	}
 
 	WM_event_add_notifier(C, NC_OBJECT | ND_POSE, NULL);
@@ -351,16 +336,14 @@ static void restrictbutton_bone_select_cb(bContext *C, void *poin, void *poin2)
 
 static void restrictbutton_ebone_select_cb(bContext *C, void *UNUSED(poin), void *poin2)
 {
-<<<<<<< HEAD
-	EditBone *ebone = (EditBone *)poin2;
-
-	if (ebone->flag & BONE_UNSELECTABLE) {
-		ebone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
-	}
-
-	if (CTX_wm_window(C)->eventstate->ctrl) {
-		restrictbutton_recursive_ebone(C, ebone, BONE_UNSELECTABLE, (ebone->flag & BONE_UNSELECTABLE) != 0);
-=======
+//	EditBone *ebone = (EditBone *)poin2;
+//
+//	if (ebone->flag & BONE_UNSELECTABLE) {
+//		ebone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
+//	}
+//
+//	if (CTX_wm_window(C)->eventstate->ctrl) {
+//		restrictbutton_recursive_ebone(C, ebone, BONE_UNSELECTABLE, (ebone->flag & BONE_UNSELECTABLE) != 0);
 	EditArmatureElement *ebone = (EditArmatureElement *)poin2;
 
 	if (ebone->flag & ELEMENT_UNSELECTABLE) {
@@ -369,7 +352,6 @@ static void restrictbutton_ebone_select_cb(bContext *C, void *UNUSED(poin), void
 
 	if (CTX_wm_window(C)->eventstate->ctrl) {
 		restrictbutton_recursive_ebone(C, ebone, ELEMENT_UNSELECTABLE, (ebone->flag & ELEMENT_UNSELECTABLE) != 0);
->>>>>>> Initial commit
 	}
 
 	WM_event_add_notifier(C, NC_OBJECT | ND_POSE, NULL);
@@ -377,15 +359,13 @@ static void restrictbutton_ebone_select_cb(bContext *C, void *UNUSED(poin), void
 
 static void restrictbutton_ebone_visibility_cb(bContext *C, void *UNUSED(poin), void *poin2)
 {
-<<<<<<< HEAD
-	EditBone *ebone = (EditBone *)poin2;
-	if (ebone->flag & BONE_HIDDEN_A) {
-		ebone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
-	}
-
-	if (CTX_wm_window(C)->eventstate->ctrl) {
-		restrictbutton_recursive_ebone(C, ebone, BONE_HIDDEN_A, (ebone->flag & BONE_HIDDEN_A) != 0);
-=======
+//	EditBone *ebone = (EditBone *)poin2;
+//	if (ebone->flag & BONE_HIDDEN_A) {
+//		ebone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
+//	}
+//
+//	if (CTX_wm_window(C)->eventstate->ctrl) {
+//		restrictbutton_recursive_ebone(C, ebone, BONE_HIDDEN_A, (ebone->flag & BONE_HIDDEN_A) != 0);
 	EditArmatureElement *ebone = (EditArmatureElement *)poin2;
 	if (ebone->flag & ELEMENT_HIDDEN_A) {
 		ebone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
@@ -393,7 +373,6 @@ static void restrictbutton_ebone_visibility_cb(bContext *C, void *UNUSED(poin), 
 
 	if (CTX_wm_window(C)->eventstate->ctrl) {
 		restrictbutton_recursive_ebone(C, ebone, ELEMENT_HIDDEN_A, (ebone->flag & ELEMENT_HIDDEN_A) != 0);
->>>>>>> Initial commit
 	}
 
 	WM_event_add_notifier(C, NC_OBJECT | ND_POSE, NULL);
@@ -544,11 +523,8 @@ static void namebutton_cb(bContext *C, void *tsep, char *oldname)
 				{
 					bArmature *arm = (bArmature *)tselem->id;
 					if (arm->edbo) {
-<<<<<<< HEAD
-						EditBone *ebone = te->directdata;
-=======
+//						EditBone *ebone = te->directdata;
 						EditArmatureElement *ebone = te->directdata;
->>>>>>> Initial commit
 						char newname[sizeof(ebone->name)];
 
 						/* restore bone name */
@@ -759,30 +735,24 @@ static void outliner_draw_restrictbuts(uiBlock *block, Scene *scene, ARegion *ar
 			}
 			else if (tselem->type == TSE_POSE_CHANNEL) {
 				bPoseChannel *pchan = (bPoseChannel *)te->directdata;
-<<<<<<< HEAD
-				Bone *bone = pchan->bone;
-				ob = (Object *)tselem->id;
-				
-				UI_block_emboss_set(block, UI_EMBOSS_NONE);
-				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, BONE_HIDDEN_P, 0, ICON_RESTRICT_VIEW_OFF,
-=======
+//				Bone *bone = pchan->bone;
+//				ob = (Object *)tselem->id;
+//				
+//				UI_block_emboss_set(block, UI_EMBOSS_NONE);
+//				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, BONE_HIDDEN_P, 0, ICON_RESTRICT_VIEW_OFF,
 				ArmatureElement *bone = pchan->bone;
 				ob = (Object *)tselem->id;
 				
 				UI_block_emboss_set(block, UI_EMBOSS_NONE);
 				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, ELEMENT_HIDDEN_P, 0, ICON_RESTRICT_VIEW_OFF,
->>>>>>> Initial commit
 				                      (int)(ar->v2d.cur.xmax - OL_TOG_RESTRICT_VIEWX), te->ys, UI_UNIT_X,
 				                      UI_UNIT_Y, &(bone->flag), 0, 0, 0, 0,
 				                      TIP_("Restrict/Allow visibility in the 3D View"));
 				UI_but_func_set(bt, restrictbutton_bone_visibility_cb, ob->data, bone);
 				UI_but_flag_enable(bt, UI_BUT_DRAG_LOCK);
 				
-<<<<<<< HEAD
-				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, BONE_UNSELECTABLE, 0, ICON_RESTRICT_SELECT_OFF,
-=======
+//				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, BONE_UNSELECTABLE, 0, ICON_RESTRICT_SELECT_OFF,
 				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, ELEMENT_UNSELECTABLE, 0, ICON_RESTRICT_SELECT_OFF,
->>>>>>> Initial commit
 				                      (int)(ar->v2d.cur.xmax - OL_TOG_RESTRICT_SELECTX), te->ys, UI_UNIT_X,
 				                      UI_UNIT_Y, &(bone->flag), 0, 0, 0, 0,
 				                      TIP_("Restrict/Allow selection in the 3D View"));
@@ -792,28 +762,22 @@ static void outliner_draw_restrictbuts(uiBlock *block, Scene *scene, ARegion *ar
 				UI_block_emboss_set(block, UI_EMBOSS);
 			}
 			else if (tselem->type == TSE_EBONE) {
-<<<<<<< HEAD
-				EditBone *ebone = (EditBone *)te->directdata;
-				
-				UI_block_emboss_set(block, UI_EMBOSS_NONE);
-				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, BONE_HIDDEN_A, 0, ICON_RESTRICT_VIEW_OFF,
-=======
+//				EditBone *ebone = (EditBone *)te->directdata;
+//				
+//				UI_block_emboss_set(block, UI_EMBOSS_NONE);
+//				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, BONE_HIDDEN_A, 0, ICON_RESTRICT_VIEW_OFF,
 				EditArmatureElement *ebone = (EditArmatureElement *)te->directdata;
 				
 				UI_block_emboss_set(block, UI_EMBOSS_NONE);
 				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, ELEMENT_HIDDEN_A, 0, ICON_RESTRICT_VIEW_OFF,
->>>>>>> Initial commit
 				                      (int)(ar->v2d.cur.xmax - OL_TOG_RESTRICT_VIEWX), te->ys, UI_UNIT_X,
 				                      UI_UNIT_Y, &(ebone->flag), 0, 0, 0, 0,
 				                      TIP_("Restrict/Allow visibility in the 3D View"));
 				UI_but_func_set(bt, restrictbutton_ebone_visibility_cb, NULL, ebone);
 				UI_but_flag_enable(bt, UI_BUT_DRAG_LOCK);
 				
-<<<<<<< HEAD
-				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, BONE_UNSELECTABLE, 0, ICON_RESTRICT_SELECT_OFF,
-=======
+//				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, BONE_UNSELECTABLE, 0, ICON_RESTRICT_SELECT_OFF,
 				bt = uiDefIconButBitI(block, UI_BTYPE_ICON_TOGGLE, ELEMENT_UNSELECTABLE, 0, ICON_RESTRICT_SELECT_OFF,
->>>>>>> Initial commit
 				                      (int)(ar->v2d.cur.xmax - OL_TOG_RESTRICT_SELECTX), te->ys, UI_UNIT_X,
 				                      UI_UNIT_Y, &(ebone->flag), 0, 0, 0, 0,
 				                      TIP_("Restrict/Allow selection in the 3D View"));
@@ -907,11 +871,8 @@ static void outliner_buttons(const bContext *C, uiBlock *block, ARegion *ar, Tre
 	 * need change this.
 	 */
 
-<<<<<<< HEAD
-	if (tselem->type == TSE_EBONE) len = sizeof(((EditBone *) 0)->name);
-=======
+//	if (tselem->type == TSE_EBONE) len = sizeof(((EditBone *) 0)->name);
 	if (tselem->type == TSE_EBONE) len = sizeof(((EditArmatureElement *) 0)->name);
->>>>>>> Initial commit
 	else if (tselem->type == TSE_MODIFIER) len = sizeof(((ModifierData *) 0)->name);
 	else if (tselem->id && GS(tselem->id->name) == ID_LI) len = sizeof(((Library *) 0)->name);
 	else len = MAX_ID_NAME - 2;

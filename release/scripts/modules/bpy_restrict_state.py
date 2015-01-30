@@ -29,11 +29,7 @@ __all__ = (
 import bpy as _bpy
 
 
-<<<<<<< HEAD
 class _RestrictContext:
-=======
-class _RestrictContext():
->>>>>>> Initial commit
     __slots__ = ()
     _real_data = _bpy.data
     # safe, the pointer never changes
@@ -48,11 +44,7 @@ class _RestrictContext():
         return self._real_pref
 
 
-<<<<<<< HEAD
 class _RestrictData:
-=======
-class _RestrictData():
->>>>>>> Initial commit
     __slots__ = ()
 
 
@@ -60,11 +52,7 @@ _context_restrict = _RestrictContext()
 _data_restrict = _RestrictData()
 
 
-<<<<<<< HEAD
 class RestrictBlend:
-=======
-class RestrictBlend():
->>>>>>> Initial commit
     __slots__ = ("context", "data")
 
     def __enter__(self):

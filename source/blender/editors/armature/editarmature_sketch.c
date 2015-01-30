@@ -333,19 +333,11 @@ static void sk_autoname(bContext *C, ReebArc *arc)
 			if (side[0] == '\0') {
 				valid = 1;
 			}
-<<<<<<< HEAD
 			else if (STREQ(side, "R") || STREQ(side, "L")) {
 				valid = 1;
 				caps = 1;
 			}
 			else if (STREQ(side, "r") || STREQ(side, "l")) {
-=======
-			else if (strcmp(side, "R") == 0 || strcmp(side, "L") == 0) {
-				valid = 1;
-				caps = 1;
-			}
-			else if (strcmp(side, "r") == 0 || strcmp(side, "l") == 0) {
->>>>>>> Initial commit
 				valid = 1;
 				caps = 0;
 			}
@@ -472,11 +464,7 @@ static void sk_drawNormal(GLUquadric *quad, SK_Point *pt, float size, float heig
 {
 	float vec2[3] = {0, 0, 1}, axis[3];
 	float angle;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	glPushMatrix();
 
 	cross_v3_v3v3(axis, vec2, pt->no);
@@ -1093,11 +1081,7 @@ static int sk_getStrokeSnapPoint(bContext *C, SK_Point *pt, SK_Sketch *sketch, S
 				point_added = 1;
 			}
 		}
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		mval[0] = dd->mval[0];
 		mval[1] = dd->mval[1];
 
@@ -1361,11 +1345,8 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 	ToolSettings *ts = CTX_data_tool_settings(C);
 	bArmature *arm = obedit->data;
 	SK_Point *head;
-<<<<<<< HEAD
-	EditBone *parent = NULL;
-=======
+//	EditBone *parent = NULL;
 	EditArmatureElement *parent = NULL;
->>>>>>> Initial commit
 	float invmat[4][4]; /* move in caller function */
 	float tmat[3][3];
 	int head_index = 0;
@@ -1385,13 +1366,10 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 				head = pt;
 			}
 			else {
-<<<<<<< HEAD
-				EditBone *bone = NULL;
-				EditBone *new_parent;
-=======
+//				EditBone *bone = NULL;
+//				EditBone *new_parent;
 				EditArmatureElement *bone = NULL;
 				EditArmatureElement *new_parent;
->>>>>>> Initial commit
 
 				if (i - head_index > 1) {
 					SK_StrokeIterator sk_iter;
@@ -1411,11 +1389,8 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 				}
 
 				if (bone == NULL) {
-<<<<<<< HEAD
-					bone = ED_armature_edit_bone_add(arm, "Bone");
-=======
+//					bone = ED_armature_edit_bone_add(arm, "Bone");
 					bone = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
->>>>>>> Initial commit
 
 					copy_v3_v3(bone->head, head->p);
 					copy_v3_v3(bone->tail, pt->p);
@@ -1426,29 +1401,20 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 				}
 
 				new_parent = bone;
-<<<<<<< HEAD
-				bone->flag |= BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL;
-=======
+//				bone->flag |= BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL;
 				bone->flag |= ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL;
->>>>>>> Initial commit
 
 				/* move to end of chain */
 				while (bone->parent != NULL) {
 					bone = bone->parent;
-<<<<<<< HEAD
-					bone->flag |= BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL;
-=======
+//					bone->flag |= BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL;
 					bone->flag |= ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL;
->>>>>>> Initial commit
 				}
 
 				if (parent != NULL) {
 					bone->parent = parent;
-<<<<<<< HEAD
-					bone->flag |= BONE_CONNECTED;
-=======
+//					bone->flag |= BONE_CONNECTED;
 					bone->flag |= ELEMENT_CONNECTED;
->>>>>>> Initial commit
 				}
 
 				parent = new_parent;
@@ -2223,11 +2189,7 @@ static int sk_draw_stroke(bContext *C, SK_Sketch *sketch, SK_Stroke *stk, SK_Dra
 		sk_addStrokePoint(C, sketch, stk, dd, snap);
 		sk_updateDrawData(dd);
 		sk_updateNextPoint(sketch, stk);
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		return 1;
 	}
 
@@ -2343,11 +2305,7 @@ SK_Sketch *contextSketch(const bContext *C, int create)
 
 	if (obedit && obedit->type == OB_ARMATURE) {
 		bArmature *arm = obedit->data;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 		if (arm->sketch == NULL && create) {
 			arm->sketch = createSketch();
 		}
@@ -2364,11 +2322,7 @@ SK_Sketch *viewcontextSketch(ViewContext *vc, int create)
 
 	if (obedit && obedit->type == OB_ARMATURE) {
 		bArmature *arm = obedit->data;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 		if (arm->sketch == NULL && create) {
 			arm->sketch = createSketch();
 		}

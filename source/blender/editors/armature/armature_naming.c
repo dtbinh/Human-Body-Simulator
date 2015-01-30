@@ -70,20 +70,18 @@
 /* note: there's a unique_bone_name() too! */
 static bool editbone_unique_check(void *arg, const char *name)
 {
-<<<<<<< HEAD
-	struct {ListBase *lb; void *bone; } *data = arg;
-	EditBone *dupli = ED_armature_bone_find_name(data->lb, name);
-	return dupli && dupli != data->bone;
-}
-
-void unique_editbone_name(ListBase *edbo, char *name, EditBone *bone)
-{
-	struct {ListBase *lb; void *bone; } data;
-	data.lb = edbo;
-	data.bone = bone;
-
-	BLI_uniquename_cb(editbone_unique_check, &data, DATA_("Bone"), '.', name, sizeof(bone->name));
-=======
+//	struct {ListBase *lb; void *bone; } *data = arg;
+//	EditBone *dupli = ED_armature_bone_find_name(data->lb, name);
+//	return dupli && dupli != data->bone;
+//}
+//
+//void unique_editbone_name(ListBase *edbo, char *name, EditBone *bone)
+//{
+//	struct {ListBase *lb; void *bone; } data;
+//	data.lb = edbo;
+//	data.bone = bone;
+//
+//	BLI_uniquename_cb(editbone_unique_check, &data, DATA_("Bone"), '.', name, sizeof(bone->name));
 	struct {ListBase *lb; void *elem; } *data = arg;
 	EditArmatureElement *dupli = ED_armature_armatureelement_find_name(data->lb, name);
 	return dupli && dupli != data->elem;
@@ -96,7 +94,6 @@ void unique_editelement_name(ListBase *edbo, char *name, EditArmatureElement *el
 	data.elem = elem;
 
 	BLI_uniquename_cb(editbone_unique_check, &data, DATA_("Bone"), '.', name, sizeof(elem->name));
->>>>>>> Initial commit
 }
 
 /* ************************************************** */
@@ -117,7 +114,6 @@ static void constraint_bone_name_fix(Object *ob, ListBase *conlist, const char *
 {
 	bConstraint *curcon;
 	bConstraintTarget *ct;
-<<<<<<< HEAD
 	
 	for (curcon = conlist->first; curcon; curcon = curcon->next) {
 		bConstraintTypeInfo *cti = BKE_constraint_typeinfo_get(curcon);
@@ -127,17 +123,6 @@ static void constraint_bone_name_fix(Object *ob, ListBase *conlist, const char *
 		if (cti && cti->get_constraint_targets) {
 			cti->get_constraint_targets(curcon, &targets);
 			
-=======
-
-	for (curcon = conlist->first; curcon; curcon = curcon->next) {
-		bConstraintTypeInfo *cti = BKE_constraint_typeinfo_get(curcon);
-		ListBase targets = {NULL, NULL};
-
-		/* constraint targets */
-		if (cti && cti->get_constraint_targets) {
-			cti->get_constraint_targets(curcon, &targets);
-
->>>>>>> Initial commit
 			for (ct = targets.first; ct; ct = ct->next) {
 				if (ct->tar == ob) {
 					if (STREQ(ct->subtarget, oldname)) {
@@ -145,19 +130,11 @@ static void constraint_bone_name_fix(Object *ob, ListBase *conlist, const char *
 					}
 				}
 			}
-<<<<<<< HEAD
 			
 			if (cti->flush_constraint_targets)
 				cti->flush_constraint_targets(curcon, &targets, 0);
 		}
 		
-=======
-
-			if (cti->flush_constraint_targets)
-				cti->flush_constraint_targets(curcon, &targets, 0);
-		}
-
->>>>>>> Initial commit
 		/* action constraints */
 		if (curcon->type == CONSTRAINT_TYPE_ACTION) {
 			bActionConstraint *actcon = (bActionConstraint *)curcon->data;
@@ -174,38 +151,28 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 	Object *ob;
 	char newname[MAXBONENAME];
 	char oldname[MAXBONENAME];
-<<<<<<< HEAD
 	
 	/* names better differ! */
 	if (!STREQLEN(oldnamep, newnamep, MAXBONENAME)) {
 		
-=======
-
-	/* names better differ! */
-	if (strncmp(oldnamep, newnamep, MAXBONENAME)) {
-
->>>>>>> Initial commit
 		/* we alter newname string... so make copy */
 		BLI_strncpy(newname, newnamep, MAXBONENAME);
 		/* we use oldname for search... so make copy */
 		BLI_strncpy(oldname, oldnamep, MAXBONENAME);
-<<<<<<< HEAD
+//		
+//		/* now check if we're in editmode, we need to find the unique name */
+//		if (arm->edbo) {
+//			EditBone *eBone = ED_armature_bone_find_name(arm->edbo, oldname);
+//			
+//			if (eBone) {
+//				unique_editbone_name(arm->edbo, newname, NULL);
 		
 		/* now check if we're in editmode, we need to find the unique name */
 		if (arm->edbo) {
-			EditBone *eBone = ED_armature_bone_find_name(arm->edbo, oldname);
+			EditArmatureElement *eBone = ED_armature_armatureelement_find_name(arm->edbo, oldname);
 			
 			if (eBone) {
-				unique_editbone_name(arm->edbo, newname, NULL);
-=======
-
-		/* now check if we're in editmode, we need to find the unique name */
-		if (arm->edbo) {
-			EditArmatureElement *eBone = ED_armature_armatureelement_find_name(arm->edbo, oldname);
-
-			if (eBone) {
 				unique_editelement_name(arm->edbo, newname, NULL);
->>>>>>> Initial commit
 				BLI_strncpy(eBone->name, newname, MAXBONENAME);
 			}
 			else {
@@ -213,13 +180,10 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 			}
 		}
 		else {
-<<<<<<< HEAD
-			Bone *bone = BKE_armature_find_bone_name(arm, oldname);
-			
-=======
+//			Bone *bone = BKE_armature_find_bone_name(arm, oldname);
+//			
 			ArmatureElement *bone = BKE_armature_find_bone_name(arm, oldname);
-
->>>>>>> Initial commit
+			
 			if (bone) {
 				unique_bone_name(arm, newname);
 				BLI_strncpy(bone->name, newname, MAXBONENAME);
@@ -228,7 +192,6 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 				return;
 			}
 		}
-<<<<<<< HEAD
 		
 		/* do entire dbase - objects */
 		for (ob = G.main->object.first; ob; ob = ob->id.next) {
@@ -238,17 +201,6 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 			if (arm == ob->data) {
 				Object *cob;
 				
-=======
-
-		/* do entire dbase - objects */
-		for (ob = G.main->object.first; ob; ob = ob->id.next) {
-			ModifierData *md;
-
-			/* we have the object using the armature */
-			if (arm == ob->data) {
-				Object *cob;
-
->>>>>>> Initial commit
 				/* Rename the pose channel, if it exists */
 				if (ob->pose) {
 					bPoseChannel *pchan = BKE_pose_channel_find_name(ob->pose, oldname);
@@ -270,11 +222,7 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 
 					BLI_assert(BKE_pose_channels_is_valid(ob->pose) == true);
 				}
-<<<<<<< HEAD
 				
-=======
-
->>>>>>> Initial commit
 				/* Update any object constraints to use the new bone name */
 				for (cob = G.main->object.first; cob; cob = cob->id.next) {
 					if (cob->constraints.first)
@@ -287,39 +235,23 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 					}
 				}
 			}
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* See if an object is parented to this armature */
 			if (ob->parent && (ob->parent->data == arm)) {
 				if (ob->partype == PARBONE) {
 					/* bone name in object */
-<<<<<<< HEAD
 					if (STREQ(ob->parsubstr, oldname))
 						BLI_strncpy(ob->parsubstr, newname, MAXBONENAME);
 				}
 			}
 			
-=======
-					if (!strcmp(ob->parsubstr, oldname))
-						BLI_strncpy(ob->parsubstr, newname, MAXBONENAME);
-				}
-			}
-
->>>>>>> Initial commit
 			if (modifiers_usesArmature(ob, arm)) {
 				bDeformGroup *dg = defgroup_find_name(ob, oldname);
 				if (dg) {
 					BLI_strncpy(dg->name, newname, MAXBONENAME);
 				}
 			}
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* fix modifiers that might be using this name */
 			for (md = ob->modifiers.first; md; md = md->next) {
 				switch (md->type) {
@@ -352,27 +284,16 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 				}
 			}
 		}
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		/* Fix all animdata that may refer to this bone - we can't just do the ones attached to objects, since
 		 * other ID-blocks may have drivers referring to this bone [#29822]
 		 */
 		// XXX: the ID here is for armatures, but most bone drivers are actually on the object instead...
 		{
-<<<<<<< HEAD
 			
 			BKE_all_animdata_fix_paths_rename(&arm->id, "pose.bones", oldname, newname);
 		}
 		
-=======
-
-			BKE_all_animdata_fix_paths_rename(&arm->id, "pose.bones", oldname, newname);
-		}
-
->>>>>>> Initial commit
 		/* correct view locking */
 		{
 			bScreen *screen;
@@ -385,11 +306,7 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 						if (sl->spacetype == SPACE_VIEW3D) {
 							View3D *v3d = (View3D *)sl;
 							if (v3d->ob_centre && v3d->ob_centre->data == arm) {
-<<<<<<< HEAD
 								if (STREQ(v3d->ob_centre_bone, oldname)) {
-=======
-								if (!strcmp(v3d->ob_centre_bone, oldname)) {
->>>>>>> Initial commit
 									BLI_strncpy(v3d->ob_centre_bone, newname, MAXBONENAME);
 								}
 							}
@@ -408,21 +325,12 @@ static int armature_flip_names_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	Object *ob = CTX_data_edit_object(C);
 	bArmature *arm;
-<<<<<<< HEAD
 	
 	/* paranoia checks */
 	if (ELEM(NULL, ob, ob->pose)) 
 		return OPERATOR_CANCELLED;
 	arm = ob->data;
 	
-=======
-
-	/* paranoia checks */
-	if (ELEM(NULL, ob, ob->pose))
-		return OPERATOR_CANCELLED;
-	arm = ob->data;
-
->>>>>>> Initial commit
 	/* loop through selected bones, auto-naming them */
 	CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
 	{
@@ -431,11 +339,7 @@ static int armature_flip_names_exec(bContext *C, wmOperator *UNUSED(op))
 		ED_armature_bone_rename(arm, ebone->name, name_flip);
 	}
 	CTX_DATA_END;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* since we renamed stuff... */
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 
@@ -455,19 +359,11 @@ void ARMATURE_OT_flip_names(wmOperatorType *ot)
 	ot->name = "Flip Names";
 	ot->idname = "ARMATURE_OT_flip_names";
 	ot->description = "Flips (and corrects) the axis suffixes of the names of selected bones";
-<<<<<<< HEAD
 	
 	/* api callbacks */
 	ot->exec = armature_flip_names_exec;
 	ot->poll = ED_operator_editarmature;
 	
-=======
-
-	/* api callbacks */
-	ot->exec = armature_flip_names_exec;
-	ot->poll = ED_operator_editarmature;
-
->>>>>>> Initial commit
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 }
@@ -479,21 +375,12 @@ static int armature_autoside_names_exec(bContext *C, wmOperator *op)
 	bArmature *arm;
 	char newname[MAXBONENAME];
 	short axis = RNA_enum_get(op->ptr, "type");
-<<<<<<< HEAD
 	
 	/* paranoia checks */
 	if (ELEM(NULL, ob, ob->pose)) 
 		return OPERATOR_CANCELLED;
 	arm = ob->data;
 	
-=======
-
-	/* paranoia checks */
-	if (ELEM(NULL, ob, ob->pose))
-		return OPERATOR_CANCELLED;
-	arm = ob->data;
-
->>>>>>> Initial commit
 	/* loop through selected bones, auto-naming them */
 	CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
 	{
@@ -502,21 +389,13 @@ static int armature_autoside_names_exec(bContext *C, wmOperator *op)
 			ED_armature_bone_rename(arm, ebone->name, newname);
 	}
 	CTX_DATA_END;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* since we renamed stuff... */
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 
 	/* note, notifier might evolve */
 	WM_event_add_notifier(C, NC_OBJECT | ND_POSE, ob);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	return OPERATOR_FINISHED;
 }
 
@@ -528,35 +407,20 @@ void ARMATURE_OT_autoside_names(wmOperatorType *ot)
 		{2, "ZAXIS", 0, "Z-Axis", "Top/Bottom"},
 		{0, NULL, 0, NULL, NULL}
 	};
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* identifiers */
 	ot->name = "AutoName by Axis";
 	ot->idname = "ARMATURE_OT_autoside_names";
 	ot->description = "Automatically renames the selected bones according to which side of the target axis they fall on";
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* api callbacks */
 	ot->invoke = WM_menu_invoke;
 	ot->exec = armature_autoside_names_exec;
 	ot->poll = ED_operator_editarmature;
-<<<<<<< HEAD
 	
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 	
-=======
-
-	/* flags */
-	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
-
->>>>>>> Initial commit
 	/* settings */
 	ot->prop = RNA_def_enum(ot->srna, "type", axis_items, 0, "Axis", "Axis tag names with");
 }

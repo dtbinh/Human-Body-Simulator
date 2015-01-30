@@ -357,16 +357,11 @@ public:
 	SHADER_NODE_CLASS(TextureCoordinateNode)
 	void attributes(Shader *shader, AttributeRequestSet *attributes);
 	bool has_spatial_varying() { return true; }
-<<<<<<< HEAD
 	bool has_object_dependency() { return use_transform; }
 
 	bool from_dupli;
 	bool use_transform;
 	Transform ob_tfm;
-=======
-	
-	bool from_dupli;
->>>>>>> Initial commit
 };
 
 class UVMapNode : public ShaderNode {

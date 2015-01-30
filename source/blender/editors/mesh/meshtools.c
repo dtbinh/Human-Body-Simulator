@@ -329,11 +329,7 @@ int join_mesh_exec(bContext *C, wmOperator *op)
 							if (odg) {
 								/*	Search for a match in the new object, and set new index */
 								for (dg = ob->defbase.first, index = 0; dg; dg = dg->next, index++) {
-<<<<<<< HEAD
 									if (STREQ(dg->name, odg->name)) {
-=======
-									if (!strcmp(dg->name, odg->name)) {
->>>>>>> Initial commit
 										dvert[i].dw[j].def_nr = index;
 										break;
 									}

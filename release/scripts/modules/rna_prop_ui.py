@@ -168,11 +168,7 @@ def draw(layout, context, context_member, property_type, use_edit=True):
             assign_props(props, val_draw, key)
 
 
-<<<<<<< HEAD
 class PropertyPanel:
-=======
-class PropertyPanel():
->>>>>>> Initial commit
     """
     The subclass should have its own poll function
     and the variable '_context_path' MUST be set.

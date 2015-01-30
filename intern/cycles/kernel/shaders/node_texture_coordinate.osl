@@ -21,13 +21,9 @@ shader node_texture_coordinate(
 	int is_background = 0,
 	int is_volume = 0,
 	int from_dupli = 0,
-<<<<<<< HEAD
 	int use_transform = 0,
 	string bump_offset = "center",
 	matrix object_itfm = matrix(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-=======
-	string bump_offset = "center",
->>>>>>> Initial commit
 
 	output point Generated = point(0.0, 0.0, 0.0),
 	output point UV = point(0.0, 0.0, 0.0),
@@ -66,16 +62,12 @@ shader node_texture_coordinate(
 			getattribute("geom:uv", UV);
 		}
 
-<<<<<<< HEAD
 		if (use_transform) {
 			Object = transform(object_itfm, P);
 		}
 		else {
 			Object = transform("object", P);
 		}
-=======
-		Object = transform("object", P);
->>>>>>> Initial commit
 		Camera = transform("camera", P);
 		Window = transform("NDC", P);
 		Normal = transform("world", "object", NormalIn);

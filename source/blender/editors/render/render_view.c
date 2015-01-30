@@ -161,7 +161,6 @@ ScrArea *render_view_open(bContext *C, int mx, int my)
 	}
 	else if (scene->r.displaymode == R_OUTPUT_SCREEN) {
 		sa = CTX_wm_area(C);
-<<<<<<< HEAD
 
 		/* if the active screen is already in fullscreen mode, skip this and
 		 * unset the area, so that the fullscreen area is just changed later */
@@ -175,13 +174,6 @@ ScrArea *render_view_open(bContext *C, int mx, int my)
 			/* this function returns with changed context */
 			sa = ED_screen_full_newspace(C, sa, SPACE_IMAGE);
 		}
-=======
-		if (sa && sa->spacetype == SPACE_IMAGE)
-			area_was_image = true;
-
-		/* this function returns with changed context */
-		sa = ED_screen_full_newspace(C, sa, SPACE_IMAGE);
->>>>>>> Initial commit
 	}
 
 	if (!sa) {
@@ -202,14 +194,11 @@ ScrArea *render_view_open(bContext *C, int mx, int my)
 
 				/* makes ESC go back to prev space */
 				sima->flag |= SI_PREVSPACE;
-<<<<<<< HEAD
 
 				/* we already had a fullscreen here -> mark new space as a stacked fullscreen */
 				if (sa->full) {
 					sa->flag |= AREA_FLAG_STACKED_FULLSCREEN;
 				}
-=======
->>>>>>> Initial commit
 			}
 			else {
 				/* use any area of decent size */

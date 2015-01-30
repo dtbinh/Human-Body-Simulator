@@ -777,11 +777,7 @@ static void decode_blender_header(FileData *fd)
 	readsize = fd->read(fd, header, sizeof(header));
 	
 	if (readsize == sizeof(header)) {
-<<<<<<< HEAD
 		if (STREQLEN(header, "BLENDER", 7)) {
-=======
-		if (strncmp(header, "BLENDER", 7) == 0) {
->>>>>>> Initial commit
 			int remove_this_endian_test = 1;
 			
 			fd->flags |= FD_FLAGS_FILE_OK;
@@ -1186,11 +1182,7 @@ bool BLO_is_a_library(const char *path, char *dir, char *group)
 		
 		/* now we know that we are in a blend file and it is safe to 
 		 * assume that gp actually points to a group */
-<<<<<<< HEAD
 		if (!STREQ("Screen", gp))
-=======
-		if (strcmp("Screen", gp) != 0)
->>>>>>> Initial commit
 			BLI_strncpy(group, gp, BLO_GROUP_MAX);
 	}
 	return 1;
@@ -3132,23 +3124,14 @@ static void lib_link_key(FileData *fd, Main *main)
 static void switch_endian_keyblock(Key *key, KeyBlock *kb)
 {
 	int elemsize, a, b;
-<<<<<<< HEAD
 	char *data;
-=======
-	const char *data, *poin, *cp;
->>>>>>> Initial commit
 	
 	elemsize = key->elemsize;
 	data = kb->data;
 	
 	for (a = 0; a < kb->totelem; a++) {
-<<<<<<< HEAD
 		const char *cp = key->elemstr;
 		char *poin = data;
-=======
-		cp = key->elemstr;
-		poin = data;
->>>>>>> Initial commit
 		
 		while (cp[0]) {  /* cp[0] == amount */
 			switch (cp[1]) {  /* cp[1] = type */
@@ -4566,11 +4549,7 @@ static void lib_link_object(FileData *fd, Main *main)
 					steeringa->target = newlibadr(fd, ob->id.lib, steeringa->target);
 					steeringa->navmesh = newlibadr(fd, ob->id.lib, steeringa->navmesh);
 				}
-<<<<<<< HEAD
 				else if (act->type == ACT_MOUSE) {
-=======
-				else if(act->type == ACT_MOUSE) {
->>>>>>> Initial commit
 					/* bMouseActuator *moa= act->data; */
 				}
 			}
@@ -4947,7 +4926,6 @@ static void direct_link_object(FileData *fd, Object *ob)
 	/* loading saved files with editmode enabled works, but for undo we like
 	 * to stay in object mode during undo presses so keep editmode disabled.
 	 *
-<<<<<<< HEAD
 	 * Also when linking in a file don't allow edit and pose modes.
 	 * See [#34776, #42780] for more information.
 	 */
@@ -4957,12 +4935,6 @@ static void direct_link_object(FileData *fd, Object *ob)
 			ob->mode &= ~OB_MODE_POSE;
 		}
 	}
-=======
-	 * Also when linking in a file don't allow editmode: [#34776] */
-	if (fd->memfile || (ob->id.flag & (LIB_EXTERN | LIB_INDIRECT))) {
-		ob->mode &= ~(OB_MODE_EDIT | OB_MODE_PARTICLE_EDIT);
-		}
->>>>>>> Initial commit
 	
 	ob->adt = newdataadr(fd, ob->adt);
 	direct_link_animdata(fd, ob->adt);
@@ -6039,11 +6011,7 @@ typedef enum ePointerUserMode {
 
 static bool restore_pointer(ID *id, ID *newid, ePointerUserMode user)
 {
-<<<<<<< HEAD
 	if (STREQ(newid->name + 2, id->name + 2)) {
-=======
-	if (strcmp(newid->name + 2, id->name + 2) == 0) {
->>>>>>> Initial commit
 		if (newid->lib == id->lib) {
 			if (user == USER_ONE) {
 				if (newid->us == 0) {
@@ -6904,16 +6872,10 @@ static void direct_link_sound(FileData *fd, bSound *sound)
 		sound->waveform = NULL;
 	}
 		
-<<<<<<< HEAD
 	if (sound->spinlock) {
 		sound->spinlock = MEM_mallocN(sizeof(SpinLock), "sound_spinlock");
 		BLI_spin_init(sound->spinlock);
 	}
-=======
-	if (sound->mutex)
-		sound->mutex = BLI_mutex_alloc();
-	
->>>>>>> Initial commit
 	/* clear waveform loading flag */
 	sound->flags &= ~SOUND_FLAGS_WAVEFORM_LOADING;
 
@@ -7628,13 +7590,7 @@ static BHead *read_global(BlendFileData *bfd, FileData *fd, BHead *bhead)
 	bfd->main->build_commit_timestamp = fg->build_commit_timestamp;
 	BLI_strncpy(bfd->main->build_hash, fg->build_hash, sizeof(bfd->main->build_hash));
 	
-<<<<<<< HEAD
 	bfd->fileflags = fg->fileflags;
-=======
-	bfd->winpos = fg->winpos;
-	bfd->fileflags = fg->fileflags;
-	bfd->displaymode = fg->displaymode;
->>>>>>> Initial commit
 	bfd->globalf = fg->globalf;
 	BLI_strncpy(bfd->filename, fg->filename, sizeof(bfd->filename));
 	
@@ -9144,11 +9100,7 @@ static ID *append_named_part(Main *mainl, FileData *fd, const char *idname, cons
 		if (bhead->code == idcode) {
 			const char *idname_test= bhead_id_name(fd, bhead);
 			
-<<<<<<< HEAD
 			if (STREQ(idname_test + 2, idname)) {
-=======
-			if (strcmp(idname_test + 2, idname) == 0) {
->>>>>>> Initial commit
 				found = 1;
 				id = is_yet_read(fd, mainl, bhead);
 				if (id == NULL) {
@@ -9269,11 +9221,7 @@ static void append_id_part(FileData *fd, Main *mainvar, ID *id, ID **r_id)
 	for (bhead = blo_firstbhead(fd); bhead; bhead = blo_nextbhead(fd, bhead)) {
 		if (bhead->code == GS(id->name)) {
 			
-<<<<<<< HEAD
 			if (STREQ(id->name, bhead_id_name(fd, bhead))) {
-=======
-			if (strcmp(id->name, bhead_id_name(fd, bhead))==0) {
->>>>>>> Initial commit
 				id->flag &= ~LIB_READ;
 				id->flag |= LIB_NEED_EXPAND;
 //				printf("read lib block %s\n", id->name);

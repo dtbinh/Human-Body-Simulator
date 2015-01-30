@@ -270,11 +270,8 @@ enum {
 	LIB_ID_RECALC       = 1 << 12,
 	LIB_ID_RECALC_DATA  = 1 << 13,
 	LIB_ANIM_NO_RECALC  = 1 << 14,
-<<<<<<< HEAD
 
 	LIB_ID_RECALC_ALL   = (LIB_ID_RECALC|LIB_ID_RECALC_DATA),
-=======
->>>>>>> Initial commit
 };
 
 #ifdef __cplusplus

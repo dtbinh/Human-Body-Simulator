@@ -22,20 +22,12 @@ from bpy.types import Panel, Menu
 from rna_prop_ui import PropertyPanel
 from bpy.app.translations import pgettext_iface as iface_
 
-<<<<<<< HEAD
 from bl_ui.properties_physics_common import (
         point_cache_ui,
         effector_weights_ui,
         basic_force_field_settings_ui,
         basic_force_field_falloff_ui,
         )
-=======
-from bl_ui.properties_physics_common import (point_cache_ui,
-                                             effector_weights_ui,
-                                             basic_force_field_settings_ui,
-                                             basic_force_field_falloff_ui,
-                                             )
->>>>>>> Initial commit
 
 
 def particle_panel_enabled(context, psys):
@@ -96,11 +88,7 @@ class PARTICLE_MT_hair_dynamics_presets(Menu):
     draw = Menu.draw_preset
 
 
-<<<<<<< HEAD
 class ParticleButtonsPanel:
-=======
-class ParticleButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "particle"
@@ -116,10 +104,7 @@ def find_modifier(ob, psys):
             if md.particle_system == psys:
                 return md
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 class PARTICLE_UL_particle_systems(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index, flt_flag):
         ob = data

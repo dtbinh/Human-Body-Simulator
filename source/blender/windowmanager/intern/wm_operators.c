@@ -102,11 +102,8 @@
 #include "ED_util.h"
 #include "ED_view3d.h"
 
-<<<<<<< HEAD
 #include "GPU_material.h"
 
-=======
->>>>>>> Initial commit
 #include "RNA_access.h"
 #include "RNA_define.h"
 #include "RNA_enum_types.h"
@@ -1192,11 +1189,7 @@ bool WM_operator_filesel_ensure_ext_imtype(wmOperator *op, const struct ImageFor
 	/* dont NULL check prop, this can only run on ops with a 'filepath' */
 	prop = RNA_struct_find_property(op->ptr, "filepath");
 	RNA_property_string_get(op->ptr, prop, filepath);
-<<<<<<< HEAD
 	if (BKE_image_path_ensure_ext_from_imformat(filepath, im_format)) {
-=======
-	if (BKE_add_image_extension(filepath, im_format)) {
->>>>>>> Initial commit
 		RNA_property_string_set(op->ptr, prop, filepath);
 		/* note, we could check for and update 'filename' here,
 		 * but so far nothing needs this. */
@@ -2691,13 +2684,9 @@ static int wm_link_append_exec(bContext *C, wmOperator *op)
 
 	/* recreate dependency graph to include new objects */
 	DAG_scene_relations_rebuild(bmain, scene);
-<<<<<<< HEAD
 	
 	/* free gpu materials, some materials depend on existing objects, such as lamps so freeing correctly refreshes */
 	GPU_materials_free();
-=======
-
->>>>>>> Initial commit
 	BLO_blendhandle_close(bh);
 
 	/* XXX TODO: align G.lib with other directory storage (like last opened image etc...) */

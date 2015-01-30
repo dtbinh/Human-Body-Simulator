@@ -22,11 +22,7 @@ from bpy.types import Panel, Menu
 from rna_prop_ui import PropertyPanel
 
 
-<<<<<<< HEAD
 class ObjectButtonsPanel:
-=======
-class ObjectButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "object"
@@ -327,15 +323,10 @@ class OBJECT_PT_relations_extras(ObjectButtonsPanel, Panel):
         layout.prop(ob, "use_extra_recalc_data")
 
 
-<<<<<<< HEAD
 from bl_ui.properties_animviz import (
         MotionPathButtonsPanel,
         OnionSkinButtonsPanel,
         )
-=======
-from bl_ui.properties_animviz import (MotionPathButtonsPanel,
-                                      OnionSkinButtonsPanel)
->>>>>>> Initial commit
 
 
 class OBJECT_PT_motion_paths(MotionPathButtonsPanel, Panel):

@@ -24,11 +24,7 @@ import pickle
 import re
 
 
-<<<<<<< HEAD
 class SpellChecker:
-=======
-class SpellChecker():
->>>>>>> Initial commit
     """
     A basic spell checker.
     """

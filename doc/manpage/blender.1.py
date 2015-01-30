@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 #!/usr/bin/env python
-=======
-#!/usr/bin/python
->>>>>>> Initial commit
 
 # ##### BEGIN GPL LICENSE BLOCK #####
 #

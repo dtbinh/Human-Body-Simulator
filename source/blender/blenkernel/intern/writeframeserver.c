@@ -214,11 +214,7 @@ static int handle_request(RenderData *rd, char *req)
 
 	*p = 0;
 
-<<<<<<< HEAD
 	if (STREQ(path, "/index.html") || STREQ(path, "/")) {
-=======
-	if (strcmp(path, "/index.html") == 0 || strcmp(path, "/") == 0) {
->>>>>>> Initial commit
 		safe_puts(index_page);
 		return -1;
 	}
@@ -230,11 +226,7 @@ static int handle_request(RenderData *rd, char *req)
 		write_ppm = 1;
 		return atoi(path + 12);
 	}
-<<<<<<< HEAD
 	if (STREQ(path, "/info.txt")) {
-=======
-	if (strcmp(path, "/info.txt") == 0) {
->>>>>>> Initial commit
 		char buf[4096];
 
 		sprintf(buf,
@@ -258,11 +250,7 @@ static int handle_request(RenderData *rd, char *req)
 		safe_puts(buf);
 		return -1;
 	}
-<<<<<<< HEAD
 	if (STREQ(path, "/close.txt")) {
-=======
-	if (strcmp(path, "/close.txt") == 0) {
->>>>>>> Initial commit
 		safe_puts(good_bye);
 		G.is_break = true;  /* Abort render */
 		return -1;

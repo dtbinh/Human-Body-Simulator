@@ -454,11 +454,8 @@ static short apply_targetless_ik(Object *ob)
 				if (segcount == data->rootbone || segcount > 255) break;  // 255 is weak
 			}
 			for (; segcount; segcount--) {
-<<<<<<< HEAD
-				Bone *bone;
-=======
+//				Bone *bone;
 				ArmatureElement *element;
->>>>>>> Initial commit
 				float rmat[4][4] /*, tmat[4][4], imat[4][4]*/;
 
 				/* pose_mat(b) = pose_mat(b-1) * offs_bone * channel * constraint * IK  */
@@ -467,13 +464,10 @@ static short apply_targetless_ik(Object *ob)
 				/* rmat = pose_mat(b) * inv(pose_mat(b-1) * offs_bone ) */
 
 				parchan = chanlist[segcount - 1];
-<<<<<<< HEAD
-				bone = parchan->bone;
-				bone->flag |= BONE_TRANSFORM;   /* ensures it gets an auto key inserted */
-=======
+//				bone = parchan->bone;
+//				bone->flag |= BONE_TRANSFORM;   /* ensures it gets an auto key inserted */
 				element = parchan->bone;
 				element->flag |= ELEMENT_TRANSFORM;   /* ensures it gets an auto key inserted */
->>>>>>> Initial commit
 
 				BKE_armature_mat_pose_to_bone(parchan, parchan->pose_mat, rmat);
 
@@ -528,11 +522,8 @@ static short apply_targetless_ik(Object *ob)
 
 static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, TransData *td)
 {
-<<<<<<< HEAD
-	Bone *bone = pchan->bone;
-=======
+//	Bone *bone = pchan->bone;
 	ArmatureElement *element = pchan->bone;
->>>>>>> Initial commit
 	float pmat[3][3], omat[3][3];
 	float cmat[3][3], tmat[3][3];
 	float vec[3];
@@ -542,19 +533,16 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 
 	td->ob = ob;
 	td->flag = TD_SELECTED;
-<<<<<<< HEAD
-	if (bone->flag & BONE_HINGE_CHILD_TRANSFORM) {
-		td->flag |= TD_NOCENTER;
-	}
-
-	if (bone->flag & BONE_TRANSFORM_CHILD) {
-=======
+//	if (bone->flag & BONE_HINGE_CHILD_TRANSFORM) {
+//		td->flag |= TD_NOCENTER;
+//	}
+//
+//	if (bone->flag & BONE_TRANSFORM_CHILD) {
 	if (element->flag & ELEMENT_HINGE_CHILD_TRANSFORM) {
 		td->flag |= TD_NOCENTER;
 	}
 
 	if (element->flag & ELEMENT_TRANSFORM_CHILD) {
->>>>>>> Initial commit
 		td->flag |= TD_NOCENTER;
 		td->flag |= TD_NO_LOC;
 	}
@@ -632,19 +620,16 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 
 	/* exceptional case: rotate the pose bone which also applies transformation
 	 * when a parentless bone has BONE_NO_LOCAL_LOCATION [] */
-<<<<<<< HEAD
-	if (!ELEM(t->mode, TFM_TRANSLATION, TFM_RESIZE) && (pchan->bone->flag & BONE_NO_LOCAL_LOCATION)) {
-		if (pchan->parent) {
-			/* same as td->smtx but without pchan->bone->bone_mat */
-			td->flag |= TD_PBONE_LOCAL_MTX_C;
-			mul_m3_m3m3(td->ext->l_smtx, pchan->bone->bone_mat, td->smtx);
-=======
+//	if (!ELEM(t->mode, TFM_TRANSLATION, TFM_RESIZE) && (pchan->bone->flag & BONE_NO_LOCAL_LOCATION)) {
+//		if (pchan->parent) {
+//			/* same as td->smtx but without pchan->bone->bone_mat */
+//			td->flag |= TD_PBONE_LOCAL_MTX_C;
+//			mul_m3_m3m3(td->ext->l_smtx, pchan->bone->bone_mat, td->smtx);
 	if (!ELEM(t->mode, TFM_TRANSLATION, TFM_RESIZE) && (pchan->bone->flag & ELEMENT_NO_LOCAL_LOCATION)) {
 		if (pchan->parent) {
 			/* same as td->smtx but without pchan->bone->bone_mat */
 			td->flag |= TD_PBONE_LOCAL_MTX_C;
 			mul_m3_m3m3(td->ext->l_smtx, pchan->bone->AE_mat, td->smtx);
->>>>>>> Initial commit
 		}
 		else {
 			td->flag |= TD_PBONE_LOCAL_MTX_P;
@@ -661,21 +646,18 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 
 		if (arm->drawtype == ARM_ENVELOPE) {
 			td->loc = NULL;
-<<<<<<< HEAD
-			td->val = &bone->dist;
-			td->ival = bone->dist;
-		}
-		else {
-			// abusive storage of scale in the loc pointer :)
-			td->loc = &bone->xwidth;
-=======
+//			td->val = &bone->dist;
+//			td->ival = bone->dist;
+//		}
+//		else {
+//			// abusive storage of scale in the loc pointer :)
+//			td->loc = &bone->xwidth;
 			td->val = &((BoneData*)element->data)->dist;
 			td->ival = ((BoneData*)element->data)->dist;
 		}
 		else {
 			// abusive storage of scale in the loc pointer :)
 			td->loc = &element->xwidth;
->>>>>>> Initial commit
 			copy_v3_v3(td->iloc, td->loc);
 			td->val = NULL;
 		}
@@ -707,22 +689,20 @@ static void add_pose_transdata(TransInfo *t, bPoseChannel *pchan, Object *ob, Tr
 
 static void bone_children_clear_transflag(int mode, short around, ListBase *lb)
 {
-<<<<<<< HEAD
-	Bone *bone = lb->first;
-
-	for (; bone; bone = bone->next) {
-		if ((bone->flag & BONE_HINGE) && (bone->flag & BONE_CONNECTED)) {
-			bone->flag |= BONE_HINGE_CHILD_TRANSFORM;
-		}
-		else if ((bone->flag & BONE_TRANSFORM) &&
-		         (mode == TFM_ROTATION || mode == TFM_TRACKBALL) &&
-		         (around == V3D_LOCAL))
-		{
-			bone->flag |= BONE_TRANSFORM_CHILD;
-		}
-		else {
-			bone->flag &= ~BONE_TRANSFORM;
-=======
+//	Bone *bone = lb->first;
+//
+//	for (; bone; bone = bone->next) {
+//		if ((bone->flag & BONE_HINGE) && (bone->flag & BONE_CONNECTED)) {
+//			bone->flag |= BONE_HINGE_CHILD_TRANSFORM;
+//		}
+//		else if ((bone->flag & BONE_TRANSFORM) &&
+//		         (mode == TFM_ROTATION || mode == TFM_TRACKBALL) &&
+//		         (around == V3D_LOCAL))
+//		{
+//			bone->flag |= BONE_TRANSFORM_CHILD;
+//		}
+//		else {
+//			bone->flag &= ~BONE_TRANSFORM;
 	ArmatureElement *bone = lb->first;
 
 	for (; bone; bone = bone->next) {
@@ -737,7 +717,6 @@ static void bone_children_clear_transflag(int mode, short around, ListBase *lb)
 		}
 		else {
 			bone->flag &= ~ELEMENT_TRANSFORM;
->>>>>>> Initial commit
 		}
 
 		bone_children_clear_transflag(mode, around, &bone->childbase);
@@ -750,30 +729,25 @@ int count_set_pose_transflags(int *out_mode, short around, Object *ob)
 {
 	bArmature *arm = ob->data;
 	bPoseChannel *pchan;
-<<<<<<< HEAD
-	Bone *bone;
-=======
+//	Bone *bone;
 	ArmatureElement *element;
->>>>>>> Initial commit
 	int mode = *out_mode;
 	int hastranslation = 0;
 	int total = 0;
 
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-		bone = pchan->bone;
-		if (PBONE_VISIBLE(arm, bone)) {
-			if ((bone->flag & BONE_SELECTED))
-				bone->flag |= BONE_TRANSFORM;
-			else
-				bone->flag &= ~BONE_TRANSFORM;
-			
-			bone->flag &= ~BONE_HINGE_CHILD_TRANSFORM;
-			bone->flag &= ~BONE_TRANSFORM_CHILD;
-		}
-		else
-			bone->flag &= ~BONE_TRANSFORM;
-=======
+//		bone = pchan->bone;
+//		if (PBONE_VISIBLE(arm, bone)) {
+//			if ((bone->flag & BONE_SELECTED))
+//				bone->flag |= BONE_TRANSFORM;
+//			else
+//				bone->flag &= ~BONE_TRANSFORM;
+//			
+//			bone->flag &= ~BONE_HINGE_CHILD_TRANSFORM;
+//			bone->flag &= ~BONE_TRANSFORM_CHILD;
+//		}
+//		else
+//			bone->flag &= ~BONE_TRANSFORM;
 		element = pchan->bone;
 		if (PELEMENT_VISIBLE(arm, element)) {
 			if ((element->flag & ELEMENT_SELECTED))
@@ -786,46 +760,36 @@ int count_set_pose_transflags(int *out_mode, short around, Object *ob)
 		}
 		else
 			element->flag &= ~ELEMENT_TRANSFORM;
->>>>>>> Initial commit
 	}
 
 	/* make sure no bone can be transformed when a parent is transformed */
 	/* since pchans are depsgraph sorted, the parents are in beginning of list */
 	if (mode != TFM_BONESIZE) {
 		for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-			bone = pchan->bone;
-			if (bone->flag & BONE_TRANSFORM)
-				bone_children_clear_transflag(mode, around, &bone->childbase);
-=======
+//			bone = pchan->bone;
+//			if (bone->flag & BONE_TRANSFORM)
+//				bone_children_clear_transflag(mode, around, &bone->childbase);
 			element = pchan->bone;
 			if (element->flag & ELEMENT_TRANSFORM)
 				bone_children_clear_transflag(mode, around, &element->childbase);
->>>>>>> Initial commit
 		}
 	}
 	/* now count, and check if we have autoIK or have to switch from translate to rotate */
 	hastranslation = 0;
 
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-		bone = pchan->bone;
-		if (bone->flag & BONE_TRANSFORM) {
-=======
+//		bone = pchan->bone;
+//		if (bone->flag & BONE_TRANSFORM) {
 		element = pchan->bone;
 		if (element->flag & ELEMENT_TRANSFORM) {
->>>>>>> Initial commit
 			total++;
 			
 			if (mode == TFM_TRANSLATION) {
 				if (has_targetless_ik(pchan) == NULL) {
-<<<<<<< HEAD
-					if (pchan->parent && (pchan->bone->flag & BONE_CONNECTED)) {
-						if (pchan->bone->flag & BONE_HINGE_CHILD_TRANSFORM)
-=======
+//					if (pchan->parent && (pchan->bone->flag & BONE_CONNECTED)) {
+//						if (pchan->bone->flag & BONE_HINGE_CHILD_TRANSFORM)
 					if (pchan->parent && (pchan->bone->flag & ELEMENT_CONNECTED)) {
 						if (pchan->bone->flag & ELEMENT_HINGE_CHILD_TRANSFORM)
->>>>>>> Initial commit
 							hastranslation = 1;
 					}
 					else if ((pchan->protectflag & OB_LOCK_LOC) != OB_LOCK_LOC)
@@ -1004,11 +968,8 @@ static short pose_grab_with_ik_add(bPoseChannel *pchan)
 		data->rootbone++;
 		
 		/* continue to parent, but only if we're connected to it */
-<<<<<<< HEAD
-		if (pchan->bone->flag & BONE_CONNECTED)
-=======
+//		if (pchan->bone->flag & BONE_CONNECTED)
 		if (pchan->bone->flag & ELEMENT_CONNECTED)
->>>>>>> Initial commit
 			pchan = pchan->parent;
 		else
 			pchan = NULL;
@@ -1021,22 +982,20 @@ static short pose_grab_with_ik_add(bPoseChannel *pchan)
 }
 
 /* bone is a candidate to get IK, but we don't do it if it has children connected */
-<<<<<<< HEAD
-static short pose_grab_with_ik_children(bPose *pose, Bone *bone)
-{
-	Bone *bonec;
-	short wentdeeper = 0, added = 0;
-
-	/* go deeper if children & children are connected */
-	for (bonec = bone->childbase.first; bonec; bonec = bonec->next) {
-		if (bonec->flag & BONE_CONNECTED) {
-			wentdeeper = 1;
-			added += pose_grab_with_ik_children(pose, bonec);
-		}
-	}
-	if (wentdeeper == 0) {
-		bPoseChannel *pchan = BKE_pose_channel_find_name(pose, bone->name);
-=======
+//static short pose_grab_with_ik_children(bPose *pose, Bone *bone)
+//{
+//	Bone *bonec;
+//	short wentdeeper = 0, added = 0;
+//
+//	/* go deeper if children & children are connected */
+//	for (bonec = bone->childbase.first; bonec; bonec = bonec->next) {
+//		if (bonec->flag & BONE_CONNECTED) {
+//			wentdeeper = 1;
+//			added += pose_grab_with_ik_children(pose, bonec);
+//		}
+//	}
+//	if (wentdeeper == 0) {
+//		bPoseChannel *pchan = BKE_pose_channel_find_name(pose, bone->name);
 static short pose_grab_with_ik_children(bPose *pose, ArmatureElement *element)
 {
 	ArmatureElement *elementc;
@@ -1051,7 +1010,6 @@ static short pose_grab_with_ik_children(bPose *pose, ArmatureElement *element)
 	}
 	if (wentdeeper == 0) {
 		bPoseChannel *pchan = BKE_pose_channel_find_name(pose, element->name);
->>>>>>> Initial commit
 		if (pchan)
 			added += pose_grab_with_ik_add(pchan);
 	}
@@ -1064,11 +1022,8 @@ static short pose_grab_with_ik(Object *ob)
 {
 	bArmature *arm;
 	bPoseChannel *pchan, *parent;
-<<<<<<< HEAD
-	Bone *bonec;
-=======
+//	Bone *bonec;
 	ArmatureElement *elementc;
->>>>>>> Initial commit
 	short tot_ik = 0;
 
 	if ((ob == NULL) || (ob->pose == NULL) || (ob->mode & OB_MODE_POSE) == 0)
@@ -1079,16 +1034,14 @@ static short pose_grab_with_ik(Object *ob)
 	/* Rule: allow multiple Bones (but they must be selected, and only one ik-solver per chain should get added) */
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 		if (pchan->bone->layer & arm->layer) {
-<<<<<<< HEAD
-			if (pchan->bone->flag & BONE_SELECTED) {
-				/* Rule: no IK for solitatry (unconnected) bones */
-				for (bonec = pchan->bone->childbase.first; bonec; bonec = bonec->next) {
-					if (bonec->flag & BONE_CONNECTED) {
-						break;
-					}
-				}
-				if ((pchan->bone->flag & BONE_CONNECTED) == 0 && (bonec == NULL))
-=======
+//			if (pchan->bone->flag & BONE_SELECTED) {
+//				/* Rule: no IK for solitatry (unconnected) bones */
+//				for (bonec = pchan->bone->childbase.first; bonec; bonec = bonec->next) {
+//					if (bonec->flag & BONE_CONNECTED) {
+//						break;
+//					}
+//				}
+//				if ((pchan->bone->flag & BONE_CONNECTED) == 0 && (bonec == NULL))
 			if (pchan->bone->flag & ELEMENT_SELECTED) {
 				/* Rule: no IK for solitatry (unconnected) bones */
 				for (elementc = pchan->bone->childbase.first; elementc; elementc = elementc->next) {
@@ -1097,18 +1050,14 @@ static short pose_grab_with_ik(Object *ob)
 					}
 				}
 				if ((pchan->bone->flag & ELEMENT_CONNECTED) == 0 && (elementc == NULL))
->>>>>>> Initial commit
 					continue;
 
 				/* rule: if selected Bone is not a root bone, it gets a temporal IK */
 				if (pchan->parent) {
 					/* only adds if there's no IK yet (and no parent bone was selected) */
 					for (parent = pchan->parent; parent; parent = parent->parent) {
-<<<<<<< HEAD
-						if (parent->bone->flag & BONE_SELECTED)
-=======
+//						if (parent->bone->flag & BONE_SELECTED)
 						if (parent->bone->flag & ELEMENT_SELECTED)
->>>>>>> Initial commit
 							break;
 					}
 					if (parent == NULL)
@@ -1181,11 +1130,8 @@ static void createTransPose(TransInfo *t, Object *ob)
 	/* use pose channels to fill trans data */
 	td = t->data;
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-		if (pchan->bone->flag & BONE_TRANSFORM) {
-=======
+//		if (pchan->bone->flag & BONE_TRANSFORM) {
 		if (pchan->bone->flag & ELEMENT_TRANSFORM) {
->>>>>>> Initial commit
 			add_pose_transdata(t, pchan, ob, td);
 			td++;
 		}
@@ -1203,20 +1149,14 @@ void restoreBones(TransInfo *t)
 {
 	bArmature *arm = t->obedit->data;
 	BoneInitData *bid = t->customData;
-<<<<<<< HEAD
-	EditBone *ebo;
-=======
+//	EditBone *ebo;
 	EditArmatureElement *ebo;
->>>>>>> Initial commit
 
 	while (bid->bone) {
 		ebo = bid->bone;
 		
-<<<<<<< HEAD
-		ebo->dist = bid->dist;
-=======
+//		ebo->dist = bid->dist;
 		((BoneData*)ebo->data)->dist = bid->dist;
->>>>>>> Initial commit
 		ebo->rad_tail = bid->rad_tail;
 		ebo->roll = bid->roll;
 		ebo->xwidth = bid->xwidth;
@@ -1225,32 +1165,26 @@ void restoreBones(TransInfo *t)
 		copy_v3_v3(ebo->tail, bid->tail);
 		
 		if (arm->flag & ARM_MIRROR_EDIT) {
-<<<<<<< HEAD
-			EditBone *ebo_child;
-
-			/* Also move connected ebo_child, in case ebo_child's name aren't mirrored properly */
-			for (ebo_child = arm->edbo->first; ebo_child; ebo_child = ebo_child->next) {
-				if ((ebo_child->flag & BONE_CONNECTED) && (ebo_child->parent == ebo)) {
-=======
+//			EditBone *ebo_child;
+//
+//			/* Also move connected ebo_child, in case ebo_child's name aren't mirrored properly */
+//			for (ebo_child = arm->edbo->first; ebo_child; ebo_child = ebo_child->next) {
+//				if ((ebo_child->flag & BONE_CONNECTED) && (ebo_child->parent == ebo)) {
 			EditArmatureElement *ebo_child;
 
 			/* Also move connected ebo_child, in case ebo_child's name aren't mirrored properly */
 			for (ebo_child = arm->edbo->first; ebo_child; ebo_child = ebo_child->next) {
 				if ((ebo_child->flag & ELEMENT_CONNECTED) && (ebo_child->parent == ebo)) {
->>>>>>> Initial commit
 					copy_v3_v3(ebo_child->head, ebo->tail);
 					ebo_child->rad_head = ebo->rad_tail;
 				}
 			}
 
 			/* Also move connected parent, in case parent's name isn't mirrored properly */
-<<<<<<< HEAD
-			if ((ebo->flag & BONE_CONNECTED) && ebo->parent) {
-				EditBone *parent = ebo->parent;
-=======
+//			if ((ebo->flag & BONE_CONNECTED) && ebo->parent) {
+//				EditBone *parent = ebo->parent;
 			if ((ebo->flag & ELEMENT_CONNECTED) && ebo->parent) {
 				EditArmatureElement *parent = ebo->parent;
->>>>>>> Initial commit
 				copy_v3_v3(parent->tail, ebo->head);
 				parent->rad_tail = ebo->rad_head;
 			}
@@ -1264,11 +1198,8 @@ void restoreBones(TransInfo *t)
 /* ********************* armature ************** */
 static void createTransArmatureVerts(TransInfo *t)
 {
-<<<<<<< HEAD
-	EditBone *ebo, *eboflip;
-=======
+//	EditBone *ebo, *eboflip;
 	EditArmatureElement *ebo, *eboflip;
->>>>>>> Initial commit
 	bArmature *arm = t->obedit->data;
 	ListBase *edbo = arm->edbo;
 	TransData *td, *td_old;
@@ -1282,21 +1213,19 @@ static void createTransArmatureVerts(TransInfo *t)
 	for (ebo = edbo->first; ebo; ebo = ebo->next) {
 		oldtot = t->total;
 
-<<<<<<< HEAD
-		if (EBONE_VISIBLE(arm, ebo) && !(ebo->flag & BONE_EDITMODE_LOCKED)) {
-			if (t->mode == TFM_BONESIZE) {
-				if (ebo->flag & BONE_SELECTED)
-					t->total++;
-			}
-			else if (t->mode == TFM_BONE_ROLL) {
-				if (ebo->flag & BONE_SELECTED)
-					t->total++;
-			}
-			else {
-				if (ebo->flag & BONE_TIPSEL)
-					t->total++;
-				if (ebo->flag & BONE_ROOTSEL)
-=======
+//		if (EBONE_VISIBLE(arm, ebo) && !(ebo->flag & BONE_EDITMODE_LOCKED)) {
+//			if (t->mode == TFM_BONESIZE) {
+//				if (ebo->flag & BONE_SELECTED)
+//					t->total++;
+//			}
+//			else if (t->mode == TFM_BONE_ROLL) {
+//				if (ebo->flag & BONE_SELECTED)
+//					t->total++;
+//			}
+//			else {
+//				if (ebo->flag & BONE_TIPSEL)
+//					t->total++;
+//				if (ebo->flag & BONE_ROOTSEL)
 		if (EELEMENT_VISIBLE(arm, ebo) && !(ebo->flag & ELEMENT_EDITMODE_LOCKED)) {
 			if (t->mode == TFM_BONESIZE) {
 				if (ebo->flag & ELEMENT_SELECTED)
@@ -1342,15 +1271,12 @@ static void createTransArmatureVerts(TransInfo *t)
 		td_old = td;
 		ebo->oldlength = ebo->length;   // length==0.0 on extrude, used for scaling radius of bone points
 
-<<<<<<< HEAD
-		if (EBONE_VISIBLE(arm, ebo) && !(ebo->flag & BONE_EDITMODE_LOCKED)) {
-			if (t->mode == TFM_BONE_ENVELOPE) {
-				if (ebo->flag & BONE_ROOTSEL) {
-=======
+//		if (EBONE_VISIBLE(arm, ebo) && !(ebo->flag & BONE_EDITMODE_LOCKED)) {
+//			if (t->mode == TFM_BONE_ENVELOPE) {
+//				if (ebo->flag & BONE_ROOTSEL) {
 		if (EELEMENT_VISIBLE(arm, ebo) && !(ebo->flag & ELEMENT_EDITMODE_LOCKED)) {
 			if (t->mode == TFM_BONE_ENVELOPE) {
 				if (ebo->flag & ELEMENT_ROOTSEL) {
->>>>>>> Initial commit
 					td->val = &ebo->rad_head;
 					td->ival = *td->val;
 
@@ -1366,11 +1292,8 @@ static void createTransArmatureVerts(TransInfo *t)
 
 					td++;
 				}
-<<<<<<< HEAD
-				if (ebo->flag & BONE_TIPSEL) {
-=======
+//				if (ebo->flag & BONE_TIPSEL) {
 				if (ebo->flag & ELEMENT_TIPSEL) {
->>>>>>> Initial commit
 					td->val = &ebo->rad_tail;
 					td->ival = *td->val;
 					copy_v3_v3(td->center, ebo->tail);
@@ -1388,19 +1311,16 @@ static void createTransArmatureVerts(TransInfo *t)
 
 			}
 			else if (t->mode == TFM_BONESIZE) {
-<<<<<<< HEAD
-				if (ebo->flag & BONE_SELECTED) {
-					if (arm->drawtype == ARM_ENVELOPE) {
-						td->loc = NULL;
-						td->val = &ebo->dist;
-						td->ival = ebo->dist;
-=======
+//				if (ebo->flag & BONE_SELECTED) {
+//					if (arm->drawtype == ARM_ENVELOPE) {
+//						td->loc = NULL;
+//						td->val = &ebo->dist;
+//						td->ival = ebo->dist;
 				if (ebo->flag & ELEMENT_SELECTED) {
 					if (arm->drawtype == ARM_ENVELOPE) {
 						td->loc = NULL;
 						td->val = &((BoneData*)ebo->data)->dist;
 						td->ival = ((BoneData*)ebo->data)->dist;
->>>>>>> Initial commit
 					}
 					else {
 						// abusive storage of scale in the loc pointer :)
@@ -1412,11 +1332,8 @@ static void createTransArmatureVerts(TransInfo *t)
 					td->flag = TD_SELECTED;
 
 					/* use local bone matrix */
-<<<<<<< HEAD
-					ED_armature_ebone_to_mat3(ebo, bonemat);
-=======
+//					ED_armature_ebone_to_mat3(ebo, bonemat);
 					ED_armature_eelement_to_mat3(ebo, bonemat);
->>>>>>> Initial commit
 					mul_m3_m3m3(td->mtx, mtx, bonemat);
 					invert_m3_m3(td->smtx, td->mtx);
 
@@ -1430,11 +1347,8 @@ static void createTransArmatureVerts(TransInfo *t)
 				}
 			}
 			else if (t->mode == TFM_BONE_ROLL) {
-<<<<<<< HEAD
-				if (ebo->flag & BONE_SELECTED) {
-=======
+//				if (ebo->flag & BONE_SELECTED) {
 				if (ebo->flag & ELEMENT_SELECTED) {
->>>>>>> Initial commit
 					td->loc = NULL;
 					td->val = &(ebo->roll);
 					td->ival = ebo->roll;
@@ -1449,34 +1363,25 @@ static void createTransArmatureVerts(TransInfo *t)
 				}
 			}
 			else {
-<<<<<<< HEAD
-				if (ebo->flag & BONE_TIPSEL) {
-=======
+//				if (ebo->flag & BONE_TIPSEL) {
 				if (ebo->flag & ELEMENT_TIPSEL) {
->>>>>>> Initial commit
 					copy_v3_v3(td->iloc, ebo->tail);
 					copy_v3_v3(td->center, (t->around == V3D_LOCAL) ? ebo->head : td->iloc);
 					td->loc = ebo->tail;
 					td->flag = TD_SELECTED;
-<<<<<<< HEAD
-					if (ebo->flag & BONE_EDITMODE_LOCKED)
-=======
+//					if (ebo->flag & BONE_EDITMODE_LOCKED)
 					if (ebo->flag & ELEMENT_EDITMODE_LOCKED)
->>>>>>> Initial commit
 						td->protectflag = OB_LOCK_LOC | OB_LOCK_ROT | OB_LOCK_SCALE;
 
 					copy_m3_m3(td->smtx, smtx);
 					copy_m3_m3(td->mtx, mtx);
 
-<<<<<<< HEAD
-					ED_armature_ebone_to_mat3(ebo, td->axismtx);
-
-					if ((ebo->flag & BONE_ROOTSEL) == 0) {
-=======
+//					ED_armature_ebone_to_mat3(ebo, td->axismtx);
+//
+//					if ((ebo->flag & BONE_ROOTSEL) == 0) {
 					ED_armature_eelement_to_mat3(ebo, td->axismtx);
 
 					if ((ebo->flag & ELEMENT_ROOTSEL) == 0) {
->>>>>>> Initial commit
 						td->extra = ebo;
 						td->ival = ebo->roll;
 					}
@@ -1487,30 +1392,21 @@ static void createTransArmatureVerts(TransInfo *t)
 
 					td++;
 				}
-<<<<<<< HEAD
-				if (ebo->flag & BONE_ROOTSEL) {
-=======
+//				if (ebo->flag & BONE_ROOTSEL) {
 				if (ebo->flag & ELEMENT_ROOTSEL) {
->>>>>>> Initial commit
 					copy_v3_v3(td->iloc, ebo->head);
 					copy_v3_v3(td->center, td->iloc);
 					td->loc = ebo->head;
 					td->flag = TD_SELECTED;
-<<<<<<< HEAD
-					if (ebo->flag & BONE_EDITMODE_LOCKED)
-=======
+//					if (ebo->flag & BONE_EDITMODE_LOCKED)
 					if (ebo->flag & ELEMENT_EDITMODE_LOCKED)
->>>>>>> Initial commit
 						td->protectflag = OB_LOCK_LOC | OB_LOCK_ROT | OB_LOCK_SCALE;
 
 					copy_m3_m3(td->smtx, smtx);
 					copy_m3_m3(td->mtx, mtx);
 
-<<<<<<< HEAD
-					ED_armature_ebone_to_mat3(ebo, td->axismtx);
-=======
+//					ED_armature_ebone_to_mat3(ebo, td->axismtx);
 					ED_armature_eelement_to_mat3(ebo, td->axismtx);
->>>>>>> Initial commit
 
 					td->extra = ebo; /* to fix roll */
 					td->ival = ebo->roll;
@@ -1528,11 +1424,8 @@ static void createTransArmatureVerts(TransInfo *t)
 			eboflip = ED_armature_bone_get_mirrored(arm->edbo, ebo);
 			if (eboflip) {
 				bid[i].bone = eboflip;
-<<<<<<< HEAD
-				bid[i].dist = eboflip->dist;
-=======
+//				bid[i].dist = eboflip->dist;
 				bid[i].dist = ((BoneData*)eboflip->data)->dist;
->>>>>>> Initial commit
 				bid[i].rad_tail = eboflip->rad_tail;
 				bid[i].roll = eboflip->roll;
 				bid[i].xwidth = eboflip->xwidth;
@@ -3048,13 +2941,8 @@ void flushTransUVs(TransInfo *t)
 		td->loc2d[1] = td->loc[1] * invy;
 
 		if ((sima->flag & SI_PIXELSNAP) && (t->state != TRANS_CANCEL)) {
-<<<<<<< HEAD
 			td->loc2d[0] = roundf(width * td->loc2d[0]) / width;
 			td->loc2d[1] = roundf(height * td->loc2d[1]) / height;
-=======
-			td->loc2d[0] = floorf(width * td->loc2d[0] + 0.5f) / width;
-			td->loc2d[1] = floorf(height * td->loc2d[1] + 0.5f) / height;
->>>>>>> Initial commit
 		}
 	}
 }
@@ -4067,15 +3955,9 @@ static void createTransGraphEditData(bContext *C, TransInfo *t)
 		/* only include BezTriples whose 'keyframe' occurs on the same side of the current frame as mouse */
 		for (i = 0, bezt = fcu->bezt; i < fcu->totvert; i++, bezt++) {
 			if (FrameOnMouseSide(t->frame_side, bezt->vec[1][0], cfra)) {
-<<<<<<< HEAD
 				const bool sel2 = (bezt->f2 & SELECT) != 0;
 				const bool sel1 = use_handle ? (bezt->f1 & SELECT) != 0 : sel2;
 				const bool sel3 = use_handle ? (bezt->f3 & SELECT) != 0 : sel2;
-=======
-				const bool sel2 = bezt->f2 & SELECT;
-				const bool sel1 = use_handle ? bezt->f1 & SELECT : sel2;
-				const bool sel3 = use_handle ? bezt->f3 & SELECT : sel2;
->>>>>>> Initial commit
 
 				if (!is_translation_mode || !(sel2)) {
 					if (sel1) {
@@ -4159,15 +4041,9 @@ static void createTransGraphEditData(bContext *C, TransInfo *t)
 		/* only include BezTriples whose 'keyframe' occurs on the same side of the current frame as mouse (if applicable) */
 		for (i = 0, bezt = fcu->bezt; i < fcu->totvert; i++, bezt++) {
 			if (FrameOnMouseSide(t->frame_side, bezt->vec[1][0], cfra)) {
-<<<<<<< HEAD
 				const bool sel2 = (bezt->f2 & SELECT) != 0;
 				const bool sel1 = use_handle ? (bezt->f1 & SELECT) != 0 : sel2;
 				const bool sel3 = use_handle ? (bezt->f3 & SELECT) != 0 : sel2;
-=======
-				const bool sel2 = bezt->f2 & SELECT;
-				const bool sel1 = use_handle ? bezt->f1 & SELECT : sel2;
-				const bool sel3 = use_handle ? bezt->f3 & SELECT : sel2;
->>>>>>> Initial commit
 
 				TransDataCurveHandleFlags *hdata = NULL;
 				/* short h1=1, h2=1; */ /* UNUSED */
@@ -4999,11 +4875,7 @@ static void createTransSeqData(bContext *C, TransInfo *t)
 	TransData2D *td2d = NULL;
 	TransDataSeq *tdsq = NULL;
 	TransSeq *ts = NULL;
-<<<<<<< HEAD
 	int xmouse;
-=======
-	float xmouse, ymouse;
->>>>>>> Initial commit
 
 	int count = 0;
 
@@ -5014,11 +4886,7 @@ static void createTransSeqData(bContext *C, TransInfo *t)
 
 	t->customFree = freeSeqData;
 
-<<<<<<< HEAD
 	xmouse = (int)UI_view2d_region_to_view_x(v2d, t->imval[0]);
-=======
-	UI_view2d_region_to_view(v2d, t->imval[0], t->imval[1], &xmouse, &ymouse);
->>>>>>> Initial commit
 
 	/* which side of the current frame should be allowed */
 	if (t->mode == TFM_TIME_EXTEND) {
@@ -5585,19 +5453,16 @@ void autokeyframe_pose_cb_func(bContext *C, Scene *scene, View3D *v3d, Object *o
 			flag |= INSERTKEY_MATRIX;
 		
 		for (pchan = pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-			if (pchan->bone->flag & BONE_TRANSFORM) {
-				ListBase dsources = {NULL, NULL};
-				
-				/* clear any 'unkeyed' flag it may have */
-				pchan->bone->flag &= ~BONE_UNKEYED;
-=======
+//			if (pchan->bone->flag & BONE_TRANSFORM) {
+//				ListBase dsources = {NULL, NULL};
+//				
+//				/* clear any 'unkeyed' flag it may have */
+//				pchan->bone->flag &= ~BONE_UNKEYED;
 			if (pchan->bone->flag & ELEMENT_TRANSFORM) {
 				ListBase dsources = {NULL, NULL};
 				
 				/* clear any 'unkeyed' flag it may have */
 				pchan->bone->flag &= ~ELEMENT_UNKEYED;
->>>>>>> Initial commit
 				
 				/* add datasource override for the camera object */
 				ANIM_relative_keyingset_add_source(&dsources, id, &RNA_PoseBone, pchan); 
@@ -5618,11 +5483,7 @@ void autokeyframe_pose_cb_func(bContext *C, Scene *scene, View3D *v3d, Object *o
 								/* only if bone name matches too... 
 								 * NOTE: this will do constraints too, but those are ok to do here too?
 								 */
-<<<<<<< HEAD
 								if (pchanName && STREQ(pchanName, pchan->name)) 
-=======
-								if (pchanName && strcmp(pchanName, pchan->name) == 0) 
->>>>>>> Initial commit
 									insert_keyframe(reports, id, act, ((fcu->grp) ? (fcu->grp->name) : (NULL)), fcu->rna_path, fcu->array_index, cfra, flag);
 									
 								if (pchanName) MEM_freeN(pchanName);
@@ -5693,15 +5554,12 @@ void autokeyframe_pose_cb_func(bContext *C, Scene *scene, View3D *v3d, Object *o
 	else {
 		/* tag channels that should have unkeyed data */
 		for (pchan = pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-			if (pchan->bone->flag & BONE_TRANSFORM) {
-				/* tag this channel */
-				pchan->bone->flag |= BONE_UNKEYED;
-=======
+//			if (pchan->bone->flag & BONE_TRANSFORM) {
+//				/* tag this channel */
+//				pchan->bone->flag |= BONE_UNKEYED;
 			if (pchan->bone->flag & ELEMENT_TRANSFORM) {
 				/* tag this channel */
 				pchan->bone->flag |= ELEMENT_UNKEYED;
->>>>>>> Initial commit
 			}
 		}
 	}
@@ -7595,14 +7453,11 @@ static void createTransGPencil(bContext *C, TransInfo *t)
 			bGPDstroke *gps;
 			
 			for (gps = gpf->strokes.first; gps; gps = gps->next) {
-<<<<<<< HEAD
 				/* skip strokes that are invalid for current view */
 				if (ED_gpencil_stroke_can_use(C, gps) == false) {
 					continue;
 				}
 				
-=======
->>>>>>> Initial commit
 				if (propedit) {
 					/* Proportional Editing... */
 					if (propedit_connected) {
@@ -7706,14 +7561,11 @@ static void createTransGPencil(bContext *C, TransInfo *t)
 				TransData *tail = td;
 				bool stroke_ok;
 				
-<<<<<<< HEAD
 				/* skip strokes that are invalid for current view */
 				if (ED_gpencil_stroke_can_use(C, gps) == false) {
 					continue;
 				}
 				
-=======
->>>>>>> Initial commit
 				/* What we need to include depends on proportional editing settings... */
 				if (propedit) {
 					if (propedit_connected) {

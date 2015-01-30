@@ -481,11 +481,7 @@ class CyclesRenderSettings(bpy.types.PropertyGroup):
             name="Bake Type",
             default='COMBINED',
             description="Type of pass to bake",
-<<<<<<< HEAD
             items=(
-=======
-            items = (
->>>>>>> Initial commit
                 ('COMBINED', "Combined", ""),
                 ('AO', "Ambient Occlusion", ""),
                 ('SHADOW', "Shadow", ""),

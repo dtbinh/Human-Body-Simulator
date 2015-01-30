@@ -757,11 +757,7 @@ static void do_texture_effector(EffectorCache *eff, EffectorData *efd, EffectedP
 
 	scene_color_manage = BKE_scene_check_color_management_enabled(eff->scene);
 
-<<<<<<< HEAD
 	hasrgb = multitex_ext(eff->pd->tex, tex_co, NULL, NULL, 0, result, NULL, scene_color_manage, false);
-=======
-	hasrgb = multitex_ext(eff->pd->tex, tex_co, NULL, NULL, 0, result, NULL, scene_color_manage);
->>>>>>> Initial commit
 
 	if (hasrgb && mode==PFIELD_TEX_RGB) {
 		force[0] = (0.5f - result->tr) * strength;
@@ -772,7 +768,6 @@ static void do_texture_effector(EffectorCache *eff, EffectorData *efd, EffectedP
 		strength/=nabla;
 
 		tex_co[0] += nabla;
-<<<<<<< HEAD
 		multitex_ext(eff->pd->tex, tex_co, NULL, NULL, 0, result+1, NULL, scene_color_manage, false);
 
 		tex_co[0] -= nabla;
@@ -782,17 +777,6 @@ static void do_texture_effector(EffectorCache *eff, EffectorData *efd, EffectedP
 		tex_co[1] -= nabla;
 		tex_co[2] += nabla;
 		multitex_ext(eff->pd->tex, tex_co, NULL, NULL, 0, result+3, NULL, scene_color_manage, false);
-=======
-		multitex_ext(eff->pd->tex, tex_co, NULL, NULL, 0, result+1, NULL, scene_color_manage);
-
-		tex_co[0] -= nabla;
-		tex_co[1] += nabla;
-		multitex_ext(eff->pd->tex, tex_co, NULL, NULL, 0, result+2, NULL, scene_color_manage);
-
-		tex_co[1] -= nabla;
-		tex_co[2] += nabla;
-		multitex_ext(eff->pd->tex, tex_co, NULL, NULL, 0, result+3, NULL, scene_color_manage);
->>>>>>> Initial commit
 
 		if (mode == PFIELD_TEX_GRAD || !hasrgb) { /* if we don't have rgb fall back to grad */
 			/* generate intensity if texture only has rgb value */
@@ -1191,11 +1175,7 @@ void BKE_sim_debug_data_clear_category(const char *category)
 	if (_sim_debug_data->gh) {
 		GHashIterator iter;
 		BLI_ghashIterator_init(&iter, _sim_debug_data->gh);
-<<<<<<< HEAD
 		while (!BLI_ghashIterator_done(&iter)) {
-=======
-		while(!BLI_ghashIterator_done(&iter)) {
->>>>>>> Initial commit
 			SimDebugElement *elem = BLI_ghashIterator_getValue(&iter);
 			BLI_ghashIterator_step(&iter); /* removing invalidates the current iterator, so step before removing */
 			

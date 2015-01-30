@@ -165,7 +165,6 @@ void BLI_string_to_utf8(char *original, char *utf_8, const char *code);
 #  define FILE_MAX            1024
 #endif
 
-<<<<<<< HEAD
 /* Parent and current dir helpers. */
 #define FILENAME_PARENT ".."
 #define FILENAME_CURRENT "."
@@ -175,8 +174,6 @@ void BLI_string_to_utf8(char *original, char *utf_8, const char *code);
 #define FILENAME_IS_CURRENT(_n) (((_n)[0] == '.') && ((_n)[1] == '\0'))
 #define FILENAME_IS_CURRPAR(_n) (((_n)[0] == '.') && (((_n)[1] == '\0') || (((_n)[1] == '.') && ((_n)[2] == '\0'))))
 
-=======
->>>>>>> Initial commit
 #ifdef __cplusplus
 }
 #endif

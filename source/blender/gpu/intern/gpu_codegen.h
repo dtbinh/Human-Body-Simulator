@@ -33,10 +33,7 @@
 #ifndef __GPU_CODEGEN_H__
 #define __GPU_CODEGEN_H__
 
-<<<<<<< HEAD
 #include "DNA_customdata_types.h"
-=======
->>>>>>> Initial commit
 #include "DNA_listBase.h"
 #include "GPU_material.h"
 #include "GPU_glew.h"
@@ -49,25 +46,6 @@ struct GPUVertexAttribs;
 struct GPUFrameBuffer;
 struct PreviewImage;
 
-<<<<<<< HEAD
-=======
-#define MAX_FUNCTION_NAME	64
-#define MAX_PARAMETER		32
-
-#define FUNCTION_QUAL_IN	0
-#define FUNCTION_QUAL_OUT	1
-#define FUNCTION_QUAL_INOUT	2
-
-typedef struct GPUFunction {
-	char name[MAX_FUNCTION_NAME];
-	int paramtype[MAX_PARAMETER];
-	int paramqual[MAX_PARAMETER];
-	int totparam;
-} GPUFunction;
-
-GPUFunction *GPU_lookup_function(const char *name);
-
->>>>>>> Initial commit
 /* Pass Generation
  *  - Takes a list of nodes and a desired output, and makes a pass. This
  *    will take ownership of the nodes and free them early if unused or
@@ -83,26 +61,19 @@ typedef enum GPUDataSource {
 	GPU_SOURCE_ATTRIB
 } GPUDataSource;
 
-<<<<<<< HEAD
 typedef enum {
 	GPU_NODE_LINK_IMAGE_NONE = 0,
 	GPU_NODE_LINK_IMAGE_BLENDER = 1,
 	GPU_NODE_LINK_IMAGE_PREVIEW = 2
 } GPUNodeLinkImage;
 
-=======
->>>>>>> Initial commit
 struct GPUNode {
 	struct GPUNode *next, *prev;
 
 	const char *name;
-<<<<<<< HEAD
 
 	/* Internal flag to mark nodes during pruning */
 	bool tag;
-=======
-	int tag;
->>>>>>> Initial commit
 
 	ListBase inputs;
 	ListBase outputs;
@@ -111,7 +82,6 @@ struct GPUNode {
 struct GPUNodeLink {
 	GPUNodeStack *socket;
 
-<<<<<<< HEAD
 	CustomDataType attribtype;
 	const char *attribname;
 
@@ -119,32 +89,16 @@ struct GPUNodeLink {
 	bool image_isdata;
 
 	bool texture;
-=======
-	int attribtype;
-	const char *attribname;
-
-	int image;
-	int image_isdata;
-
-	int texture;
->>>>>>> Initial commit
 	int texturesize;
 
 	void *ptr1, *ptr2;
 
-<<<<<<< HEAD
 	bool dynamic;
 	GPUDynamicType dynamictype;
 
 	GPUType type;
 
 	/* Refcount */
-=======
-	int dynamic;
-	int dynamictype;
-
-	int type;
->>>>>>> Initial commit
 	int users;
 
 	struct GPUTexture *dynamictex;
@@ -159,11 +113,7 @@ typedef struct GPUOutput {
 	struct GPUOutput *next, *prev;
 
 	GPUNode *node;
-<<<<<<< HEAD
 	GPUType type;			/* data type = length of vector/matrix */
-=======
-	int type;				/* data type = length of vector/matrix */
->>>>>>> Initial commit
 	GPUNodeLink *link;		/* output link */
 	int id;					/* unique id as created by code generator */
 } GPUOutput;
@@ -173,7 +123,6 @@ typedef struct GPUInput {
 
 	GPUNode *node;
 
-<<<<<<< HEAD
 	GPUType type;			/* datatype */
 	GPUDataSource source;	/* data source */
 
@@ -184,31 +133,13 @@ typedef struct GPUInput {
 	bool definetex;			/* input is responsible for defining the pixel? */
 	int textarget;			/* GL texture target, e.g. GL_TEXTURE_2D */
 	GPUType textype;		/* datatype */
-=======
-	int type;				/* datatype */
-	int source;				/* data source */
-
-	int id;					/* unique id as created by code generator */
-	int texid;				/* number for multitexture */
-	int attribid;			/* id for vertex attributes */
-	int bindtex;			/* input is responsible for binding the texture? */
-	int definetex;			/* input is responsible for defining the pixel? */
-	int textarget;			/* GL_TEXTURE_* */
-	int textype;			/* datatype */
->>>>>>> Initial commit
 
 	struct Image *ima;		/* image */
 	struct ImageUser *iuser;/* image user */
 	struct PreviewImage *prv;	/* preview images & icons */
-<<<<<<< HEAD
 	bool image_isdata;		/* image does not contain color data */
 	float *dynamicvec;		/* vector data in case it is dynamic */
 	GPUDynamicType dynamictype;	/* origin of the dynamic uniform */
-=======
-	int image_isdata;		/* image does not contain color data */
-	float *dynamicvec;		/* vector data in case it is dynamic */
-	int dynamictype;		/* origin of the dynamic uniform (GPUDynamicType) */
->>>>>>> Initial commit
 	void *dynamicdata;		/* data source of the dynamic uniform */
 	struct GPUTexture *tex;	/* input texture, only set at runtime */
 	int shaderloc;			/* id from opengl */
@@ -216,13 +147,8 @@ typedef struct GPUInput {
 
 	float vec[16];			/* vector data */
 	GPUNodeLink *link;
-<<<<<<< HEAD
 	bool dynamictex;		/* dynamic? */
 	CustomDataType attribtype;	/* attribute type */
-=======
-	int dynamictex;			/* dynamic? */
-	int attribtype;			/* attribute type */
->>>>>>> Initial commit
 	char attribname[32];	/* attribute name */
 	int attribfirst;		/* this is the first one that is bound */
 	GPUBuiltin builtin;		/* builtin uniform */
@@ -244,12 +170,8 @@ struct GPUPass {
 typedef struct GPUPass GPUPass;
 
 GPUPass *GPU_generate_pass(ListBase *nodes, struct GPUNodeLink *outlink,
-<<<<<<< HEAD
 						   struct GPUVertexAttribs *attribs, int *builtin,
 						   const GPUMatType type, const char *name);
-=======
-	struct GPUVertexAttribs *attribs, int *builtin, int type, const char *name);
->>>>>>> Initial commit
 
 struct GPUShader *GPU_pass_shader(GPUPass *pass);
 

@@ -22,11 +22,7 @@ from bpy.types import Panel
 from rna_prop_ui import PropertyPanel
 
 
-<<<<<<< HEAD
 class WorldButtonsPanel:
-=======
-class WorldButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "world"
@@ -53,10 +49,6 @@ class WORLD_PT_context_world(WorldButtonsPanel, Panel):
         scene = context.scene
         world = context.world
         space = context.space_data
-<<<<<<< HEAD
-=======
-        rd = context.scene.render
->>>>>>> Initial commit
 
         texture_count = world and len(world.texture_slots.keys())
 

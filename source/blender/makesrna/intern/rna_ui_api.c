@@ -295,11 +295,7 @@ static const char *rna_ui_get_enum_name(bContext *C, PointerRNA *ptr, const char
 
 	if (items) {
 		for (item = items; item->identifier; item++) {
-<<<<<<< HEAD
 			if (item->identifier[0] && STREQ(item->identifier, identifier)) {
-=======
-			if (item->identifier[0] && strcmp(item->identifier, identifier) == 0) {
->>>>>>> Initial commit
 				name = item->name;
 				break;
 			}
@@ -330,11 +326,7 @@ static const char *rna_ui_get_enum_description(bContext *C, PointerRNA *ptr, con
 
 	if (items) {
 		for (item = items; item->identifier; item++) {
-<<<<<<< HEAD
 			if (item->identifier[0] && STREQ(item->identifier, identifier)) {
-=======
-			if (item->identifier[0] && strcmp(item->identifier, identifier) == 0) {
->>>>>>> Initial commit
 				desc = item->description;
 				break;
 			}
@@ -364,11 +356,7 @@ static int rna_ui_get_enum_icon(bContext *C, PointerRNA *ptr, const char *propna
 
 	if (items) {
 		for (item = items; item->identifier; item++) {
-<<<<<<< HEAD
 			if (item->identifier[0] && STREQ(item->identifier, identifier)) {
-=======
-			if (item->identifier[0] && strcmp(item->identifier, identifier) == 0) {
->>>>>>> Initial commit
 				icon = item->icon;
 				break;
 			}

@@ -640,11 +640,7 @@ void rna_object_uvlayer_name_set(PointerRNA *ptr, const char *value, char *resul
 		for (a = 0; a < me->pdata.totlayer; a++) {
 			layer = &me->pdata.layers[a];
 
-<<<<<<< HEAD
 			if (layer->type == CD_MTEXPOLY && STREQ(layer->name, value)) {
-=======
-			if (layer->type == CD_MTEXPOLY && strcmp(layer->name, value) == 0) {
->>>>>>> Initial commit
 				BLI_strncpy(result, value, maxlen);
 				return;
 			}
@@ -667,11 +663,7 @@ void rna_object_vcollayer_name_set(PointerRNA *ptr, const char *value, char *res
 		for (a = 0; a < me->fdata.totlayer; a++) {
 			layer = &me->fdata.layers[a];
 
-<<<<<<< HEAD
 			if (layer->type == CD_MCOL && STREQ(layer->name, value)) {
-=======
-			if (layer->type == CD_MCOL && strcmp(layer->name, value) == 0) {
->>>>>>> Initial commit
 				BLI_strncpy(result, value, maxlen);
 				return;
 			}
@@ -2438,13 +2430,9 @@ static void rna_def_object(BlenderRNA *brna)
 	prop = RNA_def_property(srna, "matrix_local", PROP_FLOAT, PROP_MATRIX);
 	RNA_def_property_multi_array(prop, 2, rna_matrix_dimsize_4x4);
 	RNA_def_property_clear_flag(prop, PROP_ANIMATABLE);
-<<<<<<< HEAD
 	RNA_def_property_ui_text(prop, "Local Matrix", "Parent relative transformation matrix - "
 	                         "WARNING: Only takes into account 'Object' parenting, so e.g. in case of bone parenting "
 	                         "you get a matrix relative to the Armature object, not to the actual parent bone");
-=======
-	RNA_def_property_ui_text(prop, "Local Matrix", "Parent relative transformation matrix");
->>>>>>> Initial commit
 	RNA_def_property_float_funcs(prop, "rna_Object_matrix_local_get", "rna_Object_matrix_local_set", NULL);
 	RNA_def_property_update(prop, NC_OBJECT | ND_TRANSFORM, NULL);
 

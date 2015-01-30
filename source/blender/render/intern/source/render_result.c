@@ -309,7 +309,6 @@ static const char *get_pass_name(int passtype, int channel)
 static int passtype_from_name(const char *str)
 {
 	
-<<<<<<< HEAD
 	if (STREQ(str, "Combined"))
 		return SCE_PASS_COMBINED;
 
@@ -401,99 +400,6 @@ static int passtype_from_name(const char *str)
 		return SCE_PASS_SUBSURFACE_INDIRECT;
 
 	if (STREQ(str, "SubsurfaceCol"))
-=======
-	if (strcmp(str, "Combined") == 0)
-		return SCE_PASS_COMBINED;
-
-	if (strcmp(str, "Depth") == 0)
-		return SCE_PASS_Z;
-
-	if (strcmp(str, "Vector") == 0)
-		return SCE_PASS_VECTOR;
-
-	if (strcmp(str, "Normal") == 0)
-		return SCE_PASS_NORMAL;
-
-	if (strcmp(str, "UV") == 0)
-		return SCE_PASS_UV;
-
-	if (strcmp(str, "Color") == 0)
-		return SCE_PASS_RGBA;
-
-	if (strcmp(str, "Emit") == 0)
-		return SCE_PASS_EMIT;
-
-	if (strcmp(str, "Diffuse") == 0)
-		return SCE_PASS_DIFFUSE;
-
-	if (strcmp(str, "Spec") == 0)
-		return SCE_PASS_SPEC;
-
-	if (strcmp(str, "Shadow") == 0)
-		return SCE_PASS_SHADOW;
-	
-	if (strcmp(str, "AO") == 0)
-		return SCE_PASS_AO;
-
-	if (strcmp(str, "Env") == 0)
-		return SCE_PASS_ENVIRONMENT;
-
-	if (strcmp(str, "Indirect") == 0)
-		return SCE_PASS_INDIRECT;
-
-	if (strcmp(str, "Reflect") == 0)
-		return SCE_PASS_REFLECT;
-
-	if (strcmp(str, "Refract") == 0)
-		return SCE_PASS_REFRACT;
-
-	if (strcmp(str, "IndexOB") == 0)
-		return SCE_PASS_INDEXOB;
-
-	if (strcmp(str, "IndexMA") == 0)
-		return SCE_PASS_INDEXMA;
-
-	if (strcmp(str, "Mist") == 0)
-		return SCE_PASS_MIST;
-	
-	if (strcmp(str, "RayHits") == 0)
-		return SCE_PASS_RAYHITS;
-
-	if (strcmp(str, "DiffDir") == 0)
-		return SCE_PASS_DIFFUSE_DIRECT;
-
-	if (strcmp(str, "DiffInd") == 0)
-		return SCE_PASS_DIFFUSE_INDIRECT;
-
-	if (strcmp(str, "DiffCol") == 0)
-		return SCE_PASS_DIFFUSE_COLOR;
-
-	if (strcmp(str, "GlossDir") == 0)
-		return SCE_PASS_GLOSSY_DIRECT;
-
-	if (strcmp(str, "GlossInd") == 0)
-		return SCE_PASS_GLOSSY_INDIRECT;
-
-	if (strcmp(str, "GlossCol") == 0)
-		return SCE_PASS_GLOSSY_COLOR;
-
-	if (strcmp(str, "TransDir") == 0)
-		return SCE_PASS_TRANSM_DIRECT;
-
-	if (strcmp(str, "TransInd") == 0)
-		return SCE_PASS_TRANSM_INDIRECT;
-
-	if (strcmp(str, "TransCol") == 0)
-		return SCE_PASS_TRANSM_COLOR;
-		
-	if (strcmp(str, "SubsurfaceDir") == 0)
-		return SCE_PASS_SUBSURFACE_DIRECT;
-
-	if (strcmp(str, "SubsurfaceInd") == 0)
-		return SCE_PASS_SUBSURFACE_INDIRECT;
-
-	if (strcmp(str, "SubsurfaceCol") == 0)
->>>>>>> Initial commit
 		return SCE_PASS_SUBSURFACE_COLOR;
 
 	return 0;
@@ -603,11 +509,7 @@ RenderResult *render_result_new(Render *re, rcti *partrct, int crop, int savebuf
 	for (nr = 0, srl = re->r.layers.first; srl; srl = srl->next, nr++) {
 
 		if (layername && layername[0])
-<<<<<<< HEAD
 			if (!STREQ(srl->name, layername))
-=======
-			if (strcmp(srl->name, layername) != 0)
->>>>>>> Initial commit
 				continue;
 
 		if (re->r.scemode & R_SINGLE_LAYER) {
@@ -709,11 +611,7 @@ RenderResult *render_result_new(Render *re, rcti *partrct, int crop, int savebuf
 			render_layer_add_pass(rr, rl, 3, SCE_PASS_SUBSURFACE_COLOR);
 
 #ifdef WITH_CYCLES_DEBUG
-<<<<<<< HEAD
 		if (BKE_scene_use_new_shading_nodes(re->scene)) {
-=======
-		if(BKE_scene_use_new_shading_nodes(re->scene)) {
->>>>>>> Initial commit
 			render_layer_add_debug_pass(rr, rl, 1, SCE_PASS_DEBUG,
 			        RENDER_PASS_DEBUG_BVH_TRAVERSAL_STEPS);
 		}

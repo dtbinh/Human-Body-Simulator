@@ -2165,11 +2165,7 @@ static bool wpaint_ensure_data(bContext *C, wmOperator *op)
 	if (ob->actdef <= 0) {
 		Object *modob;
 		if ((modob = modifiers_isDeformedByArmature(ob))) {
-<<<<<<< HEAD
 			Bone *actbone = ((bArmature *)modob->data)->act_bone;
-=======
-			ArmatureElement *actbone = ((bArmature *)modob->data)->act_element;
->>>>>>> Initial commit
 			if (actbone) {
 				bPoseChannel *pchan = BKE_pose_channel_find_name(modob->pose, actbone->name);
 

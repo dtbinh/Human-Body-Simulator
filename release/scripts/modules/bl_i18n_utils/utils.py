@@ -31,16 +31,10 @@ import sys
 import tempfile
 #import time
 
-<<<<<<< HEAD
 from bl_i18n_utils import (
         settings,
         utils_rtl,
         )
-=======
-from bl_i18n_utils import (settings,
-                           utils_rtl,
-                          )
->>>>>>> Initial commit
 
 import bpy
 

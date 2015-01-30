@@ -30,10 +30,6 @@
 
 /** \file BLI_ghash.h
  *  \ingroup bli
-<<<<<<< HEAD
-=======
- *  \brief A general (pointer -> pointer) hash table ADT
->>>>>>> Initial commit
  */
 
 #include "BLI_sys_types.h" /* for bool */

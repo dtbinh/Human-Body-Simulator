@@ -1027,11 +1027,7 @@ static void do_init_render_material(Material *ma, int r_mode, float *amb)
 		Group *group;
 
 		for (group = G.main->group.first; group; group = group->id.next) {
-<<<<<<< HEAD
 			if (!group->id.lib && STREQ(group->id.name, ma->group->id.name)) {
-=======
-			if (!group->id.lib && strcmp(group->id.name, ma->group->id.name) == 0) {
->>>>>>> Initial commit
 				ma->group = group;
 			}
 		}
@@ -1321,7 +1317,6 @@ static bool get_mtex_slot_valid_texpaint(struct MTex *mtex)
 	        mtex->tex->ima);
 }
 
-<<<<<<< HEAD
 static bNode *nodetree_uv_node_recursive(bNode *node)
 {
 	bNode *inode;
@@ -1342,8 +1337,6 @@ static bNode *nodetree_uv_node_recursive(bNode *node)
 	return NULL;
 }
 
-=======
->>>>>>> Initial commit
 void BKE_texpaint_slot_refresh_cache(Scene *scene, Material *ma)
 {
 	MTex **mtex;
@@ -1395,7 +1388,6 @@ void BKE_texpaint_slot_refresh_cache(Scene *scene, Material *ma)
 			if (node->typeinfo->nclass == NODE_CLASS_TEXTURE && node->typeinfo->type == SH_NODE_TEX_IMAGE && node->id) {
 				if (active_node == node)
 					ma->paint_active_slot = index;
-<<<<<<< HEAD
 				ma->texpaintslot[index].ima = (Image *)node->id;
 				
 				/* for new renderer, we need to traverse the treeback in search of a UV node */
@@ -1417,9 +1409,6 @@ void BKE_texpaint_slot_refresh_cache(Scene *scene, Material *ma)
 					ma->texpaintslot[index].index = -1;
 				}
 				index++;
-=======
-				ma->texpaintslot[index++].ima = (Image *)node->id;
->>>>>>> Initial commit
 			}
 		}
 	}

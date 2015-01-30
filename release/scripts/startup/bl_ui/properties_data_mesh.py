@@ -111,11 +111,7 @@ class MESH_UL_uvmaps_vcols(UIList):
             layout.label(text="", icon_value=icon)
 
 
-<<<<<<< HEAD
 class MeshButtonsPanel:
-=======
-class MeshButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "data"

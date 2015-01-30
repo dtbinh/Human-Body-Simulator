@@ -68,10 +68,7 @@ extern StructRNA RNA_AnyType;
 extern StructRNA RNA_Area;
 extern StructRNA RNA_AreaLamp;
 extern StructRNA RNA_Armature;
-<<<<<<< HEAD
-=======
 extern StructRNA RNA_ArmatureElement;
->>>>>>> Initial commit
 extern StructRNA RNA_ArmatureModifier;
 extern StructRNA RNA_ArmatureSensor;
 extern StructRNA RNA_ArrayModifier;
@@ -220,10 +217,7 @@ extern StructRNA RNA_DynamicPaintCanvasSettings;
 extern StructRNA RNA_DynamicPaintModifier;
 extern StructRNA RNA_DynamicPaintSurface;
 extern StructRNA RNA_EdgeSplitModifier;
-<<<<<<< HEAD
-=======
 extern StructRNA RNA_EditArmatureElement;
->>>>>>> Initial commit
 extern StructRNA RNA_EditBone;
 extern StructRNA RNA_EffectSequence;
 extern StructRNA RNA_EffectorWeights;
@@ -971,11 +965,7 @@ char *RNA_path_property_py(struct PointerRNA *ptr, struct PropertyRNA *prop, int
  * call RNA_struct_find_property. The names have to exist as RNA properties
  * for the type in the pointer, if they do not exist an error will be printed.
  *
-<<<<<<< HEAD
  * There is no support for pointers and collections here yet, these can be 
-=======
- * There is no support for pointers and collections here yet, these can be
->>>>>>> Initial commit
  * added when ID properties support them. */
 
 int  RNA_boolean_get(PointerRNA *ptr, const char *name);

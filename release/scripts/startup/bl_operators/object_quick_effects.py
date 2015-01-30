@@ -21,7 +21,6 @@
 from mathutils import Vector
 import bpy
 from bpy.types import Operator
-<<<<<<< HEAD
 from bpy.props import (
         BoolProperty,
         EnumProperty,
@@ -29,14 +28,6 @@ from bpy.props import (
         FloatProperty,
         FloatVectorProperty,
         )
-=======
-from bpy.props import (BoolProperty,
-                       EnumProperty,
-                       IntProperty,
-                       FloatProperty,
-                       FloatVectorProperty,
-                       )
->>>>>>> Initial commit
 
 
 def object_ensure_material(obj, mat_name):

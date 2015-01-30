@@ -35,11 +35,7 @@ void TextureNode::convertToOperations(NodeConverter &converter, const Compositor
 	Tex *texture = (Tex *)editorNode->id;
 	TextureOperation *operation = new TextureOperation();
 	const ColorManagedDisplaySettings *displaySettings = context.getDisplaySettings();
-<<<<<<< HEAD
 	bool sceneColorManage = !STREQ(displaySettings->display_device, "None");
-=======
-	bool sceneColorManage = strcmp(displaySettings->display_device, "None") != 0;
->>>>>>> Initial commit
 	operation->setTexture(texture);
 	operation->setRenderData(context.getRenderData());
 	operation->setSceneColorManage(sceneColorManage);

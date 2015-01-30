@@ -72,11 +72,8 @@
 /* NOTE: no operator define here as this is exported to the Object-level operator */
 
 static void joined_armature_fix_links_constraints(
-<<<<<<< HEAD
-        Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditBone *curbone,
-=======
+//        Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditBone *curbone,
         Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditArmatureElement *curbone,
->>>>>>> Initial commit
         ListBase *lb)
 {
 	bConstraint *con;
@@ -155,15 +152,9 @@ static void joined_armature_fix_animdata_cb(ID *id, AnimData *adt, void *user_da
 				const char *new_name = BLI_ghashIterator_getValue(&gh_iter);
 				
 				/* only remap if changed; this still means there will be some waste if there aren't many drivers/keys */
-<<<<<<< HEAD
 				if (!STREQ(old_name, new_name) && strstr(fcu->rna_path, old_name)) {
 					fcu->rna_path = BKE_animsys_fix_rna_path_rename(id, fcu->rna_path, "pose.bones",
 					                                                old_name, new_name, 0, 0, false);
-=======
-				if (strcmp(old_name, new_name) && strstr(fcu->rna_path, old_name)) {
-					fcu->rna_path = BKE_animsys_fix_rna_path_rename(id, fcu->rna_path, "pose.bones",
-																    old_name, new_name, 0, 0, false);
->>>>>>> Initial commit
 					
 					/* we don't want to apply a second remapping on this driver now, 
 					 * so stop trying names, but keep fixing drivers
@@ -199,7 +190,6 @@ static void joined_armature_fix_animdata_cb(ID *id, AnimData *adt, void *user_da
 							const char *new_name = BLI_ghashIterator_getValue(&gh_iter);
 							
 							/* only remap if changed */
-<<<<<<< HEAD
 							if (!STREQ(old_name, new_name)) {
 								if ((dtar->rna_path) && strstr(dtar->rna_path, old_name)) {
 									/* Fix up path */
@@ -208,16 +198,6 @@ static void joined_armature_fix_animdata_cb(ID *id, AnimData *adt, void *user_da
 									break; /* no need to try any more names for bone path */
 								}
 								else if (STREQ(dtar->pchan_name, old_name)) {
-=======
-							if (strcmp(old_name, new_name)) {
-								if ((dtar->rna_path) && strstr(dtar->rna_path, old_name)) {
-									/* Fix up path */
-									dtar->rna_path = BKE_animsys_fix_rna_path_rename(id, dtar->rna_path, "pose.bones",
-																                     old_name, new_name, 0, 0, false);
-									break; /* no need to try any more names for bone path */
-								}
-								else if (strcmp(dtar->pchan_name, old_name) == 0) {
->>>>>>> Initial commit
 									/* Change target bone name */
 									BLI_strncpy(dtar->pchan_name, new_name, sizeof(dtar->pchan_name));
 									break; /* no need to try any more names for bone subtarget */
@@ -233,11 +213,8 @@ static void joined_armature_fix_animdata_cb(ID *id, AnimData *adt, void *user_da
 }
 
 /* Helper function for armature joining - link fixing */
-<<<<<<< HEAD
-static void joined_armature_fix_links(Main *bmain, Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditBone *curbone)
-=======
+//static void joined_armature_fix_links(Main *bmain, Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditBone *curbone)
 static void joined_armature_fix_links(Main *bmain, Object *tarArm, Object *srcArm, bPoseChannel *pchan, EditArmatureElement *curbone)
->>>>>>> Initial commit
 {
 	Object *ob;
 	bPose *pose;
@@ -283,11 +260,8 @@ int join_armature_exec(bContext *C, wmOperator *op)
 	bArmature *arm = (ob) ? ob->data : NULL;
 	bPose *pose, *opose;
 	bPoseChannel *pchan, *pchann;
-<<<<<<< HEAD
-	EditBone *curbone;
-=======
+//	EditBone *curbone;
 	EditArmatureElement *curbone;
->>>>>>> Initial commit
 	float mat[4][4], oimat[4][4];
 	bool ok = false;
 	
@@ -348,17 +322,14 @@ int join_armature_exec(bContext *C, wmOperator *op)
 			/* Copy bones and posechannels from the object to the edit armature */
 			for (pchan = opose->chanbase.first; pchan; pchan = pchann) {
 				pchann = pchan->next;
-<<<<<<< HEAD
-				curbone = ED_armature_bone_find_name(curarm->edbo, pchan->name);
-				
-				/* Get new name */
-				unique_editbone_name(arm->edbo, curbone->name, NULL);
-=======
+//				curbone = ED_armature_bone_find_name(curarm->edbo, pchan->name);
+//				
+//				/* Get new name */
+//				unique_editbone_name(arm->edbo, curbone->name, NULL);
 				curbone = ED_armature_armatureelement_find_name(curarm->edbo, pchan->name);
 				
 				/* Get new name */
 				unique_editelement_name(arm->edbo, curbone->name, NULL);
->>>>>>> Initial commit
 				BLI_ghash_insert(afd.names_map, BLI_strdup(pchan->name), curbone->name);
 				
 				/* Transform the bone */
@@ -370,11 +341,8 @@ int join_armature_exec(bContext *C, wmOperator *op)
 					float temp[3][3];
 					
 					/* Get the premat */
-<<<<<<< HEAD
-					ED_armature_ebone_to_mat3(curbone, temp);
-=======
+//					ED_armature_ebone_to_mat3(curbone, temp);
 					ED_armature_eelement_to_mat3(curbone, temp);
->>>>>>> Initial commit
 					
 					unit_m4(premat); /* mul_m4_m3m4 only sets 3x3 part */
 					mul_m4_m3m4(premat, temp, mat);
@@ -383,11 +351,8 @@ int join_armature_exec(bContext *C, wmOperator *op)
 					mul_m4_v3(mat, curbone->tail);
 					
 					/* Get the postmat */
-<<<<<<< HEAD
-					ED_armature_ebone_to_mat3(curbone, temp);
-=======
+//					ED_armature_ebone_to_mat3(curbone, temp);
 					ED_armature_eelement_to_mat3(curbone, temp);
->>>>>>> Initial commit
 					copy_m4_m3(postmat, temp);
 					
 					/* Find the roll */
@@ -571,11 +536,8 @@ static void separate_armature_bones(Object *ob, short sel)
 {
 	bArmature *arm = (bArmature *)ob->data;
 	bPoseChannel *pchan, *pchann;
-<<<<<<< HEAD
-	EditBone *curbone;
-=======
+//	EditBone *curbone;
 	EditArmatureElement *curbone;
->>>>>>> Initial commit
 	
 	/* make local set of editbones to manipulate here */
 	ED_armature_to_edit(arm);
@@ -583,15 +545,13 @@ static void separate_armature_bones(Object *ob, short sel)
 	/* go through pose-channels, checking if a bone should be removed */
 	for (pchan = ob->pose->chanbase.first; pchan; pchan = pchann) {
 		pchann = pchan->next;
-<<<<<<< HEAD
-		curbone = ED_armature_bone_find_name(arm->edbo, pchan->name);
-		
-		/* check if bone needs to be removed */
-		if ( (sel && (curbone->flag & BONE_SELECTED)) ||
-		     (!sel && !(curbone->flag & BONE_SELECTED)) )
-		{
-			EditBone *ebo;
-=======
+//		curbone = ED_armature_bone_find_name(arm->edbo, pchan->name);
+//		
+//		/* check if bone needs to be removed */
+//		if ( (sel && (curbone->flag & BONE_SELECTED)) ||
+//		     (!sel && !(curbone->flag & BONE_SELECTED)) )
+//		{
+//			EditBone *ebo;
 		curbone = ED_armature_armatureelement_find_name(arm->edbo, pchan->name);
 		
 		/* check if bone needs to be removed */
@@ -599,7 +559,6 @@ static void separate_armature_bones(Object *ob, short sel)
 		     (!sel && !(curbone->flag & ELEMENT_SELECTED)) )
 		{
 			EditArmatureElement *ebo;
->>>>>>> Initial commit
 			bPoseChannel *pchn;
 			
 			/* clear the bone->parent var of any bone that had this as its parent  */
@@ -607,11 +566,8 @@ static void separate_armature_bones(Object *ob, short sel)
 				if (ebo->parent == curbone) {
 					ebo->parent = NULL;
 					ebo->temp = NULL; /* this is needed to prevent random crashes with in ED_armature_from_edit */
-<<<<<<< HEAD
-					ebo->flag &= ~BONE_CONNECTED;
-=======
+//					ebo->flag &= ~BONE_CONNECTED;
 					ebo->flag &= ~ELEMENT_CONNECTED;
->>>>>>> Initial commit
 				}
 			}
 			
@@ -626,11 +582,8 @@ static void separate_armature_bones(Object *ob, short sel)
 			BKE_pose_channels_hash_free(ob->pose);
 			
 			/* get rid of unneeded bone */
-<<<<<<< HEAD
-			bone_free(arm, curbone);
-=======
+//			bone_free(arm, curbone);
 			element_free(arm, curbone);
->>>>>>> Initial commit
 			BLI_freelinkN(&ob->pose->chanbase, pchan);
 		}
 	}
@@ -741,28 +694,23 @@ void ARMATURE_OT_separate(wmOperatorType *ot)
 
 
 /* check for null, before calling! */
-<<<<<<< HEAD
-static void bone_connect_to_existing_parent(EditBone *bone)
-{
-	bone->flag |= BONE_CONNECTED;
-=======
+//static void bone_connect_to_existing_parent(EditBone *bone)
+//{
+//	bone->flag |= BONE_CONNECTED;
 static void bone_connect_to_existing_parent(EditArmatureElement *bone)
 {
 	bone->flag |= ELEMENT_CONNECTED;
->>>>>>> Initial commit
 	copy_v3_v3(bone->head, bone->parent->tail);
 	bone->rad_head = bone->parent->rad_tail;
 }
 
-<<<<<<< HEAD
-static void bone_connect_to_new_parent(ListBase *edbo, EditBone *selbone, EditBone *actbone, short mode)
-{
-	EditBone *ebone;
-	float offset[3];
-	
-	if ((selbone->parent) && (selbone->flag & BONE_CONNECTED))
-		selbone->parent->flag &= ~(BONE_TIPSEL);
-=======
+//static void bone_connect_to_new_parent(ListBase *edbo, EditBone *selbone, EditBone *actbone, short mode)
+//{
+//	EditBone *ebone;
+//	float offset[3];
+//	
+//	if ((selbone->parent) && (selbone->flag & BONE_CONNECTED))
+//		selbone->parent->flag &= ~(BONE_TIPSEL);
 static void bone_connect_to_new_parent(ListBase *edbo, EditArmatureElement *selbone, EditArmatureElement *actbone, short mode)
 {
 	EditArmatureElement *ebone;
@@ -770,7 +718,6 @@ static void bone_connect_to_new_parent(ListBase *edbo, EditArmatureElement *selb
 	
 	if ((selbone->parent) && (selbone->flag & ELEMENT_CONNECTED))
 		selbone->parent->flag &= ~(ELEMENT_TIPSEL);
->>>>>>> Initial commit
 	
 	/* make actbone the parent of selbone */
 	selbone->parent = actbone;
@@ -779,21 +726,15 @@ static void bone_connect_to_new_parent(ListBase *edbo, EditArmatureElement *selb
 	for (ebone = actbone->parent; ebone; ebone = ebone->parent) {
 		if (ebone->parent == selbone) {
 			ebone->parent = NULL;
-<<<<<<< HEAD
-			ebone->flag &= ~BONE_CONNECTED;
-=======
+//			ebone->flag &= ~BONE_CONNECTED;
 			ebone->flag &= ~ELEMENT_CONNECTED;
->>>>>>> Initial commit
 		}
 	}
 	
 	if (mode == ARM_PAR_CONNECT) {
 		/* Connected: Child bones will be moved to the parent tip */
-<<<<<<< HEAD
-		selbone->flag |= BONE_CONNECTED;
-=======
+//		selbone->flag |= BONE_CONNECTED;
 		selbone->flag |= ELEMENT_CONNECTED;
->>>>>>> Initial commit
 		sub_v3_v3v3(offset, actbone->tail, selbone->head);
 		
 		copy_v3_v3(selbone->head, actbone->tail);
@@ -803,11 +744,8 @@ static void bone_connect_to_new_parent(ListBase *edbo, EditArmatureElement *selb
 		
 		/* offset for all its children */
 		for (ebone = edbo->first; ebone; ebone = ebone->next) {
-<<<<<<< HEAD
-			EditBone *par;
-=======
+//			EditBone *par;
 			EditArmatureElement *par;
->>>>>>> Initial commit
 			
 			for (par = ebone->parent; par; par = par->parent) {
 				if (par == selbone) {
@@ -820,11 +758,8 @@ static void bone_connect_to_new_parent(ListBase *edbo, EditArmatureElement *selb
 	}
 	else {
 		/* Offset: Child bones will retain their distance from the parent tip */
-<<<<<<< HEAD
-		selbone->flag &= ~BONE_CONNECTED;
-=======
+//		selbone->flag &= ~BONE_CONNECTED;
 		selbone->flag &= ~ELEMENT_CONNECTED;
->>>>>>> Initial commit
 	}
 }
 
@@ -839,13 +774,10 @@ static int armature_parent_set_exec(bContext *C, wmOperator *op)
 {
 	Object *ob = CTX_data_edit_object(C);
 	bArmature *arm = (bArmature *)ob->data;
-<<<<<<< HEAD
-	EditBone *actbone = CTX_data_active_bone(C);
-	EditBone *actmirb = NULL;
-=======
+//	EditBone *actbone = CTX_data_active_bone(C);
+//	EditBone *actmirb = NULL;
 	EditArmatureElement *actbone = CTX_data_active_bone(C);
 	EditArmatureElement *actmirb = NULL;
->>>>>>> Initial commit
 	short val = RNA_enum_get(op->ptr, "type");
 	
 	/* there must be an active bone */
@@ -890,17 +822,14 @@ static int armature_parent_set_exec(bContext *C, wmOperator *op)
 		 */
 		
 		/* parent selected bones to the active one */
-<<<<<<< HEAD
-		CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
-		{
-			if (ELEM(ebone, actbone, actmirb) == 0) {
-				if (ebone->flag & BONE_SELECTED) 
-=======
+//		CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
+//		{
+//			if (ELEM(ebone, actbone, actmirb) == 0) {
+//				if (ebone->flag & BONE_SELECTED) 
 		CTX_DATA_BEGIN(C, EditArmatureElement *, ebone, selected_editable_bones)
 		{
 			if (ELEM(ebone, actbone, actmirb) == 0) {
 				if (ebone->flag & ELEMENT_SELECTED)
->>>>>>> Initial commit
 					bone_connect_to_new_parent(arm->edbo, ebone, actbone, val);
 				else
 					bone_connect_to_new_parent(arm->edbo, ebone, actmirb, val);
@@ -918,20 +847,14 @@ static int armature_parent_set_exec(bContext *C, wmOperator *op)
 
 static int armature_parent_set_invoke(bContext *C, wmOperator *UNUSED(op), const wmEvent *UNUSED(event))
 {
-<<<<<<< HEAD
-	EditBone *actbone = CTX_data_active_bone(C);
-=======
+//	EditBone *actbone = CTX_data_active_bone(C);
 	EditArmatureElement *actbone = CTX_data_active_bone(C);
->>>>>>> Initial commit
 	uiPopupMenu *pup = UI_popup_menu_begin(C, CTX_IFACE_(BLF_I18NCONTEXT_OPERATOR_DEFAULT, "Make Parent"), ICON_NONE);
 	uiLayout *layout = UI_popup_menu_layout(pup);
 	int allchildbones = 0;
 	
-<<<<<<< HEAD
-	CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
-=======
+//	CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
 	CTX_DATA_BEGIN(C, EditArmatureElement *, ebone, selected_editable_bones)
->>>>>>> Initial commit
 	{
 		if (ebone != actbone) {
 			if (ebone->parent != actbone) allchildbones = 1;
@@ -980,19 +903,16 @@ static void editbone_clear_parent(EditBone *ebone, int mode)
 {
 	if (ebone->parent) {
 		/* for nice selection */
-<<<<<<< HEAD
-		ebone->parent->flag &= ~(BONE_TIPSEL);
-	}
-	
-	if (mode == 1) ebone->parent = NULL;
-	ebone->flag &= ~BONE_CONNECTED;
-=======
+//		ebone->parent->flag &= ~(BONE_TIPSEL);
+//	}
+//	
+//	if (mode == 1) ebone->parent = NULL;
+//	ebone->flag &= ~BONE_CONNECTED;
 		ebone->parent->flag &= ~(ELEMENT_TIPSEL);
 	}
 	
 	if (mode == 1) ebone->parent = NULL;
 	ebone->flag &= ~ELEMENT_CONNECTED;
->>>>>>> Initial commit
 }
 
 static int armature_parent_clear_exec(bContext *C, wmOperator *op) 

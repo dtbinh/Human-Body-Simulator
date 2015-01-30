@@ -107,12 +107,9 @@
 
 #define UI_MAX_PASSWORD_STR 128
 
-<<<<<<< HEAD
 /* This hack is needed because we don't have a good way to re-reference keymap items once added: T42944 */
 #define USE_KEYMAP_ADD_HACK
 
-=======
->>>>>>> Initial commit
 /* proto */
 static void ui_but_smart_controller_add(bContext *C, uiBut *from, uiBut *to);
 static void ui_but_link_add(bContext *C, uiBut *from, uiBut *to);
@@ -2456,11 +2453,8 @@ static void ui_textedit_ime_begin(wmWindow *win, uiBut *UNUSED(but))
 	/* XXX Is this really needed? */
 	int x, y;
 
-<<<<<<< HEAD
 	BLI_assert(win->ime_data == NULL);
 
-=======
->>>>>>> Initial commit
 	/* enable IME and position to cursor, it's a trick */
 	x = win->eventstate->x;
 	/* flip y and move down a bit, prevent the IME panel cover the edit button */
@@ -2598,13 +2592,9 @@ static void ui_textedit_end(bContext *C, uiBut *but, uiHandleButtonData *data)
 	WM_cursor_modal_restore(win);
 
 #ifdef WITH_INPUT_IME
-<<<<<<< HEAD
 	if (win->ime_data) {
 		ui_textedit_ime_end(win, but);
 	}
-=======
-	ui_textedit_ime_end(win, but);
->>>>>>> Initial commit
 #endif
 }
 
@@ -2766,11 +2756,7 @@ static void ui_do_but_textedit(bContext *C, uiBlock *block, uiBut *but, uiHandle
 			case VKEY:
 			case XKEY:
 			case CKEY:
-<<<<<<< HEAD
 				if (IS_EVENT_MOD(event, ctrl, oskey)) {
-=======
-				if (event->ctrl || event->oskey) {
->>>>>>> Initial commit
 					if (event->type == VKEY)
 						changed = ui_textedit_copypaste(but, data, UI_TEXTEDIT_PASTE);
 					else if (event->type == CKEY)
@@ -2843,17 +2829,10 @@ static void ui_do_but_textedit(bContext *C, uiBlock *block, uiBut *but, uiHandle
 				/* Ctrl + A: Select all */
 #if defined(__APPLE__)
 				/* OSX uses cmd-a systemwide, so add it */
-<<<<<<< HEAD
 				if ((event->oskey && !IS_EVENT_MOD(event, shift, alt, ctrl)) ||
 				    (event->ctrl && !IS_EVENT_MOD(event, shift, alt, oskey)))
 #else
 				if (event->ctrl && !IS_EVENT_MOD(event, shift, alt, oskey))
-=======
-				if ((event->oskey && !(event->alt || event->shift || event->ctrl)) ||
-				    (event->ctrl  && !(event->alt || event->shift || event->oskey)))
-#else
-				if (event->ctrl && !(event->alt || event->shift || event->oskey))
->>>>>>> Initial commit
 #endif
 				{
 					ui_textedit_move(but, data, STRCUR_DIR_PREV,
@@ -2876,11 +2855,7 @@ static void ui_do_but_textedit(bContext *C, uiBlock *block, uiBut *but, uiHandle
 					update = true;  /* do live update for tab key */
 				}
 				/* the hotkey here is not well defined, was G.qual so we check all */
-<<<<<<< HEAD
 				else if (IS_EVENT_MOD(event, shift, ctrl, alt, oskey)) {
-=======
-				else if (event->shift || event->ctrl || event->alt || event->oskey) {
->>>>>>> Initial commit
 					ui_textedit_prev_but(block, but, data);
 					button_activate_state(C, but, BUTTON_STATE_EXIT);
 				}
@@ -5870,13 +5845,10 @@ static uiBlock *menu_change_shortcut(bContext *C, ARegion *ar, void *arg)
 	return block;
 }
 
-<<<<<<< HEAD
 #ifdef USE_KEYMAP_ADD_HACK
 static int g_kmi_id_hack;
 #endif
 
-=======
->>>>>>> Initial commit
 static uiBlock *menu_add_shortcut(bContext *C, ARegion *ar, void *arg)
 {
 	wmWindowManager *wm = CTX_wm_manager(C);
@@ -5917,14 +5889,10 @@ static uiBlock *menu_add_shortcut(bContext *C, ARegion *ar, void *arg)
 	uiItemR(layout, &ptr, "type", UI_ITEM_R_FULL_EVENT | UI_ITEM_R_IMMEDIATE, "", ICON_NONE);
 	
 	UI_block_bounds_set_popup(block, 6, -50, 26);
-<<<<<<< HEAD
 
 #ifdef USE_KEYMAP_ADD_HACK
 	g_kmi_id_hack = kmi_id;
 #endif
-=======
-	
->>>>>>> Initial commit
 	return block;
 }
 
@@ -5933,7 +5901,6 @@ static void menu_add_shortcut_cancel(struct bContext *C, void *arg1)
 	uiBut *but = (uiBut *)arg1;
 	wmKeyMap *km;
 	wmKeyMapItem *kmi;
-<<<<<<< HEAD
 #ifndef USE_KEYMAP_ADD_HACK
 	IDProperty *prop;
 #endif
@@ -5948,11 +5915,6 @@ static void menu_add_shortcut_cancel(struct bContext *C, void *arg1)
 	kmi_id = WM_key_event_operator_id(C, but->optype->idname, but->opcontext, prop, true, &km);
 #endif
 
-=======
-	IDProperty *prop = (but->opptr) ? but->opptr->data : NULL;
-	int kmi_id = WM_key_event_operator_id(C, but->optype->idname, but->opcontext, prop, true, &km);
-	
->>>>>>> Initial commit
 	kmi = WM_keymap_item_find_id(km, kmi_id);
 	WM_keymap_remove_item(km, kmi);
 }
@@ -6331,13 +6293,9 @@ static int ui_do_button(bContext *C, uiBlock *block, uiBut *but, const wmEvent *
 
 	if ((data->state == BUTTON_STATE_HIGHLIGHT) || (event->type == EVT_DROP)) {
 		/* handle copy-paste */
-<<<<<<< HEAD
 		if (ELEM(event->type, CKEY, VKEY) && event->val == KM_PRESS &&
 		    IS_EVENT_MOD(event, ctrl, oskey))
 		{
-=======
-		if (ELEM(event->type, CKEY, VKEY) && event->val == KM_PRESS && (event->ctrl || event->oskey)) {
->>>>>>> Initial commit
 			/* Specific handling for listrows, we try to find their overlapping tex button. */
 			if (but->type == UI_BTYPE_LISTROW) {
 				uiBut *labelbut = ui_but_list_row_text_activate(C, but, data, event, BUTTON_ACTIVATE_OVER);
@@ -6356,11 +6314,7 @@ static int ui_do_button(bContext *C, uiBlock *block, uiBut *but, const wmEvent *
 		}
 		/* handle eyedropper */
 		else if ((event->type == EKEY) && (event->val == KM_PRESS)) {
-<<<<<<< HEAD
 			if (IS_EVENT_MOD(event, shift, ctrl, alt, oskey)) {
-=======
-			if (event->alt || event->shift || event->ctrl || event->oskey) {
->>>>>>> Initial commit
 				/* pass */
 			}
 			else {
@@ -6392,11 +6346,7 @@ static int ui_do_button(bContext *C, uiBlock *block, uiBut *but, const wmEvent *
 		}
 		/* handle keyframing */
 		else if ((event->type == IKEY) &&
-<<<<<<< HEAD
 		         !IS_EVENT_MOD(event, ctrl, oskey) &&
-=======
-		         !ELEM(KM_MOD_FIRST, event->ctrl, event->oskey) &&
->>>>>>> Initial commit
 		         (event->val == KM_PRESS))
 		{
 			if (event->alt) {
@@ -6417,11 +6367,7 @@ static int ui_do_button(bContext *C, uiBlock *block, uiBut *but, const wmEvent *
 		}
 		/* handle drivers */
 		else if ((event->type == DKEY) &&
-<<<<<<< HEAD
 		         !IS_EVENT_MOD(event, shift, ctrl, oskey) &&
-=======
-		         !ELEM(KM_MOD_FIRST, event->ctrl, event->oskey, event->shift) &&
->>>>>>> Initial commit
 		         (event->val == KM_PRESS))
 		{
 			if (event->alt)
@@ -6435,11 +6381,7 @@ static int ui_do_button(bContext *C, uiBlock *block, uiBut *but, const wmEvent *
 		}
 		/* handle keyingsets */
 		else if ((event->type == KKEY) &&
-<<<<<<< HEAD
 		         !IS_EVENT_MOD(event, shift, ctrl, oskey) &&
-=======
-		         !ELEM(KM_MOD_FIRST, event->ctrl, event->oskey, event->shift) &&
->>>>>>> Initial commit
 		         (event->val == KM_PRESS))
 		{
 			if (event->alt)
@@ -6452,14 +6394,10 @@ static int ui_do_button(bContext *C, uiBlock *block, uiBut *but, const wmEvent *
 			return WM_UI_HANDLER_BREAK;
 		}
 		/* handle menu */
-<<<<<<< HEAD
 		else if ((event->type == RIGHTMOUSE) &&
 		         !IS_EVENT_MOD(event, shift, ctrl, alt, oskey) &&
 		         (event->val == KM_PRESS))
 		{
-=======
-		else if (event->type == RIGHTMOUSE && event->val == KM_PRESS) {
->>>>>>> Initial commit
 			/* RMB has two options now */
 			if (ui_but_menu(C, but)) {
 				return WM_UI_HANDLER_BREAK;
@@ -8446,11 +8384,7 @@ static int ui_handle_menu_event(
 				case WHEELDOWNMOUSE:
 				case MOUSEPAN:
 					/* arrowkeys: only handle for block_loop blocks */
-<<<<<<< HEAD
 					if (IS_EVENT_MOD(event, shift, ctrl, alt, oskey)) {
-=======
-					if (event->alt || event->shift || event->ctrl || event->oskey) {
->>>>>>> Initial commit
 						/* pass */
 					}
 					else if (inside || (block->flag & UI_BLOCK_LOOP)) {
@@ -8595,13 +8529,7 @@ static int ui_handle_menu_event(
 				case ZKEY:
 				{
 					if ((event->val  == KM_PRESS || event->val == KM_DBL_CLICK) &&
-<<<<<<< HEAD
 					    !IS_EVENT_MOD(event, shift, ctrl, oskey))
-=======
-					    (event->shift == 0) &&
-					    (event->ctrl  == 0) &&
-					    (event->oskey == 0))
->>>>>>> Initial commit
 					{
 						if (ui_menu_pass_event_to_parent_if_nonactive(menu, but, level, retval))
 							break;
@@ -9093,13 +9021,7 @@ static int ui_pie_handler(bContext *C, const wmEvent *event, uiPopupBlockHandle 
 			case ZKEY:
 			{
 				if ((event->val  == KM_PRESS || event->val == KM_DBL_CLICK) &&
-<<<<<<< HEAD
 				    !IS_EVENT_MOD(event, shift, ctrl, oskey))
-=======
-				    (event->shift == 0) &&
-				    (event->ctrl  == 0) &&
-				    (event->oskey == 0))
->>>>>>> Initial commit
 				{
 					for (but = block->buttons.first; but; but = but->next) {
 						if (but->menu_key == event->type) {

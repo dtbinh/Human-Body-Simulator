@@ -870,11 +870,7 @@ static wmOperator *wm_operator_create(wmWindowManager *wm, wmOperatorType *ot,
 					break;
 
 				/* skip invalid properties */
-<<<<<<< HEAD
 				if (STREQ(RNA_property_identifier(prop), otmacro->idname)) {
-=======
-				if (strcmp(RNA_property_identifier(prop), otmacro->idname) == 0) {
->>>>>>> Initial commit
 					wmOperatorType *otm = WM_operatortype_find(otmacro->idname, 0);
 					PointerRNA someptr = RNA_property_pointer_get(properties, prop);
 					wmOperator *opm = wm_operator_create(wm, otm, &someptr, NULL);
@@ -1666,10 +1662,6 @@ static int wm_handler_fileselect_do(bContext *C, ListBase *handlers, wmEventHand
 	int action = WM_HANDLER_CONTINUE;
 
 	switch (val) {
-<<<<<<< HEAD
-=======
-		case EVT_FILESELECT_OPEN: 
->>>>>>> Initial commit
 		case EVT_FILESELECT_FULL_OPEN: 
 		{
 			ScrArea *sa;
@@ -1683,17 +1675,11 @@ static int wm_handler_fileselect_do(bContext *C, ListBase *handlers, wmEventHand
 			else {
 				sa = handler->op_area;
 			}
-<<<<<<< HEAD
 
 			/* we already had a fullscreen here -> mark new space as a stacked fullscreen */
 			if (sa->full) {
 				ED_area_newspace(C, sa, SPACE_FILE);     /* 'sa' is modified in-place */
 				sa->flag |= AREA_FLAG_STACKED_FULLSCREEN;
-=======
-					
-			if (val == EVT_FILESELECT_OPEN) {
-				ED_area_newspace(C, sa, SPACE_FILE);     /* 'sa' is modified in-place */
->>>>>>> Initial commit
 			}
 			else {
 				sa = ED_screen_full_newspace(C, sa, SPACE_FILE);    /* sets context */
@@ -1717,22 +1703,11 @@ static int wm_handler_fileselect_do(bContext *C, ListBase *handlers, wmEventHand
 		case EVT_FILESELECT_CANCEL:
 		case EVT_FILESELECT_EXTERNAL_CANCEL:
 		{
-<<<<<<< HEAD
-=======
-			/* XXX validate area and region? */
-			bScreen *screen = CTX_wm_screen(C);
-
->>>>>>> Initial commit
 			/* remlink now, for load file case before removing*/
 			BLI_remlink(handlers, handler);
 
 			if (val != EVT_FILESELECT_EXTERNAL_CANCEL) {
-<<<<<<< HEAD
 				ED_screen_full_prevspace(C, CTX_wm_area(C));
-=======
-				ScrArea *sa = CTX_wm_area(C);
-				ED_screen_retore_temp_type(C, sa, screen != handler->filescreen);
->>>>>>> Initial commit
 			}
 
 			wm_handler_op_context(C, handler);
@@ -2481,10 +2456,6 @@ void WM_event_add_fileselect(bContext *C, wmOperator *op)
 	wmEventHandler *handler, *handlernext;
 	wmWindowManager *wm = CTX_wm_manager(C);
 	wmWindow *win = CTX_wm_window(C);
-<<<<<<< HEAD
-=======
-	int full = 1;    // XXX preset?
->>>>>>> Initial commit
 
 	/* only allow 1 file selector open per window */
 	for (handler = win->modalhandlers.first; handler; handler = handlernext) {
@@ -2519,10 +2490,6 @@ void WM_event_add_fileselect(bContext *C, wmOperator *op)
 	handler->op = op;
 	handler->op_area = CTX_wm_area(C);
 	handler->op_region = CTX_wm_region(C);
-<<<<<<< HEAD
-=======
-	handler->filescreen = CTX_wm_screen(C);
->>>>>>> Initial commit
 	
 	BLI_addhead(&win->modalhandlers, handler);
 	
@@ -2532,11 +2499,7 @@ void WM_event_add_fileselect(bContext *C, wmOperator *op)
 		op->type->check(C, op); /* ignore return value */
 	}
 
-<<<<<<< HEAD
 	WM_event_fileselect_event(wm, op, EVT_FILESELECT_FULL_OPEN);
-=======
-	WM_event_fileselect_event(wm, op, full ? EVT_FILESELECT_FULL_OPEN : EVT_FILESELECT_OPEN);
->>>>>>> Initial commit
 }
 
 #if 0

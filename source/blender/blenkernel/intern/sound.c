@@ -118,16 +118,10 @@ void BKE_sound_free(bSound *sound)
 
 	sound_free_waveform(sound);
 	
-<<<<<<< HEAD
 	if (sound->spinlock) {
 		BLI_spin_end(sound->spinlock);
 		MEM_freeN(sound->spinlock);
 		sound->spinlock = NULL;
-=======
-	if (sound->mutex) {
-		BLI_mutex_free(sound->mutex);
-		sound->mutex = NULL;
->>>>>>> Initial commit
 	}
 	
 #endif  /* WITH_AUDASPACE */
@@ -694,12 +688,7 @@ void sound_free_waveform(bSound *sound)
 void sound_read_waveform(bSound *sound, short *stop)
 {
 	AUD_SoundInfo info = AUD_getInfo(sound->playback_handle);
-<<<<<<< HEAD
 	SoundWaveform *waveform = MEM_mallocN(sizeof(SoundWaveform), "SoundWaveform");
-=======
-	SoundWaveform *waveform = MEM_mallocN(sizeof(SoundWaveform),
-										  "SoundWaveform");
->>>>>>> Initial commit
 
 	if (info.length > 0) {
 		int length = info.length * SOUND_WAVE_SAMPLES_PER_SECOND;
@@ -721,31 +710,18 @@ void sound_read_waveform(bSound *sound, short *stop)
 			MEM_freeN(waveform->data);
 		}
 		MEM_freeN(waveform);
-<<<<<<< HEAD
 		BLI_spin_lock(sound->spinlock);
 		sound->flags &= ~SOUND_FLAGS_WAVEFORM_LOADING;
 		BLI_spin_unlock(sound->spinlock);
-=======
-		BLI_mutex_lock(sound->mutex);
-		sound->flags &= ~SOUND_FLAGS_WAVEFORM_LOADING;
-		BLI_mutex_unlock(sound->mutex);
->>>>>>> Initial commit
 		return;
 	}
 		
 	sound_free_waveform(sound);
 	
-<<<<<<< HEAD
 	BLI_spin_lock(sound->spinlock);
 	sound->waveform = waveform;
 	sound->flags &= ~SOUND_FLAGS_WAVEFORM_LOADING;
 	BLI_spin_unlock(sound->spinlock);
-=======
-	BLI_mutex_lock(sound->mutex);
-	sound->waveform = waveform;
-	sound->flags &= ~SOUND_FLAGS_WAVEFORM_LOADING;
-	BLI_mutex_unlock(sound->mutex);
->>>>>>> Initial commit
 }
 
 void sound_update_scene(Main *bmain, struct Scene *scene)

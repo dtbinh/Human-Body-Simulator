@@ -137,11 +137,7 @@ static int blf_search(const char *name)
 
 	for (i = 0; i < BLF_MAX_FONT; i++) {
 		font = global_font[i];
-<<<<<<< HEAD
 		if (font && (STREQ(font->name, name)))
-=======
-		if (font && (!strcmp(font->name, name)))
->>>>>>> Initial commit
 			return i;
 	}
 
@@ -328,11 +324,7 @@ void BLF_unload(const char *name)
 	for (i = 0; i < BLF_MAX_FONT; i++) {
 		font = global_font[i];
 
-<<<<<<< HEAD
 		if (font && (STREQ(font->name, name))) {
-=======
-		if (font && (!strcmp(font->name, name))) {
->>>>>>> Initial commit
 			blf_font_free(font);
 			global_font[i] = NULL;
 		}

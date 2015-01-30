@@ -26,10 +26,6 @@
 /** \file BLI_edgehash.h
  *  \ingroup bli
  *  \author Daniel Dunbar
-<<<<<<< HEAD
-=======
- *  \brief A general unordered 2-int pair hash table ADT.
->>>>>>> Initial commit
  */
 
 #include "BLI_compiler_attrs.h"

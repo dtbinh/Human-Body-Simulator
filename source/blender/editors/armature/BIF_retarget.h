@@ -53,26 +53,17 @@ typedef struct RigGraph {
 	ListBase nodes;
 
 	float length;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	FreeArc         free_arc;
 	FreeNode        free_node;
 	RadialSymmetry  radial_symmetry;
 	AxialSymmetry   axial_symmetry;
 	/*********************************/
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	int flag;
 
 	ListBase   controls;
 	ListBase  *editbones;
-<<<<<<< HEAD
 	
 	struct RigNode *head;
 	ReebGraph *link_mesh;
@@ -84,19 +75,6 @@ typedef struct RigGraph {
 	GHash *bones_map;     /* map of editbones by name */
 	GHash *controls_map;  /* map of rigcontrols by bone pointer */
 	
-=======
-
-	struct RigNode *head;
-	ReebGraph *link_mesh;
-
-
-	TaskScheduler *task_scheduler;
-	TaskPool *task_pool;
-
-	GHash *bones_map;     /* map of editbones by name */
-	GHash *controls_map;  /* map of rigcontrols by bone pointer */
-
->>>>>>> Initial commit
 	struct Object *ob;
 } RigGraph;
 
@@ -129,11 +107,7 @@ typedef struct RigArc {
 	int symmetry_group;
 	int symmetry_flag;
 	/*********************************/
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	ListBase edges;
 	int count;
 	ReebArc *link_mesh;
@@ -145,11 +119,8 @@ typedef struct RigEdge {
 	float length;
 	float angle; /* angle to next edge */
 	float up_angle; /* angle between up_axis and the joint normal (defined as Previous edge CrossProduct Current edge */
-<<<<<<< HEAD
-	struct EditBone *bone;
-=======
+//	struct EditBone *bone;
 	struct EditArmatureElement *bone;
->>>>>>> Initial commit
 	float up_axis[3];
 } RigEdge;
 
@@ -175,15 +146,12 @@ typedef enum {
 typedef struct RigControl {
 	struct RigControl *next, *prev;
 	float head[3], tail[3];
-<<<<<<< HEAD
-	struct EditBone *bone;
-	struct EditBone *link;
-	struct EditBone *link_tail;
-=======
+//	struct EditBone *bone;
+//	struct EditBone *link;
+//	struct EditBone *link_tail;
 	struct EditArmatureElement *bone;
 	struct EditArmatureElement *link;
 	struct EditArmatureElement *link_tail;
->>>>>>> Initial commit
 	float  up_axis[3];
 	float  offset[3];
 	float  qrot[4];   /* for dual linked bones, store the rotation of the linked bone for the finalization */

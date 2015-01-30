@@ -260,11 +260,8 @@ typedef struct VertSlideData {
 } VertSlideData;
 
 typedef struct BoneInitData {
-<<<<<<< HEAD
-	struct EditBone *bone;
-=======
+//	struct EditBone *bone;
 	struct EditArmatureElement *bone;
->>>>>>> Initial commit
 	float tail[3];
 	float rad_tail;
 	float roll;

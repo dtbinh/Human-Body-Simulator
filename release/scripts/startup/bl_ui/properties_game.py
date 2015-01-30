@@ -21,11 +21,7 @@ import bpy
 from bpy.types import Panel, Menu
 
 
-<<<<<<< HEAD
 class PhysicsButtonsPanel:
-=======
-class PhysicsButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "physics"
@@ -260,11 +256,7 @@ class PHYSICS_PT_game_obstacles(PhysicsButtonsPanel, Panel):
         row.label()
 
 
-<<<<<<< HEAD
 class RenderButtonsPanel:
-=======
-class RenderButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "render"
@@ -463,11 +455,7 @@ class RENDER_PT_game_display(RenderButtonsPanel, Panel):
             col.prop(gs, "frame_color", text="")
 
 
-<<<<<<< HEAD
 class SceneButtonsPanel:
-=======
-class SceneButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "scene"
@@ -531,27 +519,7 @@ class SCENE_PT_game_navmesh(SceneButtonsPanel, Panel):
         row.prop(rd, "sample_max_error")
 
 
-<<<<<<< HEAD
 class WorldButtonsPanel:
-=======
-class RENDER_PT_game_sound(RenderButtonsPanel, Panel):
-    bl_label = "Sound"
-    COMPAT_ENGINES = {'BLENDER_GAME'}
-
-    def draw(self, context):
-        layout = self.layout
-
-        scene = context.scene
-
-        layout.prop(scene, "audio_distance_model")
-
-        col = layout.column(align=True)
-        col.prop(scene, "audio_doppler_speed", text="Speed")
-        col.prop(scene, "audio_doppler_factor")
-
-
-class WorldButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "world"
@@ -707,11 +675,7 @@ class WORLD_PT_game_physics_obstacles(WorldButtonsPanel, Panel):
             layout.prop(gs, "show_obstacle_simulation")
 
 
-<<<<<<< HEAD
 class DataButtonsPanel:
-=======
-class DataButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "data"
@@ -769,11 +733,7 @@ class DATA_PT_shadow_game(DataButtonsPanel, Panel):
             row.prop(lamp, "shadow_frustum_size", text="Frustum Size")
 
 
-<<<<<<< HEAD
 class ObjectButtonsPanel:
-=======
-class ObjectButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "object"

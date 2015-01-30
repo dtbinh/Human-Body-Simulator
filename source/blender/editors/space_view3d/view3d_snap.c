@@ -114,15 +114,12 @@ static int snap_sel_to_grid_exec(bContext *C, wmOperator *UNUSED(op))
 				invert_m4_m4(ob->imat, ob->obmat);
 				
 				for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-					if (pchan->bone->flag & BONE_SELECTED) {
-						if (pchan->bone->layer & arm->layer) {
-							if ((pchan->bone->flag & BONE_CONNECTED) == 0) {
-=======
+//					if (pchan->bone->flag & BONE_SELECTED) {
+//						if (pchan->bone->layer & arm->layer) {
+//							if ((pchan->bone->flag & BONE_CONNECTED) == 0) {
 					if (pchan->bone->flag & ELEMENT_SELECTED) {
 						if (pchan->bone->layer & arm->layer) {
 							if ((pchan->bone->flag & ELEMENT_CONNECTED) == 0) {
->>>>>>> Initial commit
 								float nLoc[3];
 								
 								/* get nearest grid point to snap to */
@@ -280,15 +277,12 @@ static int snap_sel_to_curs_exec(bContext *C, wmOperator *op)
 				mul_v3_m4v3(cursor_local, ob->imat, cursor_global);
 
 				for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
-					if (pchan->bone->flag & BONE_SELECTED) {
-						if (PBONE_VISIBLE(arm, pchan->bone)) {
-							if ((pchan->bone->flag & BONE_CONNECTED) == 0) {
-=======
+//					if (pchan->bone->flag & BONE_SELECTED) {
+//						if (PBONE_VISIBLE(arm, pchan->bone)) {
+//							if ((pchan->bone->flag & BONE_CONNECTED) == 0) {
 					if (pchan->bone->flag & ELEMENT_SELECTED) {
 						if (PELEMENT_VISIBLE(arm, pchan->bone)) {
 							if ((pchan->bone->flag & ELEMENT_CONNECTED) == 0) {
->>>>>>> Initial commit
 								/* Get position in pchan (pose) space. */
 								float cursor_pose[3];
 
@@ -524,11 +518,8 @@ static bool snap_curs_to_sel_ex(bContext *C, float cursor[3])
 			bPoseChannel *pchan;
 			for (pchan = obact->pose->chanbase.first; pchan; pchan = pchan->next) {
 				if (arm->layer & pchan->bone->layer) {
-<<<<<<< HEAD
-					if (pchan->bone->flag & BONE_SELECTED) {
-=======
+//					if (pchan->bone->flag & BONE_SELECTED) {
 					if (pchan->bone->flag & ELEMENT_SELECTED) {
->>>>>>> Initial commit
 						copy_v3_v3(vec, pchan->pose_head);
 						mul_m4_v3(obact->obmat, vec);
 						add_v3_v3(centroid, vec);

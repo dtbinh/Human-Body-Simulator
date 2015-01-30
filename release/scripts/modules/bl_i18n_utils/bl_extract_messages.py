@@ -62,10 +62,7 @@ def _gen_check_ctxt(settings):
         "spell_errors": {},
     }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 def _diff_check_ctxt(check_ctxt, minus_check_ctxt):
     """Returns check_ctxt - minus_check_ctxt"""
     for key in check_ctxt:
@@ -78,10 +75,7 @@ def _diff_check_ctxt(check_ctxt, minus_check_ctxt):
                 if warning in check_ctxt[key]:
                     del check_ctxt[key][warning]
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 def _gen_reports(check_ctxt):
     return {
         "check_ctxt": check_ctxt,
@@ -176,7 +170,7 @@ def print_info(reports, pot):
             if undoc_ops and key in undoc_ops:
                 _print("\tThe following operators are undocumented!")
             else:
-                _print("\t“{}”|“{}”:".format(*key))
+                _print("\t“{}”|“{}�".format(*key))
                 if multi_lines and key in multi_lines:
                     _print("\t\t-> newline in this message!")
                 if not_capitalized and key in not_capitalized:
@@ -481,10 +475,6 @@ def dump_py_messages_from_files(msgs, reports, files, settings):
 
         return [_extract_string_merge(estr_ls, nds_ls) for estr_ls, nds_ls in bag]
 
-<<<<<<< HEAD
-=======
-
->>>>>>> Initial commit
     i18n_ctxt_ids = {v for v in bpy.app.translations.contexts_C_to_py.values()}
     def _ctxt_to_ctxt(node):
         # We must try, to some extend, to get contexts from vars instead of only literal strings...
@@ -721,14 +711,14 @@ def dump_src_messages(msgs, reports, settings):
                 elif '"' in _msgctxt or "'" in _msgctxt:
                     msgctxt = clean_str(_msgctxt)
                 else:
-                    print("WARNING: raw context “{}” couldn’t be resolved!".format(_msgctxt))
+                    print("WARNING: raw context “{}�couldn’t be resolved!".format(_msgctxt))
             # Message.
             msgid = ""
             if _msgid:
                 if '"' in _msgid or "'" in _msgid:
                     msgid = clean_str(_msgid)
                 else:
-                    print("WARNING: raw message “{}” couldn’t be resolved!".format(_msgid))
+                    print("WARNING: raw message “{}�couldn’t be resolved!".format(_msgid))
             return msgctxt, msgid
 
         check_ctxt_src = None
@@ -838,11 +828,11 @@ def dump_messages(do_messages, do_checks, settings):
 
     # Get strings specific to translations' menu.
     for lng in settings.LANGUAGES:
-        process_msg(msgs, settings.DEFAULT_CONTEXT, lng[1], "Languages’ labels from bl_i18n_utils/settings.py",
+        process_msg(msgs, settings.DEFAULT_CONTEXT, lng[1], "Languages�labels from bl_i18n_utils/settings.py",
                     reports, None, settings)
     for cat in settings.LANGUAGES_CATEGORIES:
         process_msg(msgs, settings.DEFAULT_CONTEXT, cat[1],
-                    "Language categories’ labels from bl_i18n_utils/settings.py", reports, None, settings)
+                    "Language categories�labels from bl_i18n_utils/settings.py", reports, None, settings)
 
     #pot.check()
     pot.unescape()  # Strings gathered in py/C source code may contain escaped chars...

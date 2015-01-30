@@ -316,11 +316,7 @@ def main():
 
     try:
         import argparse
-<<<<<<< HEAD
     except ImportError:
-=======
-    except:
->>>>>>> Initial commit
         print("Old Blender, just dumping")
         api_dump()
         return

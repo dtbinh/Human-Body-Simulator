@@ -304,7 +304,6 @@ static void rna_ImaPaint_viewport_update(Main *UNUSED(bmain), Scene *UNUSED(scen
 static void rna_ImaPaint_mode_update(Main *UNUSED(bmain), Scene *scene, PointerRNA *UNUSED(ptr))
 {
 	Object *ob = OBACT;
-<<<<<<< HEAD
 
 	if (ob && ob->type == OB_MESH) {
 		/* of course we need to invalidate here */
@@ -315,21 +314,10 @@ static void rna_ImaPaint_mode_update(Main *UNUSED(bmain), Scene *scene, PointerR
 		BKE_paint_proj_mesh_data_check(scene, ob, NULL, NULL, NULL, NULL);
 		WM_main_add_notifier(NC_OBJECT | ND_DRAW, NULL);
 	}
-=======
-	
-	/* of course we need to invalidate here */
-	BKE_texpaint_slots_refresh_object(scene, ob);
-
-	/* we assume that changing the current mode will invalidate the uv layers so we need to refresh display */
-	GPU_drawobject_free(ob->derivedFinal);
-	BKE_paint_proj_mesh_data_check(scene, ob, NULL, NULL, NULL, NULL);
-	WM_main_add_notifier(NC_OBJECT | ND_DRAW, NULL);
->>>>>>> Initial commit
 }
 
 static void rna_ImaPaint_stencil_update(Main *UNUSED(bmain), Scene *scene, PointerRNA *UNUSED(ptr))
 {
-<<<<<<< HEAD
 	Object *ob = OBACT;
 
 	if (ob && ob->type == OB_MESH) {
@@ -337,12 +325,6 @@ static void rna_ImaPaint_stencil_update(Main *UNUSED(bmain), Scene *scene, Point
 		BKE_paint_proj_mesh_data_check(scene, ob, NULL, NULL, NULL, NULL);
 		WM_main_add_notifier(NC_OBJECT | ND_DRAW, NULL);
 	}
-=======
-	Object *ob = OBACT;	
-	GPU_drawobject_free(ob->derivedFinal);
-	BKE_paint_proj_mesh_data_check(scene, ob, NULL, NULL, NULL, NULL);
-	WM_main_add_notifier(NC_OBJECT | ND_DRAW, NULL);
->>>>>>> Initial commit
 }
 
 static void rna_ImaPaint_canvas_update(Main *bmain, Scene *scene, PointerRNA *UNUSED(ptr))

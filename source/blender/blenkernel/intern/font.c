@@ -245,11 +245,7 @@ VFont *BKE_vfont_load(Main *bmain, const char *name)
 			}
 
 			/* Do not add FO_BUILTIN_NAME to temporary listbase */
-<<<<<<< HEAD
 			if (!STREQ(filename, FO_BUILTIN_NAME)) {
-=======
-			if (strcmp(filename, FO_BUILTIN_NAME)) {
->>>>>>> Initial commit
 				vfont->temp_pf = temp_pf;
 			}
 		}

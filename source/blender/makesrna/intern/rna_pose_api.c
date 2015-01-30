@@ -50,7 +50,6 @@
 #include "DNA_action_types.h" /* bPose */
 #include "BKE_armature.h"
 
-<<<<<<< HEAD
 static float rna_PoseBone_do_envelope(bPoseChannel *chan, float *vec)
 {
 	Bone *bone = chan->bone;
@@ -59,17 +58,17 @@ static float rna_PoseBone_do_envelope(bPoseChannel *chan, float *vec)
 
 	return distfactor_to_bone(vec, chan->pose_head, chan->pose_tail, bone->rad_head * scale,
 	                          bone->rad_tail * scale, bone->dist * scale);
-=======
-static float rna_PoseElement_do_envelope(bPoseChannel *chan, float *vec)
-{
-	ArmatureElement *element = chan->bone;
-
-	float scale = (element->flag & ELEMENT_MULT_VG_ENV) == ELEMENT_MULT_VG_ENV ? ((BoneData*)element->data)->weight : 1.0f;
-
-	return distfactor_to_bone(vec, chan->pose_head, chan->pose_tail, element->rad_head * scale,
-	                          element->rad_tail * scale, ((BoneData*)element->data)->dist * scale);
->>>>>>> Initial commit
 }
+
+//static float rna_PoseElement_do_envelope(bPoseChannel *chan, float *vec)
+//{
+//	ArmatureElement *element = chan->bone;
+//
+//	float scale = (element->flag & ELEMENT_MULT_VG_ENV) == ELEMENT_MULT_VG_ENV ? ((BoneData*)element->data)->weight : 1.0f;
+//
+//	return distfactor_to_bone(vec, chan->pose_head, chan->pose_tail, element->rad_head * scale,
+//	                          element->rad_tail * scale, ((BoneData*)element->data)->dist * scale);
+//}
 #else
 
 void RNA_api_pose(StructRNA *UNUSED(srna))
@@ -83,11 +82,8 @@ void RNA_api_pose_channel(StructRNA *srna)
 	PropertyRNA *parm;
 	FunctionRNA *func;
 
-<<<<<<< HEAD
 	func = RNA_def_function(srna, "evaluate_envelope", "rna_PoseBone_do_envelope");
-=======
-	func = RNA_def_function(srna, "evaluate_envelope", "rna_PoseElement_do_envelope");
->>>>>>> Initial commit
+//	func = RNA_def_function(srna, "evaluate_envelope", "rna_PoseElement_do_envelope");
 	RNA_def_function_ui_description(func, "Calculate bone envelope at given point");
 	parm = RNA_def_float_vector_xyz(func, "point", 3, NULL, -FLT_MAX, FLT_MAX, "Point",
 	                                "Position in 3d space to evaluate", -FLT_MAX, FLT_MAX);

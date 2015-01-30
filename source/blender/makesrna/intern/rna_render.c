@@ -267,11 +267,7 @@ static StructRNA *rna_RenderEngine_register(Main *bmain, ReportList *reports, vo
 
 	/* check if we have registered this engine type before, and remove it */
 	for (et = R_engines.first; et; et = et->next) {
-<<<<<<< HEAD
 		if (STREQ(et->idname, dummyet.idname)) {
-=======
-		if (strcmp(et->idname, dummyet.idname) == 0) {
->>>>>>> Initial commit
 			if (et->ext.srna)
 				rna_RenderEngine_unregister(bmain, et->ext.srna);
 			break;

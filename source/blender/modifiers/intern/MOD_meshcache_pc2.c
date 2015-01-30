@@ -57,11 +57,7 @@ static bool meshcache_read_pc2_head(FILE *fp, const int verts_tot,
 		return false;
 	}
 
-<<<<<<< HEAD
 	if (!STREQ(pc2_head->header, "POINTCACHE2")) {
-=======
-	if (strcmp(pc2_head->header, "POINTCACHE2") != 0) {
->>>>>>> Initial commit
 		*err_str = "Invalid header";
 		return false;
 	}

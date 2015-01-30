@@ -611,11 +611,7 @@ static void rna_MultiresModifier_filepath_set(PointerRNA *ptr, const char *value
 	Object *ob = (Object *)ptr->id.data;
 	CustomDataExternal *external = ((Mesh *)ob->data)->ldata.external;
 
-<<<<<<< HEAD
 	if (external && !STREQ(external->filename, value)) {
-=======
-	if (external && strcmp(external->filename, value)) {
->>>>>>> Initial commit
 		BLI_strncpy(external->filename, value, sizeof(external->filename));
 		multires_force_external_reload(ob);
 	}

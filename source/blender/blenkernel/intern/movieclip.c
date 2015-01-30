@@ -525,7 +525,6 @@ static bool put_imbuf_cache(MovieClip *clip, MovieClipUser *user, ImBuf *ibuf, i
 	}
 }
 
-<<<<<<< HEAD
 static bool moviecache_check_free_proxy(ImBuf *UNUSED(ibuf),
                                         void *userkey,
                                         void *UNUSED(userdata))
@@ -535,8 +534,6 @@ static bool moviecache_check_free_proxy(ImBuf *UNUSED(ibuf),
 	return !(key->proxy == IMB_PROXY_NONE && key->render_flag == 0);
 }
 
-=======
->>>>>>> Initial commit
 /*********************** common functions *************************/
 
 /* only image block itself */
@@ -624,11 +621,7 @@ MovieClip *BKE_movieclip_file_add(Main *bmain, const char *name)
 		BLI_strncpy(strtest, clip->name, sizeof(clip->name));
 		BLI_path_abs(strtest, G.main->name);
 
-<<<<<<< HEAD
 		if (STREQ(strtest, str)) {
-=======
-		if (strcmp(strtest, str) == 0) {
->>>>>>> Initial commit
 			BLI_strncpy(clip->name, name, sizeof(clip->name));  /* for stringcode */
 			clip->id.us++;  /* officially should not, it doesn't link here! */
 
@@ -1183,7 +1176,6 @@ void BKE_movieclip_clear_cache(MovieClip *clip)
 	free_buffers(clip);
 }
 
-<<<<<<< HEAD
 void BKE_movieclip_clear_proxy_cache(MovieClip *clip)
 {
 	if (clip->cache && clip->cache->moviecache) {
@@ -1193,8 +1185,6 @@ void BKE_movieclip_clear_proxy_cache(MovieClip *clip)
 	}
 }
 
-=======
->>>>>>> Initial commit
 void BKE_movieclip_reload(MovieClip *clip)
 {
 	/* clear cache */

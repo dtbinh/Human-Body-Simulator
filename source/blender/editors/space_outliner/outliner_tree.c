@@ -266,11 +266,8 @@ static TreeElement *outliner_add_element(SpaceOops *soops, ListBase *lb, void *i
 /* -------------------------------------------------------- */
 
 /* special handling of hierarchical non-lib data */
-<<<<<<< HEAD
-static void outliner_add_bone(SpaceOops *soops, ListBase *lb, ID *id, Bone *curBone, 
-=======
+//static void outliner_add_bone(SpaceOops *soops, ListBase *lb, ID *id, Bone *curBone, 
 static void outliner_add_bone(SpaceOops *soops, ListBase *lb, ID *id, ArmatureElement *curBone,
->>>>>>> Initial commit
                               TreeElement *parent, int *a)
 {
 	TreeElement *te = outliner_add_element(soops, lb, id, parent, TSE_BONE, *a);
@@ -761,11 +758,8 @@ static void outliner_add_id_contents(SpaceOops *soops, TreeElement *te, TreeStor
 				outliner_add_element(soops, &te->subtree, arm, te, TSE_ANIM_DATA, 0);
 			
 			if (arm->edbo) {
-<<<<<<< HEAD
-				EditBone *ebone;
-=======
+//				EditBone *ebone;
 				EditArmatureElement *ebone;
->>>>>>> Initial commit
 				TreeElement *ten;
 				
 				for (ebone = arm->edbo->first; ebone; ebone = ebone->next, a++) {
@@ -775,17 +769,14 @@ static void outliner_add_id_contents(SpaceOops *soops, TreeElement *te, TreeStor
 					ebone->temp = ten;
 				}
 				/* make hierarchy */
-<<<<<<< HEAD
-				ten = arm->edbo->first ? ((EditBone *)arm->edbo->first)->temp : NULL;
-				while (ten) {
-					TreeElement *nten = ten->next, *par;
-					ebone = (EditBone *)ten->directdata;
-=======
+//				ten = arm->edbo->first ? ((EditBone *)arm->edbo->first)->temp : NULL;
+//				while (ten) {
+//					TreeElement *nten = ten->next, *par;
+//					ebone = (EditBone *)ten->directdata;
 				ten = arm->edbo->first ? ((EditArmatureElement *)arm->edbo->first)->temp : NULL;
 				while (ten) {
 					TreeElement *nten = ten->next, *par;
 					ebone = (EditArmatureElement *)ten->directdata;
->>>>>>> Initial commit
 					if (ebone->parent) {
 						BLI_remlink(&te->subtree, ten);
 						par = ebone->parent->temp;
@@ -802,11 +793,8 @@ static void outliner_add_id_contents(SpaceOops *soops, TreeElement *te, TreeStor
 					/* pass */
 				}
 				else {
-<<<<<<< HEAD
-					Bone *curBone;
-=======
+//					Bone *curBone;
 					ArmatureElement *curBone;
->>>>>>> Initial commit
 					for (curBone = arm->bonebase.first; curBone; curBone = curBone->next) {
 						outliner_add_bone(soops, &te->subtree, id, curBone, te, &a);
 					}
@@ -1179,11 +1167,7 @@ static int need_add_seq_dup(Sequence *seq)
 			continue;
 		}
 
-<<<<<<< HEAD
 		if (STREQ(p->strip->stripdata->name, seq->strip->stripdata->name))
-=======
-		if (!strcmp(p->strip->stripdata->name, seq->strip->stripdata->name))
->>>>>>> Initial commit
 			return(2);
 		p = p->prev;
 	}
@@ -1195,11 +1179,7 @@ static int need_add_seq_dup(Sequence *seq)
 			continue;
 		}
 
-<<<<<<< HEAD
 		if (STREQ(p->strip->stripdata->name, seq->strip->stripdata->name))
-=======
-		if (!strcmp(p->strip->stripdata->name, seq->strip->stripdata->name))
->>>>>>> Initial commit
 			return(0);
 		p = p->next;
 	}
@@ -1218,11 +1198,7 @@ static void outliner_add_seq_dup(SpaceOops *soops, Sequence *seq, TreeElement *t
 			continue;
 		}
 
-<<<<<<< HEAD
 		if (STREQ(p->strip->stripdata->name, seq->strip->stripdata->name))
-=======
-		if (!strcmp(p->strip->stripdata->name, seq->strip->stripdata->name))
->>>>>>> Initial commit
 			/* ch = */ /* UNUSED */ outliner_add_element(soops, &te->subtree, (void *)p, te, TSE_SEQUENCE, index);
 		p = p->next;
 	}
@@ -1343,12 +1319,9 @@ static void outliner_sort(SpaceOops *soops, ListBase *lb)
 	TreeStoreElem *tselem;
 	int totelem = 0;
 
-<<<<<<< HEAD
 	if (soops->flag & SO_SKIP_SORT_ALPHA)
 		return;
 
-=======
->>>>>>> Initial commit
 	te = lb->last;
 	if (te == NULL) return;
 	tselem = TREESTORE(te);
@@ -1408,63 +1381,22 @@ static void outliner_sort(SpaceOops *soops, ListBase *lb)
 
 /* Filtering ----------------------------------------------- */
 
-<<<<<<< HEAD
 static bool outliner_filter_has_name(TreeElement *te, const char *name, int flags)
 {
 	int fn_flag = 0;
-=======
-static int outliner_filter_has_name(TreeElement *te, const char *name, int flags)
-{
-#if 0
-	int found = 0;
-
-	/* determine if match */
-	if (flags & SO_FIND_CASE_SENSITIVE) {
-		if (flags & SO_FIND_COMPLETE)
-			found = strcmp(te->name, name) == 0;
-		else
-			found = strstr(te->name, name) != NULL;
-	}
-	else {
-		if (flags & SO_FIND_COMPLETE)
-			found = BLI_strcasecmp(te->name, name) == 0;
-		else
-			found = BLI_strcasestr(te->name, name) != NULL;
-	}
-#else
-
-	int fn_flag = 0;
-	int found = 0;
->>>>>>> Initial commit
 
 	if ((flags & SO_FIND_CASE_SENSITIVE) == 0)
 		fn_flag |= FNM_CASEFOLD;
 
-<<<<<<< HEAD
 	return fnmatch(name, te->name, fn_flag) == 0;
-=======
-	if (flags & SO_FIND_COMPLETE) {
-		found = fnmatch(name, te->name, fn_flag) == 0;
-}
-	else {
-		char fn_name[sizeof(((struct SpaceOops *)NULL)->search_string) + 2];
-		BLI_snprintf(fn_name, sizeof(fn_name), "*%s*", name);
-		found = fnmatch(fn_name, te->name, fn_flag) == 0;
-	}
-	return found;
-#endif
->>>>>>> Initial commit
 }
 
 static int outliner_filter_tree(SpaceOops *soops, ListBase *lb)
 {
 	TreeElement *te, *ten;
 	TreeStoreElem *tselem;
-<<<<<<< HEAD
 	char search_buff[sizeof(((struct SpaceOops *)NULL)->search_string) + 2];
 	char *search_string;
-=======
->>>>>>> Initial commit
 
 	/* although we don't have any search string, we return true 
 	 * since the entire tree is ok then...
@@ -1472,7 +1404,6 @@ static int outliner_filter_tree(SpaceOops *soops, ListBase *lb)
 	if (soops->search_string[0] == 0)
 		return 1;
 
-<<<<<<< HEAD
 	if (soops->search_flags & SO_FIND_COMPLETE) {
 		search_string = soops->search_string;
 	}
@@ -1486,12 +1417,6 @@ static int outliner_filter_tree(SpaceOops *soops, ListBase *lb)
 		ten = te->next;
 		
 		if (!outliner_filter_has_name(te, search_string, soops->search_flags)) {
-=======
-	for (te = lb->first; te; te = ten) {
-		ten = te->next;
-		
-		if (0 == outliner_filter_has_name(te, soops->search_string, soops->search_flags)) {
->>>>>>> Initial commit
 			/* item isn't something we're looking for, but...
 			 *  - if the subtree is expanded, check if there are any matches that can be easily found
 			 *		so that searching for "cu" in the default scene will still match the Cube
@@ -1621,7 +1546,6 @@ void outliner_build_tree(Main *mainvar, Scene *scene, SpaceOops *soops)
 			tselem = TREESTORE(ten);
 			lib = (Library *)tselem->id;
 			if (lib && lib->parent) {
-<<<<<<< HEAD
 				par = (TreeElement *)lib->parent->id.newid;
 				if (tselem->id->flag & LIB_INDIRECT) {
 					/* Only remove from 'first level' if lib is not also directly used. */
@@ -1636,13 +1560,6 @@ void outliner_build_tree(Main *mainvar, Scene *scene, SpaceOops *soops)
 					dupten->parent = par;
 				}
 			}
-=======
-					BLI_remlink(&soops->tree, ten);
-				par = (TreeElement *)lib->parent->id.newid;
-					BLI_addtail(&par->subtree, ten);
-					ten->parent = par;
-				}
->>>>>>> Initial commit
 			ten = nten;
 		}
 		/* restore newid pointers */

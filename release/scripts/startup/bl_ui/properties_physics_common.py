@@ -23,11 +23,7 @@ from bpy.types import Panel
 from bpy.app.translations import contexts as i18n_contexts
 
 
-<<<<<<< HEAD
 class PhysicButtonsPanel:
-=======
-class PhysicButtonsPanel():
->>>>>>> Initial commit
     bl_space_type = 'PROPERTIES'
     bl_region_type = 'WINDOW'
     bl_context = "physics"

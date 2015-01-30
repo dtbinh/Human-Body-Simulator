@@ -4,11 +4,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
-<<<<<<< HEAD
  * of the License, or (at your option) any later version. 
-=======
- * of the License, or (at your option) any later version.
->>>>>>> Initial commit
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,11 +18,7 @@
  * The Original Code is Copyright (C) 2008 Blender Foundation.
  * All rights reserved.
  *
-<<<<<<< HEAD
  * 
-=======
- *
->>>>>>> Initial commit
  * Contributor(s): Blender Foundation, Joshua Leung
  *
  * ***** END GPL LICENSE BLOCK *****
@@ -67,11 +59,7 @@
 /* **************************** depsgraph tagging ******************************** */
 
 /* tags the given anim list element for refreshes (if applicable)
-<<<<<<< HEAD
  * due to Animation Editor editing 
-=======
- * due to Animation Editor editing
->>>>>>> Initial commit
  */
 void ANIM_list_elem_update(Scene *scene, bAnimListElem *ale)
 {
@@ -82,11 +70,7 @@ void ANIM_list_elem_update(Scene *scene, bAnimListElem *ale)
 	id = ale->id;
 	if (!id)
 		return;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* tag AnimData for refresh so that other views will update in realtime with these changes */
 	adt = BKE_animdata_from_id(id);
 	if (adt)
@@ -94,26 +78,16 @@ void ANIM_list_elem_update(Scene *scene, bAnimListElem *ale)
 
 	/* update data */
 	fcu = (ale->datatype == ALE_FCURVE) ? ale->key_data : NULL;
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 	if (fcu && fcu->rna_path) {
 		/* if we have an fcurve, call the update for the property we
 		 * are editing, this is then expected to do the proper redraws
 		 * and depsgraph updates  */
 		PointerRNA id_ptr, ptr;
 		PropertyRNA *prop;
-<<<<<<< HEAD
 		
 		RNA_id_pointer_create(id, &id_ptr);
 			
-=======
-
-		RNA_id_pointer_create(id, &id_ptr);
-
->>>>>>> Initial commit
 		if (RNA_path_resolve_property(&id_ptr, fcu->rna_path, &ptr, &prop))
 			RNA_property_update_main(G.main, scene, &ptr, prop);
 	}
@@ -124,29 +98,17 @@ void ANIM_list_elem_update(Scene *scene, bAnimListElem *ale)
 	}
 }
 
-<<<<<<< HEAD
 /* tags the given ID block for refreshes (if applicable) due to 
-=======
-/* tags the given ID block for refreshes (if applicable) due to
->>>>>>> Initial commit
  * Animation Editor editing */
 void ANIM_id_update(Scene *UNUSED(scene), ID *id)
 {
 	if (id) {
 		AnimData *adt = BKE_animdata_from_id(id);
-<<<<<<< HEAD
 		
 		/* tag AnimData for refresh so that other views will update in realtime with these changes */
 		if (adt)
 			adt->recalc |= ADT_RECALC_ANIM;
 			
-=======
-
-		/* tag AnimData for refresh so that other views will update in realtime with these changes */
-		if (adt)
-			adt->recalc |= ADT_RECALC_ANIM;
-
->>>>>>> Initial commit
 		/* set recalc flags */
 		DAG_id_tag_update(id, OB_RECALC_OB | OB_RECALC_DATA | OB_RECALC_TIME); // XXX or do we want something more restrictive?
 	}
@@ -155,17 +117,10 @@ void ANIM_id_update(Scene *UNUSED(scene), ID *id)
 /* **************************** animation data <-> data syncing ******************************** */
 /* This code here is used to synchronize the
  *	- selection (to find selected data easier)
-<<<<<<< HEAD
  *	- ... (insert other relevant items here later) 
  * status in relevant Blender data with the status stored in animation channels.
  *
  * This should be called in the refresh() callbacks for various editors in 
-=======
- *	- ... (insert other relevant items here later)
- * status in relevant Blender data with the status stored in animation channels.
- *
- * This should be called in the refresh() callbacks for various editors in
->>>>>>> Initial commit
  * response to appropriate notifiers.
  */
 
@@ -174,37 +129,23 @@ static void animchan_sync_group(bAnimContext *ac, bAnimListElem *ale, bActionGro
 {
 	bActionGroup *agrp = (bActionGroup *)ale->data;
 	ID *owner_id = ale->id;
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* major priority is selection status
 	 * so we need both a group and an owner
 	 */
 	if (ELEM(NULL, agrp, owner_id))
 		return;
-<<<<<<< HEAD
 		
 	/* for standard Objects, check if group is the name of some bone */
 	if (GS(owner_id->name) == ID_OB) {
 		Object *ob = (Object *)owner_id;
 		
 		/* check if there are bones, and whether the name matches any 
-=======
-
-	/* for standard Objects, check if group is the name of some bone */
-	if (GS(owner_id->name) == ID_OB) {
-		Object *ob = (Object *)owner_id;
-
-		/* check if there are bones, and whether the name matches any
->>>>>>> Initial commit
 		 * NOTE: this feature will only really work if groups by default contain the F-Curves for a single bone
 		 */
 		if (ob->pose) {
 			bPoseChannel *pchan = BKE_pose_channel_find_name(ob->pose, agrp->name);
 			bArmature *arm = ob->data;
-<<<<<<< HEAD
 			
 			if (pchan) {
 				bActionGroup *bgrp;
@@ -217,20 +158,6 @@ static void animchan_sync_group(bAnimContext *ac, bAnimListElem *ale, bActionGro
 					
 				/* also sync active group status */
 				if ((ob == ac->obact) && (pchan->bone == arm->act_bone)) {
-=======
-
-			if (pchan) {
-				bActionGroup *bgrp;
-
-				/* if one matches, sync the selection status */
-				if ((pchan->bone) && (pchan->bone->flag & ELEMENT_SELECTED))
-					agrp->flag |= AGRP_SELECTED;
-				else
-					agrp->flag &= ~AGRP_SELECTED;
-
-				/* also sync active group status */
-				if ((ob == ac->obact) && (pchan->bone == arm->act_element)) {
->>>>>>> Initial commit
 					/* if no previous F-Curve has active flag, then we're the first and only one to get it */
 					if (*active_agrp == NULL) {
 						agrp->flag |= AGRP_ACTIVE;
@@ -245,11 +172,7 @@ static void animchan_sync_group(bAnimContext *ac, bAnimListElem *ale, bActionGro
 					/* this can't possibly be active now */
 					agrp->flag &= ~AGRP_ACTIVE;
 				}
-<<<<<<< HEAD
 				
-=======
-
->>>>>>> Initial commit
 				/* sync group colors */
 				bgrp = (bActionGroup *)BLI_findlink(&ob->pose->agroups, (pchan->agrp_index - 1));
 				if (bgrp) {
@@ -260,53 +183,32 @@ static void animchan_sync_group(bAnimContext *ac, bAnimListElem *ale, bActionGro
 		}
 	}
 }
-<<<<<<< HEAD
  
-=======
-
->>>>>>> Initial commit
 /* perform syncing updates for F-Curves */
 static void animchan_sync_fcurve(bAnimContext *ac, bAnimListElem *ale, FCurve **active_fcurve)
 {
 	FCurve *fcu = (FCurve *)ale->data;
 	ID *owner_id = ale->id;
-<<<<<<< HEAD
 	
 	/* major priority is selection status, so refer to the checks done in anim_filter.c 
-=======
-
-	/* major priority is selection status, so refer to the checks done in anim_filter.c
->>>>>>> Initial commit
 	 * skip_fcurve_selected_data() for reference about what's going on here...
 	 */
 	if (ELEM(NULL, fcu, fcu->rna_path, owner_id))
 		return;
-<<<<<<< HEAD
 	
 	if (GS(owner_id->name) == ID_OB) {
 		Object *ob = (Object *)owner_id;
 		
-=======
-
-	if (GS(owner_id->name) == ID_OB) {
-		Object *ob = (Object *)owner_id;
-
->>>>>>> Initial commit
 		/* only affect if F-Curve involves pose.bones */
 		if ((fcu->rna_path) && strstr(fcu->rna_path, "pose.bones")) {
 			bArmature *arm = (bArmature *)ob->data;
 			bPoseChannel *pchan;
 			char *bone_name;
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* get bone-name, and check if this bone is selected */
 			bone_name = BLI_str_quoted_substrN(fcu->rna_path, "pose.bones[");
 			pchan = BKE_pose_channel_find_name(ob->pose, bone_name);
 			if (bone_name) MEM_freeN(bone_name);
-<<<<<<< HEAD
 			
 			/* F-Curve selection depends on whether the bone is selected */
 			if ((pchan) && (pchan->bone)) {
@@ -320,21 +222,6 @@ static void animchan_sync_fcurve(bAnimContext *ac, bAnimListElem *ale, FCurve **
 				 * active object to be considered as active
 				 */
 				if ((ob == ac->obact) && (pchan->bone == arm->act_bone)) {
-=======
-
-			/* F-Curve selection depends on whether the bone is selected */
-			if ((pchan) && (pchan->bone)) {
-				/* F-Curve selection */
-				if (pchan->bone->flag & ELEMENT_SELECTED)
-					fcu->flag |= FCURVE_SELECTED;
-				else
-					fcu->flag &= ~FCURVE_SELECTED;
-
-				/* Active F-Curve - it should be the first one for this bone on the
-				 * active object to be considered as active
-				 */
-				if ((ob == ac->obact) && (pchan->bone == arm->act_element)) {
->>>>>>> Initial commit
 					/* if no previous F-Curve has active flag, then we're the first and only one to get it */
 					if (*active_fcurve == NULL) {
 						fcu->flag |= FCURVE_ACTIVE;
@@ -354,30 +241,18 @@ static void animchan_sync_fcurve(bAnimContext *ac, bAnimListElem *ale, FCurve **
 	}
 	else if (GS(owner_id->name) == ID_SCE) {
 		Scene *scene = (Scene *)owner_id;
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		/* only affect if F-Curve involves sequence_editor.sequences */
 		if ((fcu->rna_path) && strstr(fcu->rna_path, "sequences_all")) {
 			Editing *ed = BKE_sequencer_editing_get(scene, false);
 			Sequence *seq;
 			char *seq_name;
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* get strip name, and check if this strip is selected */
 			seq_name = BLI_str_quoted_substrN(fcu->rna_path, "sequences_all[");
 			seq = BKE_sequence_get_by_name(ed->seqbasep, seq_name, false);
 			if (seq_name) MEM_freeN(seq_name);
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* update selection status */
 			if (seq) {
 				if (seq->flag & SELECT)
@@ -389,29 +264,17 @@ static void animchan_sync_fcurve(bAnimContext *ac, bAnimListElem *ale, FCurve **
 	}
 	else if (GS(owner_id->name) == ID_NT) {
 		bNodeTree *ntree = (bNodeTree *)owner_id;
-<<<<<<< HEAD
 		
-=======
-
->>>>>>> Initial commit
 		/* check for selected nodes */
 		if ((fcu->rna_path) && strstr(fcu->rna_path, "nodes")) {
 			bNode *node;
 			char *node_name;
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* get strip name, and check if this strip is selected */
 			node_name = BLI_str_quoted_substrN(fcu->rna_path, "nodes[");
 			node = nodeFindNodebyName(ntree, node_name);
 			if (node_name) MEM_freeN(node_name);
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			/* update selection/active status */
 			if (node) {
 				/* update selection status */
@@ -419,11 +282,7 @@ static void animchan_sync_fcurve(bAnimContext *ac, bAnimListElem *ale, FCurve **
 					fcu->flag |= FCURVE_SELECTED;
 				else
 					fcu->flag &= ~FCURVE_SELECTED;
-<<<<<<< HEAD
 					
-=======
-
->>>>>>> Initial commit
 				/* update active status */
 				/* XXX: this may interfere with setting bones as active if both exist at once;
 				 * then again, if that's the case, production setups aren't likely to be animating
@@ -447,11 +306,7 @@ static void animchan_sync_fcurve(bAnimContext *ac, bAnimListElem *ale, FCurve **
 }
 
 /* ---------------- */
-<<<<<<< HEAD
  
-=======
-
->>>>>>> Initial commit
 /* Main call to be exported to animation editors */
 void ANIM_sync_animchannels_to_data(const bContext *C)
 {
@@ -459,7 +314,6 @@ void ANIM_sync_animchannels_to_data(const bContext *C)
 	ListBase anim_data = {NULL, NULL};
 	bAnimListElem *ale;
 	int filter;
-<<<<<<< HEAD
 	
 	bActionGroup *active_agrp = NULL;
 	FCurve *active_fcurve = NULL;
@@ -470,48 +324,24 @@ void ANIM_sync_animchannels_to_data(const bContext *C)
 	
 	/* filter data */
 	/* NOTE: we want all channels, since we want to be able to set selection status on some of them even when collapsed 
-=======
-
-	bActionGroup *active_agrp = NULL;
-	FCurve *active_fcurve = NULL;
-
-	/* get animation context info for filtering the channels */
-	if (ANIM_animdata_get_context(C, &ac) == 0)
-		return;
-
-	/* filter data */
-	/* NOTE: we want all channels, since we want to be able to set selection status on some of them even when collapsed
->>>>>>> Initial commit
 	 *       However, don't include duplicates so that selection statuses don't override each other
 	 */
 	filter = ANIMFILTER_DATA_VISIBLE | ANIMFILTER_LIST_CHANNELS | ANIMFILTER_NODUPLIS;
 	ANIM_animdata_filter(&ac, &anim_data, filter, ac.data, ac.datatype);
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	/* flush settings as appropriate depending on the types of the channels */
 	for (ale = anim_data.first; ale; ale = ale->next) {
 		switch (ale->type) {
 			case ANIMTYPE_GROUP:
 				animchan_sync_group(&ac, ale, &active_agrp);
 				break;
-<<<<<<< HEAD
 			
-=======
-
->>>>>>> Initial commit
 			case ANIMTYPE_FCURVE:
 				animchan_sync_fcurve(&ac, ale, &active_fcurve);
 				break;
 		}
 	}
-<<<<<<< HEAD
 	
-=======
-
->>>>>>> Initial commit
 	ANIM_animdata_freelist(&anim_data);
 }
 

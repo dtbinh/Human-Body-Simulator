@@ -20,7 +20,6 @@
 
 import bpy
 from bpy.types import Operator
-<<<<<<< HEAD
 from bpy.props import (
         StringProperty,
         BoolProperty,
@@ -28,13 +27,6 @@ from bpy.props import (
         IntProperty,
         FloatProperty,
         )
-=======
-from bpy.props import (StringProperty,
-                       BoolProperty,
-                       EnumProperty,
-                       IntProperty,
-                       FloatProperty)
->>>>>>> Initial commit
 
 
 class SelectPattern(Operator):
@@ -260,11 +252,7 @@ class SubdivisionSet(Operator):
                     if not relative:
                         if level > mod.total_levels:
                             sub = level - mod.total_levels
-<<<<<<< HEAD
                             for i in range(sub):
-=======
-                            for i in range (0, sub):
->>>>>>> Initial commit
                                 bpy.ops.object.multires_subdivide(modifier="Multires")
 
                         if obj.mode == 'SCULPT':

@@ -221,19 +221,11 @@ static int replace_if_different(const char *tmpfile, const char *dep_files[])
 
 static const char *rna_safe_id(const char *id)
 {
-<<<<<<< HEAD
 	if (STREQ(id, "default"))
 		return "default_value";
 	else if (STREQ(id, "operator"))
 		return "operator_value";
 	else if (STREQ(id, "new"))
-=======
-	if (strcmp(id, "default") == 0)
-		return "default_value";
-	else if (strcmp(id, "operator") == 0)
-		return "operator_value";
-	else if (strcmp(id, "new") == 0)
->>>>>>> Initial commit
 		return "create";
 
 	return id;
@@ -254,19 +246,11 @@ static int cmp_property(const void *a, const void *b)
 	const PropertyRNA *propa = *(const PropertyRNA **)a;
 	const PropertyRNA *propb = *(const PropertyRNA **)b;
 
-<<<<<<< HEAD
 	if (STREQ(propa->identifier, "rna_type")) return -1;
 	else if (STREQ(propb->identifier, "rna_type")) return 1;
 
 	if (STREQ(propa->identifier, "name")) return -1;
 	else if (STREQ(propb->identifier, "name")) return 1;
-=======
-	if (strcmp(propa->identifier, "rna_type") == 0) return -1;
-	else if (strcmp(propb->identifier, "rna_type") == 0) return 1;
-
-	if (strcmp(propa->identifier, "name") == 0) return -1;
-	else if (strcmp(propb->identifier, "name") == 0) return 1;
->>>>>>> Initial commit
 
 	return strcmp(propa->name, propb->name);
 }
@@ -388,11 +372,7 @@ static StructRNA *rna_find_struct(const char *identifier)
 	StructDefRNA *ds;
 
 	for (ds = DefRNA.structs.first; ds; ds = ds->cont.next)
-<<<<<<< HEAD
 		if (STREQ(ds->srna->identifier, identifier))
-=======
-		if (strcmp(ds->srna->identifier, identifier) == 0)
->>>>>>> Initial commit
 			return ds->srna;
 
 	return NULL;
@@ -403,11 +383,7 @@ static const char *rna_find_type(const char *type)
 	StructDefRNA *ds;
 
 	for (ds = DefRNA.structs.first; ds; ds = ds->cont.next)
-<<<<<<< HEAD
 		if (ds->dnaname && STREQ(ds->dnaname, type))
-=======
-		if (ds->dnaname && strcmp(ds->dnaname, type) == 0)
->>>>>>> Initial commit
 			return ds->srna->identifier;
 
 	return NULL;
@@ -418,11 +394,7 @@ static const char *rna_find_dna_type(const char *type)
 	StructDefRNA *ds;
 
 	for (ds = DefRNA.structs.first; ds; ds = ds->cont.next)
-<<<<<<< HEAD
 		if (STREQ(ds->srna->identifier, type))
-=======
-		if (strcmp(ds->srna->identifier, type) == 0)
->>>>>>> Initial commit
 			return ds->dnaname;
 
 	return NULL;
@@ -649,15 +621,9 @@ static char *rna_def_property_get_func(FILE *f, StructRNA *srna, PropertyRNA *pr
 			fprintf(f, "static PointerRNA %s(CollectionPropertyIterator *iter)\n", func);
 			fprintf(f, "{\n");
 			if (manualfunc) {
-<<<<<<< HEAD
 				if (STREQ(manualfunc, "rna_iterator_listbase_get") ||
 				    STREQ(manualfunc, "rna_iterator_array_get") ||
 				    STREQ(manualfunc, "rna_iterator_array_dereference_get"))
-=======
-				if (strcmp(manualfunc, "rna_iterator_listbase_get") == 0 ||
-				    strcmp(manualfunc, "rna_iterator_array_get") == 0 ||
-				    strcmp(manualfunc, "rna_iterator_array_dereference_get") == 0)
->>>>>>> Initial commit
 				{
 					fprintf(f, "	return rna_pointer_inherit_refine(&iter->parent, &RNA_%s, %s(iter));\n",
 					        (cprop->item_type) ? (const char *)cprop->item_type : "UnknownType", manualfunc);
@@ -1202,13 +1168,8 @@ static char *rna_def_property_lookup_int_func(FILE *f, StructRNA *srna, Property
 			return NULL;
 
 		/* only supported in case of standard next functions */
-<<<<<<< HEAD
 		if (STREQ(nextfunc, "rna_iterator_array_next")) {}
 		else if (STREQ(nextfunc, "rna_iterator_listbase_next")) {}
-=======
-		if (strcmp(nextfunc, "rna_iterator_array_next") == 0) {}
-		else if (strcmp(nextfunc, "rna_iterator_listbase_next") == 0) {}
->>>>>>> Initial commit
 		else return NULL;
 	}
 
@@ -1229,11 +1190,7 @@ static char *rna_def_property_lookup_int_func(FILE *f, StructRNA *srna, Property
 	fprintf(f, "	%s_%s_begin(&iter, ptr);\n\n", srna->identifier, rna_safe_id(prop->identifier));
 	fprintf(f, "	if (iter.valid) {\n");
 
-<<<<<<< HEAD
 	if (STREQ(nextfunc, "rna_iterator_array_next")) {
-=======
-	if (strcmp(nextfunc, "rna_iterator_array_next") == 0) {
->>>>>>> Initial commit
 		fprintf(f, "		ArrayIterator *internal = &iter.internal.array;\n");
 		fprintf(f, "		if (index < 0 || index >= internal->length) {\n");
 		fprintf(f, "#ifdef __GNUC__\n");
@@ -1253,11 +1210,7 @@ static char *rna_def_property_lookup_int_func(FILE *f, StructRNA *srna, Property
 		fprintf(f, "			found = 1;\n");
 		fprintf(f, "		}\n");
 	}
-<<<<<<< HEAD
 	else if (STREQ(nextfunc, "rna_iterator_listbase_next")) {
-=======
-	else if (strcmp(nextfunc, "rna_iterator_listbase_next") == 0) {
->>>>>>> Initial commit
 		fprintf(f, "		ListBaseIterator *internal = &iter.internal.listbase;\n");
 		fprintf(f, "		if (internal->skip) {\n");
 		fprintf(f, "			while (index-- > 0 && iter.valid) {\n");
@@ -1443,7 +1396,6 @@ static void rna_set_raw_property(PropertyDefRNA *dp, PropertyRNA *prop)
 	if (!dp->dnatype || !dp->dnaname || !dp->dnastructname)
 		return;
 	
-<<<<<<< HEAD
 	if (STREQ(dp->dnatype, "char")) {
 		prop->rawtype = PROP_RAW_CHAR;
 		prop->flag |= PROP_RAW_ACCESS;
@@ -1461,25 +1413,6 @@ static void rna_set_raw_property(PropertyDefRNA *dp, PropertyRNA *prop)
 		prop->flag |= PROP_RAW_ACCESS;
 	}
 	else if (STREQ(dp->dnatype, "double")) {
-=======
-	if (strcmp(dp->dnatype, "char") == 0) {
-		prop->rawtype = PROP_RAW_CHAR;
-		prop->flag |= PROP_RAW_ACCESS;
-	}
-	else if (strcmp(dp->dnatype, "short") == 0) {
-		prop->rawtype = PROP_RAW_SHORT;
-		prop->flag |= PROP_RAW_ACCESS;
-	}
-	else if (strcmp(dp->dnatype, "int") == 0) {
-		prop->rawtype = PROP_RAW_INT;
-		prop->flag |= PROP_RAW_ACCESS;
-	}
-	else if (strcmp(dp->dnatype, "float") == 0) {
-		prop->rawtype = PROP_RAW_FLOAT;
-		prop->flag |= PROP_RAW_ACCESS;
-	}
-	else if (strcmp(dp->dnatype, "double") == 0) {
->>>>>>> Initial commit
 		prop->rawtype = PROP_RAW_DOUBLE;
 		prop->flag |= PROP_RAW_ACCESS;
 	}
@@ -1592,11 +1525,7 @@ static void rna_def_property_funcs(FILE *f, StructRNA *srna, PropertyDefRNA *dp)
 			const char *nextfunc = (const char *)cprop->next;
 			const char *item_type = (const char *)cprop->item_type;
 
-<<<<<<< HEAD
 			if (dp->dnatype && STREQ(dp->dnatype, "ListBase")) {
-=======
-			if (dp->dnatype && strcmp(dp->dnatype, "ListBase") == 0) {
->>>>>>> Initial commit
 				/* pass */
 			}
 			else if (dp->dnalengthname || dp->dnalengthfixed) {
@@ -1606,13 +1535,8 @@ static void rna_def_property_funcs(FILE *f, StructRNA *srna, PropertyDefRNA *dp)
 			/* test if we can allow raw array access, if it is using our standard
 			 * array get/next function, we can be sure it is an actual array */
 			if (cprop->next && cprop->get)
-<<<<<<< HEAD
 				if (STREQ((const char *)cprop->next, "rna_iterator_array_next") &&
 				    STREQ((const char *)cprop->get, "rna_iterator_array_get"))
-=======
-				if (strcmp((const char *)cprop->next, "rna_iterator_array_next") == 0 &&
-				    strcmp((const char *)cprop->get, "rna_iterator_array_get") == 0)
->>>>>>> Initial commit
 				{
 					prop->flag |= PROP_RAW_ARRAY;
 				}
@@ -2495,19 +2419,11 @@ static void rna_auto_types(void)
 
 	for (ds = DefRNA.structs.first; ds; ds = ds->cont.next) {
 		/* DNA name for Screen is patched in 2.5, we do the reverse here .. */
-<<<<<<< HEAD
 		if (ds->dnaname && STREQ(ds->dnaname, "Screen"))
 			ds->dnaname = "bScreen";
 
 		for (dp = ds->cont.properties.first; dp; dp = dp->next) {
 			if (dp->dnastructname && STREQ(dp->dnastructname, "Screen"))
-=======
-		if (ds->dnaname && strcmp(ds->dnaname, "Screen") == 0)
-			ds->dnaname = "bScreen";
-
-		for (dp = ds->cont.properties.first; dp; dp = dp->next) {
-			if (dp->dnastructname && strcmp(dp->dnastructname, "Screen") == 0)
->>>>>>> Initial commit
 				dp->dnastructname = "bScreen";
 
 			if (dp->dnatype) {
@@ -2527,11 +2443,7 @@ static void rna_auto_types(void)
 				else if (dp->prop->type == PROP_COLLECTION) {
 					CollectionPropertyRNA *cprop = (CollectionPropertyRNA *)dp->prop;
 
-<<<<<<< HEAD
 					if (!cprop->item_type && !cprop->get && STREQ(dp->dnatype, "ListBase"))
-=======
-					if (!cprop->item_type && !cprop->get && strcmp(dp->dnatype, "ListBase") == 0)
->>>>>>> Initial commit
 						cprop->item_type = (StructRNA *)rna_find_type(dp->dnatype);
 				}
 			}
@@ -2874,11 +2786,7 @@ static void rna_generate_struct_prototypes(FILE *f)
 						const char *struct_name = rna_parameter_type_name(dp->prop);
 
 						for (a = 0; a < all_structures; a++) {
-<<<<<<< HEAD
 							if (STREQ(struct_name, structures[a])) {
-=======
-							if (strcmp(struct_name, structures[a]) == 0) {
->>>>>>> Initial commit
 								found = 1;
 								break;
 							}
@@ -3509,11 +3417,7 @@ static void rna_generate(BlenderRNA *brna, FILE *f, const char *filename, const 
 		if (!filename || ds->filename == filename)
 			rna_generate_struct(brna, ds->srna, f);
 
-<<<<<<< HEAD
 	if (STREQ(filename, "rna_ID.c")) {
-=======
-	if (strcmp(filename, "rna_ID.c") == 0) {
->>>>>>> Initial commit
 		/* this is ugly, but we cannot have c files compiled for both
 		 * makesrna and blender with some build systems at the moment */
 		fprintf(f, "#include \"rna_define.c\"\n\n");
@@ -3778,11 +3682,7 @@ static const char *cpp_classes = ""
 "	int length;\n"
 "\n"
 "	DynamicArray() : data(NULL), length(0) {}\n"
-<<<<<<< HEAD
 "	DynamicArray(int new_length) : data(NULL), length(new_length) { data = (T *)malloc(sizeof(T) * new_length); }\n"
-=======
-"	DynamicArray(int new_length) : data(NULL), length(new_length) { data = (float *)malloc(sizeof(T) * new_length); }\n"
->>>>>>> Initial commit
 "	DynamicArray(const DynamicArray<T>& other) { copy_from(other); }\n"
 "	const DynamicArray<T>& operator = (const DynamicArray<T>& other) { copy_from(other); return *this; }\n"
 "\n"
@@ -3793,11 +3693,7 @@ static const char *cpp_classes = ""
 "protected:\n"
 "	void copy_from(const DynamicArray<T>& other) {\n"
 "		if (data) free(data);\n"
-<<<<<<< HEAD
 "		data = (T *)malloc(sizeof(T) * other.length);\n"
-=======
-"		data = (float *)malloc(sizeof(T) * other.length);\n"
->>>>>>> Initial commit
 "		memcpy(data, other.data, sizeof(T) * other.length);\n"
 "		length = other.length;\n"
 "	}\n"
@@ -3883,11 +3779,7 @@ static int rna_is_collection_functions_struct(const char **collection_structs, c
 	int a = 0, found = 0;
 
 	while (collection_structs[a]) {
-<<<<<<< HEAD
 		if (STREQ(collection_structs[a], struct_name)) {
-=======
-		if (!strcmp(collection_structs[a], struct_name)) {
->>>>>>> Initial commit
 			found = 1;
 			break;
 		}
@@ -3988,11 +3880,7 @@ static void rna_generate_header_cpp(BlenderRNA *UNUSED(brna), FILE *f)
 	for (ds = DefRNA.structs.first; ds; ds = ds->cont.next) {
 		srna = ds->srna;
 
-<<<<<<< HEAD
 		if (STREQ(srna->identifier, first_collection_func_struct)) {
-=======
-		if (!strcmp(srna->identifier, first_collection_func_struct)) {
->>>>>>> Initial commit
 			StructDefRNA *ds2;
 			StructRNA *srna2;
 

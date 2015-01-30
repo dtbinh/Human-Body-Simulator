@@ -20,7 +20,6 @@
 
 import bpy
 import nodeitems_utils
-<<<<<<< HEAD
 from bpy.types import (
         Operator,
         PropertyGroup,
@@ -32,17 +31,6 @@ from bpy.props import (
         IntProperty,
         StringProperty,
         )
-=======
-from bpy.types import (Operator,
-                       PropertyGroup,
-                       )
-from bpy.props import (BoolProperty,
-                       CollectionProperty,
-                       EnumProperty,
-                       IntProperty,
-                       StringProperty,
-                       )
->>>>>>> Initial commit
 
 
 class NodeSetting(PropertyGroup):
@@ -54,11 +42,7 @@ class NodeSetting(PropertyGroup):
 
 
 # Base class for node 'Add' operators
-<<<<<<< HEAD
 class NodeAddOperator:
-=======
-class NodeAddOperator():
->>>>>>> Initial commit
 
     type = StringProperty(
             name="Node Type",

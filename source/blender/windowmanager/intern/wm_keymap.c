@@ -145,7 +145,6 @@ static void wm_keyconfig_properties_update_ot(ListBase *km_lb)
 	}
 }
 
-<<<<<<< HEAD
 static bool wm_keymap_item_equals_result(wmKeyMapItem *a, wmKeyMapItem *b)
 {
 	return (STREQ(a->idname, b->idname) &&
@@ -155,23 +154,6 @@ static bool wm_keymap_item_equals_result(wmKeyMapItem *a, wmKeyMapItem *b)
 }
 
 static bool wm_keymap_item_equals(wmKeyMapItem *a, wmKeyMapItem *b)
-=======
-static int wm_keymap_item_equals_result(wmKeyMapItem *a, wmKeyMapItem *b)
-{
-	if (strcmp(a->idname, b->idname) != 0)
-		return 0;
-	
-	if (!RNA_struct_equals(a->ptr, b->ptr, RNA_EQ_UNSET_MATCH_NONE))
-		return 0;
-	
-	if ((a->flag & KMI_INACTIVE) != (b->flag & KMI_INACTIVE))
-		return 0;
-	
-	return (a->propvalue == b->propvalue);
-}
-
-static int wm_keymap_item_equals(wmKeyMapItem *a, wmKeyMapItem *b)
->>>>>>> Initial commit
 {
 	return (wm_keymap_item_equals_result(a, b) &&
 	        a->type == b->type &&
@@ -278,11 +260,7 @@ wmKeyConfig *WM_keyconfig_new_user(wmWindowManager *wm, const char *idname)
 bool WM_keyconfig_remove(wmWindowManager *wm, wmKeyConfig *keyconf)
 {
 	if (BLI_findindex(&wm->keyconfigs, keyconf) != -1) {
-<<<<<<< HEAD
 		if (STREQLEN(U.keyconfigstr, keyconf->idname, sizeof(U.keyconfigstr))) {
-=======
-		if (strncmp(U.keyconfigstr, keyconf->idname, sizeof(U.keyconfigstr)) == 0) {
->>>>>>> Initial commit
 			BLI_strncpy(U.keyconfigstr, wm->defaultconf->idname, sizeof(U.keyconfigstr));
 			WM_keyconfig_update_tag(NULL, NULL);
 		}
@@ -437,11 +415,7 @@ wmKeyMapItem *WM_keymap_verify_item(wmKeyMap *keymap, const char *idname, int ty
 	wmKeyMapItem *kmi;
 	
 	for (kmi = keymap->items.first; kmi; kmi = kmi->next)
-<<<<<<< HEAD
 		if (STREQLEN(kmi->idname, idname, OP_MAX_TYPENAME))
-=======
-		if (strncmp(kmi->idname, idname, OP_MAX_TYPENAME) == 0)
->>>>>>> Initial commit
 			break;
 	if (kmi == NULL) {
 		kmi = MEM_callocN(sizeof(wmKeyMapItem), "keymap entry");
@@ -748,11 +722,7 @@ wmKeyMap *WM_keymap_list_find(ListBase *lb, const char *idname, int spaceid, int
 
 	for (km = lb->first; km; km = km->next)
 		if (km->spaceid == spaceid && km->regionid == regionid)
-<<<<<<< HEAD
 			if (STREQLEN(idname, km->idname, KMAP_MAX_NAME))
-=======
-			if (0 == strncmp(idname, km->idname, KMAP_MAX_NAME))
->>>>>>> Initial commit
 				return km;
 	
 	return NULL;
@@ -811,11 +781,7 @@ wmKeyMap *WM_modalkeymap_get(wmKeyConfig *keyconf, const char *idname)
 	
 	for (km = keyconf->keymaps.first; km; km = km->next)
 		if (km->flag & KEYMAP_MODAL)
-<<<<<<< HEAD
 			if (STREQLEN(idname, km->idname, KMAP_MAX_NAME))
-=======
-			if (0 == strncmp(idname, km->idname, KMAP_MAX_NAME))
->>>>>>> Initial commit
 				break;
 	
 	return km;
@@ -980,11 +946,7 @@ static wmKeyMapItem *wm_keymap_item_find_handlers(
 				if (kmi->flag & KMI_INACTIVE)
 					continue;
 				
-<<<<<<< HEAD
 				if (STREQ(kmi->idname, opname) && WM_key_event_string(kmi->type)[0]) {
-=======
-				if (strcmp(kmi->idname, opname) == 0 && WM_key_event_string(kmi->type)[0]) {
->>>>>>> Initial commit
 					if (is_hotkey) {
 						if (!ISHOTKEY(kmi->type))
 							continue;
@@ -995,11 +957,7 @@ static wmKeyMapItem *wm_keymap_item_find_handlers(
 						/* example of debugging keymaps */
 #if 0
 						if (kmi->ptr) {
-<<<<<<< HEAD
 							if (STREQ("MESH_OT_rip_move", opname)) {
-=======
-							if (strcmp("MESH_OT_rip_move", opname) == 0) {
->>>>>>> Initial commit
 								printf("OPERATOR\n");
 								IDP_spit(properties);
 								printf("KEYMAP\n");
@@ -1389,11 +1347,7 @@ void WM_keymap_restore_item_to_default(bContext *C, wmKeyMap *keymap, wmKeyMapIt
 
 	if (orig) {
 		/* restore to original */
-<<<<<<< HEAD
 		if (!STREQ(orig->idname, kmi->idname)) {
-=======
-		if (strcmp(orig->idname, kmi->idname) != 0) {
->>>>>>> Initial commit
 			BLI_strncpy(kmi->idname, orig->idname, sizeof(kmi->idname));
 			WM_keymap_properties_reset(kmi, NULL);
 		}

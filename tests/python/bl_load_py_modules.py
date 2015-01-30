@@ -74,11 +74,7 @@ def load_addons():
 
     for mod in modules:
         mod_name = mod.__name__
-<<<<<<< HEAD
         addon_utils.enable(mod_name, default_set=True)
-=======
-        addon_utils.enable(mod_name)
->>>>>>> Initial commit
         assert(mod_name in addons)
 
 

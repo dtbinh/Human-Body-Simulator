@@ -1260,15 +1260,9 @@ static PyObject *Matrix_to_3x3(MatrixObject *self)
 PyDoc_STRVAR(Matrix_to_translation_doc,
 ".. method:: to_translation()\n"
 "\n"
-<<<<<<< HEAD
 "   Return the translation part of a 4 row matrix.\n"
 "\n"
 "   :return: Return the translation of a matrix.\n"
-=======
-"   Return a the translation part of a 4 row matrix.\n"
-"\n"
-"   :return: Return a the translation of a matrix.\n"
->>>>>>> Initial commit
 "   :rtype: :class:`Vector`\n"
 );
 static PyObject *Matrix_to_translation(MatrixObject *self)
@@ -1289,15 +1283,9 @@ static PyObject *Matrix_to_translation(MatrixObject *self)
 PyDoc_STRVAR(Matrix_to_scale_doc,
 ".. method:: to_scale()\n"
 "\n"
-<<<<<<< HEAD
 "   Return the scale part of a 3x3 or 4x4 matrix.\n"
 "\n"
 "   :return: Return the scale of a matrix.\n"
-=======
-"   Return a the scale part of a 3x3 or 4x4 matrix.\n"
-"\n"
-"   :return: Return a the scale of a matrix.\n"
->>>>>>> Initial commit
 "   :rtype: :class:`Vector`\n"
 "\n"
 "   .. note:: This method does not return negative a scale on any axis because it is not possible to obtain this data from the matrix alone.\n"
@@ -1603,11 +1591,7 @@ static PyObject *Matrix_adjugated(MatrixObject *self)
 PyDoc_STRVAR(Matrix_rotate_doc,
 ".. method:: rotate(other)\n"
 "\n"
-<<<<<<< HEAD
 "   Rotates the matrix by another mathutils value.\n"
-=======
-"   Rotates the matrix a by another mathutils value.\n"
->>>>>>> Initial commit
 "\n"
 "   :arg other: rotation component of mathutils value\n"
 "   :type other: :class:`Euler`, :class:`Quaternion` or :class:`Matrix`\n"
@@ -1733,11 +1717,7 @@ PyDoc_STRVAR(Matrix_determinant_doc,
 "\n"
 "   Return the determinant of a matrix.\n"
 "\n"
-<<<<<<< HEAD
 "   :return: Return the determinant of a matrix.\n"
-=======
-"   :return: Return a the determinant of a matrix.\n"
->>>>>>> Initial commit
 "   :rtype: float\n"
 "\n"
 "   .. seealso:: <http://en.wikipedia.org/wiki/Determinant>\n"
@@ -1858,10 +1838,6 @@ PyDoc_STRVAR(Matrix_zero_doc,
 "\n"
 "   Set all the matrix values to zero.\n"
 "\n"
-<<<<<<< HEAD
-=======
-"   :return: an instance of itself\n"
->>>>>>> Initial commit
 "   :rtype: :class:`Matrix`\n"
 );
 static PyObject *Matrix_zero(MatrixObject *self)

@@ -151,10 +151,7 @@ Shader::Shader()
 	has_displacement = false;
 	has_bssrdf_bump = false;
 	has_heterogeneous_volume = false;
-<<<<<<< HEAD
 	has_object_dependency = false;
-=======
->>>>>>> Initial commit
 
 	used = false;
 
@@ -391,15 +388,10 @@ void ShaderManager::device_update_common(Device *device, DeviceScene *dscene, Sc
 	KernelTables *ktables = &dscene->data.tables;
 	
 	if(has_converter_blackbody && blackbody_table_offset == TABLE_OFFSET_INVALID) {
-<<<<<<< HEAD
 		if(blackbody_table.size() == 0) {
 			blackbody_table = blackbody_table_build();
 		}
 		blackbody_table_offset = scene->lookup_tables->add_table(dscene, blackbody_table);
-=======
-		vector<float> table = blackbody_table();
-		blackbody_table_offset = scene->lookup_tables->add_table(dscene, table);
->>>>>>> Initial commit
 		
 		ktables->blackbody_offset = (int)blackbody_table_offset;
 	}
@@ -410,17 +402,10 @@ void ShaderManager::device_update_common(Device *device, DeviceScene *dscene, Sc
 
 	/* beckmann lookup table */
 	if(beckmann_table_offset == TABLE_OFFSET_INVALID) {
-<<<<<<< HEAD
 		if(beckmann_table.size() == 0) {
 			beckmann_table_build(beckmann_table);
 		}
 		beckmann_table_offset = scene->lookup_tables->add_table(dscene, beckmann_table);
-=======
-		vector<float> table;
-		beckmann_table_build(table);
-		beckmann_table_offset = scene->lookup_tables->add_table(dscene, table);
-		
->>>>>>> Initial commit
 		ktables->beckmann_offset = (int)beckmann_table_offset;
 	}
 

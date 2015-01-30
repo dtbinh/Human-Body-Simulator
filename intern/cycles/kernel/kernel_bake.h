@@ -159,12 +159,8 @@ ccl_device bool is_light_pass(ShaderEvalType type)
 	}
 }
 
-<<<<<<< HEAD
 /* this helps with AA but it's not the real solution as it does not AA the geometry
  *  but it's better than nothing, thus committed */
-=======
-#if 0
->>>>>>> Initial commit
 ccl_device_inline float bake_clamp_mirror_repeat(float u)
 {
 	/* use mirror repeat (like opengl texture) so that if the barycentric
@@ -175,10 +171,6 @@ ccl_device_inline float bake_clamp_mirror_repeat(float u)
 
 	return (((int)fu) & 1)? 1.0f - u: u;
 }
-<<<<<<< HEAD
-=======
-#endif
->>>>>>> Initial commit
 
 ccl_device void kernel_bake_evaluate(KernelGlobals *kg, ccl_global uint4 *input, ccl_global float4 *output,
                                      ShaderEvalType type, int i, int offset, int sample)
@@ -207,11 +199,6 @@ ccl_device void kernel_bake_evaluate(KernelGlobals *kg, ccl_global uint4 *input,
 
 	/* random number generator */
 	RNG rng = cmj_hash(offset + i, kernel_data.integrator.seed);
-<<<<<<< HEAD
-=======
-
-#if 0
->>>>>>> Initial commit
 	uint rng_state = cmj_hash(i, kernel_data.integrator.seed);
 	float filter_x, filter_y;
 	path_rng_init(kg, &rng_state, sample, num_samples, &rng, 0, 0, &filter_x, &filter_y);
@@ -221,10 +208,6 @@ ccl_device void kernel_bake_evaluate(KernelGlobals *kg, ccl_global uint4 *input,
 		u = bake_clamp_mirror_repeat(u + dudx*(filter_x - 0.5f) + dudy*(filter_y - 0.5f));
 		v = bake_clamp_mirror_repeat(v + dvdx*(filter_x - 0.5f) + dvdy*(filter_y - 0.5f));
 	}
-<<<<<<< HEAD
-=======
-#endif
->>>>>>> Initial commit
 
 	/* triangle */
 	int shader;

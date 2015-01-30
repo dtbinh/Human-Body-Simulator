@@ -215,11 +215,7 @@ public:
 		bool clip_y = (extend_y == COM_MB_CLIP && (y < m_rect.ymin || y >= m_rect.ymax));
 		if (clip_x || clip_y) {
 			/* clip result outside rect is zero */
-<<<<<<< HEAD
 			memset(result, 0, this->m_num_channels * sizeof(float));
-=======
-			memset(result, 0, this->m_num_channels*sizeof(float));
->>>>>>> Initial commit
 		}
 		else {
 			int u = x;
@@ -227,11 +223,7 @@ public:
 			this->wrap_pixel(u, v, extend_x, extend_y);
 			const int offset = (this->m_width * y + x) * this->m_num_channels;
 			float* buffer = &this->m_buffer[offset];
-<<<<<<< HEAD
 			memcpy(result, buffer, sizeof(float) * this->m_num_channels);
-=======
-			memcpy(result, buffer, sizeof(float)*this->m_num_channels);
->>>>>>> Initial commit
 		}
 	}
 
@@ -248,23 +240,14 @@ public:
 		BLI_assert(offset >= 0);
 		BLI_assert(offset < this->determineBufferSize() * this->m_num_channels);
 		BLI_assert(!(extend_x == COM_MB_CLIP && (u < m_rect.xmin || u >= m_rect.xmax)) &&
-<<<<<<< HEAD
 		           !(extend_y == COM_MB_CLIP && (v < m_rect.ymin || v >= m_rect.ymax)));
-=======
-				   !(extend_y == COM_MB_CLIP && (v < m_rect.ymin || v >= m_rect.ymax)));
->>>>>>> Initial commit
 #if 0
 		/* always true */
 		BLI_assert((int)(MEM_allocN_len(this->m_buffer) / sizeof(*this->m_buffer)) ==
 		           (int)(this->determineBufferSize() * COM_NUMBER_OF_CHANNELS));
 #endif
-<<<<<<< HEAD
 		float *buffer = &this->m_buffer[offset];
 		memcpy(result, buffer, sizeof(float) * this->m_num_channels);
-=======
-		float* buffer = &this->m_buffer[offset];
-		memcpy(result, buffer, sizeof(float)*this->m_num_channels);
->>>>>>> Initial commit
 	}
 	
 	void writePixel(int x, int y, const float color[4]);

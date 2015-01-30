@@ -1202,11 +1202,7 @@ static ID *is_dupid(ListBase *lb, ID *id, const char *name)
 			/* do not test alphabetic! */
 			/* optimized */
 			if (idtest->name[2] == name[0]) {
-<<<<<<< HEAD
 				if (STREQ(name, idtest->name + 2)) break;
-=======
-				if (strcmp(name, idtest->name + 2) == 0) break;
->>>>>>> Initial commit
 			}
 		}
 	}
@@ -1264,11 +1260,7 @@ static bool check_for_dupid(ListBase *lb, ID *id, char *name)
 			if ( (id != idtest) &&
 			     (idtest->lib == NULL) &&
 			     (*name == *(idtest->name + 2)) &&
-<<<<<<< HEAD
 			     STREQLEN(name, idtest->name + 2, left_len) &&
-=======
-			     (strncmp(name, idtest->name + 2, left_len) == 0) &&
->>>>>>> Initial commit
 			     (BLI_split_name_num(leftest, &nrtest, idtest->name + 2, '.') == left_len)
 			     )
 			{

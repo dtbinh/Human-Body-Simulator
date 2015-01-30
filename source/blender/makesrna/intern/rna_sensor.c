@@ -107,21 +107,10 @@ static StructRNA *rna_Sensor_refine(struct PointerRNA *ptr)
 
 static void rna_Sensor_name_set(PointerRNA *ptr, const char *value)
 {
-<<<<<<< HEAD
 	Object *ob = ptr->id.data;
 	bSensor *sens = ptr->data;
 	BLI_strncpy_utf8(sens->name, value, sizeof(sens->name));
 	BLI_uniquename(&ob->sensors, sens, DATA_("Sensor"), '.', offsetof(bSensor, name), sizeof(sens->name));
-=======
-	bSensor *sens = (bSensor *)ptr->data;
-
-	BLI_strncpy_utf8(sens->name, value, sizeof(sens->name));
-
-	if (ptr->id.data) {
-		Object *ob = (Object *)ptr->id.data;
-		BLI_uniquename(&ob->sensors, sens, DATA_("Sensor"), '.', offsetof(bSensor, name), sizeof(sens->name));
-	}
->>>>>>> Initial commit
 }
 
 static void rna_Sensor_type_set(struct PointerRNA *ptr, int value)
@@ -253,19 +242,11 @@ static void rna_Sensor_Armature_update(Main *UNUSED(bmain), Scene *UNUSED(scene)
 		bPoseChannel *pchan;
 		bPose *pose = ob->pose;
 		for (pchan = pose->chanbase.first; pchan; pchan = pchan->next) {
-<<<<<<< HEAD
 			if (STREQ(pchan->name, posechannel)) {
 				/* found it, now look for constraint channel */
 				bConstraint *con;
 				for (con = pchan->constraints.first; con; con = con->next) {
 					if (STREQ(con->name, constraint)) {
-=======
-			if (!strcmp(pchan->name, posechannel)) {
-				/* found it, now look for constraint channel */
-				bConstraint *con;
-				for (con = pchan->constraints.first; con; con = con->next) {
-					if (!strcmp(con->name, constraint)) {
->>>>>>> Initial commit
 						/* found it, all ok */
 						return;
 					}

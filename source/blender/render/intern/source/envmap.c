@@ -694,11 +694,7 @@ static void set_dxtdyt(float r_dxt[3], float r_dyt[3], const float dxt[3], const
 
 /* ------------------------------------------------------------------------- */
 
-<<<<<<< HEAD
 int envmaptex(Tex *tex, const float texvec[3], float dxt[3], float dyt[3], int osatex, TexResult *texres, struct ImagePool *pool, const bool skip_load_image)
-=======
-int envmaptex(Tex *tex, const float texvec[3], float dxt[3], float dyt[3], int osatex, TexResult *texres, struct ImagePool *pool)
->>>>>>> Initial commit
 {
 	extern Render R;                /* only in this call */
 	/* texvec should be the already reflected normal */
@@ -754,11 +750,7 @@ int envmaptex(Tex *tex, const float texvec[3], float dxt[3], float dyt[3], int o
 			mul_mat3_m4_v3(R.viewinv, dyt);
 		}
 		set_dxtdyt(dxts, dyts, dxt, dyt, face);
-<<<<<<< HEAD
 		imagewraposa(tex, NULL, ibuf, sco, dxts, dyts, texres, pool, skip_load_image);
-=======
-		imagewraposa(tex, NULL, ibuf, sco, dxts, dyts, texres, pool);
->>>>>>> Initial commit
 		
 		/* edges? */
 		
@@ -775,11 +767,7 @@ int envmaptex(Tex *tex, const float texvec[3], float dxt[3], float dyt[3], int o
 			if (face != face1) {
 				ibuf = env->cube[face1];
 				set_dxtdyt(dxts, dyts, dxt, dyt, face1);
-<<<<<<< HEAD
 				imagewraposa(tex, NULL, ibuf, sco, dxts, dyts, &texr1, pool, skip_load_image);
-=======
-				imagewraposa(tex, NULL, ibuf, sco, dxts, dyts, &texr1, pool);
->>>>>>> Initial commit
 			}
 			else texr1.tr = texr1.tg = texr1.tb = texr1.ta = 0.0;
 			
@@ -792,11 +780,7 @@ int envmaptex(Tex *tex, const float texvec[3], float dxt[3], float dyt[3], int o
 			if (face != face1) {
 				ibuf = env->cube[face1];
 				set_dxtdyt(dxts, dyts, dxt, dyt, face1);
-<<<<<<< HEAD
 				imagewraposa(tex, NULL, ibuf, sco, dxts, dyts, &texr2, pool, skip_load_image);
-=======
-				imagewraposa(tex, NULL, ibuf, sco, dxts, dyts, &texr2, pool);
->>>>>>> Initial commit
 			}
 			else texr2.tr = texr2.tg = texr2.tb = texr2.ta = 0.0;
 			
@@ -812,11 +796,7 @@ int envmaptex(Tex *tex, const float texvec[3], float dxt[3], float dyt[3], int o
 		}
 	}
 	else {
-<<<<<<< HEAD
 		imagewrap(tex, NULL, ibuf, sco, texres, pool, skip_load_image);
-=======
-		imagewrap(tex, NULL, ibuf, sco, texres, pool);
->>>>>>> Initial commit
 	}
 	
 	return 1;

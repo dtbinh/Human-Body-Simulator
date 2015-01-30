@@ -101,10 +101,7 @@ def with_network():
     import _cycles
     return _cycles.with_network
 
-<<<<<<< HEAD
 
-=======
->>>>>>> Initial commit
 def system_info():
     import _cycles
     return _cycles.system_info()

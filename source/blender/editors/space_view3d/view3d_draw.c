@@ -162,26 +162,15 @@ static void view3d_draw_clipping(RegionView3D *rv3d)
 
 		/* fill in zero alpha for rendering & re-projection [#31530] */
 		unsigned char col[4];
-<<<<<<< HEAD
 		UI_GetThemeColor4ubv(TH_V3D_CLIPPING_BORDER, col);
 		glColor4ubv(col);
 
 		glEnable(GL_BLEND);
-=======
-		UI_GetThemeColorShade3ubv(TH_BACK, -8, col);
-		col[3] = 0;
-		glColor4ubv(col);
-
->>>>>>> Initial commit
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, bb->vec);
 		glDrawElements(GL_QUADS, sizeof(clipping_index) / sizeof(unsigned int), GL_UNSIGNED_INT, clipping_index);
 		glDisableClientState(GL_VERTEX_ARRAY);
-<<<<<<< HEAD
 		glDisable(GL_BLEND);
-=======
-
->>>>>>> Initial commit
 	}
 }
 
@@ -890,19 +879,17 @@ static void draw_selected_name(Scene *scene, Object *ob, rcti *rect)
 			
 			/* show name of active bone too (if possible) */
 			if (arm->edbo) {
-<<<<<<< HEAD
-				if (arm->act_edbone) {
-					s += BLI_strcpy_rlen(s, msg_sep);
-					s += BLI_strcpy_rlen(s, arm->act_edbone->name);
-				}
-			}
-			else if (ob->mode & OB_MODE_POSE) {
-				if (arm->act_bone) {
-
-					if (arm->act_bone->layer & arm->layer) {
-						s += BLI_strcpy_rlen(s, msg_sep);
-						s += BLI_strcpy_rlen(s, arm->act_bone->name);
-=======
+//				if (arm->act_edbone) {
+//					s += BLI_strcpy_rlen(s, msg_sep);
+//					s += BLI_strcpy_rlen(s, arm->act_edbone->name);
+//				}
+//			}
+//			else if (ob->mode & OB_MODE_POSE) {
+//				if (arm->act_bone) {
+//
+//					if (arm->act_bone->layer & arm->layer) {
+//						s += BLI_strcpy_rlen(s, msg_sep);
+//						s += BLI_strcpy_rlen(s, arm->act_bone->name);
 				if (arm->act_edelement) {
 					s += BLI_strcpy_rlen(s, msg_sep);
 					s += BLI_strcpy_rlen(s, arm->act_edelement->name);
@@ -914,7 +901,6 @@ static void draw_selected_name(Scene *scene, Object *ob, rcti *rect)
 					if (arm->act_element->layer & arm->layer) {
 						s += BLI_strcpy_rlen(s, msg_sep);
 						s += BLI_strcpy_rlen(s, arm->act_element->name);
->>>>>>> Initial commit
 					}
 				}
 			}
@@ -929,17 +915,14 @@ static void draw_selected_name(Scene *scene, Object *ob, rcti *rect)
 				Object *armobj = BKE_object_pose_armature_get(ob);
 				if (armobj  && armobj->mode & OB_MODE_POSE) {
 					bArmature *arm = armobj->data;
-<<<<<<< HEAD
-					if (arm->act_bone) {
-						if (arm->act_bone->layer & arm->layer) {
-							s += BLI_strcpy_rlen(s, msg_sep);
-							s += BLI_strcpy_rlen(s, arm->act_bone->name);
-=======
+//					if (arm->act_bone) {
+//						if (arm->act_bone->layer & arm->layer) {
+//							s += BLI_strcpy_rlen(s, msg_sep);
+//							s += BLI_strcpy_rlen(s, arm->act_bone->name);
 					if (arm->act_element) {
 						if (arm->act_element->layer & arm->layer) {
 							s += BLI_strcpy_rlen(s, msg_sep);
 							s += BLI_strcpy_rlen(s, arm->act_element->name);
->>>>>>> Initial commit
 						}
 					}
 				}
@@ -2694,14 +2677,7 @@ static void view3d_draw_objects(
 
 	if (!draw_offscreen) {
 		/* needs to be done always, gridview is adjusted in drawgrid() now, but only for ortho views. */
-<<<<<<< HEAD
 		rv3d->gridview = ED_view3d_grid_scale(scene, v3d, grid_unit);
-=======
-		rv3d->gridview = v3d->grid;
-		if (scene->unit.system) {
-			rv3d->gridview /= scene->unit.scale_length;
-		}
->>>>>>> Initial commit
 
 		if ((rv3d->view == RV3D_VIEW_USER) || (rv3d->persp != RV3D_ORTHO)) {
 			if ((v3d->flag2 & V3D_RENDER_OVERRIDE) == 0) {
@@ -2711,10 +2687,7 @@ static void view3d_draw_objects(
 		else {
 			if ((v3d->flag2 & V3D_RENDER_OVERRIDE) == 0) {
 				ED_region_pixelspace(ar);
-<<<<<<< HEAD
 				*grid_unit = NULL;  /* drawgrid need this to detect/affect smallest valid unit... */
-=======
->>>>>>> Initial commit
 				drawgrid(&scene->unit, ar, v3d, grid_unit);
 				/* XXX make function? replaces persp(1) */
 				glMatrixMode(GL_PROJECTION);
@@ -3131,18 +3104,6 @@ void ED_view3d_draw_offscreen(Scene *scene, View3D *v3d, ARegion *ar, int winx, 
 	G.f &= ~G_RENDER_OGL;
 }
 
-<<<<<<< HEAD
-=======
-/* get a color used for offscreen sky, returns color in sRGB space */
-void ED_view3d_offscreen_sky_color_get(Scene *scene, float sky_color[3])
-{
-	if (scene->world)
-		linearrgb_to_srgb_v3_v3(sky_color, &scene->world->horr);
-	else
-		UI_GetThemeColor3fv(TH_BACK, sky_color);
-}
-
->>>>>>> Initial commit
 /* utility func for ED_view3d_draw_offscreen */
 ImBuf *ED_view3d_draw_offscreen_imbuf(Scene *scene, View3D *v3d, ARegion *ar, int sizex, int sizey, unsigned int flag,
                                       bool draw_background, int alpha_mode, char err_out[256])

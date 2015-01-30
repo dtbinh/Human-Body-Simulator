@@ -761,10 +761,6 @@ elseif(WIN32)
 		install(
 			FILES
 				${LIBDIR}/openal/lib/OpenAL32.dll
-<<<<<<< HEAD
-=======
-				${LIBDIR}/openal/lib/wrap_oal.dll
->>>>>>> Initial commit
 			DESTINATION "."
 		)
 	endif()

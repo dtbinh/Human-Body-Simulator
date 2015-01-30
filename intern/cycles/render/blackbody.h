@@ -21,11 +21,7 @@
 
 CCL_NAMESPACE_BEGIN
 
-<<<<<<< HEAD
 vector<float> blackbody_table_build();
-=======
-vector<float> blackbody_table();
->>>>>>> Initial commit
 
 CCL_NAMESPACE_END
 

@@ -121,7 +121,6 @@ static void rna_Scene_update_tagged(Scene *scene)
 
 static void rna_SceneRender_get_frame_path(RenderData *rd, int frame, char *name)
 {
-<<<<<<< HEAD
 	if (BKE_imtype_is_movie(rd->im_format.imtype)) {
 		BKE_movie_filepath_get(name, rd);
 	}
@@ -130,13 +129,6 @@ static void rna_SceneRender_get_frame_path(RenderData *rd, int frame, char *name
 		        name, rd->pic, G.main->name, (frame == INT_MIN) ? rd->cfra : frame,
 		        &rd->im_format, (rd->scemode & R_EXTENSION) != 0, true);
 	}
-=======
-	if (BKE_imtype_is_movie(rd->im_format.imtype))
-		BKE_movie_filepath_get(name, rd);
-	else
-		BKE_makepicstring(name, rd->pic, G.main->name, (frame == INT_MIN) ? rd->cfra : frame,
-		                  &rd->im_format, (rd->scemode & R_EXTENSION) != 0, true);
->>>>>>> Initial commit
 }
 
 static void rna_Scene_ray_cast(Scene *scene, float ray_start[3], float ray_end[3],
