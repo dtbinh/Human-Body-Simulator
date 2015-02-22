@@ -69,6 +69,7 @@ extern StructRNA RNA_Area;
 extern StructRNA RNA_AreaLamp;
 extern StructRNA RNA_Armature;
 extern StructRNA RNA_ArmatureElement;
+extern StructRNA RNA_ArmatureElementGroup;
 extern StructRNA RNA_ArmatureModifier;
 extern StructRNA RNA_ArmatureSensor;
 extern StructRNA RNA_ArrayModifier;
@@ -458,6 +459,7 @@ extern StructRNA RNA_PointLamp;
 extern StructRNA RNA_PointerProperty;
 extern StructRNA RNA_Pose;
 extern StructRNA RNA_PoseBone;
+//extern StructRNA RNA_PoseMuscle;
 extern StructRNA RNA_Property;
 extern StructRNA RNA_PropertyGroup;
 extern StructRNA RNA_PropertyGroupItem;
@@ -965,7 +967,7 @@ char *RNA_path_property_py(struct PointerRNA *ptr, struct PropertyRNA *prop, int
  * call RNA_struct_find_property. The names have to exist as RNA properties
  * for the type in the pointer, if they do not exist an error will be printed.
  *
- * There is no support for pointers and collections here yet, these can be 
+ * There is no support for pointers and collections here yet, these can be
  * added when ID properties support them. */
 
 int  RNA_boolean_get(PointerRNA *ptr, const char *name);

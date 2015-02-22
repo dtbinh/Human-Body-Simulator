@@ -1945,7 +1945,7 @@ void blo_do_versions_pre250(FileData *fd, Library *lib, Main *main)
 		for (arm = main->armature.first; arm; arm = arm->id.next) {
 			BKE_armature_where_is(arm);
 
-			for (bone = arm->bonebase.first; bone; bone = bone->next)
+			for (bone = arm->elementbase.first; bone; bone = bone->next)
 				do_version_bone_head_tail_237(bone);
 		}
 		for (ob = main->object.first; ob; ob = ob->id.next) {
@@ -2101,7 +2101,7 @@ void blo_do_versions_pre250(FileData *fd, Library *lib, Main *main)
 		}
 
 		for (arm = main->armature.first; arm; arm = arm->id.next) {
-			bone_version_238(&arm->bonebase);
+			bone_version_238(&arm->elementbase);
 			arm->deformflag |= ARM_DEF_VGROUP;
 		}
 
@@ -2161,7 +2161,7 @@ void blo_do_versions_pre250(FileData *fd, Library *lib, Main *main)
 		for (arm = main->armature.first; arm; arm = arm->id.next) {
 			if (arm->ghostsize == 0)
 				arm->ghostsize = 1;
-			bone_version_239(&arm->bonebase);
+			bone_version_239(&arm->elementbase);
 			if (arm->layer == 0)
 				arm->layer = 1;
 		}
@@ -2222,7 +2222,7 @@ void blo_do_versions_pre250(FileData *fd, Library *lib, Main *main)
 
 		/* updating layers still */
 		for (arm = main->armature.first; arm; arm = arm->id.next) {
-			bone_version_239(&arm->bonebase);
+			bone_version_239(&arm->elementbase);
 			if (arm->layer == 0)
 				arm->layer = 1;
 		}

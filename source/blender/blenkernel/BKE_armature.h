@@ -56,10 +56,10 @@ typedef struct PoseTarget {
 
 typedef struct PoseTree {
 	struct PoseTree *next, *prev;
-	
+
 	int type;                       /* type of IK that this serves (CONSTRAINT_TYPE_KINEMATIC or ..._SPLINEIK) */
 	int totchannel;                 /* number of pose channels */
-	
+
 	struct ListBase targets;        /* list of targets of the tree */
 	struct bPoseChannel **pchan;    /* array of pose channels */
 	int     *parent;                /* and their parents */
@@ -87,13 +87,12 @@ struct BoundBox *BKE_armature_boundbox_get(struct Object *ob);
 
 int bone_autoside_name(char name[64], int strip_number, short axis, float head, float tail);
 
-struct Bone *BKE_armature_find_bone_name(struct bArmature *arm, const char *name);
-struct ArmatureElement *BKE_armature_find_bone_name(struct bArmature *arm, const char *name);
+//struct Bone *BKE_armature_find_bone_name(struct bArmature *arm, const char *name);
+struct ArmatureElement *BKE_armature_find_element_name(struct bArmature *arm, const char *name);
 
 float distfactor_to_bone(const float vec[3], const float b1[3], const float b2[3], float r1, float r2, float rdist);
 
 void BKE_armature_where_is(struct bArmature *arm);
-void BKE_armature_where_is_bone(struct Bone *bone, struct Bone *prevbone);
 void BKE_armature_where_is_bone(struct ArmatureElement *bone, struct ArmatureElement *prevbone);
 void BKE_pose_rebuild(struct Object *ob, struct bArmature *arm);
 void BKE_pose_where_is(struct Scene *scene, struct Object *ob);
@@ -101,7 +100,7 @@ void BKE_pose_where_is_bone(struct Scene *scene, struct Object *ob, struct bPose
 void BKE_pose_where_is_bone_tail(struct bPoseChannel *pchan);
 
 /* get_objectspace_bone_matrix has to be removed still */
-void get_objectspace_bone_matrix(struct Bone *bone, float M_accumulatedMatrix[4][4], int root, int posed);
+void get_objectspace_bone_matrix(struct ArmatureElement *bone, float M_accumulatedMatrix[4][4], int root, int posed);
 void vec_roll_to_mat3(const float vec[3], const float roll, float mat[3][3]);
 void vec_roll_to_mat3_normalized(const float nor[3], const float roll, float mat[3][3]);
 void mat3_to_vec_roll(float mat[3][3], float r_vec[3], float *r_roll);

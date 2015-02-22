@@ -250,7 +250,7 @@ static void execute_posetree(struct Scene *scene, Object *ob, PoseTree *tree)
 	IK_Solver *solver;
 	PoseTarget *target;
 	bKinematicConstraint *data, *poleangledata = NULL;
-	Bone *bone;
+	ArmatureElement *bone;
 
 	if (tree->totchannel == 0)
 		return;
@@ -306,8 +306,8 @@ static void execute_posetree(struct Scene *scene, Object *ob, PoseTree *tree)
 		length = bone->length * len_v3(R_bonemat[1]);
 
 		/* compute rest basis and its inverse */
-		copy_m3_m3(rest_basis, bone->bone_mat);
-		transpose_m3_m3(irest_basis, bone->bone_mat);
+		copy_m3_m3(rest_basis, bone->AE_mat);
+		transpose_m3_m3(irest_basis, bone->AE_mat);
 
 		/* compute basis with rest_basis removed */
 		invert_m3_m3(iR_parmat, R_parmat);

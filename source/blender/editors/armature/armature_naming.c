@@ -68,45 +68,33 @@
 /* EditBone Names */
 
 /* note: there's a unique_bone_name() too! */
-static bool editbone_unique_check(void *arg, const char *name)
+static bool editarmatureelement_unique_check(void *arg, const char *name)
 {
-//	struct {ListBase *lb; void *bone; } *data = arg;
-//	EditBone *dupli = ED_armature_bone_find_name(data->lb, name);
-//	return dupli && dupli != data->bone;
-//}
-//
-//void unique_editbone_name(ListBase *edbo, char *name, EditBone *bone)
-//{
-//	struct {ListBase *lb; void *bone; } data;
-//	data.lb = edbo;
-//	data.bone = bone;
-//
-//	BLI_uniquename_cb(editbone_unique_check, &data, DATA_("Bone"), '.', name, sizeof(bone->name));
 	struct {ListBase *lb; void *elem; } *data = arg;
-	EditArmatureElement *dupli = ED_armature_armatureelement_find_name(data->lb, name);
+	EditArmatureElement *dupli = ED_armature_element_find_name(data->lb, name);
 	return dupli && dupli != data->elem;
 }
 
-void unique_editelement_name(ListBase *edbo, char *name, EditArmatureElement *elem)
+void unique_editarmatureelement_name(ListBase *edbo, char *name, EditArmatureElement *elem)
 {
 	struct {ListBase *lb; void *elem; } data;
 	data.lb = edbo;
 	data.elem = elem;
 
-	BLI_uniquename_cb(editbone_unique_check, &data, DATA_("Bone"), '.', name, sizeof(elem->name));
+	BLI_uniquename_cb(editarmatureelement_unique_check, &data, DATA_("Bone"), '.', name, sizeof(((EditArmatureElement *)NULL)->name));
 }
 
 /* ************************************************** */
 /* Bone Renaming - API */
 
-static bool bone_unique_check(void *arg, const char *name)
+static bool armatureelement_unique_check(void *arg, const char *name)
 {
-	return BKE_armature_find_bone_name((bArmature *)arg, name) != NULL;
+	return BKE_armature_find_element_name((bArmature *)arg, name) != NULL;
 }
 
-static void unique_bone_name(bArmature *arm, char *name)
+static void unique_armatureelement_name(bArmature *arm, char *name)
 {
-	BLI_uniquename_cb(bone_unique_check, (void *)arm, DATA_("Bone"), '.', name, sizeof(((Bone *)NULL)->name));
+	BLI_uniquename_cb(armatureelement_unique_check, (void *)arm, DATA_("Bone"), '.', name, sizeof(((ArmatureElement *)NULL)->name));
 }
 
 /* helper call for armature_bone_rename */
@@ -114,15 +102,15 @@ static void constraint_bone_name_fix(Object *ob, ListBase *conlist, const char *
 {
 	bConstraint *curcon;
 	bConstraintTarget *ct;
-	
+
 	for (curcon = conlist->first; curcon; curcon = curcon->next) {
 		bConstraintTypeInfo *cti = BKE_constraint_typeinfo_get(curcon);
 		ListBase targets = {NULL, NULL};
-		
+
 		/* constraint targets */
 		if (cti && cti->get_constraint_targets) {
 			cti->get_constraint_targets(curcon, &targets);
-			
+
 			for (ct = targets.first; ct; ct = ct->next) {
 				if (ct->tar == ob) {
 					if (STREQ(ct->subtarget, oldname)) {
@@ -130,11 +118,11 @@ static void constraint_bone_name_fix(Object *ob, ListBase *conlist, const char *
 					}
 				}
 			}
-			
+
 			if (cti->flush_constraint_targets)
 				cti->flush_constraint_targets(curcon, &targets, 0);
 		}
-		
+
 		/* action constraints */
 		if (curcon->type == CONSTRAINT_TYPE_ACTION) {
 			bActionConstraint *actcon = (bActionConstraint *)curcon->data;
@@ -146,33 +134,26 @@ static void constraint_bone_name_fix(Object *ob, ListBase *conlist, const char *
 /* called by UI for renaming a bone */
 /* warning: make sure the original bone was not renamed yet! */
 /* seems messy, but thats what you get with not using pointers but channel names :) */
-void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *newnamep)
+void ED_armature_element_rename(bArmature *arm, const char *oldnamep, const char *newnamep)
 {
 	Object *ob;
 	char newname[MAXBONENAME];
 	char oldname[MAXBONENAME];
-	
+
 	/* names better differ! */
 	if (!STREQLEN(oldnamep, newnamep, MAXBONENAME)) {
-		
+
 		/* we alter newname string... so make copy */
 		BLI_strncpy(newname, newnamep, MAXBONENAME);
 		/* we use oldname for search... so make copy */
 		BLI_strncpy(oldname, oldnamep, MAXBONENAME);
-//		
-//		/* now check if we're in editmode, we need to find the unique name */
-//		if (arm->edbo) {
-//			EditBone *eBone = ED_armature_bone_find_name(arm->edbo, oldname);
-//			
-//			if (eBone) {
-//				unique_editbone_name(arm->edbo, newname, NULL);
-		
+
 		/* now check if we're in editmode, we need to find the unique name */
-		if (arm->edbo) {
-			EditArmatureElement *eBone = ED_armature_armatureelement_find_name(arm->edbo, oldname);
-			
+		if (arm->edel) {
+			EditArmatureElement *eBone = ED_armature_element_find_name(arm->edel, oldname);
+
 			if (eBone) {
-				unique_editelement_name(arm->edbo, newname, NULL);
+				unique_editarmatureelement_name(arm->edel, newname, NULL);
 				BLI_strncpy(eBone->name, newname, MAXBONENAME);
 			}
 			else {
@@ -180,27 +161,25 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 			}
 		}
 		else {
-//			Bone *bone = BKE_armature_find_bone_name(arm, oldname);
-//			
-			ArmatureElement *bone = BKE_armature_find_bone_name(arm, oldname);
-			
+			ArmatureElement *bone = BKE_armature_find_element_name(arm, oldname);
+
 			if (bone) {
-				unique_bone_name(arm, newname);
+				unique_armatureelement_name(arm, newname);
 				BLI_strncpy(bone->name, newname, MAXBONENAME);
 			}
 			else {
 				return;
 			}
 		}
-		
+
 		/* do entire dbase - objects */
 		for (ob = G.main->object.first; ob; ob = ob->id.next) {
 			ModifierData *md;
-			
+
 			/* we have the object using the armature */
 			if (arm == ob->data) {
 				Object *cob;
-				
+
 				/* Rename the pose channel, if it exists */
 				if (ob->pose) {
 					bPoseChannel *pchan = BKE_pose_channel_find_name(ob->pose, oldname);
@@ -222,7 +201,7 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 
 					BLI_assert(BKE_pose_channels_is_valid(ob->pose) == true);
 				}
-				
+
 				/* Update any object constraints to use the new bone name */
 				for (cob = G.main->object.first; cob; cob = cob->id.next) {
 					if (cob->constraints.first)
@@ -235,7 +214,7 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 					}
 				}
 			}
-			
+
 			/* See if an object is parented to this armature */
 			if (ob->parent && (ob->parent->data == arm)) {
 				if (ob->partype == PARBONE) {
@@ -244,14 +223,14 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 						BLI_strncpy(ob->parsubstr, newname, MAXBONENAME);
 				}
 			}
-			
+
 			if (modifiers_usesArmature(ob, arm)) {
 				bDeformGroup *dg = defgroup_find_name(ob, oldname);
 				if (dg) {
 					BLI_strncpy(dg->name, newname, MAXBONENAME);
 				}
 			}
-			
+
 			/* fix modifiers that might be using this name */
 			for (md = ob->modifiers.first; md; md = md->next) {
 				switch (md->type) {
@@ -284,16 +263,16 @@ void ED_armature_bone_rename(bArmature *arm, const char *oldnamep, const char *n
 				}
 			}
 		}
-		
+
 		/* Fix all animdata that may refer to this bone - we can't just do the ones attached to objects, since
 		 * other ID-blocks may have drivers referring to this bone [#29822]
 		 */
 		// XXX: the ID here is for armatures, but most bone drivers are actually on the object instead...
 		{
-			
+
 			BKE_all_animdata_fix_paths_rename(&arm->id, "pose.bones", oldname, newname);
 		}
-		
+
 		/* correct view locking */
 		{
 			bScreen *screen;
@@ -325,21 +304,21 @@ static int armature_flip_names_exec(bContext *C, wmOperator *UNUSED(op))
 {
 	Object *ob = CTX_data_edit_object(C);
 	bArmature *arm;
-	
+
 	/* paranoia checks */
-	if (ELEM(NULL, ob, ob->pose)) 
+	if (ELEM(NULL, ob, ob->pose))
 		return OPERATOR_CANCELLED;
 	arm = ob->data;
-	
+
 	/* loop through selected bones, auto-naming them */
-	CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
+	CTX_DATA_BEGIN(C, EditArmatureElement *, ebone, selected_editable_bones)
 	{
 		char name_flip[MAXBONENAME];
 		BKE_deform_flip_side_name(name_flip, ebone->name, true);
-		ED_armature_bone_rename(arm, ebone->name, name_flip);
+		ED_armature_element_rename(arm, ebone->name, name_flip);
 	}
 	CTX_DATA_END;
-	
+
 	/* since we renamed stuff... */
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 
@@ -359,11 +338,11 @@ void ARMATURE_OT_flip_names(wmOperatorType *ot)
 	ot->name = "Flip Names";
 	ot->idname = "ARMATURE_OT_flip_names";
 	ot->description = "Flips (and corrects) the axis suffixes of the names of selected bones";
-	
+
 	/* api callbacks */
 	ot->exec = armature_flip_names_exec;
 	ot->poll = ED_operator_editarmature;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 }
@@ -375,27 +354,27 @@ static int armature_autoside_names_exec(bContext *C, wmOperator *op)
 	bArmature *arm;
 	char newname[MAXBONENAME];
 	short axis = RNA_enum_get(op->ptr, "type");
-	
+
 	/* paranoia checks */
-	if (ELEM(NULL, ob, ob->pose)) 
+	if (ELEM(NULL, ob, ob->pose))
 		return OPERATOR_CANCELLED;
 	arm = ob->data;
-	
+
 	/* loop through selected bones, auto-naming them */
-	CTX_DATA_BEGIN(C, EditBone *, ebone, selected_editable_bones)
+	CTX_DATA_BEGIN(C, EditArmatureElement *, ebone, selected_editable_bones)
 	{
 		BLI_strncpy(newname, ebone->name, sizeof(newname));
 		if (bone_autoside_name(newname, 1, axis, ebone->head[axis], ebone->tail[axis]))
-			ED_armature_bone_rename(arm, ebone->name, newname);
+			ED_armature_element_rename(arm, ebone->name, newname);
 	}
 	CTX_DATA_END;
-	
+
 	/* since we renamed stuff... */
 	DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
 
 	/* note, notifier might evolve */
 	WM_event_add_notifier(C, NC_OBJECT | ND_POSE, ob);
-	
+
 	return OPERATOR_FINISHED;
 }
 
@@ -407,20 +386,20 @@ void ARMATURE_OT_autoside_names(wmOperatorType *ot)
 		{2, "ZAXIS", 0, "Z-Axis", "Top/Bottom"},
 		{0, NULL, 0, NULL, NULL}
 	};
-	
+
 	/* identifiers */
 	ot->name = "AutoName by Axis";
 	ot->idname = "ARMATURE_OT_autoside_names";
 	ot->description = "Automatically renames the selected bones according to which side of the target axis they fall on";
-	
+
 	/* api callbacks */
 	ot->invoke = WM_menu_invoke;
 	ot->exec = armature_autoside_names_exec;
 	ot->poll = ED_operator_editarmature;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
-	
+
 	/* settings */
 	ot->prop = RNA_def_enum(ot->srna, "type", axis_items, 0, "Axis", "Axis tag names with");
 }

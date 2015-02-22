@@ -878,7 +878,7 @@ static int convert_channels(IK_Scene *ikscene, PoseTree *tree, float ctime)
 		ikchan->owner = ikscene->blArmature;
 
 		// the constraint and channels must be applied before we build the iTaSC scene,
-		// this is because some of the pose data (e.g. pose head) don't have corresponding 
+		// this is because some of the pose data (e.g. pose head) don't have corresponding
 		// joint angles and can't be applied to the iTaSC armature dynamically
 		if (!(pchan->flag & POSE_DONE))
 			BKE_pose_where_is_bone(ikscene->blscene, ikscene->blArmature, pchan, ctime, 1);
@@ -995,7 +995,6 @@ static void convert_pose(IK_Scene *ikscene)
 	KDL::Rotation boneRot;
 	bPoseChannel *pchan;
 	IK_Channel *ikchan;
-//	Bone *bone;
 	ArmatureElement *element;
 	float rmat[4][4];   // rest pose of bone with parent taken into account
 	float bmat[4][4];   // difference
@@ -1008,14 +1007,6 @@ static void convert_pose(IK_Scene *ikscene)
 	rot = ikscene->jointArray(0);
 	for (joint = a = 0, ikchan = ikscene->channels; a < ikscene->numchan && joint < ikscene->numjoint; ++a, ++ikchan) {
 		pchan = ikchan->pchan;
-//		bone = pchan->bone;
-//
-//		if (pchan->parent) {
-//			unit_m4(bmat);
-//			mul_m4_m4m3(bmat, pchan->parent->pose_mat, bone->bone_mat);
-//		}
-//		else {
-//			copy_m4_m4(bmat, bone->arm_mat);
 		element = pchan->bone;
 
 		if (pchan->parent) {
@@ -1044,7 +1035,6 @@ static void BKE_pose_rest(IK_Scene *ikscene)
 {
 	bPoseChannel *pchan;
 	IK_Channel *ikchan;
-//	Bone *bone;
 	ArmatureElement *element;
 	float scale;
 	double *rot;
@@ -1058,10 +1048,6 @@ static void BKE_pose_rest(IK_Scene *ikscene)
 	rot = ikscene->jointArray(0);
 	for (joint = a = 0, ikchan = ikscene->channels; a < ikscene->numchan && joint < ikscene->numjoint; ++a, ++ikchan) {
 		pchan = ikchan->pchan;
-//		bone = pchan->bone;
-//
-//		if (ikchan->jointType & IK_TRANSY)
-//			rot[ikchan->ndof - 1] = bone->length * scale;
 		element = pchan->bone;
 
 		if (ikchan->jointType & IK_TRANSY)
@@ -1084,7 +1070,6 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 	IK_Channel *ikchan;
 	KDL::Frame initPose;
 	KDL::Rotation boneRot;
-//	Bone *bone;
 	ArmatureElement *element;
 	int a, numtarget;
 	unsigned int t;
@@ -1164,15 +1149,11 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 
 	for (a = 0, ikchan = ikscene->channels; a < tree->totchannel; ++a, ++ikchan) {
 		pchan = ikchan->pchan;
-//		bone = pchan->bone;
-//
-//		KDL::Frame tip(iTaSC::F_identity);
-//		// compute the position and rotation of the head from previous segment
-//		Vector3 *fl = bone->bone_mat;
 		element = pchan->bone;
 
 		KDL::Frame tip(iTaSC::F_identity);
 		// compute the position and rotation of the head from previous segment
+		Vector3 *fl = element->AE_mat;
 		KDL::Rotation brot(
 		    fl[0][0], fl[1][0], fl[2][0],
 		    fl[0][1], fl[1][1], fl[2][1],
@@ -1208,7 +1189,7 @@ static IK_Scene *convert_tree(Scene *blscene, Object *ob, bPoseChannel *pchan, f
 		length = element->length * ikscene->blScale;
 		parent = (a > 0) ? ikscene->channels[tree->parent[a]].tail : root;
 		// first the fixed segment to the bone head
-		if (!(ikchan->pchan->bone->flag & BONE_CONNECTED) || head.M.GetRot().Norm() > KDL::epsilon) {
+		if (!(ikchan->pchan->bone->flag & ELEMENT_CONNECTED) || head.M.GetRot().Norm() > KDL::epsilon) {
 			joint = element->name;
 			joint += ":H";
 			ret = arm->addSegment(joint, parent, KDL::Joint::None, 0.0, head);

@@ -4,7 +4,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version. 
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -126,7 +126,7 @@ static int buttons_context_path_world(ButsContextPath *path)
 	else if (buttons_context_path_scene(path)) {
 		scene = path->ptr[path->len - 1].data;
 		world = scene->world;
-		
+
 		if (world) {
 			RNA_id_pointer_create(&scene->world->id, &path->ptr[path->len]);
 			path->len++;
@@ -278,28 +278,23 @@ static int buttons_context_path_material(ButsContextPath *path, bool for_texture
 static int buttons_context_path_bone(ButsContextPath *path)
 {
 	bArmature *arm;
-//	EditBone *edbo;
-	EditArmatureElement *edbo;
+	EditArmatureElement *edel;
 
 	/* if we have an armature, get the active bone */
 	if (buttons_context_path_data(path, OB_ARMATURE)) {
 		arm = path->ptr[path->len - 1].data;
 
-		if (arm->edbo) {
-//			if (arm->act_edbone) {
-//				edbo = arm->act_edbone;
+		if (arm->edel) {
 			if (arm->act_edelement) {
-				edbo = arm->act_edelement;
-				RNA_pointer_create(&arm->id, &RNA_EditBone, edbo, &path->ptr[path->len]);
+				edel = arm->act_edelement;
+				RNA_pointer_create(&arm->id, &RNA_EditArmatureElement, edel, &path->ptr[path->len]);
 				path->len++;
 				return 1;
 			}
 		}
 		else {
-//			if (arm->act_bone) {
-//				RNA_pointer_create(&arm->id, &RNA_Bone, arm->act_bone, &path->ptr[path->len]);
 			if (arm->act_element) {
-				RNA_pointer_create(&arm->id, &RNA_Bone, arm->act_element, &path->ptr[path->len]);
+				RNA_pointer_create(&arm->id, &RNA_ArmatureElement, arm->act_element, &path->ptr[path->len]);
 				path->len++;
 				return 1;
 			}
@@ -324,12 +319,10 @@ static int buttons_context_path_pose_bone(ButsContextPath *path)
 		Object *ob = path->ptr[path->len - 1].data;
 		bArmature *arm = ob->data; /* path->ptr[path->len-1].data - works too */
 
-		if (ob->type != OB_ARMATURE || arm->edbo) {
+		if (ob->type != OB_ARMATURE || arm->edel) {
 			return 0;
 		}
 		else {
-//			if (arm->act_bone) {
-//				bPoseChannel *pchan = BKE_pose_channel_find_name(ob->pose, arm->act_bone->name);
 			if (arm->act_element) {
 				bPoseChannel *pchan = BKE_pose_channel_find_name(ob->pose, arm->act_element->name);
 				if (pchan) {
@@ -415,7 +408,7 @@ static int buttons_context_path_texture(ButsContextPath *path, ButsContextTextur
 
 		if (!ct->user)
 			return 0;
-		
+
 		id = ct->user->id;
 
 		if (id) {
@@ -649,7 +642,7 @@ static int buttons_shading_context(const bContext *C, int mainb)
 		return 1;
 	if (mainb == BCONTEXT_DATA && ob && ELEM(ob->type, OB_LAMP, OB_CAMERA))
 		return 1;
-	
+
 	return 0;
 }
 
@@ -663,7 +656,7 @@ static int buttons_shading_new_context(const bContext *C, int flag)
 		return BCONTEXT_DATA;
 	else if (flag & (1 << BCONTEXT_WORLD))
 		return BCONTEXT_WORLD;
-	
+
 	return BCONTEXT_RENDER;
 }
 
@@ -958,11 +951,11 @@ int buttons_context(const bContext *C, const char *member, bContextDataResult *r
 		return 1;
 	}
 	else if (CTX_data_equals(member, "bone")) {
-		set_pointer_type(path, result, &RNA_Bone);
+		set_pointer_type(path, result, &RNA_ArmatureElement);
 		return 1;
 	}
 	else if (CTX_data_equals(member, "edit_bone")) {
-		set_pointer_type(path, result, &RNA_EditBone);
+		set_pointer_type(path, result, &RNA_EditArmatureElement);
 		return 1;
 	}
 	else if (CTX_data_equals(member, "pose_bone")) {
@@ -983,7 +976,7 @@ int buttons_context(const bContext *C, const char *member, bContextDataResult *r
 	else if (CTX_data_equals(member, "particle_settings")) {
 		/* only available when pinned */
 		PointerRNA *ptr = get_pointer_type(path, &RNA_ParticleSettings);
-		
+
 		if (ptr && ptr->data) {
 			CTX_data_pointer_set(result, ptr->id.data, &RNA_ParticleSettings, ptr->data);
 			return 1;
@@ -991,7 +984,7 @@ int buttons_context(const bContext *C, const char *member, bContextDataResult *r
 		else {
 			/* get settings from active particle system instead */
 			ptr = get_pointer_type(path, &RNA_ParticleSystem);
-			
+
 			if (ptr && ptr->data) {
 				ParticleSettings *part = ((ParticleSystem *)ptr->data)->part;
 				CTX_data_pointer_set(result, ptr->id.data, &RNA_ParticleSettings, part);
@@ -1031,7 +1024,7 @@ int buttons_context(const bContext *C, const char *member, bContextDataResult *r
 			return 1;
 		}
 	}
-	
+
 	else if (CTX_data_equals(member, "smoke")) {
 		PointerRNA *ptr = get_pointer_type(path, &RNA_Object);
 
@@ -1088,7 +1081,7 @@ static void pin_cb(bContext *C, void *UNUSED(arg1), void *UNUSED(arg2))
 	}
 	else
 		sbuts->pinid = NULL;
-	
+
 	ED_area_tag_redraw(CTX_wm_area(C));
 }
 

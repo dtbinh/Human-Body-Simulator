@@ -44,17 +44,17 @@
 
 #include "BKE_armature.h"
 
-static void rna_EditBone_align_roll(EditBone *ebo, float no[3])
-{
-	ebo->roll = ED_rollBoneToVector(ebo, no, false);
-}
+//static void rna_EditBone_align_roll(EditBone *ebo, float no[3])
+//{
+//	ebo->roll = ED_rollBoneToVector(ebo, no, false);
+//}
 
-static float rna_Bone_do_envelope(Bone *bone, float *vec)
-{
-	float scale = (bone->flag & BONE_MULT_VG_ENV) == BONE_MULT_VG_ENV ? bone->weight : 1.0f;
-	return distfactor_to_bone(vec, bone->arm_head, bone->arm_tail, bone->rad_head * scale,
-	                          bone->rad_tail * scale, bone->dist * scale);
-}
+//static float rna_Bone_do_envelope(Bone *bone, float *vec)
+//{
+//	float scale = (bone->flag & BONE_MULT_VG_ENV) == BONE_MULT_VG_ENV ? bone->weight : 1.0f;
+//	return distfactor_to_bone(vec, bone->arm_head, bone->arm_tail, bone->rad_head * scale,
+//	                          bone->rad_tail * scale, bone->dist * scale);
+//}
 
 static void rna_EditArmatureElement_align_roll(EditArmatureElement *eel, float no[3])
 {

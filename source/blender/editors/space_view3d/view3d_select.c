@@ -4,7 +4,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version. 
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,7 +18,7 @@
  * The Original Code is Copyright (C) 2008 Blender Foundation.
  * All rights reserved.
  *
- * 
+ *
  * Contributor(s): Blender Foundation
  *
  * ***** END GPL LICENSE BLOCK *****
@@ -298,25 +298,25 @@ static bool edge_fully_inside_rect(const rctf *rect, const float v1[2], const fl
 static bool edge_inside_rect(const rctf *rect, const float v1[2], const float v2[2])
 {
 	int d1, d2, d3, d4;
-	
+
 	/* check points in rect */
 	if (edge_fully_inside_rect(rect, v1, v2)) return 1;
-	
+
 	/* check points completely out rect */
 	if (v1[0] < rect->xmin && v2[0] < rect->xmin) return 0;
 	if (v1[0] > rect->xmax && v2[0] > rect->xmax) return 0;
 	if (v1[1] < rect->ymin && v2[1] < rect->ymin) return 0;
 	if (v1[1] > rect->ymax && v2[1] > rect->ymax) return 0;
-	
+
 	/* simple check lines intersecting. */
 	d1 = (v1[1] - v2[1]) * (v1[0] - rect->xmin) + (v2[0] - v1[0]) * (v1[1] - rect->ymin);
 	d2 = (v1[1] - v2[1]) * (v1[0] - rect->xmin) + (v2[0] - v1[0]) * (v1[1] - rect->ymax);
 	d3 = (v1[1] - v2[1]) * (v1[0] - rect->xmax) + (v2[0] - v1[0]) * (v1[1] - rect->ymax);
 	d4 = (v1[1] - v2[1]) * (v1[0] - rect->xmax) + (v2[0] - v1[0]) * (v1[1] - rect->ymin);
-	
+
 	if (d1 < 0 && d2 < 0 && d3 < 0 && d4 < 0) return 0;
 	if (d1 > 0 && d2 > 0 && d3 > 0 && d4 > 0) return 0;
-	
+
 	return 1;
 }
 
@@ -374,7 +374,7 @@ static void do_lasso_select_pose(ViewContext *vc, Object *ob, const int mcords[]
 	ViewContext vc_tmp;
 	LassoSelectUserData data;
 	rcti rect;
-	
+
 	if ((ob->type != OB_ARMATURE) || (ob->pose == NULL)) {
 		return;
 	}
@@ -414,7 +414,7 @@ static void do_lasso_select_objects(ViewContext *vc, const int mcords[][2], cons
                                     const bool extend, const bool select)
 {
 	Base *base;
-	
+
 	if (extend == false && select)
 		object_deselect_all_visible(vc->scene, vc->v3d);
 
@@ -422,7 +422,7 @@ static void do_lasso_select_objects(ViewContext *vc, const int mcords[][2], cons
 		if (BASE_SELECTABLE(vc->v3d, base)) { /* use this to avoid un-needed lasso lookups */
 			ED_view3d_project_base(vc->ar, base);
 			if (BLI_lasso_is_point_inside(mcords, moves, base->sx, base->sy, IS_CLIPPED)) {
-				
+
 				ED_base_object_select(base, select ? BA_SELECT : BA_DESELECT);
 				base->object->flag = base->flag;
 			}
@@ -486,7 +486,7 @@ static void do_lasso_select_mesh(ViewContext *vc, const int mcords[][2], short m
 	ToolSettings *ts = vc->scene->toolsettings;
 	rcti rect;
 	int bbsel;
-	
+
 	/* set editmesh */
 	vc->em = BKE_editmesh_from_object(vc->obedit);
 
@@ -502,7 +502,7 @@ static void do_lasso_select_mesh(ViewContext *vc, const int mcords[][2], short m
 
 	glLoadMatrixf(vc->rv3d->viewmat);
 	bbsel = EDBM_backbuf_border_mask_init(vc, mcords, moves, rect.xmin, rect.ymin, rect.xmax, rect.ymax);
-	
+
 	if (ts->selectmode & SCE_SELECT_VERTEX) {
 		if (bbsel) {
 			edbm_backbuf_check_and_select_verts(vc->em, select);
@@ -521,7 +521,7 @@ static void do_lasso_select_mesh(ViewContext *vc, const int mcords[][2], short m
 			mesh_foreachScreenEdge(vc, do_lasso_select_mesh__doSelectEdge, &data, V3D_PROJ_TEST_CLIP_NEAR);
 		}
 	}
-	
+
 	if (ts->selectmode & SCE_SELECT_FACE) {
 		if (bbsel) {
 			edbm_backbuf_check_and_select_faces(vc->em, select);
@@ -530,7 +530,7 @@ static void do_lasso_select_mesh(ViewContext *vc, const int mcords[][2], short m
 			mesh_foreachScreenFace(vc, do_lasso_select_mesh__doSelectFace, &data, V3D_PROJ_TEST_CLIP_DEFAULT);
 		}
 	}
-	
+
 	EDBM_backbuf_free();
 	EDBM_selectmode_flush(vc->em);
 }
@@ -610,13 +610,11 @@ static void do_lasso_select_lattice(ViewContext *vc, const int mcords[][2], shor
 	lattice_foreachScreenVert(vc, do_lasso_select_lattice__doSelect, &data, V3D_PROJ_TEST_CLIP_DEFAULT);
 }
 
-//static void do_lasso_select_armature__doSelectBone(void *userData, struct EditBone *ebone, const float screen_co_a[2], const float screen_co_b[2])
 static void do_lasso_select_armature__doSelectBone(void *userData, struct EditArmatureElement *ebone, const float screen_co_a[2], const float screen_co_b[2])
 {
 	LassoSelectUserData *data = userData;
 	bArmature *arm = data->vc->obedit->data;
 
-//	if (data->select ? EBONE_SELECTABLE(arm, ebone) : EBONE_VISIBLE(arm, ebone)) {
 	if (data->select ? EELEMENT_SELECTABLE(arm, ebone) : EELEMENT_VISIBLE(arm, ebone)) {
 		bool is_point_done = false;
 		int points_proj_tot = 0;
@@ -633,8 +631,6 @@ static void do_lasso_select_armature__doSelectBone(void *userData, struct EditAr
 			    BLI_lasso_is_point_inside(data->mcords, data->moves, x0, y0, INT_MAX))
 			{
 				is_point_done = true;
-//				if (data->select) ebone->flag |=  BONE_ROOTSEL;
-//				else              ebone->flag &= ~BONE_ROOTSEL;
 				if (data->select) ebone->flag |=  ELEMENT_ROOTSEL;
 				else              ebone->flag &= ~ELEMENT_ROOTSEL;
 			}
@@ -647,8 +643,6 @@ static void do_lasso_select_armature__doSelectBone(void *userData, struct EditAr
 			    BLI_lasso_is_point_inside(data->mcords, data->moves, x1, y1, INT_MAX))
 			{
 				is_point_done = true;
-//				if (data->select) ebone->flag |=  BONE_TIPSEL;
-//				else              ebone->flag &= ~BONE_TIPSEL;
 				if (data->select) ebone->flag |=  ELEMENT_TIPSEL;
 				else              ebone->flag &= ~ELEMENT_TIPSEL;
 			}
@@ -658,8 +652,6 @@ static void do_lasso_select_armature__doSelectBone(void *userData, struct EditAr
 		if ((is_point_done == false) && (points_proj_tot == 2) &&
 		    BLI_lasso_is_edge_inside(data->mcords, data->moves, x0, y0, x1, y1, INT_MAX))
 		{
-//			if (data->select) ebone->flag |=  (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
-//			else              ebone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
 			if (data->select) ebone->flag |=  (ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
 			else              ebone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
 			data->is_changed = true;
@@ -687,7 +679,7 @@ static void do_lasso_select_armature(ViewContext *vc, const int mcords[][2], sho
 
 	if (data.is_changed) {
 		bArmature *arm = vc->obedit->data;
-		ED_armature_sync_selection(arm->edbo);
+		ED_armature_sync_selection(arm->edel);
 		ED_armature_validate_active(arm);
 		WM_main_add_notifier(NC_OBJECT | ND_BONE_SELECT, vc->obedit);
 	}
@@ -790,7 +782,7 @@ static void do_lasso_select_paintface(ViewContext *vc, const int mcords[][2], sh
 
 	BLI_lasso_boundbox(&rect, mcords, moves);
 	EDBM_backbuf_border_mask_init(vc, mcords, moves, rect.xmin, rect.ymin, rect.xmax, rect.ymax);
-	
+
 	edbm_backbuf_check_and_select_tfaces(me, select);
 
 	EDBM_backbuf_free();
@@ -802,19 +794,19 @@ static void do_lasso_select_paintface(ViewContext *vc, const int mcords[][2], sh
 static void do_lasso_select_node(int mcords[][2], short moves, const bool select)
 {
 	SpaceNode *snode = sa->spacedata.first;
-	
+
 	bNode *node;
 	rcti rect;
 	int node_cent[2];
 	float node_centf[2];
-	
+
 	BLI_lasso_boundbox(&rect, mcords, moves);
-	
+
 	/* store selection in temp test flag */
 	for (node = snode->edittree->nodes.first; node; node = node->next) {
 		node_centf[0] = BLI_RCT_CENTER_X(&node->totr);
 		node_centf[1] = BLI_RCT_CENTER_Y(&node->totr);
-		
+
 		ipoco_to_areaco_noclip(G.v2d, node_centf, node_cent);
 		if (BLI_rcti_isect_pt_v(&rect, node_cent) && BLI_lasso_is_point_inside(mcords, moves, node_cent[0], node_cent[1])) {
 			if (select) {
@@ -885,18 +877,18 @@ static int view3d_lasso_select_exec(bContext *C, wmOperator *op)
 	ViewContext vc;
 	int mcords_tot;
 	const int (*mcords)[2] = WM_gesture_lasso_path_to_array(C, op, &mcords_tot);
-	
+
 	if (mcords) {
 		bool extend, select;
 		view3d_operator_needs_opengl(C);
-		
+
 		/* setup view context for argument to callbacks */
 		view3d_set_viewcontext(C, &vc);
-		
+
 		extend = RNA_boolean_get(op->ptr, "extend");
 		select = !RNA_boolean_get(op->ptr, "deselect");
 		view3d_lasso_select(C, &vc, mcords, mcords_tot, extend, select);
-		
+
 		MEM_freeN((void *)mcords);
 
 		return OPERATOR_FINISHED;
@@ -909,16 +901,16 @@ void VIEW3D_OT_select_lasso(wmOperatorType *ot)
 	ot->name = "Lasso Select";
 	ot->description = "Select items using lasso selection";
 	ot->idname = "VIEW3D_OT_select_lasso";
-	
+
 	ot->invoke = WM_gesture_lasso_invoke;
 	ot->modal = WM_gesture_lasso_modal;
 	ot->exec = view3d_lasso_select_exec;
 	ot->poll = view3d_selectable_data;
 	ot->cancel = WM_gesture_lasso_cancel;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_UNDO;
-	
+
 	RNA_def_collection_runtime(ot->srna, "path", &RNA_OperatorMousePath, "Path", "");
 	RNA_def_boolean(ot->srna, "deselect", 0, "Deselect", "Deselect rather than select items");
 	RNA_def_boolean(ot->srna, "extend", 1, "Extend", "Extend selection instead of deselecting everything first");
@@ -935,7 +927,7 @@ static unsigned int samplerect(unsigned int *buf, int size, unsigned int dontdo)
 	unsigned int *bufmin, *bufmax;
 	int a, b, rc, tel, len, dirvec[4][2], maxob;
 	unsigned int retval = 0;
-	
+
 	base = LASTBASE;
 	if (base == 0) return 0;
 	maxob = base->selcol;
@@ -963,7 +955,7 @@ static unsigned int samplerect(unsigned int *buf, int size, unsigned int dontdo)
 
 				if (*buf && *buf <= maxob && *buf != dontdo) return *buf;
 				if (*buf == dontdo) retval = dontdo;  /* if only color dontdo is available, still return dontdo */
-				
+
 				buf += (dirvec[rc][0] + dirvec[rc][1]);
 
 				if (buf < bufmin || buf >= bufmax) return retval;
@@ -1084,7 +1076,7 @@ void VIEW3D_OT_select_menu(wmOperatorType *ot)
 static void deselectall_except(Scene *scene, Base *b)   /* deselect all except b */
 {
 	Base *base;
-	
+
 	for (base = FIRSTBASE; base; base = base->next) {
 		if (base->flag & SELECT) {
 			if (b != base) {
@@ -1099,7 +1091,7 @@ static Base *object_mouse_select_menu(bContext *C, ViewContext *vc, unsigned int
 	short baseCount = 0;
 	bool ok;
 	LinkNode *linklist = NULL;
-	
+
 	CTX_DATA_BEGIN (C, Base *, base, selectable_bases)
 	{
 		ok = false;
@@ -1116,7 +1108,7 @@ static Base *object_mouse_select_menu(bContext *C, ViewContext *vc, unsigned int
 		else {
 			int temp, dist = 15;
 			ED_view3d_project_base(vc->ar, base);
-			
+
 			temp = abs(base->sx - mval[0]) + abs(base->sy - mval[1]);
 			if (temp < dist)
 				ok = true;
@@ -1259,12 +1251,12 @@ static short mixed_bones_object_selectbuffer(ViewContext *vc, unsigned int *buff
 		if      (has_bones5)  return selectbuffer_ret_hits_5(buffer,  hits15, hits9, hits5);
 		else if (has_bones9)  return selectbuffer_ret_hits_9(buffer,  hits15, hits9);
 		else if (has_bones15) return selectbuffer_ret_hits_15(buffer, hits15);
-		
+
 		if      (hits5 > 0) return selectbuffer_ret_hits_5(buffer,  hits15, hits9, hits5);
 		else if (hits9 > 0) return selectbuffer_ret_hits_9(buffer,  hits15, hits9);
 		else                return selectbuffer_ret_hits_15(buffer, hits15);
 	}
-	
+
 	return 0;
 }
 
@@ -1276,12 +1268,12 @@ static Base *mouse_select_eval_buffer(ViewContext *vc, unsigned int *buffer, int
 	View3D *v3d = vc->v3d;
 	Base *base, *basact = NULL;
 	int a;
-	
+
 	if (do_nearest) {
 		unsigned int min = 0xFFFFFFFF;
 		int selcol = 0, notcol = 0;
-		
-		
+
+
 		if (has_bones) {
 			/* we skip non-bone hits */
 			for (a = 0; a < hits; a++) {
@@ -1294,7 +1286,7 @@ static Base *mouse_select_eval_buffer(ViewContext *vc, unsigned int *buffer, int
 		else {
 			/* only exclude active object when it is selected... */
 			if (BASACT && (BASACT->flag & SELECT) && hits > 1) notcol = BASACT->selcol;
-			
+
 			for (a = 0; a < hits; a++) {
 				if (min > buffer[4 * a + 1] && notcol != (buffer[4 * a + 3] & 0xFFFF)) {
 					min = buffer[4 * a + 1];
@@ -1302,7 +1294,7 @@ static Base *mouse_select_eval_buffer(ViewContext *vc, unsigned int *buffer, int
 				}
 			}
 		}
-		
+
 		base = FIRSTBASE;
 		while (base) {
 			if (BASE_SELECTABLE(v3d, base)) {
@@ -1313,7 +1305,7 @@ static Base *mouse_select_eval_buffer(ViewContext *vc, unsigned int *buffer, int
 		if (base) basact = base;
 	}
 	else {
-		
+
 		base = startbase;
 		while (base) {
 			/* skip objects with select restriction, to prevent prematurely ending this loop
@@ -1323,7 +1315,7 @@ static Base *mouse_select_eval_buffer(ViewContext *vc, unsigned int *buffer, int
 				if (base == NULL) base = FIRSTBASE;
 				if (base == startbase) break;
 			}
-			
+
 			if (BASE_SELECTABLE(v3d, base)) {
 				for (a = 0; a < hits; a++) {
 					if (has_bones) {
@@ -1339,15 +1331,15 @@ static Base *mouse_select_eval_buffer(ViewContext *vc, unsigned int *buffer, int
 					}
 				}
 			}
-			
+
 			if (basact) break;
-			
+
 			base = base->next;
 			if (base == NULL) base = FIRSTBASE;
 			if (base == startbase) break;
 		}
 	}
-	
+
 	return basact;
 }
 
@@ -1359,18 +1351,18 @@ Base *ED_view3d_give_base_under_cursor(bContext *C, const int mval[2])
 	unsigned int buffer[4 * MAXPICKBUF];
 	int hits;
 	bool do_nearest;
-	
+
 	/* setup view context for argument to callbacks */
 	view3d_operator_needs_opengl(C);
 	view3d_set_viewcontext(C, &vc);
-	
+
 	hits = mixed_bones_object_selectbuffer(&vc, buffer, mval, &do_nearest, false);
-	
+
 	if (hits > 0) {
 		const bool has_bones = selectbuffer_has_bones(buffer, hits);
 		basact = mouse_select_eval_buffer(&vc, buffer, hits, vc.scene->base.first, has_bones, do_nearest);
 	}
-	
+
 	return basact;
 }
 
@@ -1408,7 +1400,7 @@ static bool mouse_select(bContext *C, const int mval[2],
 	short hits;
 	const float mval_fl[2] = {(float)mval[0], (float)mval[1]};
 
-	
+
 	/* setup view context for argument to callbacks */
 	view3d_set_viewcontext(C, &vc);
 
@@ -1417,15 +1409,15 @@ static bool mouse_select(bContext *C, const int mval[2],
 		/* signal for view3d_opengl_select to skip editmode objects */
 		vc.obedit = NULL;
 	}
-	
+
 	/* always start list from basact in wire mode */
 	startbase =  FIRSTBASE;
 	if (BASACT && BASACT->next) startbase = BASACT->next;
-	
+
 	/* This block uses the control key to make the object selected by its center point rather than its contents */
 	/* in editmode do not activate */
 	if (obcenter) {
-		
+
 		/* note; shift+alt goes to group-flush-selecting */
 		if (enumerate) {
 			basact = object_mouse_select_menu(C, &vc, NULL, 0, mval, toggle);
@@ -1447,7 +1439,7 @@ static bool mouse_select(bContext *C, const int mval[2],
 					}
 				}
 				base = base->next;
-				
+
 				if (base == NULL) base = FIRSTBASE;
 				if (base == startbase) break;
 			}
@@ -1458,9 +1450,9 @@ static bool mouse_select(bContext *C, const int mval[2],
 		bool do_nearest;
 
 		/* if objects have posemode set, the bones are in the same selection buffer */
-		
+
 		hits = mixed_bones_object_selectbuffer(&vc, buffer, mval, &do_nearest, enumerate);
-		
+
 		if (hits > 0) {
 			/* note: bundles are handling in the same way as bones */
 			const bool has_bones = selectbuffer_has_bones(buffer, hits);
@@ -1472,7 +1464,7 @@ static bool mouse_select(bContext *C, const int mval[2],
 			else {
 				basact = mouse_select_eval_buffer(&vc, buffer, hits, startbase, has_bones, do_nearest);
 			}
-			
+
 			if (has_bones && basact) {
 				if (basact->object->type == OB_CAMERA) {
 					if (BASACT == basact) {
@@ -1534,16 +1526,16 @@ static bool mouse_select(bContext *C, const int mval[2],
 				}
 				else if (ED_do_pose_selectbuffer(scene, basact, buffer, hits, extend, deselect, toggle, do_nearest)) {
 					/* then bone is found */
-				
-					/* we make the armature selected: 
+
+					/* we make the armature selected:
 					 * not-selected active object in posemode won't work well for tools */
 					basact->flag |= SELECT;
 					basact->object->flag = basact->flag;
-					
+
 					retval = true;
 					WM_event_add_notifier(C, NC_OBJECT | ND_BONE_SELECT, basact->object);
 					WM_event_add_notifier(C, NC_OBJECT | ND_BONE_ACTIVE, basact->object);
-					
+
 					/* in weightpaint, we use selected bone to select vertexgroup, so no switch to new active object */
 					if (BASACT && (BASACT->object->mode & OB_MODE_WEIGHT_PAINT)) {
 						/* prevent activating */
@@ -1557,11 +1549,11 @@ static bool mouse_select(bContext *C, const int mval[2],
 			}
 		}
 	}
-	
+
 	/* so, do we have something selected? */
 	if (basact) {
 		retval = true;
-		
+
 		if (vc.obedit) {
 			/* only do select */
 			deselectall_except(scene, basact);
@@ -1571,7 +1563,7 @@ static bool mouse_select(bContext *C, const int mval[2],
 		else if (BASE_SELECTABLE(v3d, basact)) {
 
 			oldbasact = BASACT;
-			
+
 			if (extend) {
 				ED_base_object_select(basact, BA_SELECT);
 			}
@@ -1756,7 +1748,7 @@ static void do_nurbs_box_select__doSelect(void *userData, Nurb *UNUSED(nu), BPoi
 static int do_nurbs_box_select(ViewContext *vc, rcti *rect, bool select, bool extend)
 {
 	BoxSelectUserData data;
-	
+
 	view3d_userdata_boxselect_init(&data, vc, rect, select);
 
 	if (extend == false && select) {
@@ -1790,7 +1782,7 @@ static int do_lattice_box_select(ViewContext *vc, rcti *rect, bool select, bool 
 
 	ED_view3d_init_mats_rv3d(vc->obedit, vc->rv3d); /* for foreach's screen/vert projection */
 	lattice_foreachScreenVert(vc, do_lattice_box_select__doSelect, &data, V3D_PROJ_TEST_CLIP_DEFAULT);
-	
+
 	return OPERATOR_FINISHED;
 }
 
@@ -1833,7 +1825,7 @@ static int do_mesh_box_select(ViewContext *vc, rcti *rect, bool select, bool ext
 	BoxSelectUserData data;
 	ToolSettings *ts = vc->scene->toolsettings;
 	int bbsel;
-	
+
 	view3d_userdata_boxselect_init(&data, vc, rect, select);
 
 	if (extend == false && select)
@@ -1864,7 +1856,7 @@ static int do_mesh_box_select(ViewContext *vc, rcti *rect, bool select, bool ext
 			mesh_foreachScreenEdge(vc, do_mesh_box_select__doSelectEdge, &data, V3D_PROJ_TEST_CLIP_NEAR);
 		}
 	}
-	
+
 	if (ts->selectmode & SCE_SELECT_FACE) {
 		if (bbsel) {
 			edbm_backbuf_check_and_select_faces(vc->em, select);
@@ -1873,11 +1865,11 @@ static int do_mesh_box_select(ViewContext *vc, rcti *rect, bool select, bool ext
 			mesh_foreachScreenFace(vc, do_mesh_box_select__doSelectFace, &data, V3D_PROJ_TEST_CLIP_DEFAULT);
 		}
 	}
-	
+
 	EDBM_backbuf_free();
-		
+
 	EDBM_selectmode_flush(vc->em);
-	
+
 	return OPERATOR_FINISHED;
 }
 
@@ -1894,7 +1886,7 @@ static int do_meta_box_select(ViewContext *vc, rcti *rect, bool select, bool ext
 
 	if (extend == false && select)
 		BKE_mball_deselect_all(mb);
-	
+
 	for (ml = mb->editelems->first; ml; ml = ml->next) {
 		for (a = 0; a < hits; a++) {
 			if (ml->selcol1 == buffer[(4 * a) + 3]) {
@@ -1918,7 +1910,6 @@ static int do_meta_box_select(ViewContext *vc, rcti *rect, bool select, bool ext
 static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool extend)
 {
 	bArmature *arm = vc->obedit->data;
-//	EditBone *ebone;
 	EditArmatureElement *ebone;
 	int a;
 
@@ -1926,12 +1917,11 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 	short hits;
 
 	hits = view3d_opengl_select(vc, buffer, MAXPICKBUF, rect, false);
-	
+
 	/* clear flag we use to detect point was affected */
-	for (ebone = arm->edbo->first; ebone; ebone = ebone->next)
-//		ebone->flag &= ~BONE_DONE;
+	for (ebone = arm->edel->first; ebone; ebone = ebone->next)
 		ebone->flag &= ~ELEMENT_DONE;
-	
+
 	if (extend == false && select)
 		ED_armature_deselect_all_visible(vc->obedit);
 
@@ -1939,26 +1929,14 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 	for (a = 0; a < hits; a++) {
 		int index = buffer[(4 * a) + 3];
 		if (index != -1) {
-//			ebone = BLI_findlink(arm->edbo, index & ~(BONESEL_ANY));
-//			if ((select == false) || ((ebone->flag & BONE_UNSELECTABLE) == 0)) {
-//				if (index & BONESEL_TIP) {
-//					ebone->flag |= BONE_DONE;
-//					if (select) ebone->flag |= BONE_TIPSEL;
-//					else ebone->flag &= ~BONE_TIPSEL;
-//				}
-//				
-//				if (index & BONESEL_ROOT) {
-//					ebone->flag |= BONE_DONE;
-//					if (select) ebone->flag |= BONE_ROOTSEL;
-//					else ebone->flag &= ~BONE_ROOTSEL;
-			ebone = BLI_findlink(arm->edbo, index & ~(ELEMENTSEL_ANY));
+			ebone = BLI_findlink(arm->edel, index & ~(ELEMENTSEL_ANY));
 			if ((select == false) || ((ebone->flag & ELEMENT_UNSELECTABLE) == 0)) {
 				if (index & ELEMENTSEL_TIP) {
 					ebone->flag |= ELEMENT_DONE;
 					if (select) ebone->flag |= ELEMENT_TIPSEL;
 					else ebone->flag &= ~ELEMENT_TIPSEL;
 				}
-				
+
 				if (index & ELEMENTSEL_ROOT) {
 					ebone->flag |= ELEMENT_DONE;
 					if (select) ebone->flag |= ELEMENT_ROOTSEL;
@@ -1967,31 +1945,20 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 			}
 		}
 	}
-	
+
 	/* now we have to flush tag from parents... */
-	for (ebone = arm->edbo->first; ebone; ebone = ebone->next) {
-//		if (ebone->parent && (ebone->flag & BONE_CONNECTED)) {
-//			if (ebone->parent->flag & BONE_DONE)
-//				ebone->flag |= BONE_DONE;
+	for (ebone = arm->edel->first; ebone; ebone = ebone->next) {
 		if (ebone->parent && (ebone->flag & ELEMENT_CONNECTED)) {
 			if (ebone->parent->flag & ELEMENT_DONE)
 				ebone->flag |= ELEMENT_DONE;
 		}
 	}
-	
+
 	/* only select/deselect entire bones when no points where in the rect */
 	for (a = 0; a < hits; a++) {
 		int index = buffer[(4 * a) + 3];
 		if (index != -1) {
-//			ebone = BLI_findlink(arm->edbo, index & ~(BONESEL_ANY));
-//			if (index & BONESEL_BONE) {
-//				if ((select == false) || ((ebone->flag & BONE_UNSELECTABLE) == 0)) {
-//					if (!(ebone->flag & BONE_DONE)) {
-//						if (select)
-//							ebone->flag |= (BONE_ROOTSEL | BONE_TIPSEL | BONE_SELECTED);
-//						else
-//							ebone->flag &= ~(BONE_ROOTSEL | BONE_TIPSEL | BONE_SELECTED);
-			ebone = BLI_findlink(arm->edbo, index & ~(ELEMENTSEL_ANY));
+			ebone = BLI_findlink(arm->edel, index & ~(ELEMENTSEL_ANY));
 			if (index & ELEMENTSEL_ELEMENT) {
 				if ((select == false) || ((ebone->flag & ELEMENT_UNSELECTABLE) == 0)) {
 					if (!(ebone->flag & ELEMENT_DONE)) {
@@ -2004,9 +1971,9 @@ static int do_armature_box_select(ViewContext *vc, rcti *rect, bool select, bool
 			}
 		}
 	}
-	
-	ED_armature_sync_selection(arm->edbo);
-	
+
+	ED_armature_sync_selection(arm->edel);
+
 	return hits > 0 ? OPERATOR_FINISHED : OPERATOR_CANCELLED;
 }
 
@@ -2021,18 +1988,16 @@ static int do_object_pose_box_select(bContext *C, ViewContext *vc, rcti *rect, b
 	int bone_selected = 0;
 	int totobj = MAXPICKBUF; /* XXX solve later */
 	short hits;
-	
+
 	if ((ob) && (ob->mode & OB_MODE_POSE))
 		bone_only = 1;
 	else
 		bone_only = 0;
-	
+
 	if (extend == false && select) {
 		if (bone_only) {
 			CTX_DATA_BEGIN (C, bPoseChannel *, pchan, visible_pose_bones)
 			{
-//				if ((select == false) || ((pchan->bone->flag & BONE_UNSELECTABLE) == 0)) {
-//					pchan->bone->flag &= ~(BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL);
 				if ((select == false) || ((pchan->bone->flag & ELEMENT_UNSELECTABLE) == 0)) {
 					pchan->bone->flag &= ~(ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL);
 				}
@@ -2054,7 +2019,7 @@ static int do_object_pose_box_select(bContext *C, ViewContext *vc, rcti *rect, b
 	 * is the same as the object, we have a hit and can move to the next color
 	 * and object pair, if not, just move to the next object,
 	 * keeping the same color until we have a hit.
-	 * 
+	 *
 	 * The buffer order is defined by OGL standard, hopefully no stupid GFX card
 	 * does it incorrectly.
 	 */
@@ -2062,7 +2027,7 @@ static int do_object_pose_box_select(bContext *C, ViewContext *vc, rcti *rect, b
 	if (hits > 0) { /* no need to loop if there's no hit */
 		Base *base;
 		col = vbuffer + 3;
-		
+
 		for (base = vc->scene->base.first; base && hits; base = base->next) {
 			if (BASE_SELECTABLE(vc->v3d, base)) {
 				while (base->selcol == (*col & 0xFFFF)) {   /* we got an object */
@@ -2094,19 +2059,19 @@ static int do_object_pose_box_select(bContext *C, ViewContext *vc, rcti *rect, b
 					else if (!bone_only) {
 						ED_base_object_select(base, select ? BA_SELECT : BA_DESELECT);
 					}
-					
+
 					col += 4; /* next color */
 					hits--;
 					if (hits == 0) break;
 				}
 			}
-			
+
 			if (bone_selected) {
 				if (base->object && (base->object->type == OB_ARMATURE)) {
 					bArmature *arm = base->object->data;
-					
+
 					WM_event_add_notifier(C, NC_OBJECT | ND_BONE_SELECT, base->object);
-					
+
 					if (arm && (arm->flag & ARM_HAS_VIZ_DEPS)) {
 						/* mask modifier ('armature' mode), etc. */
 						DAG_id_tag_update(&ob->id, OB_RECALC_DATA);
@@ -2114,7 +2079,7 @@ static int do_object_pose_box_select(bContext *C, ViewContext *vc, rcti *rect, b
 				}
 			}
 		}
-		
+
 		WM_event_add_notifier(C, NC_SCENE | ND_OB_SELECT, vc->scene);
 	}
 	MEM_freeN(vbuffer);
@@ -2135,7 +2100,7 @@ static int view3d_borderselect_exec(bContext *C, wmOperator *op)
 
 	/* setup view context for argument to callbacks */
 	view3d_set_viewcontext(C, &vc);
-	
+
 	select = (RNA_int_get(op->ptr, "gesture_mode") == GESTURE_MODAL_SELECT);
 	WM_operator_properties_border_to_rcti(op, &rect);
 	extend = RNA_boolean_get(op->ptr, "extend");
@@ -2199,7 +2164,7 @@ static int view3d_borderselect_exec(bContext *C, wmOperator *op)
 	}
 
 	return ret;
-} 
+}
 
 
 /* *****************Selection Operators******************* */
@@ -2211,17 +2176,17 @@ void VIEW3D_OT_select_border(wmOperatorType *ot)
 	ot->name = "Border Select";
 	ot->description = "Select items using border selection";
 	ot->idname = "VIEW3D_OT_select_border";
-	
+
 	/* api callbacks */
 	ot->invoke = WM_border_select_invoke;
 	ot->exec = view3d_borderselect_exec;
 	ot->modal = WM_border_select_modal;
 	ot->poll = view3d_selectable_data;
 	ot->cancel = WM_border_select_cancel;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_UNDO;
-	
+
 	/* rna */
 	WM_operator_properties_gesture_border(ot, true);
 }
@@ -2319,7 +2284,7 @@ static int view3d_select_exec(bContext *C, wmOperator *op)
 			retval = mouse_mball(C, location, extend, deselect, toggle);
 		else if (obedit->type == OB_FONT)
 			retval = mouse_font(C, location, extend, deselect, toggle);
-			
+
 	}
 	else if (obact && obact->mode & OB_MODE_PARTICLE_EDIT)
 		return PE_mouse_particles(C, location, extend, deselect, toggle);
@@ -2354,15 +2319,15 @@ void VIEW3D_OT_select(wmOperatorType *ot)
 	ot->name = "Activate/Select";
 	ot->description = "Activate/select item(s)";
 	ot->idname = "VIEW3D_OT_select";
-	
+
 	/* api callbacks */
 	ot->invoke = view3d_select_invoke;
 	ot->exec = view3d_select_exec;
 	ot->poll = ED_operator_view3d_active;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_UNDO;
-	
+
 	/* properties */
 	WM_operator_properties_mouse_select(ot);
 
@@ -2435,7 +2400,7 @@ static void mesh_circle_select(ViewContext *vc, const bool select, const int mva
 	ToolSettings *ts = vc->scene->toolsettings;
 	int bbsel;
 	CircleSelectUserData data;
-	
+
 	bbsel = EDBM_backbuf_circle_init(vc, mval[0], mval[1], (short)(rad + 1.0f));
 	ED_view3d_init_mats_rv3d(vc->obedit, vc->rv3d); /* for foreach's screen/vert projection */
 
@@ -2460,7 +2425,7 @@ static void mesh_circle_select(ViewContext *vc, const bool select, const int mva
 			mesh_foreachScreenEdge(vc, mesh_circle_doSelectEdge, &data, V3D_PROJ_TEST_CLIP_NEAR);
 		}
 	}
-	
+
 	if (ts->selectmode & SCE_SELECT_FACE) {
 		if (bbsel) {
 			edbm_backbuf_check_and_select_faces(vc->em, select);
@@ -2657,11 +2622,11 @@ static void do_circle_select_pose__doSelectBone(void *userData, struct bPoseChan
 static void pose_circle_select(ViewContext *vc, const bool select, const int mval[2], float rad)
 {
 	CircleSelectUserData data;
-	
+
 	view3d_userdata_circleselect_init(&data, vc, select, mval, rad);
 
 	ED_view3d_init_mats_rv3d(vc->obact, vc->rv3d); /* for foreach's screen/vert projection */
-	
+
 	pose_foreachScreenBone(vc, do_circle_select_pose__doSelectBone, &data, V3D_PROJ_TEST_CLIP_DEFAULT);
 
 	if (data.is_changed) {
@@ -2676,7 +2641,6 @@ static void pose_circle_select(ViewContext *vc, const bool select, const int mva
 	}
 }
 
-//static short armature_circle_doSelectJoint(void *userData, EditBone *ebone, const float screen_co[2], short head)
 static short armature_circle_doSelectJoint(void *userData, EditArmatureElement *ebone, const float screen_co[2], short head)
 {
 	CircleSelectUserData *data = userData;
@@ -2684,36 +2648,26 @@ static short armature_circle_doSelectJoint(void *userData, EditArmatureElement *
 	if (len_squared_v2v2(data->mval_fl, screen_co) <= data->radius_squared) {
 		if (head) {
 			if (data->select)
-//				ebone->flag |= BONE_ROOTSEL;
-//			else 
-//				ebone->flag &= ~BONE_ROOTSEL;
-//		}
-//		else {
-//			if (data->select)
-//				ebone->flag |= BONE_TIPSEL;
-//			else 
-//				ebone->flag &= ~BONE_TIPSEL;
 				ebone->flag |= ELEMENT_ROOTSEL;
-			else 
+			else
 				ebone->flag &= ~ELEMENT_ROOTSEL;
 		}
 		else {
 			if (data->select)
 				ebone->flag |= ELEMENT_TIPSEL;
-			else 
+			else
 				ebone->flag &= ~ELEMENT_TIPSEL;
 		}
 		return 1;
 	}
 	return 0;
 }
-//static void do_circle_select_armature__doSelectBone(void *userData, struct EditBone *ebone, const float screen_co_a[2], const float screen_co_b[2])
+
 static void do_circle_select_armature__doSelectBone(void *userData, struct EditArmatureElement *ebone, const float screen_co_a[2], const float screen_co_b[2])
 {
 	CircleSelectUserData *data = userData;
 	bArmature *arm = data->vc->obedit->data;
 
-//	if (data->select ? EBONE_SELECTABLE(arm, ebone) : EBONE_VISIBLE(arm, ebone)) {
 	if (data->select ? EELEMENT_SELECTABLE(arm, ebone) : EELEMENT_VISIBLE(arm, ebone)) {
 		bool is_point_done = false;
 		int points_proj_tot = 0;
@@ -2766,7 +2720,7 @@ static void armature_circle_select(ViewContext *vc, const bool select, const int
 	armature_foreachScreenBone(vc, do_circle_select_armature__doSelectBone, &data, V3D_PROJ_TEST_CLIP_DEFAULT);
 
 	if (data.is_changed) {
-		ED_armature_sync_selection(arm->edbo);
+		ED_armature_sync_selection(arm->edel);
 		ED_armature_validate_active(arm);
 		WM_main_add_notifier(NC_OBJECT | ND_BONE_SELECT, vc->obedit);
 	}
@@ -2861,9 +2815,9 @@ static int view3d_circle_select_exec(bContext *C, wmOperator *op)
 	    (obact && (obact->mode & (OB_MODE_PARTICLE_EDIT | OB_MODE_POSE))) )
 	{
 		ViewContext vc;
-		
+
 		view3d_operator_needs_opengl(C);
-		
+
 		view3d_set_viewcontext(C, &vc);
 
 		if (CTX_data_edit_object(C)) {
@@ -2894,7 +2848,7 @@ static int view3d_circle_select_exec(bContext *C, wmOperator *op)
 			WM_event_add_notifier(C, NC_SCENE | ND_OB_SELECT, scene);
 		}
 	}
-	
+
 	return OPERATOR_FINISHED;
 }
 
@@ -2903,16 +2857,16 @@ void VIEW3D_OT_select_circle(wmOperatorType *ot)
 	ot->name = "Circle Select";
 	ot->description = "Select items using circle selection";
 	ot->idname = "VIEW3D_OT_select_circle";
-	
+
 	ot->invoke = WM_gesture_circle_invoke;
 	ot->modal = WM_gesture_circle_modal;
 	ot->exec = view3d_circle_select_exec;
 	ot->poll = view3d_selectable_data;
 	ot->cancel = WM_gesture_circle_cancel;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_UNDO;
-	
+
 	RNA_def_int(ot->srna, "x", 0, INT_MIN, INT_MAX, "X", "", INT_MIN, INT_MAX);
 	RNA_def_int(ot->srna, "y", 0, INT_MIN, INT_MAX, "Y", "", INT_MIN, INT_MAX);
 	RNA_def_int(ot->srna, "radius", 1, 1, INT_MAX, "Radius", "", 1, INT_MAX);

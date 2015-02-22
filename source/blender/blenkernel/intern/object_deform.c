@@ -131,7 +131,7 @@ bDeformGroup *BKE_object_defgroup_add_name(Object *ob, const char *name)
 /**
  * Add a vgroup of default name to object. *Does not* handle MDeformVert data at all!
  */
-bDeformGroup *BKE_object_defgroup_add(Object *ob) 
+bDeformGroup *BKE_object_defgroup_add(Object *ob)
 {
 	return BKE_object_defgroup_add_name(ob, DATA_("Group"));
 }
@@ -542,7 +542,7 @@ bool *BKE_object_defgroup_validmap_get(Object *ob, const int defbase_tot)
 
 				for (chan = pose->chanbase.first; chan; chan = chan->next) {
 					void **val_p;
-					if (chan->bone->flag & BONE_NO_DEFORM)
+					if (chan->bone->flag & ELEMENT_NO_DEFORM)
 						continue;
 
 					val_p = BLI_ghash_lookup_p(gh, chan->name);
@@ -582,7 +582,7 @@ bool *BKE_object_defgroup_selected_get(Object *ob, int defbase_tot, int *r_dg_fl
 		bPose *pose = armob->pose;
 		for (i = 0, defgroup = ob->defbase.first; i < defbase_tot && defgroup; defgroup = defgroup->next, i++) {
 			bPoseChannel *pchan = BKE_pose_channel_find_name(pose, defgroup->name);
-			if (pchan && (pchan->bone->flag & BONE_SELECTED)) {
+			if (pchan && (pchan->bone->flag & ELEMENT_SELECTED)) {
 				dg_selection[i] = true;
 				(*r_dg_flags_sel_tot) += 1;
 			}

@@ -64,7 +64,6 @@
 
 /* ********************************** Bone Skinning *********************************************** */
 
-//static int bone_skinnable_cb(Object *ob, Bone *bone, void *datap)
 static int bone_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 {
 	/* Bones that are deforming
@@ -74,7 +73,7 @@ static int bone_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	 * This function performs 2 functions:
 	 *
 	 *   a) It returns 1 if the bone is skinnable.
-	 *      If we loop over all bones with this 
+	 *      If we loop over all bones with this
 	 *      function, we can count the number of
 	 *      skinnable bones.
 	 *   b) If the pointer data is non null,
@@ -89,12 +88,6 @@ static int bone_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	 *      pointers to bones that point to all
 	 *      skinnable bones.
 	 */
-//	Bone ***hbone;
-//	int a, segments;
-//	struct { Object *armob; void *list; int heat; } *data = datap;
-//
-//	if (!(ob->mode & OB_MODE_WEIGHT_PAINT) || !(bone->flag & BONE_HIDDEN_P)) {
-//		if (!(bone->flag & BONE_NO_DEFORM)) {
 	ArmatureElement ***hbone;
 	int a, segments;
 	struct { Object *armob; void *list; int heat; } *data = datap;
@@ -105,14 +98,10 @@ static int bone_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 				segments = bone->segments;
 			else
 				segments = 1;
-//			
-//			if (data->list != NULL) {
-//				hbone = (Bone ***) &data->list;
-//				
-			
+
 			if (data->list != NULL) {
 				hbone = (ArmatureElement ***) &data->list;
-				
+
 				for (a = 0; a < segments; a++) {
 					**hbone = bone;
 					++*hbone;
@@ -124,13 +113,6 @@ static int bone_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	return 0;
 }
 
-//static int vgroup_add_unique_bone_cb(Object *ob, Bone *bone, void *UNUSED(ptr)) 
-//{
-//	/* This group creates a vertex group to ob that has the
-//	 * same name as bone (provided the bone is skinnable). 
-//	 * If such a vertex group already exist the routine exits.
-//	 */
-//	if (!(bone->flag & BONE_NO_DEFORM)) {
 static int vgroup_add_unique_bone_cb(Object *ob, ArmatureElement *bone, void *UNUSED(ptr))
 {
 	/* This group creates a vertex group to ob that has the
@@ -146,7 +128,6 @@ static int vgroup_add_unique_bone_cb(Object *ob, ArmatureElement *bone, void *UN
 	return 0;
 }
 
-//static int dgroup_skinnable_cb(Object *ob, Bone *bone, void *datap) 
 static int dgroup_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 {
 	/* Bones that are deforming
@@ -155,16 +136,16 @@ static int dgroup_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	 *
 	 * This function performs 2 functions:
 	 *
-	 *   a) If the bone is skinnable, it creates 
+	 *   a) If the bone is skinnable, it creates
 	 *      a vertex group for ob that has
 	 *      the name of the skinnable bone
 	 *      (if one doesn't exist already).
 	 *   b) If the pointer data is non null,
 	 *      it is treated like a handle to a
-	 *      bDeformGroup pointer -- the 
+	 *      bDeformGroup pointer -- the
 	 *      bDeformGroup pointer is set to point
 	 *      to the deform group with the bone's
-	 *      name, and the pointer the handle 
+	 *      name, and the pointer the handle
 	 *      points to is incremented to point to the
 	 *      next member of an array of pointers
 	 *      to bDeformGroups. This way we can loop using
@@ -178,30 +159,20 @@ static int dgroup_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	int wpmode = (ob->mode & OB_MODE_WEIGHT_PAINT);
 	bArmature *arm = data->armob->data;
 
-//	if (!wpmode || !(bone->flag & BONE_HIDDEN_P)) {
-//		if (!(bone->flag & BONE_NO_DEFORM)) {
 	if (!wpmode || !(bone->flag & ELEMENT_HIDDEN_P)) {
 		if (!(bone->flag & ELEMENT_NO_DEFORM)) {
 			if (data->heat && data->armob->pose && BKE_pose_channel_find_name(data->armob->pose, bone->name))
 				segments = bone->segments;
 			else
 				segments = 1;
-//			
-//			if (!wpmode || ((arm->layer & bone->layer) && (bone->flag & BONE_SELECTED)))
-//				if (!(defgroup = defgroup_find_name(ob, bone->name)))
-//					defgroup = BKE_object_defgroup_add_name(ob, bone->name);
-//			
-//			if (data->list != NULL) {
-//				hgroup = (bDeformGroup ***) &data->list;
-//				
-			
+
 			if (!wpmode || ((arm->layer & bone->layer) && (bone->flag & ELEMENT_SELECTED)))
 				if (!(defgroup = defgroup_find_name(ob, bone->name)))
 					defgroup = BKE_object_defgroup_add_name(ob, bone->name);
-			
+
 			if (data->list != NULL) {
 				hgroup = (bDeformGroup ***) &data->list;
-				
+
 				for (a = 0; a < segments; a++) {
 					**hgroup = defgroup;
 					++*hgroup;
@@ -213,13 +184,13 @@ static int dgroup_skinnable_cb(Object *ob, ArmatureElement *bone, void *datap)
 	return 0;
 }
 
-static void envelope_bone_weighting(Object *ob, Mesh *mesh, float (*verts)[3], int numbones, Bone **bonelist,
+static void envelope_bone_weighting(Object *ob, Mesh *mesh, float (*verts)[3], int numbones, ArmatureElement **bonelist,
                                     bDeformGroup **dgrouplist, bDeformGroup **dgroupflip,
                                     float (*root)[3], float (*tip)[3], const int *selected, float scale)
 {
 	/* Create vertex group weights from envelopes */
 
-	Bone *bone;
+	ArmatureElement *bone;
 	bDeformGroup *dgroup;
 	float distance;
 	int i, iflip, j;
@@ -240,25 +211,25 @@ static void envelope_bone_weighting(Object *ob, Mesh *mesh, float (*verts)[3], i
 		}
 
 		iflip = (dgroupflip) ? mesh_get_x_mirror_vert(ob, i, use_topology) : -1;
-		
+
 		/* for each skinnable bone */
 		for (j = 0; j < numbones; ++j) {
 			if (!selected[j])
 				continue;
-			
+
 			bone = bonelist[j];
 			dgroup = dgrouplist[j];
-			
+
 			/* store the distance-factor from the vertex to the bone */
 			distance = distfactor_to_bone(verts[i], root[j], tip[j],
-			                              bone->rad_head * scale, bone->rad_tail * scale, bone->dist * scale);
-			
+			                              bone->rad_head * scale, bone->rad_tail * scale, ((BoneData *)bone->data)->dist * scale);
+
 			/* add the vert to the deform group if (weight != 0.0) */
 			if (distance != 0.0f)
 				ED_vgroup_vert_add(ob, dgroup, i, distance, WEIGHT_REPLACE);
 			else
 				ED_vgroup_vert_remove(ob, dgroup, i);
-			
+
 			/* do same for mirror */
 			if (dgroupflip && dgroupflip[j] && iflip != -1) {
 				if (distance != 0.0f)
@@ -287,7 +258,7 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 	 */
 
 	bArmature *arm = par->data;
-	Bone **bonelist, *bone;
+	ArmatureElement **bonelist, *bone;
 	bDeformGroup **dgrouplist, **dgroupflip;
 	bDeformGroup *dgroup;
 	bPoseChannel *pchan;
@@ -304,19 +275,19 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 	looper_data.list = NULL;
 
 	/* count the number of skinnable bones */
-	numbones = bone_looper(ob, arm->bonebase.first, &looper_data, bone_skinnable_cb);
-	
+	numbones = bone_looper(ob, arm->elementbase.first, &looper_data, bone_skinnable_cb);
+
 	if (numbones == 0)
 		return;
-	
+
 	if (BKE_object_defgroup_data_create(ob->data) == NULL)
 		return;
 
 	/* create an array of pointer to bones that are skinnable
 	 * and fill it with all of the skinnable bones */
-	bonelist = MEM_callocN(numbones * sizeof(Bone *), "bonelist");
+	bonelist = MEM_callocN(numbones * sizeof(ArmatureElement *), "bonelist");
 	looper_data.list = bonelist;
-	bone_looper(ob, arm->bonebase.first, &looper_data, bone_skinnable_cb);
+	bone_looper(ob, arm->elementbase.first, &looper_data, bone_skinnable_cb);
 
 	/* create an array of pointers to the deform groups that
 	 * correspond to the skinnable bones (creating them
@@ -325,7 +296,7 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 	dgroupflip = MEM_callocN(numbones * sizeof(bDeformGroup *), "dgroupflip");
 
 	looper_data.list = dgrouplist;
-	bone_looper(ob, arm->bonebase.first, &looper_data, dgroup_skinnable_cb);
+	bone_looper(ob, arm->elementbase.first, &looper_data, dgroup_skinnable_cb);
 
 	/* create an array of root and tip positions transformed into
 	 * global coords */
@@ -336,13 +307,13 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 	for (j = 0; j < numbones; ++j) {
 		bone = bonelist[j];
 		dgroup = dgrouplist[j];
-		
+
 		/* handle bbone */
 		if (heat) {
 			if (segments == 0) {
 				segments = 1;
 				bbone = NULL;
-				
+
 				if ((par->pose) && (pchan = BKE_pose_channel_find_name(par->pose, bone->name))) {
 					if (bone->segments > 1) {
 						segments = bone->segments;
@@ -351,10 +322,10 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 					}
 				}
 			}
-			
+
 			segments--;
 		}
-		
+
 		/* compute root and tip */
 		if (bbone) {
 			mul_v3_m4v3(root[j], bone->arm_mat, bbone[segments].mat[3]);
@@ -369,17 +340,10 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 			copy_v3_v3(root[j], bone->arm_head);
 			copy_v3_v3(tip[j], bone->arm_tail);
 		}
-//		
-//		mul_m4_v3(par->obmat, root[j]);
-//		mul_m4_v3(par->obmat, tip[j]);
-//		
-//		/* set selected */
-//		if (wpmode) {
-//			if ((arm->layer & bone->layer) && (bone->flag & BONE_SELECTED))
-		
+
 		mul_m4_v3(par->obmat, root[j]);
 		mul_m4_v3(par->obmat, tip[j]);
-		
+
 		/* set selected */
 		if (wpmode) {
 			if ((arm->layer & bone->layer) && (bone->flag & ELEMENT_SELECTED))
@@ -387,7 +351,7 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 		}
 		else
 			selected[j] = 1;
-		
+
 		/* find flipped group */
 		if (dgroup && mirror) {
 			char name_flip[MAXBONENAME];
@@ -404,12 +368,12 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 	if (wpmode) {
 		/* if in weight paint mode, use final verts from derivedmesh */
 		DerivedMesh *dm = mesh_get_derived_final(scene, ob, CD_MASK_BAREMESH);
-		
+
 		if (dm->foreachMappedVert) {
 			mesh_get_mapped_verts_coords(dm, verts, mesh->totvert);
 			vertsfilled = 1;
 		}
-		
+
 		dm->release(dm);
 	}
 	else if (modifiers_findByType(ob, eModifierType_Subsurf)) {
@@ -462,7 +426,7 @@ static void add_verts_to_dgroups(ReportList *reports, Scene *scene, Object *ob, 
 void create_vgroups_from_armature(ReportList *reports, Scene *scene, Object *ob, Object *par,
                                   const int mode, const bool mirror)
 {
-	/* Lets try to create some vertex groups 
+	/* Lets try to create some vertex groups
 	 * based on the bones of the parent armature.
 	 */
 	bArmature *arm = par->data;
@@ -470,10 +434,10 @@ void create_vgroups_from_armature(ReportList *reports, Scene *scene, Object *ob,
 	if (mode == ARM_GROUPS_NAME) {
 		const int defbase_tot = BLI_listbase_count(&ob->defbase);
 		int defbase_add;
-		/* Traverse the bone list, trying to create empty vertex 
+		/* Traverse the bone list, trying to create empty vertex
 		 * groups corresponding to the bone.
 		 */
-		defbase_add = bone_looper(ob, arm->bonebase.first, NULL, vgroup_add_unique_bone_cb);
+		defbase_add = bone_looper(ob, arm->elementbase.first, NULL, vgroup_add_unique_bone_cb);
 
 		if (defbase_add) {
 			/* its possible there are DWeight's outside the range of the current
@@ -482,7 +446,7 @@ void create_vgroups_from_armature(ReportList *reports, Scene *scene, Object *ob,
 		}
 	}
 	else if (ELEM(mode, ARM_GROUPS_ENVELOPE, ARM_GROUPS_AUTO)) {
-		/* Traverse the bone list, trying to create vertex groups 
+		/* Traverse the bone list, trying to create vertex groups
 		 * that are populated with the vertices for which the
 		 * bone is closest.
 		 */

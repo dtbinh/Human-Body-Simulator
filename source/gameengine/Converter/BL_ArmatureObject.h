@@ -35,13 +35,14 @@
 #include "KX_GameObject.h"
 #include "BL_ArmatureConstraint.h"
 #include "BL_ArmatureChannel.h"
+#include "BL_ArmatureMuscle.h"
 
 #include "SG_IObject.h"
 #include <vector>
 #include <algorithm>
 
 struct bArmature;
-struct Bone;
+struct ArmatureElement;
 struct bConstraint;
 class BL_ActionActuator;
 class BL_ArmatureActuator;
@@ -49,7 +50,7 @@ class MT_Matrix4x4;
 struct Object;
 class KX_BlenderSceneConverter;
 
-class BL_ArmatureObject : public KX_GameObject  
+class BL_ArmatureObject : public KX_GameObject
 {
 	Py_Header
 public:
@@ -80,11 +81,11 @@ public:
 	void RestorePose();
 
 	bool UpdateTimestep(double curtime);
-	
+
 	struct bArmature *GetArmature() { return (bArmature*)m_objArma->data; }
 	const struct bArmature * GetArmature() const { return (bArmature*)m_objArma->data; }
 	const struct Scene * GetScene() const { return m_scene; }
-	
+
 	Object* GetArmatureObject() {return m_objArma;}
 	Object* GetOrigArmatureObject() {return m_origObjArma;}
 
@@ -102,13 +103,19 @@ public:
 	BL_ArmatureChannel* GetChannel(bPoseChannel* channel);
 	BL_ArmatureChannel* GetChannel(const char* channel);
 	BL_ArmatureChannel* GetChannel(int index);
+	// for pose muscle python API
+	void LoadMuscles();
+	size_t GetMuscleNumber() const { return m_muscleNumber; }
+	BL_ArmatureMuscle* GetMuscle(bPoseChannel* channel);
+	BL_ArmatureMuscle* GetMuscle(const char* channel);
+	BL_ArmatureMuscle* GetMuscle(int index);
 
 	/// Retrieve the pose matrix for the specified bone.
 	/// Returns true on success.
-	bool GetBoneMatrix(Bone* bone, MT_Matrix4x4& matrix);
-	
+	bool GetBoneMatrix(ArmatureElement* bone, MT_Matrix4x4& matrix);
+
 	/// Returns the bone length.  The end of the bone is in the local y direction.
-	float GetBoneLength(Bone* bone) const;
+	float GetBoneLength(ArmatureElement* bone) const;
 
 	virtual int GetGameObjectType() { return OBJ_ARMATURE; }
 
@@ -117,6 +124,7 @@ public:
 	// PYTHON
 	static PyObject *pyattr_get_constraints(void *self_v, const KX_PYATTRIBUTE_DEF *attrdef);
 	static PyObject *pyattr_get_channels(void *self_v, const KX_PYATTRIBUTE_DEF *attrdef);
+	static PyObject *pyattr_get_muscles(void *self_v, const KX_PYATTRIBUTE_DEF *attrdef);
 	KX_PYMETHOD_DOC_NOARGS(BL_ArmatureObject, update);
 
 #endif  /* WITH_PYTHON */
@@ -126,16 +134,18 @@ protected:
 	SG_DListHead<BL_ArmatureConstraint>	 m_controlledConstraints;
 	/* list element: BL_ArmatureChannel. Use SG_DList to avoid list replication */
 	SG_DList			m_poseChannels;
+	SG_DList            m_poseMuscles;
 	Object				*m_objArma;
 	Object				*m_origObjArma;
 	struct bPose		*m_pose;
 	struct bPose		*m_armpose;
-	struct Scene		*m_scene; // need for BKE_pose_where_is 
+	struct Scene		*m_scene; // need for BKE_pose_where_is
 	double	m_lastframe;
 	double  m_timestep;		// delta since last pose evaluation.
 	int		m_vert_deform_type;
 	size_t  m_constraintNumber;
 	size_t  m_channelNumber;
+	size_t  m_muscleNumber;
 	// store the original armature object matrix
 	float m_obmat[4][4];
 

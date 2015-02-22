@@ -141,7 +141,7 @@ int vertex_paint_mode_poll(bContext *C)
 
 int vertex_paint_poll(bContext *C)
 {
-	if (vertex_paint_mode_poll(C) && 
+	if (vertex_paint_mode_poll(C) &&
 	    BKE_paint_brush(&CTX_data_tool_settings(C)->vpaint->paint))
 	{
 		ScrArea *sa = CTX_wm_area(C);
@@ -183,7 +183,7 @@ int weight_paint_poll(bContext *C)
 static VPaint *new_vpaint(int wpaint)
 {
 	VPaint *vp = MEM_callocN(sizeof(VPaint), "VPaint");
-	
+
 	vp->flag = (wpaint) ? 0 : VP_SPRAY;
 	vp->paint.flags |= PAINT_SHOW_BRUSH;
 
@@ -214,11 +214,11 @@ static void do_shared_vertex_tesscol(Mesh *me, bool *mfacetag)
 	short *scolmain, *scol;
 	char *mcol;
 	const bool *mftag;
-	
+
 	if (me->mcol == NULL || me->totvert == 0 || me->totface == 0) return;
-	
+
 	scolmain = MEM_callocN(4 * sizeof(short) * me->totvert, "colmain");
-	
+
 	mface = me->mface;
 	mcol = (char *)me->mcol;
 	for (a = me->totface; a > 0; a--, mface++, mcol += 16) {
@@ -235,7 +235,7 @@ static void do_shared_vertex_tesscol(Mesh *me, bool *mfacetag)
 			}
 		}
 	}
-	
+
 	a = me->totvert;
 	scol = scolmain;
 	while (a--) {
@@ -361,9 +361,9 @@ static bool make_vertexcol(Object *ob)  /* single ob */
 	}
 
 	update_tessface_data(ob, me);
-	
+
 	DAG_id_tag_update(&me->id, 0);
-	
+
 	return (me->mloopcol != NULL);
 }
 
@@ -415,20 +415,20 @@ static void copy_vpaint_prev(VPaint *vp, unsigned int *lcol, int tot)
 	free_vpaint_prev(vp);
 
 	vp->tot = tot;
-	
+
 	if (lcol == NULL || tot == 0) return;
-	
+
 	vp->vpaint_prev = MEM_mallocN(sizeof(int) * tot, "vpaint_prev");
 	memcpy(vp->vpaint_prev, lcol, sizeof(int) * tot);
-	
+
 }
 
 static void copy_wpaint_prev(VPaint *wp, MDeformVert *dverts, int dcount)
 {
 	free_wpaint_prev(wp);
-	
+
 	if (dverts && dcount) {
-		
+
 		wp->wpaint_prev = MEM_mallocN(sizeof(MDeformVert) * dcount, "wpaint prev");
 		wp->tot = dcount;
 		BKE_defvert_array_copy(wp->wpaint_prev, dverts, dcount);
@@ -461,7 +461,7 @@ bool ED_vpaint_fill(Object *ob, unsigned int paintcol)
 			*(int *)lcol = paintcol;
 		}
 	}
-	
+
 	/* remove stale me->mcol, will be added later */
 	BKE_mesh_tessface_clear(me);
 
@@ -487,16 +487,16 @@ bool ED_wpaint_fill(VPaint *wp, Object *ob, float paintweight)
 	if (me->totpoly == 0 || me->dvert == NULL || !me->mpoly) {
 		return false;
 	}
-	
+
 	vgroup_active = ob->actdef - 1;
 
 	/* if mirror painting, find the other group */
 	if (me->editflag & ME_EDIT_MIRROR_X) {
 		vgroup_mirror = wpaint_mirror_vgroup_ensure(ob, vgroup_active);
 	}
-	
+
 	copy_wpaint_prev(wp, me->dvert, me->totvert);
-	
+
 	for (index = 0, mp = me->mpoly; index < me->totpoly; index++, mp++) {
 		unsigned int fidx = mp->totloop - 1;
 
@@ -693,7 +693,7 @@ BLI_INLINE unsigned int mcol_add(unsigned int col1, unsigned int col2, int fac)
 	temp = cp1[2] + divide_round_i((fac * cp2[2]), 255);
 	cp[2] = (temp > 254) ? 255 : temp;
 	cp[3] = 255;
-	
+
 	return col;
 }
 
@@ -845,13 +845,13 @@ static unsigned int vpaint_blend(VPaint *vp, unsigned int col, unsigned int colo
 	if ((vp->flag & VP_SPRAY) == 0) {
 		unsigned int testcol, a;
 		char *cp, *ct, *co;
-		
+
 		testcol = vpaint_blend_tool(tool, colorig, paintcol, brush_alpha_value_i);
-		
+
 		cp = (char *)&col;
 		ct = (char *)&testcol;
 		co = (char *)&colorig;
-		
+
 		for (a = 0; a < 4; a++) {
 			if (ct[a] < co[a]) {
 				if (cp[a] < ct[a]) cp[a] = ct[a];
@@ -872,36 +872,36 @@ static int sample_backbuf_area(ViewContext *vc, int *indexar, int totface, int x
 {
 	struct ImBuf *ibuf;
 	int a, tot = 0, index;
-	
+
 	/* brecht: disabled this because it obviously fails for
 	 * brushes with size > 64, why is this here? */
 	/*if (size > 64.0) size = 64.0;*/
-	
+
 	ibuf = view3d_read_backbuf(vc, x - size, y - size, x + size, y + size);
 	if (ibuf) {
 		unsigned int *rt = ibuf->rect;
 
 		memset(indexar, 0, sizeof(int) * (totface + 1));
-		
+
 		size = ibuf->x * ibuf->y;
 		while (size--) {
-				
+
 			if (*rt) {
 				index = WM_framebuffer_to_index(*rt);
 				if (index > 0 && index <= totface)
 					indexar[index] = 1;
 			}
-		
+
 			rt++;
 		}
-		
+
 		for (a = 1; a <= totface; a++) {
 			if (indexar[a]) indexar[tot++] = a;
 		}
 
 		IMB_freeImBuf(ibuf);
 	}
-	
+
 	return tot;
 }
 
@@ -1047,14 +1047,14 @@ static float wpaint_blend(VPaint *wp, float weight, float weight_prev,
 				tool = PAINT_BLEND_LIGHTEN; break;
 		}
 	}
-	
+
 	weight = wpaint_blend_tool(tool, weight, paintval, alpha);
 
 	/* delay clamping until the end so multi-paint can function when the active group is at the limits */
 	if (do_multipaint_totsel == false) {
 		CLAMP(weight, 0.0f, 1.0f);
 	}
-	
+
 	/* if no spray, clip result with orig weight & orig alpha */
 	if ((wp->flag & VP_SPRAY) == 0) {
 		if (do_multipaint_totsel == false) {
@@ -1793,7 +1793,7 @@ static void do_weight_paint_vertex(
 	Mesh *me = ob->data;
 	MDeformVert *dv = &me->dvert[index];
 	bool topology = (me->editflag & ME_EDIT_MIRROR_TOPO) != 0;
-	
+
 	MDeformWeight *dw, *dw_prev;
 
 	/* mirror vars */
@@ -1946,7 +1946,7 @@ static void do_weight_paint_vertex(
 		oldw = dw->weight;
 		neww = wpaint_blend(wp, dw->weight, dw_prev->weight, alpha, paintweight,
 		                    wpi->brush_alpha_value, wpi->do_flip, do_multipaint_totsel);
-		
+
 		/* setup multi-paint */
 		observedChange = neww - oldw;
 		if (do_multipaint_totsel && observedChange) {
@@ -1997,7 +1997,7 @@ static void do_weight_paint_vertex(
 				}
 			}
 		}
-		
+
 		if (apply_mp_locks_normalize(me, wpi, index, dw, tdw, change, oldChange, oldw, neww)) {
 			defvert_reset_to_prev(&dv_copy, dv);
 			change = 0;
@@ -2032,7 +2032,7 @@ static void do_weight_paint_vertex(
  * \note Keep in sync with #vpaint_mode_toggle_exec
  */
 static int wpaint_mode_toggle_exec(bContext *C, wmOperator *op)
-{		
+{
 	Object *ob = CTX_data_active_object(C);
 	const int mode_flag = OB_MODE_WEIGHT_PAINT;
 	const bool is_mode_set = (ob->mode & mode_flag) != 0;
@@ -2078,7 +2078,7 @@ static int wpaint_mode_toggle_exec(bContext *C, wmOperator *op)
 		ED_mesh_mirror_spatial_table(ob, NULL, NULL, 's');
 		ED_vgroup_sync_from_pose(ob);
 	}
-	
+
 	/* Weightpaint works by overriding colors in mesh,
 	 * so need to make sure we recalc on enter and
 	 * exit (exit needs doing regardless because we
@@ -2106,19 +2106,19 @@ static int paint_poll_test(bContext *C)
 
 void PAINT_OT_weight_paint_toggle(wmOperatorType *ot)
 {
-	
+
 	/* identifiers */
 	ot->name = "Weight Paint Mode";
 	ot->idname = "PAINT_OT_weight_paint_toggle";
 	ot->description = "Toggle weight paint mode in 3D view";
-	
+
 	/* api callbacks */
 	ot->exec = wpaint_mode_toggle_exec;
 	ot->poll = paint_poll_test;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
-	
+
 }
 
 /* ************ weight paint operator ********** */
@@ -2165,7 +2165,7 @@ static bool wpaint_ensure_data(bContext *C, wmOperator *op)
 	if (ob->actdef <= 0) {
 		Object *modob;
 		if ((modob = modifiers_isDeformedByArmature(ob))) {
-			Bone *actbone = ((bArmature *)modob->data)->act_bone;
+			ArmatureElement *actbone = ((bArmature *)modob->data)->act_element;
 			if (actbone) {
 				bPoseChannel *pchan = BKE_pose_channel_find_name(modob->pose, actbone->name);
 
@@ -2254,7 +2254,7 @@ static bool wpaint_stroke_test_start(bContext *C, wmOperator *op, const float UN
 	if (me->editflag & ME_EDIT_MIRROR_X) {
 		wpd->vgroup_mirror = wpaint_mirror_vgroup_ensure(ob, wpd->vgroup_active);
 	}
-	
+
 	return true;
 }
 
@@ -2305,7 +2305,7 @@ static void wpaint_stroke_update_step(bContext *C, struct PaintStroke *stroke, P
 	ob = vc->obact;
 	me = ob->data;
 	indexar = wpd->indexar;
-	
+
 	view3d_operator_needs_opengl(C);
 	ED_view3d_init_mats_rv3d(ob, vc->rv3d);
 
@@ -2504,11 +2504,11 @@ static void wpaint_stroke_done(const bContext *C, struct PaintStroke *stroke)
 	ToolSettings *ts = CTX_data_tool_settings(C);
 	Object *ob = CTX_data_active_object(C);
 	struct WPaintData *wpd = paint_stroke_mode_data(stroke);
-	
+
 	if (wpd) {
 		ED_vpaint_proj_handle_free(wpd->vp_handle);
 		MEM_freeN(wpd->indexar);
-		
+
 		if (wpd->vgroup_validmap)
 			MEM_freeN((void *)wpd->vgroup_validmap);
 		if (wpd->lock_flags)
@@ -2516,15 +2516,15 @@ static void wpaint_stroke_done(const bContext *C, struct PaintStroke *stroke)
 
 		MEM_freeN(wpd);
 	}
-	
+
 	/* frees prev buffer */
 	copy_wpaint_prev(ts->wpaint, NULL, 0);
-	
+
 	/* and particles too */
 	if (ob->particlesystem.first) {
 		ParticleSystem *psys;
 		int i;
-		
+
 		for (psys = ob->particlesystem.first; psys; psys = psys->next) {
 			for (i = 0; i < PSYS_TOT_VG; i++) {
 				if (psys->vgroup[i] == ob->actdef) {
@@ -2548,7 +2548,7 @@ static int wpaint_invoke(bContext *C, wmOperator *op, const wmEvent *event)
 	op->customdata = paint_stroke_new(C, op, NULL, wpaint_stroke_test_start,
 	                                  wpaint_stroke_update_step, NULL,
 	                                  wpaint_stroke_done, event->type);
-	
+
 	if ((retval = op->type->modal(C, op, event)) == OPERATOR_FINISHED) {
 		paint_stroke_data_free(op);
 		return OPERATOR_FINISHED;
@@ -2558,7 +2558,7 @@ static int wpaint_invoke(bContext *C, wmOperator *op, const wmEvent *event)
 
 	OPERATOR_RETVAL_CHECK(retval);
 	BLI_assert(retval == OPERATOR_RUNNING_MODAL);
-	
+
 	return OPERATOR_RUNNING_MODAL;
 }
 
@@ -2581,22 +2581,22 @@ static void wpaint_cancel(bContext *C, wmOperator *op)
 
 void PAINT_OT_weight_paint(wmOperatorType *ot)
 {
-	
+
 	/* identifiers */
 	ot->name = "Weight Paint";
 	ot->idname = "PAINT_OT_weight_paint";
 	ot->description = "Paint a stroke in the current vertex group's weights";
-	
+
 	/* api callbacks */
 	ot->invoke = wpaint_invoke;
 	ot->modal = paint_stroke_modal;
 	ot->exec = wpaint_exec;
 	ot->poll = weight_paint_poll;
 	ot->cancel = wpaint_cancel;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_UNDO | OPTYPE_BLOCKING;
-	
+
 	paint_stroke_operator_properties(ot);
 }
 
@@ -2642,7 +2642,7 @@ void PAINT_OT_weight_set(wmOperatorType *ot)
  * \note Keep in sync with #wpaint_mode_toggle_exec
  */
 static int vpaint_mode_toggle_exec(bContext *C, wmOperator *op)
-{	
+{
 	Object *ob = CTX_data_active_object(C);
 	const int mode_flag = OB_MODE_VERTEX_PAINT;
 	const bool is_mode_set = (ob->mode & mode_flag) != 0;
@@ -2657,7 +2657,7 @@ static int vpaint_mode_toggle_exec(bContext *C, wmOperator *op)
 	}
 
 	me = BKE_mesh_from_object(ob);
-	
+
 	/* toggle: end vpaint */
 	if (is_mode_set) {
 		ob->mode &= ~mode_flag;
@@ -2677,32 +2677,32 @@ static int vpaint_mode_toggle_exec(bContext *C, wmOperator *op)
 
 		if (vp == NULL)
 			vp = scene->toolsettings->vpaint = new_vpaint(0);
-		
+
 		paint_cursor_start(C, vertex_paint_poll);
 
 		BKE_paint_init(&scene->toolsettings->unified_paint_settings, &vp->paint, PAINT_CURSOR_VERTEX_PAINT);
 	}
-	
+
 	/* update modifier stack for mapping requirements */
 	DAG_id_tag_update(&me->id, 0);
-	
+
 	WM_event_add_notifier(C, NC_SCENE | ND_MODE, scene);
-	
+
 	return OPERATOR_FINISHED;
 }
 
 void PAINT_OT_vertex_paint_toggle(wmOperatorType *ot)
 {
-	
+
 	/* identifiers */
 	ot->name = "Vertex Paint Mode";
 	ot->idname = "PAINT_OT_vertex_paint_toggle";
 	ot->description = "Toggle the vertex paint mode in 3D view";
-	
+
 	/* api callbacks */
 	ot->exec = vpaint_mode_toggle_exec;
 	ot->poll = paint_poll_test;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 }
@@ -2717,7 +2717,7 @@ void PAINT_OT_vertex_paint_toggle(wmOperatorType *ot)
  * - validate context (add mcol)
  * - create customdata storage
  * - call paint once (mouse click)
- * - add modal handler 
+ * - add modal handler
  *
  * Operator->modal()
  * - for every mousemove, apply vertex paint
@@ -2793,7 +2793,7 @@ static bool vpaint_stroke_test_start(bContext *C, struct wmOperator *op, const f
 	me = BKE_mesh_from_object(ob);
 	if (me == NULL || me->totpoly == 0)
 		return false;
-	
+
 	if (me->mloopcol == NULL)
 		make_vertexcol(ob);
 	if (me->mloopcol == NULL)
@@ -2808,7 +2808,7 @@ static bool vpaint_stroke_test_start(bContext *C, struct wmOperator *op, const f
 	vpd = MEM_callocN(sizeof(struct VPaintData), "VPaintData");
 	paint_stroke_set_mode_data(stroke, vpd);
 	view3d_set_viewcontext(C, &vpd->vc);
-	
+
 	vpd->vp_handle = ED_vpaint_proj_handle_create(vpd->vc.scene, ob, &vpd->vertexcosnos);
 
 	vpd->indexar = get_indexarray(me);
@@ -2838,7 +2838,7 @@ static bool vpaint_stroke_test_start(bContext *C, struct wmOperator *op, const f
 
 	/* for filtering */
 	copy_vpaint_prev(vp, (unsigned int *)me->mloopcol, me->totloop);
-	
+
 	/* some old cruft to sort out later */
 	mul_m4_m4m4(mat, vpd->vc.rv3d->viewmat, ob->obmat);
 	invert_m4_m4(imat, mat);
@@ -2983,13 +2983,13 @@ static void vpaint_stroke_update_step(bContext *C, struct PaintStroke *stroke, P
 		for (index = 0; index < totindex; index++) {
 			if (indexar[index] && indexar[index] <= me->totpoly) {
 				MPoly *mpoly = ((MPoly *)me->mpoly) + (indexar[index] - 1);
-						
+
 				if ((mpoly->flag & ME_FACE_SEL) == 0)
 					indexar[index] = 0;
 			}
 		}
 	}
-	
+
 	swap_m4m4(vc->rv3d->persmat, mat);
 
 	/* incase we have modifiers */
@@ -3006,7 +3006,7 @@ static void vpaint_stroke_update_step(bContext *C, struct PaintStroke *stroke, P
 			vpaint_paint_poly(vp, vpd, me, indexar[index] - 1, mval, brush_size_pressure, brush_alpha_pressure);
 		}
 	}
-		
+
 	swap_m4m4(vc->rv3d->persmat, mat);
 
 	/* was disabled because it is slow, but necessary for blur */
@@ -3034,10 +3034,10 @@ static void vpaint_stroke_done(const bContext *C, struct PaintStroke *stroke)
 	struct VPaintData *vpd = paint_stroke_mode_data(stroke);
 	ViewContext *vc = &vpd->vc;
 	Object *ob = vc->obact;
-	
+
 	ED_vpaint_proj_handle_free(vpd->vp_handle);
 	MEM_freeN(vpd->indexar);
-	
+
 	/* frees prev buffer */
 	copy_vpaint_prev(ts->vpaint, NULL, 0);
 
@@ -3067,7 +3067,7 @@ static int vpaint_invoke(bContext *C, wmOperator *op, const wmEvent *event)
 	op->customdata = paint_stroke_new(C, op, NULL, vpaint_stroke_test_start,
 	                                  vpaint_stroke_update_step, NULL,
 	                                  vpaint_stroke_done, event->type);
-	
+
 	if ((retval = op->type->modal(C, op, event)) == OPERATOR_FINISHED) {
 		paint_stroke_data_free(op);
 		return OPERATOR_FINISHED;
@@ -3078,7 +3078,7 @@ static int vpaint_invoke(bContext *C, wmOperator *op, const wmEvent *event)
 
 	OPERATOR_RETVAL_CHECK(retval);
 	BLI_assert(retval == OPERATOR_RUNNING_MODAL);
-	
+
 	return OPERATOR_RUNNING_MODAL;
 }
 
@@ -3105,14 +3105,14 @@ void PAINT_OT_vertex_paint(wmOperatorType *ot)
 	ot->name = "Vertex Paint";
 	ot->idname = "PAINT_OT_vertex_paint";
 	ot->description = "Paint a stroke in the active vertex color layer";
-	
+
 	/* api callbacks */
 	ot->invoke = vpaint_invoke;
 	ot->modal = paint_stroke_modal;
 	ot->exec = vpaint_exec;
 	ot->poll = vertex_paint_poll;
 	ot->cancel = vpaint_cancel;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_UNDO | OPTYPE_BLOCKING;
 
@@ -3156,12 +3156,12 @@ void PAINT_OT_weight_from_bones(wmOperatorType *ot)
 	ot->idname = "PAINT_OT_weight_from_bones";
 	ot->description = "Set the weights of the groups matching the attached armature's selected bones, "
 	                  "using the distance between the vertices and the bones";
-	
+
 	/* api callbacks */
 	ot->exec = weight_from_bones_exec;
 	ot->invoke = WM_menu_invoke;
 	ot->poll = weight_from_bones_poll;
-	
+
 	/* flags */
 	ot->flag = OPTYPE_REGISTER | OPTYPE_UNDO;
 

@@ -66,6 +66,7 @@ set(SRC
 	BL_ArmatureActuator.cpp
 	BL_ArmatureChannel.cpp
 	BL_ArmatureConstraint.cpp
+    BL_ArmatureMuscle.cpp
 	BL_ArmatureObject.cpp
 	BL_BlenderDataConversion.cpp
 	BL_DeformableGameObject.cpp
@@ -88,6 +89,7 @@ set(SRC
 	BL_ArmatureActuator.h
 	BL_ArmatureChannel.h
 	BL_ArmatureConstraint.h
+    BL_ArmatureMuscle.h
 	BL_ArmatureObject.h
 	BL_BlenderDataConversion.h
 	BL_DeformableGameObject.h

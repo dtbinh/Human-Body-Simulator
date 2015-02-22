@@ -1052,7 +1052,6 @@ struct Mask *CTX_data_edit_mask(const bContext *C)
 	return ctx_data_pointer_get(C, "edit_mask");
 }
 
-//struct EditBone *CTX_data_active_bone(const bContext *C)
 struct EditArmatureElement *CTX_data_active_bone(const bContext *C)
 {
 	return ctx_data_pointer_get(C, "active_bone");

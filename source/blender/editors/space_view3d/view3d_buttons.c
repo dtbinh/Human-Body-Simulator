@@ -838,7 +838,7 @@ static void view3d_panel_vgroup(const bContext *C, Panel *pa)
 
 		bcol = uiLayoutColumn(pa->layout, true);
 		row = uiLayoutRow(bcol, true); /* The filter button row */
-		
+
 		RNA_pointer_create(NULL, &RNA_ToolSettings, ts, &tools_ptr);
 		uiItemR(row, &tools_ptr, "vertex_group_subset", UI_ITEM_R_EXPAND, NULL, ICON_NONE);
 
@@ -867,7 +867,7 @@ static void view3d_panel_vgroup(const bContext *C, Panel *pa)
 						UI_but_flag_enable(but, UI_BUT_INACTIVE);
 					}
 					xco += x;
-					
+
 					row = uiLayoutRow(split, true);
 					uiLayoutSetEnabled(row, !locked);
 
@@ -899,7 +899,7 @@ static void view3d_panel_vgroup(const bContext *C, Panel *pa)
 					uiItemFullO_ptr(row, ot, "", icon, op_ptr.data, WM_OP_INVOKE_DEFAULT, 0);
 
 					yco -= UI_UNIT_Y;
-					
+
 				}
 			}
 		}
@@ -937,11 +937,10 @@ static void v3d_transform_butsR(uiLayout *layout, PointerRNA *ptr)
 
 	if (ptr->type == &RNA_PoseBone) {
 		PointerRNA boneptr;
-		Bone *bone;
+		ArmatureElement *bone;
 
 		boneptr = RNA_pointer_get(ptr, "bone");
 		bone = boneptr.data;
-//		uiLayoutSetActive(split, !(bone->parent && bone->flag & BONE_CONNECTED));
 		uiLayoutSetActive(split, !(bone->parent && bone->flag & ELEMENT_CONNECTED));
 	}
 	colsub = uiLayoutColumn(split, true);
@@ -1028,11 +1027,6 @@ static void v3d_posearmature_buts(uiLayout *layout, Object *ob)
 static void v3d_editarmature_buts(uiLayout *layout, Object *ob)
 {
 	bArmature *arm = ob->data;
-//	EditBone *ebone;
-//	uiLayout *col;
-//	PointerRNA eboneptr;
-//
-//	ebone = arm->act_edbone;
 	EditArmatureElement *ebone;
 	uiLayout *col;
 	PointerRNA eboneptr;
@@ -1044,11 +1038,10 @@ static void v3d_editarmature_buts(uiLayout *layout, Object *ob)
 		return;
 	}
 
-	RNA_pointer_create(&arm->id, &RNA_EditBone, ebone, &eboneptr);
+	RNA_pointer_create(&arm->id, &RNA_EditArmatureElement, ebone, &eboneptr);
 
 	col = uiLayoutColumn(layout, false);
 	uiItemR(col, &eboneptr, "head", 0, NULL, ICON_NONE);
-//	if (ebone->parent && ebone->flag & BONE_CONNECTED) {
 	if (ebone->parent && ebone->flag & ELEMENT_CONNECTED) {
 		PointerRNA parptr = RNA_pointer_get(&eboneptr, "parent");
 		uiItemR(col, &parptr, "tail_radius", 0, IFACE_("Radius (Parent)"), ICON_NONE);

@@ -88,6 +88,8 @@ static Py_ssize_t KX_PythonSeq_len( PyObject *self )
 			return ((BL_ArmatureObject *)self_plus)->GetConstraintNumber();
 		case KX_PYGENSEQ_OB_TYPE_CHANNELS:
 			return ((BL_ArmatureObject *)self_plus)->GetChannelNumber();
+        case KX_PYGENSEQ_OB_TYPE_MUSCLES:
+            return ((BL_ArmatureObject *)self_plus)->GetMuscleNumber();
 		default:
 			/* Should never happen */
 			PyErr_SetString(PyExc_SystemError, "invalid type, internal error");
@@ -177,6 +179,17 @@ static PyObject *KX_PythonSeq_getIndex(PyObject *self, Py_ssize_t index)
 			}
 			return ((BL_ArmatureObject *)self_plus)->GetChannel(index)->GetProxy();
 		}
+		case KX_PYGENSEQ_OB_TYPE_MUSCLES:
+        {
+            int nb_muscle = ((BL_ArmatureObject *)self_plus)->GetMuscleNumber();
+            if (index < 0)
+                index += nb_muscle;
+            if (index < 0 || index >= nb_muscle) {
+                PyErr_SetString(PyExc_IndexError, "seq[i]: index out of range");
+                return NULL;
+            }
+            return ((BL_ArmatureObject *)self_plus)->GetMuscle(index)->GetProxy();
+        }
 
 	}
 	
@@ -253,6 +266,10 @@ static PyObjectPlus *KX_PythonSeq_subscript__internal(PyObject *self, const char
 		{
 			return ((BL_ArmatureObject*)self_plus)->GetChannel(key);
 		}
+		case KX_PYGENSEQ_OB_TYPE_MUSCLES:
+        {
+            return ((BL_ArmatureObject*)self_plus)->GetMuscle(key);
+        }
 	}
 	
 	return NULL;

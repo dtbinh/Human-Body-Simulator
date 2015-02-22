@@ -4,7 +4,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version. 
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -66,31 +66,31 @@
  * - include support for editing the path verts */
 
 /* Set up drawing environment for drawing motion paths */
-void draw_motion_paths_init(View3D *v3d, ARegion *ar) 
+void draw_motion_paths_init(View3D *v3d, ARegion *ar)
 {
 	RegionView3D *rv3d = ar->regiondata;
-	
+
 	if (v3d->zbuf) glDisable(GL_DEPTH_TEST);
-	
+
 	glPushMatrix();
 	glLoadMatrixf(rv3d->viewmat);
 }
 
-/* Draw the given motion path for an Object or a Bone 
+/* Draw the given motion path for an Object or a Bone
  *  - assumes that the viewport has already been initialized properly
  *    i.e. draw_motion_paths_init() has been called
  */
-void draw_motion_path_instance(Scene *scene, 
+void draw_motion_path_instance(Scene *scene,
                                Object *ob, bPoseChannel *pchan, bAnimVizSettings *avs, bMotionPath *mpath)
 {
 	//RegionView3D *rv3d = ar->regiondata;
 	bMotionPathVert *mpv, *mpv_start;
 	int i, stepsize = avs->path_step;
 	int sfra, efra, sind, len;
-	
+
 	/* get frame ranges */
 	if (avs->path_type == MOTIONPATH_TYPE_ACFRA) {
-		/* With "Around Current", we only choose frames from around 
+		/* With "Around Current", we only choose frames from around
 		 * the current frame to draw.
 		 */
 		sfra = CFRA - avs->path_bc;
@@ -101,8 +101,8 @@ void draw_motion_path_instance(Scene *scene,
 		sfra = avs->path_sf;
 		efra = avs->path_ef;
 	}
-	
-	/* no matter what, we can only show what is in the cache and no more 
+
+	/* no matter what, we can only show what is in the cache and no more
 	 * - abort if whole range is past ends of path
 	 * - otherwise clamp endpoints to extents of path
 	 */
@@ -114,33 +114,33 @@ void draw_motion_path_instance(Scene *scene,
 		/* end clamp */
 		efra = mpath->end_frame;
 	}
-	
+
 	if ((sfra > mpath->end_frame) || (efra < mpath->start_frame)) {
 		/* whole path is out of bounds */
 		return;
 	}
-	
+
 	len = efra - sfra;
-	
+
 	if ((len <= 0) || (mpath->points == NULL)) {
 		return;
 	}
-	
+
 	/* get pointers to parts of path */
 	sind = sfra - mpath->start_frame;
 	mpv_start = (mpath->points + sind);
-	
+
 	/* draw curve-line of path */
 	glShadeModel(GL_SMOOTH);
-	
+
 	glBegin(GL_LINE_STRIP);
 	for (i = 0, mpv = mpv_start; i < len; i++, mpv++) {
-		short sel = (pchan) ? (pchan->bone->flag & BONE_SELECTED) : (ob->flag & SELECT);
+		short sel = (pchan) ? (pchan->bone->flag & ELEMENT_SELECTED) : (ob->flag & SELECT);
 		float intensity;  /* how faint */
-		
+
 		int frame = sfra + i;
 		int blend_base = (abs(frame - CFRA) == 1) ? TH_CFRAME : TH_BACK; /* "bleed" cframe color to ease color blending */
-		
+
 		/* set color
 		 * - more intense for active/selected bones, less intense for unselected bones
 		 * - black for before current frame, green for current frame, blue for after current frame
@@ -186,12 +186,12 @@ void draw_motion_path_instance(Scene *scene,
 		/* draw a vertex with this color */
 		glVertex3fv(mpv->co);
 	}
-	
+
 	glEnd();
 	glShadeModel(GL_FLAT);
-	
+
 	glPointSize(1.0);
-	
+
 	/* draw little black point at each frame
 	 * NOTE: this is not really visible/noticeable
 	 */
@@ -199,15 +199,15 @@ void draw_motion_path_instance(Scene *scene,
 	for (i = 0, mpv = mpv_start; i < len; i++, mpv++)
 		glVertex3fv(mpv->co);
 	glEnd();
-	
+
 	/* Draw little white dots at each framestep value */
 	UI_ThemeColor(TH_TEXT_HI);
 	glBegin(GL_POINTS);
 	for (i = 0, mpv = mpv_start; i < len; i += stepsize, mpv += stepsize)
 		glVertex3fv(mpv->co);
 	glEnd();
-	
-	/* Draw big green dot where the current frame is 
+
+	/* Draw big green dot where the current frame is
 	 * NOTE: this is only done when keyframes are shown, since this adds similar types of clutter
 	 */
 	if ((avs->path_viewflag & MOTIONPATH_VIEW_KFRAS) &&
@@ -215,31 +215,31 @@ void draw_motion_path_instance(Scene *scene,
 	{
 		UI_ThemeColor(TH_CFRAME);
 		glPointSize(6.0f);
-		
+
 		glBegin(GL_POINTS);
 		mpv = mpv_start + (CFRA - sfra);
 		glVertex3fv(mpv->co);
 		glEnd();
-		
+
 		glPointSize(1.0f);
 		UI_ThemeColor(TH_TEXT_HI);
 	}
-	
+
 	/* XXX, this isn't up to date but probably should be kept so. */
 	invert_m4_m4(ob->imat, ob->obmat);
-	
+
 	/* Draw frame numbers at each framestep value */
 	if (avs->path_viewflag & MOTIONPATH_VIEW_FNUMS) {
 		unsigned char col[4];
 		UI_GetThemeColor3ubv(TH_TEXT_HI, col);
 		col[3] = 255;
-		
+
 		for (i = 0, mpv = mpv_start; i < len; i += stepsize, mpv += stepsize) {
 			int frame = sfra + i;
 			char numstr[32];
 			size_t numstr_len;
 			float co[3];
-			
+
 			/* only draw framenum if several consecutive highlighted points don't occur on same point */
 			if (i == 0) {
 				numstr_len = sprintf(numstr, " %d", frame);
@@ -250,7 +250,7 @@ void draw_motion_path_instance(Scene *scene,
 			else if ((i >= stepsize) && (i < len - stepsize)) {
 				bMotionPathVert *mpvP = (mpv - stepsize);
 				bMotionPathVert *mpvN = (mpv + stepsize);
-				
+
 				if ((equals_v3v3(mpv->co, mpvP->co) == 0) || (equals_v3v3(mpv->co, mpvN->co) == 0)) {
 					numstr_len = sprintf(numstr, " %d", frame);
 					mul_v3_m4v3(co, ob->imat, mpv->co);
@@ -260,24 +260,24 @@ void draw_motion_path_instance(Scene *scene,
 			}
 		}
 	}
-	
+
 	/* Keyframes - dots and numbers */
 	if (avs->path_viewflag & MOTIONPATH_VIEW_KFRAS) {
 		unsigned char col[4];
-		
+
 		AnimData *adt = BKE_animdata_from_id(&ob->id);
 		DLRBT_Tree keys;
-		
+
 		/* build list of all keyframes in active action for object or pchan */
 		BLI_dlrbTree_init(&keys);
-		
+
 		if (adt) {
 			/* it is assumed that keyframes for bones are all grouped in a single group
 			 * unless an option is set to always use the whole action
 			 */
 			if ((pchan) && (avs->path_viewflag & MOTIONPATH_VIEW_KFACT) == 0) {
 				bActionGroup *agrp = BKE_action_group_find_name(adt->action, pchan->name);
-				
+
 				if (agrp) {
 					agroup_to_keylist(adt, agrp, &keys, NULL);
 					BLI_dlrbTree_linkedlist_sync(&keys);
@@ -288,36 +288,36 @@ void draw_motion_path_instance(Scene *scene,
 				BLI_dlrbTree_linkedlist_sync(&keys);
 			}
 		}
-		
+
 		/* Draw slightly-larger yellow dots at each keyframe */
 		UI_GetThemeColor3ubv(TH_VERTEX_SELECT, col);
 		col[3] = 255;
-		
+
 		glPointSize(4.0f);
 		glColor3ubv(col);
-		
+
 		glBegin(GL_POINTS);
 		for (i = 0, mpv = mpv_start; i < len; i++, mpv++) {
-			int    frame = sfra + i; 
+			int    frame = sfra + i;
 			float mframe = (float)(frame);
-			
+
 			if (BLI_dlrbTree_search_exact(&keys, compare_ak_cfraPtr, &mframe))
 				glVertex3fv(mpv->co);
 		}
 		glEnd();
-		
+
 		glPointSize(1.0f);
-		
+
 		/* Draw frame numbers of keyframes  */
 		if (avs->path_viewflag & MOTIONPATH_VIEW_KFNOS) {
 			float co[3];
 			for (i = 0, mpv = mpv_start; i < len; i++, mpv++) {
 				float mframe = (float)(sfra + i);
-				
+
 				if (BLI_dlrbTree_search_exact(&keys, compare_ak_cfraPtr, &mframe)) {
 					char numstr[32];
 					size_t numstr_len;
-					
+
 					numstr_len = sprintf(numstr, " %d", (sfra + i));
 					mul_v3_m4v3(co, ob->imat, mpv->co);
 					view3d_cached_text_draw_add(co, numstr, numstr_len,
@@ -325,7 +325,7 @@ void draw_motion_path_instance(Scene *scene,
 				}
 			}
 		}
-		
+
 		BLI_dlrbTree_free(&keys);
 	}
 }

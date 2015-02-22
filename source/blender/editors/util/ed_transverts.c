@@ -119,15 +119,13 @@ void ED_transverts_update_obedit(TransVertStore *tvs, Object *obedit)
 	}
 	else if (obedit->type == OB_ARMATURE) {
 		bArmature *arm = obedit->data;
-//		EditBone *ebo;
 		EditArmatureElement *ebo;
 		TransVert *tv = tvs->transverts;
 		int a = 0;
 
 		/* Ensure all bone tails are correctly adjusted */
-		for (ebo = arm->edbo->first; ebo; ebo = ebo->next) {
+		for (ebo = arm->edel->first; ebo; ebo = ebo->next) {
 			/* adjust tip if both ends selected */
-//			if ((ebo->flag & BONE_ROOTSEL) && (ebo->flag & BONE_TIPSEL)) {
 			if ((ebo->flag & ELEMENT_ROOTSEL) && (ebo->flag & ELEMENT_TIPSEL)) {
 				if (tv) {
 					float diffvec[3];
@@ -142,10 +140,7 @@ void ED_transverts_update_obedit(TransVertStore *tvs, Object *obedit)
 		}
 
 		/* Ensure all bones are correctly adjusted */
-		for (ebo = arm->edbo->first; ebo; ebo = ebo->next) {
-//			if ((ebo->flag & BONE_CONNECTED) && ebo->parent) {
-//				/* If this bone has a parent tip that has been moved */
-//				if (ebo->parent->flag & BONE_TIPSEL) {
+		for (ebo = arm->edel->first; ebo; ebo = ebo->next) {
 			if ((ebo->flag & ELEMENT_CONNECTED) && ebo->parent) {
 				/* If this bone has a parent tip that has been moved */
 				if (ebo->parent->flag & ELEMENT_TIPSEL) {
@@ -208,7 +203,6 @@ void ED_transverts_create_from_obedit(TransVertStore *tvs, Object *obedit, const
 	TransVert *tv = NULL;
 	MetaElem *ml;
 	BMVert *eve;
-//	EditBone *ebo;
 	EditArmatureElement *ebo;
 	int a;
 
@@ -316,13 +310,13 @@ void ED_transverts_create_from_obedit(TransVertStore *tvs, Object *obedit, const
 	}
 	else if (obedit->type == OB_ARMATURE) {
 		bArmature *arm = obedit->data;
-		int totmalloc = BLI_listbase_count(arm->edbo);
+		int totmalloc = BLI_listbase_count(arm->edel);
 
 		totmalloc *= 2;  /* probably overkill but bones can have 2 trans verts each */
 
 		tv = tvs->transverts = MEM_callocN(totmalloc * sizeof(TransVert), __func__);
 
-		for (ebo = arm->edbo->first; ebo; ebo = ebo->next) {
+		for (ebo = arm->edel->first; ebo; ebo = ebo->next) {
 			if (ebo->layer & arm->layer) {
 //				short tipsel = (ebo->flag & BONE_TIPSEL);
 //				short rootsel = (ebo->flag & BONE_ROOTSEL);

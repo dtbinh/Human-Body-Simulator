@@ -45,8 +45,8 @@ struct AnimData;
  *
  */
 
-#define AE_BONE     0
-#define AE_MUSCLE   1
+#define AE_BONE     (1 << 0)
+#define AE_MUSCLE   (1 << 1)
 
 typedef struct ArmatureElement {
     // Common elements to both Bone and Muscle
@@ -127,44 +127,44 @@ typedef struct Bone {
 	short        pad[1];
 } Bone;
 
-typedef struct Muscle {
-	struct Muscle  *next, *prev; /* Next/prev elements within this list */
-	IDProperty     *prop; /* User-defined properties */
-	struct Muscle  *parent;
-	struct Bone    *start, *end; /* Bones the muscle is connected to */
-	ListBase        childbase;
-	char            name[64]; /* Name of the muscle */
-
-	float           roll;
-	float           head[3]; /* Offset from start bone head */
-	float           tail[3]; /* Offset from end bone head */
-	float           muscle_mat[3][3]; /* Rotation derived from head/tail */
-
-	int             flag;
-
-	float           arm_head[3];
-	float           arm_tail[3];
-	float           arm_mat[4][4];
-	float           arm_roll;
-
-	float           length;
-
-	float           rad_head, rad_tail;
-
-	int             layer; /* Layer that muscle appears on */
-	short           segments;
-	char            pad[6];
-} Muscle;
+//typedef struct Muscle {
+//	struct Muscle  *next, *prev; /* Next/prev elements within this list */
+//	IDProperty     *prop; /* User-defined properties */
+//	struct Muscle  *parent;
+//	struct Bone    *start, *end; /* Bones the muscle is connected to */
+//	ListBase        childbase;
+//	char            name[64]; /* Name of the muscle */
+//
+//	float           roll;
+//	float           head[3]; /* Offset from start bone head */
+//	float           tail[3]; /* Offset from end bone head */
+//	float           muscle_mat[3][3]; /* Rotation derived from head/tail */
+//
+//	int             flag;
+//
+//	float           arm_head[3];
+//	float           arm_tail[3];
+//	float           arm_mat[4][4];
+//	float           arm_roll;
+//
+//	float           length;
+//
+//	float           rad_head, rad_tail;
+//
+//	int             layer; /* Layer that muscle appears on */
+//	short           segments;
+//	char            pad[6];
+//} Muscle;
 
 typedef struct bArmature {
 	ID          id;
 	struct AnimData *adt;
+    /* Kept around until a better solution is found */
+	ListBase    bonebase;               /* Contains all the bones when writing an armature out to file */
 
-	ListBase    bonebase;
-	ListBase    musclebase;
+    ListBase    elementbase;
 	ListBase    chainbase;
-	ListBase   *edbo;                   /* editbone listbase, we use pointer so we can check state */
-	ListBase   *edmu;                   /* editmuscle listbase, we use pointer so we can check state */
+    ListBase   *edel;
 
 	/* active bones should work like active object where possible
 	 * - active and selection are unrelated
@@ -172,8 +172,6 @@ typedef struct bArmature {
 	 * - from the user perspective active == last selected
 	 * - active should be ignored when not visible (hidden layer) */
 
-//	Bone       *act_bone;               /* active bone */
-//	struct EditBone *act_edbone;        /* active editbone (in editmode) */
 	ArmatureElement *act_element;
 	struct EditArmatureElement *act_edelement;
 
@@ -294,7 +292,7 @@ typedef enum eArmature_GhostType {
 //	BONE_UNSELECTABLE           = (1 << 21),  /* bone cannot be selected */
 //	BONE_NO_LOCAL_LOCATION      = (1 << 22),  /* bone location is in armature space */
 //	BONE_RELATIVE_PARENTING     = (1 << 23)   /* object child will use relative transform (like deform) */
-//	
+//
 //} eBone_Flag;
 
 typedef enum eElement_Flag {

@@ -106,7 +106,7 @@ bool ArmatureExporter::add_instance_controller(Object *ob)
 	}
 
 	InstanceWriter::add_material_bindings(ins.getBindMaterial(), ob, this->export_settings->active_uv_only);
-		
+
 	ins.add();
 	return true;
 }
@@ -135,7 +135,7 @@ void ArmatureExporter::find_objects_using_armature(Object *ob_arm, std::vector<O
 	Base *base = (Base *) sce->base.first;
 	while (base) {
 		Object *ob = base->object;
-		
+
 		if (ob->type == OB_MESH && get_assigned_armature(ob) == ob_arm) {
 			objects.push_back(ob);
 		}
@@ -167,7 +167,7 @@ void ArmatureExporter::add_bone_node(Bone *bone, Object *ob_arm, Scene *sce,
 		node.setNodeName(node_name);
 		node.setNodeSid(node_sid);
 
-#if 0 
+#if 0
 		if (BLI_listbase_is_empty(&bone->childbase) || BLI_listbase_count_ex(&bone->childbase, 2) == 2) {
 			add_blender_leaf_bone( bone, ob_arm, node);
 		}
@@ -231,18 +231,18 @@ void ArmatureExporter::add_bone_node(Bone *bone, Object *ob_arm, Scene *sce,
 void ArmatureExporter::add_blender_leaf_bone(Bone *bone, Object *ob_arm, COLLADASW::Node& node)
 {
 	node.start();
-	
+
 	add_bone_transform(ob_arm, bone, node);
-	
+
 	node.addExtraTechniqueParameter("blender", "tip_x", bone->tail[0]);
 	node.addExtraTechniqueParameter("blender", "tip_y", bone->tail[1]);
 	node.addExtraTechniqueParameter("blender", "tip_z", bone->tail[2]);
-	
+
 	/*for (Bone *child = (Bone *)bone->childbase.first; child; child = child->next) {
 		add_bone_node(child, ob_arm, sce, se, child_objects);
 	}*/
 	node.end();
-	
+
 }
 //#endif
 
@@ -258,14 +258,14 @@ void ArmatureExporter::add_bone_transform(Object *ob_arm, Bone *bone, COLLADASW:
 		float invpar[4][4];
 		invert_m4_m4(invpar, parchan->pose_mat);
 		mul_m4_m4m4(mat, invpar, pchan->pose_mat);*/
-		
+
 		float invpar[4][4];
 		invert_m4_m4(invpar, bone->parent->arm_mat);
 		mul_m4_m4m4(mat, invpar, bone->arm_mat);
 
 	}
 	else {
-		
+
 		//copy_m4_m4(mat, pchan->pose_mat);
 		//pose mat is object space
 		//New change: export bone->arm_mat

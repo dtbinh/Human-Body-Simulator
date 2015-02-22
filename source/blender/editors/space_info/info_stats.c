@@ -4,7 +4,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version. 
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -65,7 +65,7 @@ typedef struct SceneStats {
 	int totface, totfacesel;
 	int totbone, totbonesel;
 	int totobj,  totobjsel;
-	int totlamp, totlampsel; 
+	int totlamp, totlampsel;
 	int tottri;
 
 	char infostr[MAX_INFO_LEN];
@@ -149,10 +149,10 @@ static void stats_object_edit(Object *obedit, SceneStats *stats)
 
 		stats->totvert = em->bm->totvert;
 		stats->totvertsel = em->bm->totvertsel;
-		
+
 		stats->totedge = em->bm->totedge;
 		stats->totedgesel = em->bm->totedgesel;
-		
+
 		stats->totface = em->bm->totface;
 		stats->totfacesel = em->bm->totfacesel;
 
@@ -161,32 +161,19 @@ static void stats_object_edit(Object *obedit, SceneStats *stats)
 	else if (obedit->type == OB_ARMATURE) {
 		/* Armature Edit */
 		bArmature *arm = obedit->data;
-		EditBone *ebo;
+		EditArmatureElement *ebo;
 
-		for (ebo = arm->edbo->first; ebo; ebo = ebo->next) {
+		for (ebo = arm->edel->first; ebo; ebo = ebo->next) {
 			stats->totbone++;
-			
-//			if ((ebo->flag & BONE_CONNECTED) && ebo->parent)
-//				stats->totvert--;
-//			
-//			if (ebo->flag & BONE_TIPSEL)
-//				stats->totvertsel++;
-//			if (ebo->flag & BONE_ROOTSEL)
-//				stats->totvertsel++;
-//			
-//			if (ebo->flag & BONE_SELECTED) stats->totbonesel++;
-//
-//			/* if this is a connected child and it's parent is being moved, remove our root */
-//			if ((ebo->flag & BONE_CONNECTED) && (ebo->flag & BONE_ROOTSEL) &&
-//			    ebo->parent && (ebo->parent->flag & BONE_TIPSEL))
+
 			if ((ebo->flag & ELEMENT_CONNECTED) && ebo->parent)
 				stats->totvert--;
-			
+
 			if (ebo->flag & ELEMENT_TIPSEL)
 				stats->totvertsel++;
 			if (ebo->flag & ELEMENT_ROOTSEL)
 				stats->totvertsel++;
-			
+
 			if (ebo->flag & ELEMENT_SELECTED) stats->totbonesel++;
 
 			/* if this is a connected child and it's parent is being moved, remove our root */
@@ -235,7 +222,7 @@ static void stats_object_edit(Object *obedit, SceneStats *stats)
 		/* MetaBall Edit */
 		MetaBall *mball = obedit->data;
 		MetaElem *ml;
-		
+
 		for (ml = mball->editelems->first; ml; ml = ml->next) {
 			stats->totvert++;
 			if (ml->flag & SELECT) stats->totvertsel++;
@@ -249,7 +236,7 @@ static void stats_object_edit(Object *obedit, SceneStats *stats)
 		int a;
 
 		bp = editlatt->def;
-		
+
 		a = editlatt->pntsu * editlatt->pntsv * editlatt->pntsw;
 		while (a--) {
 			stats->totvert++;
@@ -267,7 +254,7 @@ static void stats_object_pose(Object *ob, SceneStats *stats)
 
 		for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 			stats->totbone++;
-			if (pchan->bone && (pchan->bone->flag & BONE_SELECTED))
+			if (pchan->bone && (pchan->bone->flag & ELEMENT_SELECTED))
 				if (pchan->bone->layer & arm->layer)
 					stats->totbonesel++;
 		}
@@ -299,7 +286,7 @@ static void stats_dupli_object(Base *base, Object *ob, SceneStats *stats)
 			else if (part->draw_as == PART_DRAW_GR && part->dup_group) {
 				GroupObject *go;
 				int tot, totgroup = 0, cur = 0;
-				
+
 				for (go = part->dup_group->gobject.first; go; go = go->next)
 					totgroup++;
 
@@ -310,7 +297,7 @@ static void stats_dupli_object(Base *base, Object *ob, SceneStats *stats)
 				}
 			}
 		}
-		
+
 		stats_object(ob, base->flag & SELECT, 1, stats);
 		stats->totobj++;
 	}
@@ -360,7 +347,7 @@ static void stats_update(Scene *scene)
 	SceneStats stats = {0};
 	Object *ob = (scene->basact) ? scene->basact->object : NULL;
 	Base *base;
-	
+
 	if (scene->obedit) {
 		/* Edit Mode */
 		stats_object_edit(scene->obedit, &stats);

@@ -40,6 +40,7 @@
 #include "BL_ArmatureConstraint.h"
 #include "BL_ArmatureObject.h"
 #include "BL_ArmatureChannel.h"
+#include "BL_ArmatureMuscle.h"
 #include "KX_ArmatureSensor.h"
 #include "KX_BlenderMaterial.h"
 #include "KX_CameraActuator.h"
@@ -187,6 +188,7 @@ void initPyTypes(void)
 		PyType_Ready_Attr(dict, BL_ArmatureConstraint, init_getset);
 		PyType_Ready_AttrPtr(dict, BL_ArmatureBone, init_getset);
 		PyType_Ready_AttrPtr(dict, BL_ArmatureChannel, init_getset);
+		PyType_Ready_AttrPtr(dict, BL_ArmatureMuscle, init_getset);
 		// PyType_Ready_Attr(dict, CPropValue, init_getset);  // doesn't use Py_Header
 		PyType_Ready_Attr(dict, CListValue, init_getset);
 		PyType_Ready_Attr(dict, CValue, init_getset);

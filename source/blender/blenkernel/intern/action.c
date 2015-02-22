@@ -667,7 +667,7 @@ void BKE_pose_ikparam_init(bPose *pose)
 static bool pose_channel_in_IK_chain(Object *ob, bPoseChannel *pchan, int level)
 {
 	bConstraint *con;
-	Bone *bone;
+	ArmatureElement *bone;
 	
 	/* No need to check if constraint is active (has influence),
 	 * since all constraints with CONSTRAINT_IK_AUTO are active */

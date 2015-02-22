@@ -260,7 +260,6 @@ typedef struct VertSlideData {
 } VertSlideData;
 
 typedef struct BoneInitData {
-//	struct EditBone *bone;
 	struct EditArmatureElement *bone;
 	float tail[3];
 	float rad_tail;

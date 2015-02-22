@@ -4,7 +4,7 @@
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version. 
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -18,7 +18,7 @@
  * The Original Code is Copyright (C) 2009 Blender Foundation.
  * All rights reserved.
  *
- * 
+ *
  * Contributor(s): Blender Foundation
  *
  * ***** END GPL LICENSE BLOCK *****
@@ -57,6 +57,7 @@ struct LinkData;
 /* ******************************************************* */
 /* Armature EditMode Operators */
 void ARMATURE_OT_bone_primitive_add(struct wmOperatorType *ot);
+void ARMATURE_OT_muscle_primitive_add(struct wmOperatorType *ot);
 
 void ARMATURE_OT_align(struct wmOperatorType *ot);
 void ARMATURE_OT_calculate_roll(struct wmOperatorType *ot);
@@ -160,19 +161,19 @@ void SKETCH_OT_select(struct wmOperatorType *ot);
 /* Temporary data linking PoseChannels with the F-Curves they affect */
 typedef struct tPChanFCurveLink {
 	struct tPChanFCurveLink *next, *prev;
-	
+
 	ListBase fcurves;               /* F-Curves for this PoseChannel (wrapped with LinkData) */
 	struct bPoseChannel *pchan;     /* Pose Channel which data is attached to */
-	
+
 	char *pchan_path;               /* RNA Path to this Pose Channel (needs to be freed when we're done) */
-	
+
 	float oldloc[3];                /* transform values at start of operator (to be restored before each modal step) */
 	float oldrot[3];
 	float oldscale[3];
 	float oldquat[4];
 	float oldangle;
 	float oldaxis[3];
-	
+
 	struct IDProperty *oldprops;    /* copy of custom properties at start of operator (to be restored before each modal step) */
 } tPChanFCurveLink;
 
@@ -220,23 +221,6 @@ void POSE_OT_propagate(struct wmOperatorType *ot);
  * within each file, but some tools still have a bit of overlap which makes things messy -- Feb 2013
  */
 
-//EditBone *make_boneList(struct ListBase *edbo, struct ListBase *bones, struct EditBone *parent, struct Bone *actBone);
-//void BIF_sk_selectStroke(struct bContext *C, const int mval[2], short extend);
-//
-///* duplicate method */
-//void preEditBoneDuplicate(struct ListBase *editbones);
-//struct EditBone *duplicateEditBone(struct EditBone *curBone, const char *name, struct ListBase *editbones, struct Object *ob);
-//void updateDuplicateSubtarget(struct EditBone *dupBone, struct ListBase *editbones, struct Object *ob);
-//
-///* duplicate method (cross objects) */
-///* editbones is the target list */
-//struct EditBone *duplicateEditBoneObjects(struct EditBone *curBone, const char *name, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
-//
-///* editbones is the source list */
-//void updateDuplicateSubtargetObjects(struct EditBone *dupBone, struct ListBase *editbones, struct Object *src_ob, struct Object *dst_ob);
-//
-//EditBone *add_points_bone(struct Object *obedit, float head[3], float tail[3]);
-//void bone_free(struct bArmature *arm, struct EditBone *bone);
 EditArmatureElement *make_elementList(struct ListBase *edList, struct ListBase *elements, struct EditArmatureElement *parent, struct ArmatureElement *actElement);
 void BIF_sk_selectStroke(struct bContext *C, const int mval[2], short extend);
 

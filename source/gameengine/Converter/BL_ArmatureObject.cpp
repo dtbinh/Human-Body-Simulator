@@ -19,7 +19,7 @@
  * All rights reserved.
  *
  * The Original Code is: all of this file.
- *
+ *http://8ch.net/v/src/1424511854025-1.jpg
  * Contributor(s): none yet.
  *
  * ***** END GPL LICENSE BLOCK *****
@@ -66,13 +66,13 @@ extern "C" {
 
 #include "MT_Matrix4x4.h"
 
-/** 
+/**
  * Move here pose function for game engine so that we can mix with GE objects
  * Principle is as follow:
  * Use Blender structures so that BKE_pose_where_is can be used unchanged
  * Copy the constraint so that they can be enabled/disabled/added/removed at runtime
  * Don't copy the constraints for the pose used by the Action actuator, it does not need them.
- * Scan the constraint structures so that the KX equivalent of target objects are identified and 
+ * Scan the constraint structures so that the KX equivalent of target objects are identified and
  * stored in separate list.
  * When it is about to evaluate the pose, set the KX object position in the obmat of the corresponding
  * Blender objects and restore after the evaluation.
@@ -82,7 +82,7 @@ static void game_copy_pose(bPose **dst, bPose *src, int copy_constraint)
 	bPose *out;
 	bPoseChannel *pchan, *outpchan;
 	GHash *ghash;
-	
+
 	/* the game engine copies the current armature pose and then swaps
 	 * the object pose pointer. this makes it possible to change poses
 	 * without affecting the original blender data. */
@@ -96,7 +96,7 @@ static void game_copy_pose(bPose **dst, bPose *src, int copy_constraint)
 		*dst=NULL;
 		return;
 	}
-	
+
 	out= (bPose*)MEM_dupallocN(src);
 	out->chanhash = NULL;
 	out->agroups.first= out->agroups.last= NULL;
@@ -166,14 +166,14 @@ static void game_blend_poses(bPose *dst, bPose *src, float srcweight, short mode
 	} else {
 		dstweight = 1.0f;
 	}
-	
+
 	schan= (bPoseChannel *)src->chanbase.first;
 	for (dchan = (bPoseChannel *)dst->chanbase.first; dchan; dchan=(bPoseChannel *)dchan->next, schan= (bPoseChannel *)schan->next) {
 		// always blend on all channels since we don't know which one has been set
 		/* quat interpolation done separate */
 		if (schan->rotmode == ROT_MODE_QUAT) {
 			float dquat[4], squat[4];
-			
+
 			copy_qt_qt(dquat, dchan->quat);
 			copy_qt_qt(squat, schan->quat);
 			if (mode==BL_Action::ACT_BLEND_BLEND)
@@ -182,7 +182,7 @@ static void game_blend_poses(bPose *dst, bPose *src, float srcweight, short mode
 				mul_fac_qt_fl(squat, srcweight);
 				mul_qt_qtqt(dchan->quat, dquat, squat);
 			}
-			
+
 			normalize_qt(dchan->quat);
 		}
 
@@ -190,7 +190,7 @@ static void game_blend_poses(bPose *dst, bPose *src, float srcweight, short mode
 			/* blending for loc and scale are pretty self-explanatory... */
 			dchan->loc[i] = (dchan->loc[i]*dstweight) + (schan->loc[i]*srcweight);
 			dchan->size[i] = 1.0f + ((dchan->size[i]-1.0f)*dstweight) + ((schan->size[i]-1.0f)*srcweight);
-			
+
 			/* euler-rotation interpolation done here instead... */
 			// FIXME: are these results decent?
 			if (schan->rotmode)
@@ -204,14 +204,14 @@ static void game_blend_poses(bPose *dst, bPose *src, float srcweight, short mode
 			dcon->enforce= dcon->enforce*(1.0f-srcweight) + scon->enforce*srcweight;
 		}
 	}
-	
+
 	/* this pose is now in src time */
 	dst->ctime= src->ctime;
 }
 
 BL_ArmatureObject::BL_ArmatureObject(
-				void* sgReplicationInfo, 
-				SG_Callbacks callbacks, 
+				void* sgReplicationInfo,
+				SG_Callbacks callbacks,
 				Object *armature,
 				Scene *scene,
 				int vert_deform_type)
@@ -246,9 +246,18 @@ BL_ArmatureObject::~BL_ArmatureObject()
 	while ((channel = static_cast<BL_ArmatureChannel*>(m_poseChannels.Remove())) != NULL) {
 		delete channel;
 	}
+	BL_ArmatureMuscle* muscle;
+	while ((muscle = static_cast<BL_ArmatureMuscle*>(m_poseMuscles.Remove())) != NULL) {
+		delete muscle;
+	}
 
 	if (m_objArma)
+	{
+        if (m_objArma->data)
+            BKE_armature_free(static_cast<bArmature*>(m_objArma->data));
+        
 		BKE_libblock_free(G.main, m_objArma);
+	}
 }
 
 
@@ -363,12 +372,15 @@ void BL_ArmatureObject::LoadChannels()
 	if (m_poseChannels.Empty()) {
 		bPoseChannel* pchan;
 		BL_ArmatureChannel* proxy;
-	
+
 		m_channelNumber = 0;
 		for (pchan = (bPoseChannel *)m_pose->chanbase.first; pchan; pchan=(bPoseChannel *)pchan->next) {
-			proxy = new BL_ArmatureChannel(this, pchan);
-			m_poseChannels.AddBack(proxy);
-			m_channelNumber++;
+            if (pchan->bone->type == AE_BONE)
+            {
+                proxy = new BL_ArmatureChannel(this, pchan);
+                m_poseChannels.AddBack(proxy);
+                m_channelNumber++;
+            }
 		}
 	}
 }
@@ -377,7 +389,7 @@ BL_ArmatureChannel* BL_ArmatureObject::GetChannel(bPoseChannel* pchan)
 {
 	LoadChannels();
 	SG_DList::iterator<BL_ArmatureChannel> cit(m_poseChannels);
-	for (cit.begin(); !cit.end(); ++cit) 
+	for (cit.begin(); !cit.end(); ++cit)
 	{
 		BL_ArmatureChannel* channel = *cit;
 		if (channel->m_posechannel == pchan)
@@ -390,7 +402,7 @@ BL_ArmatureChannel* BL_ArmatureObject::GetChannel(const char* str)
 {
 	LoadChannels();
 	SG_DList::iterator<BL_ArmatureChannel> cit(m_poseChannels);
-	for (cit.begin(); !cit.end(); ++cit) 
+	for (cit.begin(); !cit.end(); ++cit)
 	{
 		BL_ArmatureChannel* channel = *cit;
 		if (!strcmp(channel->m_posechannel->name, str))
@@ -407,6 +419,60 @@ BL_ArmatureChannel* BL_ArmatureObject::GetChannel(int index)
 	SG_DList::iterator<BL_ArmatureChannel> cit(m_poseChannels);
 	for (cit.begin(); !cit.end() && index; ++cit, --index);
 	return (cit.end()) ? NULL : *cit;
+}
+
+void BL_ArmatureObject::LoadMuscles()
+{
+    if (m_poseMuscles.Empty()) {
+        bPoseChannel* pmuscle;
+        BL_ArmatureMuscle *proxy;
+        
+        m_muscleNumber = 0;
+        for (pmuscle = (bPoseChannel *)m_pose->chanbase.first; pmuscle; pmuscle=(bPoseChannel *)pmuscle->next) {
+            if (pmuscle->bone->type == AE_MUSCLE)
+            {
+                proxy = new BL_ArmatureMuscle(this, pmuscle);
+                m_poseMuscles.AddBack(proxy);
+                m_muscleNumber++;
+            }
+        }
+    }
+}
+
+BL_ArmatureMuscle* BL_ArmatureObject::GetMuscle(bPoseChannel* pchan)
+{
+    LoadMuscles();
+    SG_DList::iterator<BL_ArmatureMuscle> cit(m_poseMuscles);
+    for (cit.begin(); !cit.end(); ++cit)
+    {
+        BL_ArmatureMuscle* muscle = *cit;
+        if (muscle->m_musclechannel == pchan)
+            return muscle;
+    }
+    return NULL;
+}
+
+BL_ArmatureMuscle* BL_ArmatureObject::GetMuscle(const char* str)
+{
+    LoadMuscles();
+    SG_DList::iterator<BL_ArmatureMuscle> cit(m_poseMuscles);
+    for (cit.begin(); !cit.end(); ++cit)
+    {
+        BL_ArmatureMuscle *muscle = *cit;
+        if (!strcmp(muscle->m_musclechannel->name, str))
+            return muscle;
+    }
+    return NULL;
+}
+
+BL_ArmatureMuscle* BL_ArmatureObject::GetMuscle(int index)
+{
+    LoadMuscles();
+    if (index < 0 || index >= m_muscleNumber)
+        return NULL;
+    SG_DList::iterator<BL_ArmatureMuscle> cit(m_poseMuscles);
+    for (cit.begin(); !cit.end() && index; ++cit, --index);
+    return (cit.end()) ? NULL : *cit;
 }
 
 CValue* BL_ArmatureObject::GetReplica()
@@ -523,11 +589,11 @@ void BL_ArmatureObject::GetPose(bPose **pose)
 {
 	/* If the caller supplies a null pose, create a new one. */
 	/* Otherwise, copy the armature's pose channels into the caller-supplied pose */
-		
+
 	if (!*pose) {
 		/* probably not to good of an idea to
-		 * duplicate everything, but it clears up 
-		 * a crash and memory leakage when 
+		 * duplicate everything, but it clears up
+		 * a crash and memory leakage when
 		 * &BL_ActionActuator::m_pose is freed
 		 */
 		game_copy_pose(pose, m_pose, 0);
@@ -546,7 +612,7 @@ double BL_ArmatureObject::GetLastFrame()
 	return m_lastframe;
 }
 
-bool BL_ArmatureObject::GetBoneMatrix(Bone* bone, MT_Matrix4x4& matrix)
+bool BL_ArmatureObject::GetBoneMatrix(ArmatureElement* bone, MT_Matrix4x4& matrix)
 {
 	bPoseChannel *pchan;
 
@@ -559,7 +625,7 @@ bool BL_ArmatureObject::GetBoneMatrix(Bone* bone, MT_Matrix4x4& matrix)
 	return (pchan != NULL);
 }
 
-float BL_ArmatureObject::GetBoneLength(Bone* bone) const
+float BL_ArmatureObject::GetBoneLength(ArmatureElement* bone) const
 {
 	return (float)(MT_Point3(bone->head) - MT_Point3(bone->tail)).length();
 }
@@ -605,6 +671,7 @@ PyAttributeDef BL_ArmatureObject::Attributes[] = {
 
 	KX_PYATTRIBUTE_RO_FUNCTION("constraints",		BL_ArmatureObject, pyattr_get_constraints),
 	KX_PYATTRIBUTE_RO_FUNCTION("channels",		BL_ArmatureObject, pyattr_get_channels),
+	KX_PYATTRIBUTE_RO_FUNCTION("muscles",       BL_ArmatureObject, pyattr_get_muscles),
 	{NULL} //Sentinel
 };
 
@@ -620,7 +687,14 @@ PyObject *BL_ArmatureObject::pyattr_get_channels(void *self_v, const KX_PYATTRIB
 	return KX_PythonSeq_CreatePyObject((static_cast<BL_ArmatureObject*>(self_v))->m_proxy, KX_PYGENSEQ_OB_TYPE_CHANNELS);
 }
 
-KX_PYMETHODDEF_DOC_NOARGS(BL_ArmatureObject, update, 
+PyObject *BL_ArmatureObject::pyattr_get_muscles(void *self_v, const KX_PYATTRIBUTE_DEF *attrdef)
+{
+    BL_ArmatureObject *self = static_cast<BL_ArmatureObject*>(self_v);
+    self->LoadMuscles();
+    return KX_PythonSeq_CreatePyObject((static_cast<BL_ArmatureObject*>(self_v))->m_proxy, KX_PYGENSEQ_OB_TYPE_MUSCLES);
+}
+
+KX_PYMETHODDEF_DOC_NOARGS(BL_ArmatureObject, update,
 						  "update()\n"
 						  "Make sure that the armature will be updated on next graphic frame.\n"
 						  "This is automatically done if a KX_ArmatureActuator with mode run is active\n"

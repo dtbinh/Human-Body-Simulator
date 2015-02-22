@@ -117,12 +117,12 @@ static NodeBorder snapNodeBorder(int snap_node_mode);
 int BIF_snappingSupported(Object *obedit)
 {
 	int status = 0;
-	
+
 	/* only support object mesh, armature, curves */
 	if (obedit == NULL || ELEM(obedit->type, OB_MESH, OB_ARMATURE, OB_CURVE, OB_LATTICE, OB_MBALL)) {
 		status = 1;
 	}
-	
+
 	return status;
 }
 #endif
@@ -142,19 +142,19 @@ bool activeSnap(TransInfo *t)
 void drawSnapping(const struct bContext *C, TransInfo *t)
 {
 	unsigned char col[4], selectedCol[4], activeCol[4];
-	
+
 	if (!activeSnap(t))
 		return;
-	
+
 	UI_GetThemeColor3ubv(TH_TRANSFORM, col);
 	col[3] = 128;
-	
+
 	UI_GetThemeColor3ubv(TH_SELECT, selectedCol);
 	selectedCol[3] = 128;
-	
+
 	UI_GetThemeColor3ubv(TH_ACTIVE, activeCol);
 	activeCol[3] = 192;
-	
+
 	if (t->spacetype == SPACE_VIEW3D) {
 		if (validSnap(t)) {
 			TransSnapPoint *p;
@@ -162,13 +162,13 @@ void drawSnapping(const struct bContext *C, TransInfo *t)
 			RegionView3D *rv3d = CTX_wm_region_view3d(C);
 			float imat[4][4];
 			float size;
-			
+
 			glDisable(GL_DEPTH_TEST);
-			
+
 			size = 2.5f * UI_GetThemeValuef(TH_VERTEX_SIZE);
-			
+
 			invert_m4_m4(imat, rv3d->viewmat);
-			
+
 			for (p = t->tsnap.points.first; p; p = p->next) {
 				if (p == t->tsnap.selectedPoint) {
 					glColor4ubv(selectedCol);
@@ -176,20 +176,20 @@ void drawSnapping(const struct bContext *C, TransInfo *t)
 				else {
 					glColor4ubv(col);
 				}
-				
+
 				drawcircball(GL_LINE_LOOP, p->co, ED_view3d_pixel_size(rv3d, p->co) * size * 0.75f, imat);
 			}
-			
+
 			if (t->tsnap.status & POINT_INIT) {
 				glColor4ubv(activeCol);
-				
+
 				drawcircball(GL_LINE_LOOP, t->tsnap.snapPoint, ED_view3d_pixel_size(rv3d, t->tsnap.snapPoint) * size, imat);
 			}
-			
+
 			/* draw normal if needed */
 			if (usingSnappingNormal(t) && validSnappingNormal(t)) {
 				glColor4ubv(activeCol);
-				
+
 				glBegin(GL_LINES);
 				glVertex3f(t->tsnap.snapPoint[0], t->tsnap.snapPoint[1], t->tsnap.snapPoint[2]);
 				glVertex3f(t->tsnap.snapPoint[0] + t->tsnap.snapNormal[0],
@@ -197,7 +197,7 @@ void drawSnapping(const struct bContext *C, TransInfo *t)
 				           t->tsnap.snapPoint[2] + t->tsnap.snapNormal[2]);
 				glEnd();
 			}
-			
+
 			if (v3d->zbuf)
 				glEnable(GL_DEPTH_TEST);
 		}
@@ -209,28 +209,28 @@ void drawSnapping(const struct bContext *C, TransInfo *t)
 			float xuser_asp, yuser_asp;
 			int wi, hi;
 			float w, h;
-			
+
 			calc_image_view(G.sima, 'f');   // float
 			myortho2(G.v2d->cur.xmin, G.v2d->cur.xmax, G.v2d->cur.ymin, G.v2d->cur.ymax);
 			glLoadIdentity();
-			
+
 			ED_space_image_get_aspect(t->sa->spacedata.first, &xuser_aspx, &yuser_asp);
 			ED_space_image_width(t->sa->spacedata.first, &wi, &hi);
 			w = (((float)wi) / IMG_SIZE_FALLBACK) * G.sima->zoom * xuser_asp;
 			h = (((float)hi) / IMG_SIZE_FALLBACK) * G.sima->zoom * yuser_asp;
-			
+
 			cpack(0xFFFFFF);
 			glTranslatef(t->tsnap.snapPoint[0], t->tsnap.snapPoint[1], 0.0f);
-			
+
 			//glRectf(0, 0, 1, 1);
-			
+
 			setlinestyle(0);
 			cpack(0x0);
 			fdrawline(-0.020 / w, 0, -0.1 / w, 0);
 			fdrawline(0.1 / w, 0, 0.020 / w, 0);
 			fdrawline(0, -0.020 / h, 0, -0.1 / h);
 			fdrawline(0, 0.1 / h, 0, 0.020 / h);
-			
+
 			glTranslatef(-t->tsnap.snapPoint[0], -t->tsnap.snapPoint[1], 0.0f);
 			setlinestyle(0);
 #endif
@@ -241,11 +241,11 @@ void drawSnapping(const struct bContext *C, TransInfo *t)
 			ARegion *ar = CTX_wm_region(C);
 			TransSnapPoint *p;
 			float size;
-			
+
 			size = 2.5f * UI_GetThemeValuef(TH_VERTEX_SIZE);
-			
+
 			glEnable(GL_BLEND);
-			
+
 			for (p = t->tsnap.points.first; p; p = p->next) {
 				if (p == t->tsnap.selectedPoint) {
 					glColor4ubv(selectedCol);
@@ -253,16 +253,16 @@ void drawSnapping(const struct bContext *C, TransInfo *t)
 				else {
 					glColor4ubv(col);
 				}
-				
+
 				ED_node_draw_snap(&ar->v2d, p->co, size, 0);
 			}
-			
+
 			if (t->tsnap.status & POINT_INIT) {
 				glColor4ubv(activeCol);
-				
+
 				ED_node_draw_snap(&ar->v2d, t->tsnap.snapPoint, size, t->tsnap.snapNodeBorder);
 			}
-			
+
 			glDisable(GL_BLEND);
 		}
 	}
@@ -283,7 +283,7 @@ eRedrawFlag handleSnapping(TransInfo *t, const wmEvent *event)
 	if (event->type == MOUSEMOVE) {
 		status |= updateSelectedSnapPoint(t);
 	}
-	
+
 	return status;
 }
 
@@ -295,7 +295,7 @@ void applyProject(TransInfo *t)
 		float tvec[3];
 		float imat[4][4];
 		int i;
-	
+
 		if (t->flag & (T_EDIT | T_POSE)) {
 			Object *ob = t->obedit ? t->obedit : t->poseobj;
 			invert_m4_m4(imat, ob->obmat);
@@ -305,16 +305,16 @@ void applyProject(TransInfo *t)
 			float iloc[3], loc[3], no[3];
 			float mval_fl[2];
 			float dist_px = TRANSFORM_DIST_MAX_PX;
-			
+
 			if (td->flag & TD_NOACTION)
 				break;
-			
+
 			if (td->flag & TD_SKIP)
 				continue;
 
 			if ((t->flag & T_PROP_EDIT) && (td->factor == 0.0f))
 				continue;
-			
+
 			copy_v3_v3(iloc, td->loc);
 			if (t->flag & (T_EDIT | T_POSE)) {
 				Object *ob = t->obedit ? t->obedit : t->poseobj;
@@ -326,7 +326,7 @@ void applyProject(TransInfo *t)
 				BKE_object_handle_update(G.main->eval_ctx, t->scene, td->ob);
 				copy_v3_v3(iloc, td->ob->obmat[3]);
 			}
-			
+
 			if (ED_view3d_project_float_global(t->ar, iloc, mval_fl, V3D_PROJ_TEST_NOP) == V3D_PROJ_RET_OK) {
 				if (snapObjectsTransform(t, mval_fl, &dist_px, loc, no, t->tsnap.modeSelect)) {
 //					if (t->flag & (T_EDIT|T_POSE)) {
@@ -373,7 +373,7 @@ void applyProject(TransInfo *t)
 					}
 				}
 			}
-			
+
 			//XXX constraintTransLim(t, td);
 		}
 	}
@@ -386,14 +386,14 @@ void applyGridAbsolute(TransInfo *t)
 	TransData *td;
 	float imat[4][4];
 	int i;
-	
+
 	if (!(activeSnap(t) && (t->tsnap.mode == SCE_SNAP_MODE_GRID)))
 		return;
-	
+
 	grid_action = BIG_GEARS;
 	if (t->modifiers & MOD_PRECISION)
 		grid_action = SMALL_GEARS;
-	
+
 	switch (grid_action) {
 		case NO_GEARS: grid_size = t->snap[0]; break;
 		case BIG_GEARS: grid_size = t->snap[1]; break;
@@ -402,24 +402,24 @@ void applyGridAbsolute(TransInfo *t)
 	/* early exit on unusable grid size */
 	if (grid_size == 0.0f)
 		return;
-	
+
 	if (t->flag & (T_EDIT | T_POSE)) {
 		Object *ob = t->obedit ? t->obedit : t->poseobj;
 		invert_m4_m4(imat, ob->obmat);
 	}
-	
+
 	for (i = 0, td = t->data; i < t->total; i++, td++) {
 		float iloc[3], loc[3], tvec[3];
-		
+
 		if (td->flag & TD_NOACTION)
 			break;
-		
+
 		if (td->flag & TD_SKIP)
 			continue;
-		
+
 		if ((t->flag & T_PROP_EDIT) && (td->factor == 0.0f))
 			continue;
-		
+
 		copy_v3_v3(iloc, td->loc);
 		if (t->flag & (T_EDIT | T_POSE)) {
 			Object *ob = t->obedit ? t->obedit : t->poseobj;
@@ -430,13 +430,13 @@ void applyGridAbsolute(TransInfo *t)
 			BKE_object_handle_update(G.main->eval_ctx, t->scene, td->ob);
 			copy_v3_v3(iloc, td->ob->obmat[3]);
 		}
-		
+
 		mul_v3_v3fl(loc, iloc, 1.0f / grid_size);
 		loc[0] = floorf(loc[0]);
 		loc[1] = floorf(loc[1]);
 		loc[2] = floorf(loc[2]);
 		mul_v3_fl(loc, grid_size);
-		
+
 		sub_v3_v3v3(tvec, loc, iloc);
 		mul_m3_v3(td->smtx, tvec);
 		add_v3_v3(td->loc, tvec);
@@ -448,21 +448,21 @@ void applySnapping(TransInfo *t, float *vec)
 	/* project is not applied this way */
 	if (t->tsnap.project)
 		return;
-	
+
 	if (t->tsnap.status & SNAP_FORCED) {
 		t->tsnap.targetSnap(t);
-	
+
 		t->tsnap.applySnap(t, vec);
 	}
 	else if ((t->tsnap.mode != SCE_SNAP_MODE_INCREMENT) && activeSnap(t)) {
 		double current = PIL_check_seconds_timer();
-		
+
 		// Time base quirky code to go around findnearest slowness
 		/* !TODO! add exception for object mode, no need to slow it down then */
 		if (current - t->tsnap.last >= 0.01) {
 			t->tsnap.calcSnap(t, vec);
 			t->tsnap.targetSnap(t);
-	
+
 			t->tsnap.last = current;
 		}
 		if (validSnap(t)) {
@@ -485,7 +485,7 @@ void resetSnapping(TransInfo *t)
 	t->tsnap.snapNormal[0] = 0;
 	t->tsnap.snapNormal[1] = 0;
 	t->tsnap.snapNormal[2] = 0;
-	
+
 	t->tsnap.snapNodeBorder = 0;
 }
 
@@ -501,7 +501,7 @@ bool validSnappingNormal(TransInfo *t)
 			return true;
 		}
 	}
-	
+
 	return false;
 }
 
@@ -515,20 +515,20 @@ static void initSnappingMode(TransInfo *t)
 	if (t->spacetype == SPACE_NODE) {
 		/* force project off when not supported */
 		t->tsnap.project = 0;
-		
+
 		t->tsnap.mode = ts->snap_node_mode;
 	}
 	else if (t->spacetype == SPACE_IMAGE) {
 		/* force project off when not supported */
 		t->tsnap.project = 0;
-		
+
 		t->tsnap.mode = ts->snap_uv_mode;
 	}
 	else {
 		/* force project off when not supported */
 		if (ts->snap_mode != SCE_SNAP_MODE_FACE)
 			t->tsnap.project = 0;
-		
+
 		t->tsnap.mode = ts->snap_mode;
 	}
 
@@ -568,7 +568,7 @@ static void initSnappingMode(TransInfo *t)
 	}
 	else if (t->spacetype == SPACE_NODE) {
 		setSnappingCallback(t);
-		
+
 		if (t->tsnap.applySnap != NULL) {
 			t->tsnap.modeSelect = SNAP_NOT_SELECTED;
 		}
@@ -587,9 +587,9 @@ void initSnapping(TransInfo *t, wmOperator *op)
 {
 	ToolSettings *ts = t->settings;
 	short snap_target = t->settings->snap_target;
-	
+
 	resetSnapping(t);
-	
+
 	/* if snap property exists */
 	if (op && RNA_struct_find_property(op->ptr, "snap") && RNA_struct_property_is_set(op->ptr, "snap")) {
 		if (RNA_boolean_get(op->ptr, "snap")) {
@@ -598,12 +598,12 @@ void initSnapping(TransInfo *t, wmOperator *op)
 			if (RNA_struct_property_is_set(op->ptr, "snap_target")) {
 				snap_target = RNA_enum_get(op->ptr, "snap_target");
 			}
-			
+
 			if (RNA_struct_property_is_set(op->ptr, "snap_point")) {
 				RNA_float_get_array(op->ptr, "snap_point", t->tsnap.snapPoint);
 				t->tsnap.status |= SNAP_FORCED | POINT_INIT;
 			}
-			
+
 			/* snap align only defined in specific cases */
 			if (RNA_struct_find_property(op->ptr, "snap_align")) {
 				t->tsnap.align = RNA_boolean_get(op->ptr, "snap_align");
@@ -633,7 +633,7 @@ void initSnapping(TransInfo *t, wmOperator *op)
 			t->tsnap.peel = ((t->settings->snap_flag & SCE_SNAP_PROJECT) != 0);
 		}
 	}
-	
+
 	t->tsnap.target = snap_target;
 
 	initSnappingMode(t);
@@ -838,7 +838,7 @@ static float TranslationBetween(TransInfo *UNUSED(t), const float p1[3], const f
 static float RotationBetween(TransInfo *t, const float p1[3], const float p2[3])
 {
 	float angle, start[3], end[3], center[3];
-	
+
 	copy_v3_v3(center, t->center);
 	if (t->flag & (T_EDIT | T_POSE)) {
 		Object *ob = t->obedit ? t->obedit : t->poseobj;
@@ -847,24 +847,24 @@ static float RotationBetween(TransInfo *t, const float p1[3], const float p2[3])
 
 	sub_v3_v3v3(start, p1, center);
 	sub_v3_v3v3(end, p2, center);
-		
+
 	// Angle around a constraint axis (error prone, will need debug)
 	if (t->con.applyRot != NULL && (t->con.mode & CON_APPLY)) {
 		float axis[3], tmp[3];
-		
+
 		t->con.applyRot(t, NULL, axis, NULL);
 
 		project_v3_v3v3(tmp, end, axis);
 		sub_v3_v3v3(end, end, tmp);
-		
+
 		project_v3_v3v3(tmp, start, axis);
 		sub_v3_v3v3(start, start, tmp);
-		
+
 		normalize_v3(end);
 		normalize_v3(start);
-		
+
 		cross_v3_v3v3(tmp, start, end);
-		
+
 		if (dot_v3v3(tmp, axis) < 0.0f)
 			angle = -acosf(dot_v3v3(start, end));
 		else
@@ -872,29 +872,29 @@ static float RotationBetween(TransInfo *t, const float p1[3], const float p2[3])
 	}
 	else {
 		float mtx[3][3];
-		
+
 		copy_m3_m4(mtx, t->viewmat);
 
 		mul_m3_v3(mtx, end);
 		mul_m3_v3(mtx, start);
-		
+
 		angle = atan2f(start[1], start[0]) - atan2f(end[1], end[0]);
 	}
-	
+
 	if (angle > (float)M_PI) {
 		angle = angle - 2 * (float)M_PI;
 	}
 	else if (angle < -((float)M_PI)) {
 		angle = 2.0f * (float)M_PI + angle;
 	}
-	
+
 	return angle;
 }
 
 static float ResizeBetween(TransInfo *t, const float p1[3], const float p2[3])
 {
 	float d1[3], d2[3], center[3], len_d1;
-	
+
 	copy_v3_v3(center, t->center);
 	if (t->flag & (T_EDIT | T_POSE)) {
 		Object *ob = t->obedit ? t->obedit : t->poseobj;
@@ -903,12 +903,12 @@ static float ResizeBetween(TransInfo *t, const float p1[3], const float p2[3])
 
 	sub_v3_v3v3(d1, p1, center);
 	sub_v3_v3v3(d2, p2, center);
-	
+
 	if (t->con.applyRot != NULL && (t->con.mode & CON_APPLY)) {
 		mul_m3_v3(t->con.pmtx, d1);
 		mul_m3_v3(t->con.pmtx, d2);
 	}
-	
+
 	len_d1 = len_v3(d1);
 
 	return len_d1 != 0.0f ? len_v3(d2) / len_d1 : 1;
@@ -929,21 +929,21 @@ static void CalcSnapGeometry(TransInfo *t, float *UNUSED(vec))
 		float mval[2];
 		bool found = false;
 		float dist_px = SNAP_MIN_DISTANCE; // Use a user defined value here
-		
+
 		mval[0] = t->mval[0];
 		mval[1] = t->mval[1];
-		
+
 		if (t->tsnap.mode == SCE_SNAP_MODE_VOLUME) {
 			ListBase depth_peels;
 			DepthPeel *p1, *p2;
 			const float *last_p = NULL;
 			float max_dist = FLT_MAX;
 			float p[3] = {0.0f, 0.0f, 0.0f};
-			
+
 			BLI_listbase_clear(&depth_peels);
-			
+
 			peelObjectsTransForm(t, &depth_peels, mval, t->tsnap.modeSelect);
-			
+
 //			if (LAST_SNAP_POINT_VALID)
 //			{
 //				last_p = LAST_SNAP_POINT;
@@ -952,16 +952,16 @@ static void CalcSnapGeometry(TransInfo *t, float *UNUSED(vec))
 //			{
 				last_p = t->tsnap.snapPoint;
 //			}
-			
-			
+
+
 			for (p1 = depth_peels.first; p1; p1 = p1->next) {
 				if (p1->flag == 0) {
 					float vec[3];
 					float new_dist;
-					
+
 					p2 = NULL;
 					p1->flag = 1;
-		
+
 					/* if peeling objects, take the first and last from each object */
 					if (t->settings->snap_flag & SCE_SNAP_PEEL_OBJECT) {
 						DepthPeel *peel;
@@ -978,10 +978,10 @@ static void CalcSnapGeometry(TransInfo *t, float *UNUSED(vec))
 							/* nothing to do here */
 						}
 					}
-					
+
 					if (p2) {
 						p2->flag = 1;
-						
+
 						add_v3_v3v3(vec, p1->p, p2->p);
 						mul_v3_fl(vec, 0.5f);
 					}
@@ -994,16 +994,16 @@ static void CalcSnapGeometry(TransInfo *t, float *UNUSED(vec))
 						max_dist = 0;
 						break;
 					}
-					
+
 					new_dist = len_v3v3(last_p, vec);
-					
+
 					if (new_dist < max_dist) {
 						copy_v3_v3(p, vec);
 						max_dist = new_dist;
 					}
 				}
 			}
-			
+
 			if (max_dist != FLT_MAX) {
 				copy_v3_v3(loc, p);
 				/* XXX, is there a correct normal in this case ???, for now just z up */
@@ -1012,23 +1012,23 @@ static void CalcSnapGeometry(TransInfo *t, float *UNUSED(vec))
 				no[2] = 1.0;
 				found = true;
 			}
-			
+
 			BLI_freelistN(&depth_peels);
 		}
 		else {
 			found = snapObjectsTransform(t, mval, &dist_px, loc, no, t->tsnap.modeSelect);
 		}
-		
+
 		if (found == true) {
 			float tangent[3];
-			
+
 			sub_v2_v2v2(tangent, loc, t->tsnap.snapPoint);
 			tangent[2] = 0.0f;
-			
+
 			if (!is_zero_v3(tangent)) {
 				copy_v3_v3(t->tsnap.snapTangent, tangent);
 			}
-			
+
 			copy_v3_v3(t->tsnap.snapPoint, loc);
 			copy_v3_v3(t->tsnap.snapNormal, no);
 
@@ -1042,7 +1042,7 @@ static void CalcSnapGeometry(TransInfo *t, float *UNUSED(vec))
 		/* same as above but for UV's */
 		Image *ima = ED_space_image(t->sa->spacedata.first);
 		float aspx, aspy, co[2];
-		
+
 		UI_view2d_region_to_view(&t->ar->v2d, t->mval[0], t->mval[1], &co[0], &co[1]);
 
 		if (ED_uvedit_nearest_uv(t->scene, t->obedit, ima, co, t->tsnap.snapPoint)) {
@@ -1060,11 +1060,11 @@ static void CalcSnapGeometry(TransInfo *t, float *UNUSED(vec))
 		float loc[2];
 		float dist_px = SNAP_MIN_DISTANCE; // Use a user defined value here
 		char node_border;
-		
+
 		if (snapNodesTransform(t, t->mval, &dist_px, loc, &node_border, t->tsnap.modeSelect)) {
 			copy_v2_v2(t->tsnap.snapPoint, loc);
 			t->tsnap.snapNodeBorder = node_border;
-			
+
 			t->tsnap.status |=  POINT_INIT;
 		}
 		else {
@@ -1082,7 +1082,7 @@ static void TargetSnapOffset(TransInfo *t, TransData *td)
 		char border = t->tsnap.snapNodeBorder;
 		float width  = BLI_rctf_size_x(&node->totr);
 		float height = BLI_rctf_size_y(&node->totr);
-		
+
 #ifdef USE_NODE_CENTER
 		if (border & NODE_LEFT)
 			t->tsnap.snapTarget[0] -= 0.5f * width;
@@ -1110,14 +1110,14 @@ static void TargetSnapCenter(TransInfo *t)
 	/* Only need to calculate once */
 	if ((t->tsnap.status & TARGET_INIT) == 0) {
 		copy_v3_v3(t->tsnap.snapTarget, t->center);
-		
+
 		if (t->flag & (T_EDIT | T_POSE)) {
 			Object *ob = t->obedit ? t->obedit : t->poseobj;
 			mul_m4_v3(ob->obmat, t->tsnap.snapTarget);
 		}
-		
+
 		TargetSnapOffset(t, NULL);
-		
+
 		t->tsnap.status |= TARGET_INIT;
 	}
 }
@@ -1155,20 +1155,20 @@ static void TargetSnapMedian(TransInfo *t)
 		t->tsnap.snapTarget[0] = 0;
 		t->tsnap.snapTarget[1] = 0;
 		t->tsnap.snapTarget[2] = 0;
-		
+
 		for (td = t->data, i = 0; i < t->total && td->flag & TD_SELECTED; i++, td++) {
 			add_v3_v3(t->tsnap.snapTarget, td->center);
 		}
-		
+
 		mul_v3_fl(t->tsnap.snapTarget, 1.0 / i);
-		
+
 		if (t->flag & (T_EDIT | T_POSE)) {
 			Object *ob = t->obedit ? t->obedit : t->poseobj;
 			mul_m4_v3(ob->obmat, t->tsnap.snapTarget);
 		}
-		
+
 		TargetSnapOffset(t, NULL);
-		
+
 		t->tsnap.status |= TARGET_INIT;
 	}
 }
@@ -1178,30 +1178,30 @@ static void TargetSnapClosest(TransInfo *t)
 	// Only valid if a snap point has been selected
 	if (t->tsnap.status & POINT_INIT) {
 		TransData *closest = NULL, *td = NULL;
-		
+
 		/* Object mode */
 		if (t->flag & T_OBJECT) {
 			int i;
 			for (td = t->data, i = 0; i < t->total && td->flag & TD_SELECTED; i++, td++) {
 				struct BoundBox *bb = BKE_object_boundbox_get(td->ob);
-				
+
 				/* use boundbox if possible */
 				if (bb) {
 					int j;
-					
+
 					for (j = 0; j < 8; j++) {
 						float loc[3];
 						float dist;
-						
+
 						copy_v3_v3(loc, bb->vec[j]);
 						mul_m4_v3(td->ext->obmat, loc);
-						
+
 						dist = t->tsnap.distance(t, loc, t->tsnap.snapPoint);
-						
+
 						if (closest == NULL || fabsf(dist) < fabsf(t->tsnap.dist)) {
 							copy_v3_v3(t->tsnap.snapTarget, loc);
 							closest = td;
-							t->tsnap.dist = dist; 
+							t->tsnap.dist = dist;
 						}
 					}
 				}
@@ -1209,15 +1209,15 @@ static void TargetSnapClosest(TransInfo *t)
 				else {
 					float loc[3];
 					float dist;
-					
+
 					copy_v3_v3(loc, td->center);
-					
+
 					dist = t->tsnap.distance(t, loc, t->tsnap.snapPoint);
-					
+
 					if (closest == NULL || fabsf(dist) < fabsf(t->tsnap.dist)) {
 						copy_v3_v3(t->tsnap.snapTarget, loc);
 						closest = td;
-						t->tsnap.dist = dist; 
+						t->tsnap.dist = dist;
 					}
 				}
 			}
@@ -1227,26 +1227,26 @@ static void TargetSnapClosest(TransInfo *t)
 			for (td = t->data, i = 0; i < t->total && td->flag & TD_SELECTED; i++, td++) {
 				float loc[3];
 				float dist;
-				
+
 				copy_v3_v3(loc, td->center);
-				
+
 				if (t->flag & (T_EDIT | T_POSE)) {
 					Object *ob = t->obedit ? t->obedit : t->poseobj;
 					mul_m4_v3(ob->obmat, loc);
 				}
-				
+
 				dist = t->tsnap.distance(t, loc, t->tsnap.snapPoint);
-				
+
 				if (closest == NULL || fabsf(dist) < fabsf(t->tsnap.dist)) {
 					copy_v3_v3(t->tsnap.snapTarget, loc);
 					closest = td;
-					t->tsnap.dist = dist; 
+					t->tsnap.dist = dist;
 				}
 			}
 		}
-		
+
 		TargetSnapOffset(t, closest);
-		
+
 		t->tsnap.status |= TARGET_INIT;
 	}
 }
@@ -1258,25 +1258,25 @@ static bool snapEdge(ARegion *ar, const float v1co[3], const short v1no[3], cons
 	float intersect[3] = {0, 0, 0}, ray_end[3], dvec[3];
 	int result;
 	bool retval = false;
-	
+
 	copy_v3_v3(ray_end, ray_normal_local);
 	mul_v3_fl(ray_end, 2000);
 	add_v3_v3v3(ray_end, ray_start_local, ray_end);
-	
+
 	result = isect_line_line_v3(v1co, v2co, ray_start_local, ray_end, intersect, dvec); /* dvec used but we don't care about result */
-	
+
 	if (result) {
 		float edge_loc[3], vec[3];
 		float mul;
-	
+
 		/* check for behind ray_start */
 		sub_v3_v3v3(dvec, intersect, ray_start_local);
-		
+
 		sub_v3_v3v3(edge_loc, v1co, v2co);
 		sub_v3_v3v3(vec, intersect, v2co);
-		
+
 		mul = dot_v3v3(vec, edge_loc) / dot_v3v3(edge_loc, edge_loc);
-		
+
 		if (mul > 1) {
 			mul = 1;
 			copy_v3_v3(intersect, v1co);
@@ -1291,35 +1291,35 @@ static bool snapEdge(ARegion *ar, const float v1co[3], const short v1no[3], cons
 			float new_depth;
 			float screen_loc[2];
 			float new_dist;
-			
+
 			copy_v3_v3(location, intersect);
-			
+
 			mul_m4_v3(obmat, location);
-			
+
 			new_depth = len_v3v3(location, ray_start);
-			
+
 			if (ED_view3d_project_float_global(ar, location, screen_loc, V3D_PROJ_TEST_NOP) == V3D_PROJ_RET_OK) {
 				new_dist = len_manhattan_v2v2(mval_fl, screen_loc);
 			}
 			else {
 				new_dist = TRANSFORM_DIST_MAX_PX;
 			}
-			
+
 			/* 10% threshold if edge is closer but a bit further
 			 * this takes care of series of connected edges a bit slanted w.r.t the viewport
-			 * otherwise, it would stick to the verts of the closest edge and not slide along merrily 
+			 * otherwise, it would stick to the verts of the closest edge and not slide along merrily
 			 * */
 			if (new_dist <= *r_dist_px && new_depth < *r_depth * 1.001f) {
 				float n1[3], n2[3];
-				
+
 				*r_depth = new_depth;
 				retval = true;
-				
+
 				sub_v3_v3v3(edge_loc, v1co, v2co);
 				sub_v3_v3v3(vec, intersect, v2co);
-				
+
 				mul = dot_v3v3(vec, edge_loc) / dot_v3v3(edge_loc, edge_loc);
-				
+
 				if (r_no) {
 					normal_short_to_float_v3(n1, v1no);
 					normal_short_to_float_v3(n2, v2no);
@@ -1329,12 +1329,12 @@ static bool snapEdge(ARegion *ar, const float v1co[3], const short v1no[3], cons
 				}
 
 				copy_v3_v3(r_loc, location);
-				
+
 				*r_dist_px = new_dist;
 			}
 		}
 	}
-	
+
 	return retval;
 }
 
@@ -1344,21 +1344,21 @@ static bool snapVertex(ARegion *ar, const float vco[3], const short vno[3], floa
 {
 	bool retval = false;
 	float dvec[3];
-	
+
 	sub_v3_v3v3(dvec, vco, ray_start_local);
-	
+
 	if (dot_v3v3(ray_normal_local, dvec) > 0) {
 		float location[3];
 		float new_depth;
 		float screen_loc[2];
 		float new_dist;
-		
+
 		copy_v3_v3(location, vco);
-		
+
 		mul_m4_v3(obmat, location);
-		
+
 		new_depth = len_v3v3(location, ray_start);
-		
+
 		if (ED_view3d_project_float_global(ar, location, screen_loc, V3D_PROJ_TEST_NOP) == V3D_PROJ_RET_OK) {
 			new_dist = len_manhattan_v2v2(mval_fl, screen_loc);
 		}
@@ -1366,13 +1366,13 @@ static bool snapVertex(ARegion *ar, const float vco[3], const short vno[3], floa
 			new_dist = TRANSFORM_DIST_MAX_PX;
 		}
 
-		
+
 		if (new_dist <= *r_dist_px && new_depth < *r_depth) {
 			*r_depth = new_depth;
 			retval = true;
-			
+
 			copy_v3_v3(r_loc, location);
-			
+
 			if (r_no) {
 				normal_short_to_float_v3(r_no, vno);
 				mul_m3_v3(timat, r_no);
@@ -1382,7 +1382,7 @@ static bool snapVertex(ARegion *ar, const float vco[3], const short vno[3], floa
 			*r_dist_px = new_dist;
 		}
 	}
-	
+
 	return retval;
 }
 
@@ -1398,17 +1398,16 @@ static bool snapArmature(short snap_mode, ARegion *ar, Object *ob, bArmature *ar
 
 	copy_v3_v3(ray_start_local, ray_start);
 	copy_v3_v3(ray_normal_local, ray_normal);
-	
+
 	mul_m4_v3(imat, ray_start_local);
 	mul_mat3_m4_v3(imat, ray_normal_local);
 
-	if (arm->edbo) {
-		EditBone *eBone;
+	if (arm->edel) {
+		EditArmatureElement *eBone;
 
-		for (eBone = arm->edbo->first; eBone; eBone = eBone->next) {
+		for (eBone = arm->edel->first; eBone; eBone = eBone->next) {
 			if (eBone->layer & arm->layer) {
 				/* skip hidden or moving (selected) bones */
-//				if ((eBone->flag & (BONE_HIDDEN_A | BONE_ROOTSEL | BONE_TIPSEL)) == 0) {
 				if ((eBone->flag & (ELEMENT_HIDDEN_A | ELEMENT_ROOTSEL | ELEMENT_TIPSEL)) == 0) {
 					switch (snap_mode) {
 						case SCE_SNAP_MODE_VERTEX:
@@ -1425,17 +1424,15 @@ static bool snapArmature(short snap_mode, ARegion *ar, Object *ob, bArmature *ar
 	}
 	else if (ob->pose && ob->pose->chanbase.first) {
 		bPoseChannel *pchan;
-//		Bone *bone;
 		ArmatureElement *bone;
-		
+
 		for (pchan = ob->pose->chanbase.first; pchan; pchan = pchan->next) {
 			bone = pchan->bone;
 			/* skip hidden bones */
-//			if (bone && !(bone->flag & (BONE_HIDDEN_P | BONE_HIDDEN_PG))) {
 			if (bone && !(bone->flag & (ELEMENT_HIDDEN_P | ELEMENT_HIDDEN_PG))) {
 				const float *head_vec = pchan->pose_head;
 				const float *tail_vec = pchan->pose_tail;
-				
+
 				switch (snap_mode) {
 					case SCE_SNAP_MODE_VERTEX:
 						retval |= snapVertex(ar, head_vec, NULL, obmat, NULL, ray_start, ray_start_local, ray_normal_local, mval, r_loc, NULL, r_dist_px, r_depth);
@@ -1663,13 +1660,13 @@ static bool snapDerivedMesh(short snap_mode, ARegion *ar, Object *ob, DerivedMes
 						else {
 							index = i;
 						}
-						
+
 						if (index == ORIGINDEX_NONE) {
 							test = false;
 						}
 						else {
 							eve = BM_vert_at_index(em->bm, index);
-							
+
 							if (BM_elem_flag_test(eve, BM_ELEM_HIDDEN) ||
 							    BM_elem_flag_test(eve, BM_ELEM_SELECT))
 							{
@@ -1740,7 +1737,7 @@ static bool snapDerivedMesh(short snap_mode, ARegion *ar, Object *ob, DerivedMes
 	}
 
 	return retval;
-} 
+}
 
 /* may extend later (for now just snaps to empty center) */
 static bool snapEmpty(short snap_mode, ARegion *ar, Object *ob, float obmat[4][4],
@@ -1871,12 +1868,12 @@ static bool snapObject(Scene *scene, short snap_mode, ARegion *ar, Object *ob, f
                        const float mval[2], float r_loc[3], float r_no[3], float *r_dist_px, float *r_depth)
 {
 	bool retval = false;
-	
+
 	if (ob->type == OB_MESH) {
 		BMEditMesh *em;
 		DerivedMesh *dm;
 		bool do_bb = true;
-		
+
 		if (use_obedit) {
 			em = BKE_editmesh_from_object(ob);
 			dm = editbmesh_get_derived_cage(scene, ob, em, CD_MASK_BAREMESH);
@@ -1886,7 +1883,7 @@ static bool snapObject(Scene *scene, short snap_mode, ARegion *ar, Object *ob, f
 			em = NULL;
 			dm = mesh_get_derived_final(scene, ob, CD_MASK_BAREMESH);
 		}
-		
+
 		retval = snapDerivedMesh(snap_mode, ar, ob, dm, em, obmat, ray_start, ray_normal, ray_origin, mval, r_loc, r_no, r_dist_px, r_depth, do_bb);
 
 		dm->release(dm);
@@ -1903,7 +1900,7 @@ static bool snapObject(Scene *scene, short snap_mode, ARegion *ar, Object *ob, f
 	else if (ob->type == OB_CAMERA) {
 		retval = snapCamera(snap_mode, ar, scene, ob, obmat, ray_start, ray_normal, mval, r_loc, r_no, r_dist_px, r_depth);
 	}
-	
+
 	if (retval) {
 		if (r_ob) {
 			*r_ob = ob;
@@ -1934,7 +1931,7 @@ static bool snapObjectsRay(Scene *scene, short snap_mode, Base *base_act, View3D
 	/* Need an exception for particle edit because the base is flagged with BA_HAS_RECALC_DATA
 	 * which makes the loop skip it, even the derived mesh will never change
 	 *
-	 * To solve that problem, we do it first as an exception. 
+	 * To solve that problem, we do it first as an exception.
 	 * */
 	base = base_act;
 	if (base && base->object && base->object->mode & OB_MODE_PARTICLE_EDIT) {
@@ -1964,7 +1961,7 @@ static bool snapObjectsRay(Scene *scene, short snap_mode, Base *base_act, View3D
 			if (ob->transflag & OB_DUPLI) {
 				DupliObject *dupli_ob;
 				ListBase *lb = object_duplilist(G.main->eval_ctx, scene, ob);
-				
+
 				for (dupli_ob = lb->first; dupli_ob; dupli_ob = dupli_ob->next) {
 					bool use_obedit_dupli = (obedit && dupli_ob->ob->data == obedit->data);
 					Object *dupli_snap = (use_obedit_dupli) ? obedit : dupli_ob->ob;
@@ -1973,7 +1970,7 @@ static bool snapObjectsRay(Scene *scene, short snap_mode, Base *base_act, View3D
 					                     r_ob, r_obmat,
 					                     ray_start, ray_normal, ray_origin, mval, r_loc, r_no, r_dist_px, r_ray_dist);
 				}
-				
+
 				free_object_duplilist(lb);
 			}
 
@@ -1982,7 +1979,7 @@ static bool snapObjectsRay(Scene *scene, short snap_mode, Base *base_act, View3D
 			                     ray_start, ray_normal, ray_origin, mval, r_loc, r_no, r_dist_px, r_ray_dist);
 		}
 	}
-	
+
 	return retval;
 }
 static bool snapObjects(Scene *scene, short snap_mode, Base *base_act, View3D *v3d, ARegion *ar, Object *obedit,
@@ -2048,31 +2045,31 @@ static int cmpPeel(const void *arg1, const void *arg2)
 	const DepthPeel *p1 = arg1;
 	const DepthPeel *p2 = arg2;
 	int val = 0;
-	
+
 	if (p1->depth < p2->depth) {
 		val = -1;
 	}
 	else if (p1->depth > p2->depth) {
 		val = 1;
 	}
-	
+
 	return val;
 }
 
 static void removeDoublesPeel(ListBase *depth_peels)
 {
 	DepthPeel *peel;
-	
+
 	for (peel = depth_peels->first; peel; peel = peel->next) {
 		DepthPeel *next_peel = peel->next;
 
 		if (next_peel && fabsf(peel->depth - next_peel->depth) < 0.0015f) {
 			peel->next = next_peel->next;
-			
+
 			if (next_peel->next) {
 				next_peel->next->prev = peel;
 			}
-			
+
 			MEM_freeN(next_peel);
 		}
 	}
@@ -2081,14 +2078,14 @@ static void removeDoublesPeel(ListBase *depth_peels)
 static void addDepthPeel(ListBase *depth_peels, float depth, float p[3], float no[3], Object *ob)
 {
 	DepthPeel *peel = MEM_callocN(sizeof(DepthPeel), "DepthPeel");
-	
+
 	peel->depth = depth;
 	peel->ob = ob;
 	copy_v3_v3(peel->p, p);
 	copy_v3_v3(peel->no, no);
-	
+
 	BLI_addtail(depth_peels, peel);
-	
+
 	peel->flag = 0;
 }
 
@@ -2099,7 +2096,7 @@ static bool peelDerivedMesh(Object *ob, DerivedMesh *dm, float obmat[4][4],
 	bool retval = false;
 	int totvert = dm->getNumVerts(dm);
 	int totface = dm->getNumTessFaces(dm);
-	
+
 	if (totvert > 0) {
 		float imat[4][4];
 		float timat[3][3]; /* transpose inverse matrix for normals */
@@ -2109,87 +2106,87 @@ static bool peelDerivedMesh(Object *ob, DerivedMesh *dm, float obmat[4][4],
 		invert_m4_m4(imat, obmat);
 
 		transpose_m3_m4(timat, imat);
-		
+
 		copy_v3_v3(ray_start_local, ray_start);
 		copy_v3_v3(ray_normal_local, ray_normal);
-		
+
 		mul_m4_v3(imat, ray_start_local);
 		mul_mat3_m4_v3(imat, ray_normal_local);
-		
-		
-		/* If number of vert is more than an arbitrary limit, 
+
+
+		/* If number of vert is more than an arbitrary limit,
 		 * test against boundbox first
 		 * */
 		if (totface > 16) {
 			struct BoundBox *bb = BKE_object_boundbox_get(ob);
 			test = BKE_boundbox_ray_hit_check(bb, ray_start_local, ray_normal_local, NULL);
 		}
-		
+
 		if (test == 1) {
 			MVert *verts = dm->getVertArray(dm);
 			MFace *faces = dm->getTessFaceArray(dm);
 			int i;
-			
+
 			for (i = 0; i < totface; i++) {
 				MFace *f = faces + i;
 				float lambda;
 				int result;
-				
-				
+
+
 				result = isect_ray_tri_threshold_v3(ray_start_local, ray_normal_local, verts[f->v1].co, verts[f->v2].co, verts[f->v3].co, &lambda, NULL, 0.001);
-				
+
 				if (result) {
 					float location[3], normal[3];
 					float intersect[3];
 					float new_depth;
-					
+
 					copy_v3_v3(intersect, ray_normal_local);
 					mul_v3_fl(intersect, lambda);
 					add_v3_v3(intersect, ray_start_local);
-					
+
 					copy_v3_v3(location, intersect);
-					
+
 					if (f->v4)
 						normal_quad_v3(normal, verts[f->v1].co, verts[f->v2].co, verts[f->v3].co, verts[f->v4].co);
 					else
 						normal_tri_v3(normal, verts[f->v1].co, verts[f->v2].co, verts[f->v3].co);
 
 					mul_m4_v3(obmat, location);
-					
+
 					new_depth = len_v3v3(location, ray_start);
-					
+
 					mul_m3_v3(timat, normal);
 					normalize_v3(normal);
 
 					addDepthPeel(depth_peels, new_depth, location, normal, ob);
 				}
-		
+
 				if (f->v4 && result == 0) {
 					result = isect_ray_tri_threshold_v3(ray_start_local, ray_normal_local, verts[f->v3].co, verts[f->v4].co, verts[f->v1].co, &lambda, NULL, 0.001);
-					
+
 					if (result) {
 						float location[3], normal[3];
 						float intersect[3];
 						float new_depth;
-						
+
 						copy_v3_v3(intersect, ray_normal_local);
 						mul_v3_fl(intersect, lambda);
 						add_v3_v3(intersect, ray_start_local);
-						
+
 						copy_v3_v3(location, intersect);
-						
+
 						if (f->v4)
 							normal_quad_v3(normal, verts[f->v1].co, verts[f->v2].co, verts[f->v3].co, verts[f->v4].co);
 						else
 							normal_tri_v3(normal, verts[f->v1].co, verts[f->v2].co, verts[f->v3].co);
 
 						mul_m4_v3(obmat, location);
-						
+
 						new_depth = len_v3v3(location, ray_start);
-						
+
 						mul_m3_v3(timat, normal);
 						normalize_v3(normal);
-	
+
 						addDepthPeel(depth_peels, new_depth, location, normal, ob);
 					}
 				}
@@ -2198,7 +2195,7 @@ static bool peelDerivedMesh(Object *ob, DerivedMesh *dm, float obmat[4][4],
 	}
 
 	return retval;
-} 
+}
 
 static bool peelObjects(Scene *scene, View3D *v3d, ARegion *ar, Object *obedit,
                         ListBase *depth_peels, const float mval[2], SnapMode mode)
@@ -2206,7 +2203,7 @@ static bool peelObjects(Scene *scene, View3D *v3d, ARegion *ar, Object *obedit,
 	Base *base;
 	bool retval = false;
 	float ray_start[3], ray_normal[3];
-	
+
 	if (ED_view3d_win_to_ray(ar, v3d, mval, ray_start, ray_normal, true) == false) {
 		return false;
 	}
@@ -2218,10 +2215,10 @@ static bool peelObjects(Scene *scene, View3D *v3d, ARegion *ar, Object *obedit,
 			if (ob->transflag & OB_DUPLI) {
 				DupliObject *dupli_ob;
 				ListBase *lb = object_duplilist(G.main->eval_ctx, scene, ob);
-				
+
 				for (dupli_ob = lb->first; dupli_ob; dupli_ob = dupli_ob->next) {
 					Object *dob = dupli_ob->ob;
-					
+
 					if (dob->type == OB_MESH) {
 						BMEditMesh *em;
 						DerivedMesh *dm = NULL;
@@ -2229,51 +2226,51 @@ static bool peelObjects(Scene *scene, View3D *v3d, ARegion *ar, Object *obedit,
 
 						if (dob != obedit) {
 							dm = mesh_get_derived_final(scene, dob, CD_MASK_BAREMESH);
-							
+
 							val = peelDerivedMesh(dob, dm, dob->obmat, ray_start, ray_normal, mval, depth_peels);
 						}
 						else {
 							em = BKE_editmesh_from_object(dob);
 							dm = editbmesh_get_derived_cage(scene, obedit, em, CD_MASK_BAREMESH);
-							
+
 							val = peelDerivedMesh(dob, dm, dob->obmat, ray_start, ray_normal, mval, depth_peels);
 						}
 
 						retval = retval || val;
-						
+
 						dm->release(dm);
 					}
 				}
-				
+
 				free_object_duplilist(lb);
 			}
-			
+
 			if (ob->type == OB_MESH) {
 				bool val = false;
 
 				if (ob != obedit && ((mode == SNAP_NOT_SELECTED && (base->flag & (SELECT | BA_WAS_SEL)) == 0) || ELEM(mode, SNAP_ALL, SNAP_NOT_OBEDIT))) {
 					DerivedMesh *dm = mesh_get_derived_final(scene, ob, CD_MASK_BAREMESH);
-					
+
 					val = peelDerivedMesh(ob, dm, ob->obmat, ray_start, ray_normal, mval, depth_peels);
 					dm->release(dm);
 				}
 				else if (ob == obedit && mode != SNAP_NOT_OBEDIT) {
 					BMEditMesh *em = BKE_editmesh_from_object(ob);
 					DerivedMesh *dm = editbmesh_get_derived_cage(scene, obedit, em, CD_MASK_BAREMESH);
-					
+
 					val = peelDerivedMesh(ob, dm, ob->obmat, ray_start, ray_normal, mval, depth_peels);
 					dm->release(dm);
 				}
-					
+
 				retval = retval || val;
-				
+
 			}
 		}
 	}
-	
+
 	BLI_listbase_sort(depth_peels, cmpPeel);
 	removeDoublesPeel(depth_peels);
-	
+
 	return retval;
 }
 
@@ -2325,9 +2322,9 @@ static bool snapNode(ToolSettings *ts, SpaceNode *UNUSED(snode), ARegion *ar, bN
 	bool retval = false;
 	rcti totr;
 	int new_dist;
-	
+
 	UI_view2d_view_to_region_rcti(v2d, &node->totr, &totr);
-	
+
 	if (border & NODE_LEFT) {
 		new_dist = abs(totr.xmin - mval[0]);
 		if (new_dist < *r_dist_px) {
@@ -2337,7 +2334,7 @@ static bool snapNode(ToolSettings *ts, SpaceNode *UNUSED(snode), ARegion *ar, bN
 			retval = true;
 		}
 	}
-	
+
 	if (border & NODE_RIGHT) {
 		new_dist = abs(totr.xmax - mval[0]);
 		if (new_dist < *r_dist_px) {
@@ -2347,7 +2344,7 @@ static bool snapNode(ToolSettings *ts, SpaceNode *UNUSED(snode), ARegion *ar, bN
 			retval = true;
 		}
 	}
-	
+
 	if (border & NODE_BOTTOM) {
 		new_dist = abs(totr.ymin - mval[1]);
 		if (new_dist < *r_dist_px) {
@@ -2357,7 +2354,7 @@ static bool snapNode(ToolSettings *ts, SpaceNode *UNUSED(snode), ARegion *ar, bN
 			retval = true;
 		}
 	}
-	
+
 	if (border & NODE_TOP) {
 		new_dist = abs(totr.ymax - mval[1]);
 		if (new_dist < *r_dist_px) {
@@ -2367,7 +2364,7 @@ static bool snapNode(ToolSettings *ts, SpaceNode *UNUSED(snode), ARegion *ar, bN
 			retval = true;
 		}
 	}
-	
+
 	return retval;
 }
 
@@ -2377,14 +2374,14 @@ static bool snapNodes(ToolSettings *ts, SpaceNode *snode, ARegion *ar, const int
 	bNodeTree *ntree = snode->edittree;
 	bNode *node;
 	bool retval = false;
-	
+
 	*r_node_border = 0;
-	
+
 	for (node = ntree->nodes.first; node; node = node->next) {
 		if (snapNodeTest(&ar->v2d, node, mode))
 			retval |= snapNode(ts, snode, ar, node, mval, r_loc, r_dist_px, r_node_border);
 	}
-	
+
 	return retval;
 }
 
@@ -2412,7 +2409,7 @@ void snapGridIncrementAction(TransInfo *t, float *val, GearsType action)
 	fac[NO_GEARS]    = t->snap[0];
 	fac[BIG_GEARS]   = t->snap[1];
 	fac[SMALL_GEARS] = t->snap[2];
-	
+
 	applyGridIncrement(t, val, t->idx_max, fac, action);
 }
 
@@ -2469,7 +2466,7 @@ static void applyGridIncrement(TransInfo *t, float *val, int max_index, const fl
 	// Early bailing out if no need to snap
 	if (fac[action] == 0.0f)
 		return;
-	
+
 	/* evil hack - snapping needs to be adapted for image aspect ratio */
 	if ((t->spacetype == SPACE_IMAGE) && (t->mode == TFM_TRANSLATION)) {
 		if (t->options & CTX_MASK) {

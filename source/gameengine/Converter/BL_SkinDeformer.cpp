@@ -58,7 +58,7 @@ extern "C"{
 	#include "BKE_lattice.h"
 	#include "BKE_deform.h"
 }
- 
+
 
 #include "BLI_blenlib.h"
 #include "BLI_math.h"
@@ -185,8 +185,8 @@ void BL_SkinDeformer::BlenderDeformVerts()
 	copy_m4_m4(m_objMesh->obmat, m_obmat);
 
 	armature_deform_verts( par_arma, m_objMesh, NULL, m_transverts, NULL, m_bmesh->totvert, m_deformflags, NULL, NULL );
-		
-	// restore matrix 
+
+	// restore matrix
 	copy_m4_m4(m_objMesh->obmat, obmat);
 
 #ifdef __NLA_DEFNORMALS
@@ -218,7 +218,7 @@ void BL_SkinDeformer::BGEDeformVerts()
 		{
 			m_dfnrToPC[i] = BKE_pose_channel_find_name(par_arma->pose, dg->name);
 
-			if (m_dfnrToPC[i] && m_dfnrToPC[i]->bone->flag & BONE_NO_DEFORM)
+			if (m_dfnrToPC[i] && m_dfnrToPC[i]->bone->flag & ELEMENT_NO_DEFORM)
 				m_dfnrToPC[i] = NULL;
 		}
 	}
@@ -273,7 +273,7 @@ void BL_SkinDeformer::BGEDeformVerts()
 				}
 			}
 		}
-		
+
 		// Update Vertex Normal
 		norm = norm_chan_mat.topLeftCorner<3, 3>()*norm;
 

@@ -80,7 +80,7 @@ PyObject *BL_ArmatureChannel::NewProxy(bool py_owns)
 #endif // WITH_PYTHON
 
 BL_ArmatureChannel::BL_ArmatureChannel(
-	BL_ArmatureObject *armature, 
+	BL_ArmatureObject *armature,
 	bPoseChannel *posechannel)
 	: PyObjectPlus(), m_posechannel(posechannel), m_armature(armature)
 {
@@ -106,7 +106,7 @@ PyAttributeDef BL_ArmatureChannel::Attributes[] = {
 	// Keep these attributes in order of BCA_ defines!!! used by py_attr_getattr and py_attr_setattr
 	KX_PYATTRIBUTE_RO_FUNCTION("bone",BL_ArmatureChannel,py_attr_getattr),
 	KX_PYATTRIBUTE_RO_FUNCTION("parent",BL_ArmatureChannel,py_attr_getattr),
-	
+
 	{ NULL }	//Sentinel
 };
 
@@ -190,7 +190,7 @@ int BL_ArmatureChannel::py_attr_setattr(void *self_v, const struct KX_PYATTRIBUT
 		PyErr_SetString(PyExc_AttributeError, "channel is NULL");
 		return PY_SET_ATTR_FAIL;
 	}
-	
+
 	switch (attr_order) {
 	default:
 		break;
@@ -397,18 +397,18 @@ PyTypeObject BL_ArmatureBone::Type = {
 };
 
 // not used since this class is never instantiated
-PyObject *BL_ArmatureBone::GetProxy() 
-{ 
-	return NULL; 
+PyObject *BL_ArmatureBone::GetProxy()
+{
+	return NULL;
 }
-PyObject *BL_ArmatureBone::NewProxy(bool py_owns) 
-{ 
-	return NULL; 
+PyObject *BL_ArmatureBone::NewProxy(bool py_owns)
+{
+	return NULL;
 }
 
 PyObject *BL_ArmatureBone::py_bone_repr(PyObject *self)
 {
-	Bone* bone = static_cast<Bone*>BGE_PROXY_PTR(self);
+	ArmatureElement* bone = static_cast<ArmatureElement*>BGE_PROXY_PTR(self);
 	return PyUnicode_FromString(bone->name);
 }
 
@@ -423,19 +423,19 @@ PyAttributeDef BL_ArmatureBone::Attributes[] = {
 
 // attributes that work on proxy ptr (points to a Bone structure)
 PyAttributeDef BL_ArmatureBone::AttributesPtr[] = {
-	KX_PYATTRIBUTE_CHAR_RO("name",Bone,name),
-	KX_PYATTRIBUTE_FLAG_RO("connected",Bone,flag, BONE_CONNECTED),
-	KX_PYATTRIBUTE_FLAG_RO("hinge",Bone,flag, BONE_HINGE),
-	KX_PYATTRIBUTE_FLAG_NEGATIVE_RO("inherit_scale",Bone,flag, BONE_NO_SCALE),
-	KX_PYATTRIBUTE_SHORT_RO("bbone_segments",Bone,segments),
-	KX_PYATTRIBUTE_FLOAT_RO("roll",Bone,roll),
-	KX_PYATTRIBUTE_FLOAT_VECTOR_RO("head",Bone,head,3),
-	KX_PYATTRIBUTE_FLOAT_VECTOR_RO("tail",Bone,tail,3),
-	KX_PYATTRIBUTE_FLOAT_RO("length",Bone,length),
-	KX_PYATTRIBUTE_FLOAT_VECTOR_RO("arm_head",Bone,arm_head,3),
-	KX_PYATTRIBUTE_FLOAT_VECTOR_RO("arm_tail",Bone,arm_tail,3),
-	KX_PYATTRIBUTE_FLOAT_MATRIX_RO("arm_mat",Bone,arm_mat,4),
-	KX_PYATTRIBUTE_FLOAT_MATRIX_RO("bone_mat",Bone,bone_mat,3),
+	KX_PYATTRIBUTE_CHAR_RO("name",ArmatureElement,name),
+	KX_PYATTRIBUTE_FLAG_RO("connected",ArmatureElement,flag, ELEMENT_CONNECTED),
+	KX_PYATTRIBUTE_FLAG_RO("hinge",ArmatureElement,flag, ELEMENT_HINGE),
+	KX_PYATTRIBUTE_FLAG_NEGATIVE_RO("inherit_scale",ArmatureElement,flag, ELEMENT_NO_SCALE),
+	KX_PYATTRIBUTE_SHORT_RO("bbone_segments",ArmatureElement,segments),
+	KX_PYATTRIBUTE_FLOAT_RO("roll",ArmatureElement,roll),
+	KX_PYATTRIBUTE_FLOAT_VECTOR_RO("head",ArmatureElement,head,3),
+	KX_PYATTRIBUTE_FLOAT_VECTOR_RO("tail",ArmatureElement,tail,3),
+	KX_PYATTRIBUTE_FLOAT_RO("length",ArmatureElement,length),
+	KX_PYATTRIBUTE_FLOAT_VECTOR_RO("arm_head",ArmatureElement,arm_head,3),
+	KX_PYATTRIBUTE_FLOAT_VECTOR_RO("arm_tail",ArmatureElement,arm_tail,3),
+	KX_PYATTRIBUTE_FLOAT_MATRIX_RO("arm_mat",ArmatureElement,arm_mat,4),
+	KX_PYATTRIBUTE_FLOAT_MATRIX_RO("bone_mat",ArmatureElement,AE_mat,3),
 	KX_PYATTRIBUTE_RO_FUNCTION("parent",BL_ArmatureBone,py_bone_get_parent),
 	KX_PYATTRIBUTE_RO_FUNCTION("children",BL_ArmatureBone,py_bone_get_children),
 	{ NULL }	//Sentinel
@@ -443,7 +443,7 @@ PyAttributeDef BL_ArmatureBone::AttributesPtr[] = {
 
 PyObject *BL_ArmatureBone::py_bone_get_parent(void *self, const struct KX_PYATTRIBUTE_DEF *attrdef)
 {
-	Bone* bone = reinterpret_cast<Bone*>(self);
+	ArmatureElement* bone = reinterpret_cast<ArmatureElement*>(self);
 	if (bone->parent) {
 		// create a proxy unconnected to any GE object
 		return NewProxyPlus_Ext(NULL,&Type,bone->parent,false);
@@ -453,15 +453,15 @@ PyObject *BL_ArmatureBone::py_bone_get_parent(void *self, const struct KX_PYATTR
 
 PyObject *BL_ArmatureBone::py_bone_get_children(void *self, const struct KX_PYATTRIBUTE_DEF *attrdef)
 {
-	Bone* bone = reinterpret_cast<Bone*>(self);
-	Bone* child;
+	ArmatureElement* bone = reinterpret_cast<ArmatureElement*>(self);
+	ArmatureElement* child;
 	int count = 0;
-	for (child = (Bone *)bone->childbase.first; child; child = child->next)
+	for (child = (ArmatureElement *)bone->childbase.first; child; child = child->next)
 		count++;
 
 	PyObject *childrenlist = PyList_New(count);
 
-	for (count = 0, child = (Bone *)bone->childbase.first; child; child = child->next, ++count)
+	for (count = 0, child = (ArmatureElement *)bone->childbase.first; child; child = child->next, ++count)
 		PyList_SET_ITEM(childrenlist,count,NewProxyPlus_Ext(NULL,&Type,child,false));
 
 	return childrenlist;

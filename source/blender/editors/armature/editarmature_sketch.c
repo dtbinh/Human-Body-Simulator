@@ -464,7 +464,7 @@ static void sk_drawNormal(GLUquadric *quad, SK_Point *pt, float size, float heig
 {
 	float vec2[3] = {0, 0, 1}, axis[3];
 	float angle;
-	
+
 	glPushMatrix();
 
 	cross_v3_v3v3(axis, vec2, pt->no);
@@ -1081,7 +1081,7 @@ static int sk_getStrokeSnapPoint(bContext *C, SK_Point *pt, SK_Sketch *sketch, S
 				point_added = 1;
 			}
 		}
-		
+
 		mval[0] = dd->mval[0];
 		mval[1] = dd->mval[1];
 
@@ -1345,7 +1345,6 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 	ToolSettings *ts = CTX_data_tool_settings(C);
 	bArmature *arm = obedit->data;
 	SK_Point *head;
-//	EditBone *parent = NULL;
 	EditArmatureElement *parent = NULL;
 	float invmat[4][4]; /* move in caller function */
 	float tmat[3][3];
@@ -1366,8 +1365,6 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 				head = pt;
 			}
 			else {
-//				EditBone *bone = NULL;
-//				EditBone *new_parent;
 				EditArmatureElement *bone = NULL;
 				EditArmatureElement *new_parent;
 
@@ -1378,19 +1375,18 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 					initStrokeIterator(iter, stk, head_index, i);
 
 					if (ts->bone_sketching_convert == SK_CONVERT_CUT_ADAPTATIVE) {
-						bone = subdivideArcBy(ts, arm, arm->edbo, iter, invmat, tmat, nextAdaptativeSubdivision);
+						bone = subdivideArcBy(ts, arm, arm->edel, iter, invmat, tmat, nextAdaptativeSubdivision);
 					}
 					else if (ts->bone_sketching_convert == SK_CONVERT_CUT_LENGTH) {
-						bone = subdivideArcBy(ts, arm, arm->edbo, iter, invmat, tmat, nextLengthSubdivision);
+						bone = subdivideArcBy(ts, arm, arm->edel, iter, invmat, tmat, nextLengthSubdivision);
 					}
 					else if (ts->bone_sketching_convert == SK_CONVERT_CUT_FIXED) {
-						bone = subdivideArcBy(ts, arm, arm->edbo, iter, invmat, tmat, nextFixedSubdivision);
+						bone = subdivideArcBy(ts, arm, arm->edel, iter, invmat, tmat, nextFixedSubdivision);
 					}
 				}
 
 				if (bone == NULL) {
-//					bone = ED_armature_edit_bone_add(arm, "Bone");
-					bone = ED_armature_edit_armature_element_add(arm, "Bone", AE_BONE);
+					bone = ED_armature_edit_element_add(arm, "Bone", AE_BONE);
 
 					copy_v3_v3(bone->head, head->p);
 					copy_v3_v3(bone->tail, pt->p);
@@ -1401,13 +1397,11 @@ static void sk_convertStroke(bContext *C, SK_Stroke *stk)
 				}
 
 				new_parent = bone;
-//				bone->flag |= BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL;
 				bone->flag |= ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL;
 
 				/* move to end of chain */
 				while (bone->parent != NULL) {
 					bone = bone->parent;
-//					bone->flag |= BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL;
 					bone->flag |= ELEMENT_SELECTED | ELEMENT_TIPSEL | ELEMENT_ROOTSEL;
 				}
 
@@ -2189,7 +2183,7 @@ static int sk_draw_stroke(bContext *C, SK_Sketch *sketch, SK_Stroke *stk, SK_Dra
 		sk_addStrokePoint(C, sketch, stk, dd, snap);
 		sk_updateDrawData(dd);
 		sk_updateNextPoint(sketch, stk);
-		
+
 		return 1;
 	}
 
@@ -2305,7 +2299,7 @@ SK_Sketch *contextSketch(const bContext *C, int create)
 
 	if (obedit && obedit->type == OB_ARMATURE) {
 		bArmature *arm = obedit->data;
-	
+
 		if (arm->sketch == NULL && create) {
 			arm->sketch = createSketch();
 		}
@@ -2322,7 +2316,7 @@ SK_Sketch *viewcontextSketch(ViewContext *vc, int create)
 
 	if (obedit && obedit->type == OB_ARMATURE) {
 		bArmature *arm = obedit->data;
-	
+
 		if (arm->sketch == NULL && create) {
 			arm->sketch = createSketch();
 		}
